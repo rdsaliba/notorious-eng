@@ -12,13 +12,13 @@
                     <groupId>org.tensorflow</groupId>
                     <artifactId>tensorflow</artifactId>
                     <version>2.3.0</version>
-            </dependency>
+             </dependency>
              <dependency>
                       <groupId>org.mockito</groupId>
                       <artifactId>mockito-core</artifactId>
                       <version>2.10.0</version>
                       <scope>test</scope>
-            </dependency>
+             </dependency>
              <dependency>
                       <groupId>junit</groupId>
                       <artifactId>junit</artifactId>
@@ -30,7 +30,12 @@
                       <artifactId>javafx</artifactId>
                       <version>11</version>
                       <type>pom</type>
-            </dependency>
+             </dependency>
+             <dependency>
+                      <groupId>org.jacoco</groupId>
+                      <artifactId>jacoco-maven-plugin</artifactId>
+                      <version>0.8.6</version>
+             </dependency>
     </dependencies>
 
 
