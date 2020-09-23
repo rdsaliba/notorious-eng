@@ -7,6 +7,13 @@
     <groupId>org.capstone.notorious</groupId>
     <artifactId>cbms</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <dependencies>
+             <dependency>
+                    <groupId>org.tensorflow</groupId>
+                    <artifactId>tensorflow</artifactId>
+                    <version>2.3.0</version>
+            </dependency>
+    </dependencies>
 
 
 </project>
