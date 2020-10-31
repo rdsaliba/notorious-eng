@@ -34,7 +34,8 @@ public class PrePro2_Fill_RUL_Col
 
     }
 
-    private static Instances loadTrainingData() throws Exception
+    //loads .arff training data
+    public static Instances loadTrainingData() throws Exception
     {
         String path = ("Dataset/Converted/train_FD001.arff");
         DataSource source = new DataSource(path);
@@ -48,7 +49,7 @@ public class PrePro2_Fill_RUL_Col
         return data;
     }
 
-
+    //Returns max cycles of each engine in an Array (size = # of engine in the trainingData that is passed in)
     private static double[] getMaxCycles(Instances trainingData, int totalEngines)
     {
         Attribute engine = trainingData.attribute("Engine_Num");

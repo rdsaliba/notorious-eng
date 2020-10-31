@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="notorious-eng" />
         <module name="Capstone" />
+        <module name="cbms" />
       </profile>
     </annotationProcessing>
   </component>

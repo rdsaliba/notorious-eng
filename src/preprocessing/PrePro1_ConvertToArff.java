@@ -14,6 +14,9 @@ public class PrePro1_ConvertToArff
         File textFile = new File("Dataset/Train/train_FD001.txt");          //original Training_1 data
 
         File arffFile = convertToArff(textFile);
+
+        System.out.println(((arffFile.exists() && arffFile.canRead())? "Conversion successful. Retrieve from: " +
+                arffFile.getPath() : "No conversion took place."));
     }
 
     private static File convertToArff(File txtFile) throws IOException
