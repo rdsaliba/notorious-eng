@@ -55,7 +55,7 @@ public class PrePro1_ConvertToArff
                                 "@attribute Sensor_19 numeric\n" +
                                 "@attribute Sensor_20 numeric\n" +
                                 "@attribute Sensor_21 numeric\n" +
-                                "@attribute RUL numeric\n" +
+                                //"@attribute RUL numeric\n" +
                                 "\n" +
                                 "@data\n";
             write.print(attributes);

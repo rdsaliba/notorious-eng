@@ -9,21 +9,28 @@ import weka.core.converters.ArffSaver;
 import weka.core.converters.ConverterUtils.DataSource;
 import weka.filters.Filter;
 import weka.filters.supervised.attribute.AttributeSelection;
+import weka.filters.unsupervised.attribute.Add;
+import weka.filters.unsupervised.attribute.Remove;
+
 import java.io.File;
+import java.io.IOException;
 
 public class PrePro2_Fill_RUL_Col
 {
     public static void main(String[] args) throws Exception
     {
         Instances trainingData = loadTrainingData();
+        Instances filteredData;
         Instance lastRow = trainingData.lastInstance();
 
         int totalEngines = (int) lastRow.value(0);
         double[] maxCycles = getMaxCycles(trainingData, totalEngines);
 
         //showMaxCycles(maxCycles);
-        selectAttributes(trainingData);
+        filteredData = selectAttributes(trainingData);
         Instances trainingWithRUL = addRUL(trainingData, maxCycles);
+
+        filteredData = mergeInstances(trainingWithRUL,filteredData);
 
         showRUL(trainingWithRUL);
 
@@ -35,7 +42,33 @@ public class PrePro2_Fill_RUL_Col
         save.setFile(new File("Dataset/Converted/train_FD001_withRUL.arff"));
         save.writeBatch();
 
+        //Save and write the new data:
+        save = new ArffSaver();
+        save.setInstances(filteredData);
+
+        //Save as arff
+        save.setFile(new File("Dataset/Converted/train_FD001_filtered.arff"));
+        save.writeBatch();
+
     }
+
+    private static Instances mergeInstances(Instances trainingWithRUL, Instances filteredData) throws Exception {
+
+        System.out.println(trainingWithRUL.classIndex());
+        System.out.println(trainingWithRUL.numAttributes());
+        String rulIndex = Integer.toString(trainingWithRUL.numAttributes());
+        String[] options = {"-R", "1,2,"+rulIndex};
+
+        Remove remove = new Remove();
+        remove.setOptions(options);
+        remove.setInvertSelection(true);
+        remove.setInputFormat(trainingWithRUL);
+
+        Instances newIris = Filter.useFilter(trainingWithRUL, remove);
+
+       return newIris;
+    }
+
     /**
      This method will filter the attributes and remove the ones that do not provide useful information
      To use this method you need to choose an evaluation method and a search method
@@ -50,6 +83,7 @@ public class PrePro2_Fill_RUL_Col
         filter.setEvaluator(eval); // set the filter evaluator and search method
         filter.setSearch(search);
         Instances newData= trainingData;
+
         try {
             filter.setInputFormat(trainingData);
             newData = Filter.useFilter(trainingData, filter); // this is what takes the data and applies the filter to reduce it
@@ -118,8 +152,13 @@ public class PrePro2_Fill_RUL_Col
         }
     }
 
-    private static Instances addRUL(Instances trainingData, double[] maxCycles)
-    {
+    private static Instances addRUL(Instances trainingData, double[] maxCycles) throws Exception {
+
+      /*  Add filter = new Add();
+        filter.setAttributeIndex("last");
+        filter.setAttributeName("@RUL");
+        filter.setInputFormat(trainingData);
+        trainingData = Filter.useFilter(trainingData, filter);*/
         int engineNum = 1;
         Attribute engine = trainingData.attribute("Engine_Num");
         Instance row;
