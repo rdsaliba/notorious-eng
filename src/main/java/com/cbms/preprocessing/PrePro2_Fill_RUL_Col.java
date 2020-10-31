@@ -32,7 +32,7 @@ public class PrePro2_Fill_RUL_Col
         save.setInstances(trainingWithRUL);
 
         //Save as arff
-        save.setFile(new File("Dataset/Converted/train_FD001_withRUL.arff"));
+        save.setFile(new File("Dataset/Converted/test_FD001_withRUL.arff"));
         save.writeBatch();
 
     }
@@ -68,7 +68,7 @@ public class PrePro2_Fill_RUL_Col
     //loads .arff training data
     public static Instances loadTrainingData() throws Exception
     {
-        String path = ("Dataset/Converted/train_FD001.arff");
+        String path = ("Dataset/Converted/test_FD001.arff");
         DataSource source = new DataSource(path);
         Instances data   = source.getDataSet();
 
