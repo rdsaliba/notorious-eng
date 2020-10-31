@@ -1,11 +1,14 @@
 package com.cbms.preprocessing;
 
+import weka.attributeSelection.CfsSubsetEval;
+import weka.attributeSelection.BestFirst;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.ArffSaver;
 import weka.core.converters.ConverterUtils.DataSource;
-
+import weka.filters.Filter;
+import weka.filters.supervised.attribute.AttributeSelection;
 import java.io.File;
 
 public class PrePro2_Fill_RUL_Col
@@ -19,7 +22,7 @@ public class PrePro2_Fill_RUL_Col
         double[] maxCycles = getMaxCycles(trainingData, totalEngines);
 
         //showMaxCycles(maxCycles);
-
+        selectAttributes(trainingData);
         Instances trainingWithRUL = addRUL(trainingData, maxCycles);
 
         showRUL(trainingWithRUL);
@@ -32,6 +35,34 @@ public class PrePro2_Fill_RUL_Col
         save.setFile(new File("Dataset/Converted/train_FD001_withRUL.arff"));
         save.writeBatch();
 
+    }
+    /**
+     This method will filter the attributes and remove the ones that do not provide useful information
+     To use this method you need to choose an evaluation method and a search method
+     for now i choose the default CfsSubsetEval for the evaluator and BestFirst for the search method
+     the Weka docs contains other types of evaluators and search methods we can try in the future
+     @author Paul
+     */
+    public static Instances selectAttributes(Instances trainingData){
+        AttributeSelection filter = new AttributeSelection();  // a filter needs an evaluator and a search method
+        CfsSubsetEval eval = new CfsSubsetEval(); // the evaluator chosen is the CfsSubsetEval
+        BestFirst search = new BestFirst(); // the search method used is BestFirst
+        filter.setEvaluator(eval); // set the filter evaluator and search method
+        filter.setSearch(search);
+        Instances newData= trainingData;
+        try {
+            filter.setInputFormat(trainingData);
+            newData = Filter.useFilter(trainingData, filter); // this is what takes the data and applies the filter to reduce it
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // print out the attributes that are kept
+        for (int i = 0 ; i< newData.numAttributes() ; i++) {
+            System.out.println(newData.attribute(i));
+        }
+
+        return newData;
     }
 
     //loads .arff training data
