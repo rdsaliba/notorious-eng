@@ -1,4 +1,4 @@
-package preprocessing;
+package com.cbms.preprocessing;
 
 import weka.core.Attribute;
 import weka.core.Instance;
