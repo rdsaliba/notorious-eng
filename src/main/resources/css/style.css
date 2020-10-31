@@ -1,0 +1,30 @@
+.button
+{
+    -fx-background-color: #0C072E;
+    color: #F0F0F0;
+}
+
+.button:hover
+{
+    -fx-background-color: #2F2958;
+}
+
+#savebtn
+{
+    -fx-background-color: #48C774;
+}
+
+#cancelbtn
+{
+    -fx-background-color: #D2D2D2;
+}
+
+#deletebtn
+{
+    -fx-background-color: #FB3860;
+}
+
+#addsystembtn
+{
+    -fx-background-color: #48C774;
+}
