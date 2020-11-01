@@ -20,21 +20,17 @@ public class PrePro2_Fill_RUL_Col
     public static void main(String[] args) throws Exception
     {
         Instances trainingData = loadTrainingData();
-        Instances filteredData;
         Instance lastRow = trainingData.lastInstance();
 
         int totalEngines = (int) lastRow.value(0);
         double[] maxCycles = getMaxCycles(trainingData, totalEngines);
 
         //showMaxCycles(maxCycles);
-        filteredData = selectAttributes(trainingData);
         Instances trainingWithRUL = addRUL(trainingData, maxCycles);
 
-        filteredData = mergeInstances(trainingWithRUL,filteredData);
+        //showRUL(trainingWithRUL);
 
-        showRUL(trainingWithRUL);
-
-        //Save and write the new data:
+        //Save and write the new data for training with RUL:
         ArffSaver save = new ArffSaver();
         save.setInstances(trainingWithRUL);
 
@@ -42,7 +38,11 @@ public class PrePro2_Fill_RUL_Col
         save.setFile(new File("Dataset/Converted/train_FD001_withRUL.arff"));
         save.writeBatch();
 
-        //Save and write the new data:
+        Instances filteredData;
+        filteredData = selectAttributes(trainingWithRUL);
+        //filteredData = mergeInstances(trainingWithRUL,filteredData);
+
+        //Save and write the new data for filtered data:
         save = new ArffSaver();
         save.setInstances(filteredData);
 
@@ -92,8 +92,11 @@ public class PrePro2_Fill_RUL_Col
         }
 
         // print out the attributes that are kept
+        System.out.println("After performing CfsSubset evaluator with BestFirst search method (on train_withRUL), " +
+                           "the following attributes are kept:");
+
         for (int i = 0 ; i< newData.numAttributes() ; i++) {
-            System.out.println(newData.attribute(i));
+            System.out.println(newData.attribute(i).name());
         }
 
         return newData;
