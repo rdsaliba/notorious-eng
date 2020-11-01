@@ -9,11 +9,9 @@ import weka.core.converters.ArffSaver;
 import weka.core.converters.ConverterUtils.DataSource;
 import weka.filters.Filter;
 import weka.filters.supervised.attribute.AttributeSelection;
-import weka.filters.unsupervised.attribute.Add;
 import weka.filters.unsupervised.attribute.Remove;
 
 import java.io.File;
-import java.io.IOException;
 
 public class PrePro2_Fill_RUL_Col
 {
