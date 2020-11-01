@@ -4,7 +4,6 @@ import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.classifiers.functions.SMOreg;
-import weka.core.converters.ConverterUtils;
 import weka.core.converters.ConverterUtils.DataSource;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -17,7 +16,7 @@ public class testModel {
         DataSource testSource = new DataSource("Dataset/Converted/test_FD001_withRUL.arff");
         FileReader file= new FileReader("Dataset/Real RUL/RUL_FD001.txt");
         Instances testDataset = testSource.getDataSet();
-        double[] predictedRULs=getMaxRUL(testDataset,100,lr);
+        double[] predictedRULs= predictRUL(testDataset, (int) testDataset.lastInstance().value(testDataset.attribute("Engine_Num")),lr);
         double[] realRULs = parseRULs(file);
         double rmse=RootMeanSquaredError.calculate(predictedRULs,realRULs);
         System.out.println("Root mean squared error is : "+rmse);
@@ -43,7 +42,7 @@ public class testModel {
         return ruls;
     }
 
-    private static double[] getMaxRUL(Instances trainingData, int totalEngines, SMOreg lr) throws Exception
+    protected static double[] predictRUL(Instances trainingData, int totalEngines, SMOreg lr) throws Exception
     {
         Attribute enginne = trainingData.attribute("Engine_Num");
         Attribute rul = trainingData.attribute("RUL");
