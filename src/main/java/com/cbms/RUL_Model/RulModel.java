@@ -38,17 +38,13 @@ public class RulModel {
         lr.buildClassifier(trainDataset);
         Evaluation ev =new Evaluation(trainDataset);
         ev.evaluateModel(lr, testDataset);
-        //double a=  testDataset.instance(30).value(2);
-       // System.out.println(a);
         Instance one = testDataset.instance(30);
         double life= lr.classifyInstance(one);
         double[] predictedRULs=getMaxRUL(testDataset,100,lr);
-       // System.out.println("---"+life);
-//        showPredictedRUL(predictedRULs);
-       System.out.println("asdf"+predictedRULs[69]);
-        int[] realRULs = parseRULs(file);
-        double[] errors= getErrors(predictedRULs,realRULs);
-        showErrors(errors);
+        //System.out.println("asdf"+predictedRULs[69]);
+        double[] realRULs = parseRULs(file);
+        double rmse=RootMeanSquaredError.calculate(predictedRULs,realRULs);
+        System.out.println("Root mean squared error is : "+rmse);
 
     }
 
@@ -72,9 +68,9 @@ public class RulModel {
         return errors;
     }
 
-    private static int[] parseRULs(FileReader file) {
+    private static double[] parseRULs(FileReader file) {
         BufferedReader reader;
-        int[] ruls= new int[100];
+        double[] ruls= new double[100];
         try {
             reader = new BufferedReader(file);
             String line= reader.readLine();
