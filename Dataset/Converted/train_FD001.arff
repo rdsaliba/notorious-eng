@@ -26,7 +26,6 @@
 @attribute Sensor_19 numeric
 @attribute Sensor_20 numeric
 @attribute Sensor_21 numeric
-@attribute RUL numeric
 
 @data
 1, 1, -0.0007, -0.0004, 100.0, 518.67, 641.82, 1589.70, 1400.60, 14.62, 21.61, 554.36, 2388.06, 9046.19, 1.30, 47.47, 521.66, 2388.02, 8138.62, 8.4195, 0.03, 392, 2388, 100.00, 39.06, 23.4190, ?
