@@ -38,14 +38,14 @@ public class RulModel {
         lr.buildClassifier(trainDataset);
         Evaluation ev =new Evaluation(trainDataset);
         ev.evaluateModel(lr, testDataset);
-        double a=  testDataset.instance(30).value(2);
-        System.out.println(a);
+        //double a=  testDataset.instance(30).value(2);
+       // System.out.println(a);
         Instance one = testDataset.instance(30);
         double life= lr.classifyInstance(one);
         double[] predictedRULs=getMaxRUL(testDataset,100,lr);
-        System.out.println("---"+life);
-        showPredictedRUL(predictedRULs);
-        System.out.println("asdf"+predictedRULs[0]);
+       // System.out.println("---"+life);
+//        showPredictedRUL(predictedRULs);
+       System.out.println("asdf"+predictedRULs[69]);
         int[] realRULs = parseRULs(file);
         double[] errors= getErrors(predictedRULs,realRULs);
         showErrors(errors);
@@ -94,29 +94,30 @@ public class RulModel {
 
     private static double[] getMaxRUL(Instances trainingData, int totalEngines, LinearRegression  lr) throws Exception
     {
-        Attribute time = trainingData.attribute("Engine_Num");
+        Attribute enginne = trainingData.attribute("Engine_Num");
         Attribute rul = trainingData.attribute("RUL");
 
-        double engineNum = 1;
+        double engineNum = 0;
         double[] predicted = new double[totalEngines];
         for (int i = 0; i < trainingData.numInstances(); i++)
         {
-            if(i==trainingData.numInstances()-2) {
+            if(i+1==trainingData.numInstances()-1) {
                 Instance one = trainingData.instance(i+1);
                 double life= lr.classifyInstance(one);
+                System.out.println(lr.classifyInstance(one));
                 predicted[99] = life;
                 break;
             }
-            Instance row = trainingData.instance(i+1);
-            Instance nextRow = trainingData.instance(i+2);
-            if(row.value(time) != nextRow.value(time)){
+            Instance row = trainingData.instance(i);
+            Instance nextRow = trainingData.instance(i+1);
+            if(row.value(enginne) != nextRow.value(enginne)){
                 double engine=row.value(trainingData.attribute("Engine_Num"));
-                Instance one = trainingData.instance(i);
-                double life= lr.classifyInstance(one);
-                predicted[(int) engine] = life;
+               // Instance one = trainingData.instance(i+1);
+                double life= lr.classifyInstance(row);
+                System.out.println(lr.classifyInstance(row));
+                predicted[(int) engineNum] = life;
                 engineNum++;
             }
-
         }
         return predicted;
     }
