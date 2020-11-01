@@ -9,18 +9,30 @@ import weka.core.converters.ConverterUtils;
 import java.io.FileReader;
 
 public class EnginePerformance {
-    public static double[] healthAssesment()throws Exception{
+
+    /**
+     This function calculates the performance of each engine.
+     The function it takes as a parameter the linear regression model.
+     @author Talal
+     */
+    public static double[] healthAssesment(SMOreg lr)throws Exception{
         ConverterUtils.DataSource testSource = new ConverterUtils.DataSource("Dataset/Converted/test_FD001_withRUL.arff");
         Instances testDataset = testSource.getDataSet();
         int totalEngines= (int) testDataset.lastInstance().value(testDataset.attribute("Engine_Num"));
         double[] enginePerformance = new double[totalEngines];
-        double[] primeRUL= getPrimeRUL(testDataset, totalEngines, SMOreg lr);
-        double[] lastRUL=testModel.predictRUL(testDataset, totalEngines,SMOreg lr);
+        double[] primeRUL= getPrimeRUL(testDataset, totalEngines, lr);
+        double[] lastRUL=testModel.predictRUL(testDataset, totalEngines,lr);
         for(int i=0;i<primeRUL.length;i++){
             enginePerformance[i]=(primeRUL[i]-lastRUL[i]/primeRUL[i])*100;
         }
         return enginePerformance;
     }
+
+    /**
+     This function predicts the value of the RUL when the system is in it's prime.
+     the function returns an array of the prime RULs of the systems.
+     @author Talal
+     */
     public static double[] getPrimeRUL(Instances testData, int totalEngines, SMOreg lr) throws Exception
     {
         Attribute enginne = testData.attribute("Engine_Num");
