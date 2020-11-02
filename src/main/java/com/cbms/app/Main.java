@@ -24,9 +24,14 @@ public class Main   {
         
     //    StartupController startupController = new StartupController();
     //    startupController.generateModel();
-        
+
   //  launch(args);
 
+        Connection conn = getConnection();
+        Statement stmt = conn.createStatement();
+    }
+
+    public static Connection getConnection(){
         String url = "jdbc:h2:mem:cbms_db";
         String user = "sa";
         String password = "";
@@ -36,22 +41,9 @@ public class Main   {
             conn = DriverManager.getConnection(url,user,password);
             System.out.println("Connection Created");
 
-            Statement stmt = conn.createStatement();
-
-            stmt.execute("CREATE TABLE test(id INT PRIMARY KEY, name VARCHAR(20))");
-            System.out.println("Table Created");
-
-            int insertedrows = stmt.executeUpdate("INSERT INTO test VALUES(1, 'one')");
-            System.out.println("Rows inserted: " + insertedrows);
-
-            ResultSet rs = stmt.executeQuery("SELECT * FROM test");
-
-            while(rs.next())
-                System.out.println(rs.getString("name"));
-
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-
+        return conn;
     }
 }
