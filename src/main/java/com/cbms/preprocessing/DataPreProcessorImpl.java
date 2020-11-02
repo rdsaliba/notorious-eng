@@ -1,3 +1,11 @@
+/**
+ * Implementation of the data pre-processor interface
+ * the Process function will reduce the data and store it in the reducedDataSet variable
+ *
+ * @author      Paul Micu
+ * @version     1.0
+ * @last_edit   11/01/2020
+ */
 package com.cbms.preprocessing;
 
 import weka.attributeSelection.BestFirst;
@@ -12,6 +20,7 @@ public class DataPreProcessorImpl implements DataPreProcessor {
 
     public DataPreProcessorImpl(Instances originalDataset) {
         this.originalDataset = originalDataset;
+        this.reducedDataset = originalDataset;
     }
 
     /**
@@ -23,20 +32,16 @@ public class DataPreProcessorImpl implements DataPreProcessor {
      * @author Paul
      */
     @Override
-    public void process() {
+    public void process() throws Exception {
         AttributeSelection filter = new AttributeSelection();  // a filter needs an evaluator and a search method
         CfsSubsetEval eval = new CfsSubsetEval(); // the evaluator chosen is the CfsSubsetEval
         BestFirst search = new BestFirst(); // the search method used is BestFirst
         filter.setEvaluator(eval); // set the filter evaluator and search method
         filter.setSearch(search);
-        Instances reducedDataset = originalDataset;
 
-        try {
-            filter.setInputFormat(originalDataset);
-            reducedDataset = Filter.useFilter(originalDataset, filter); // this is what takes the data and applies the filter to reduce it
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        filter.setInputFormat(originalDataset);
+        reducedDataset = Filter.useFilter(originalDataset, filter); // this is what takes the data and applies the filter to reduce it
+
 
         // print out the attributes that are kept
         System.out.println("After performing CfsSubset evaluator with BestFirst search method (on train_withRUL), " +

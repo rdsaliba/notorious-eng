@@ -1,22 +1,29 @@
-package com.cbms.RUL_Model;
+/**
+ * Implementation of the model strategy interface, part of the Strategy design pattern
+ * Contains 2 methods, one to train the data and another private function to remove instances that are too old
+ * and cannot provide useful information
+ *
+ * @author      Paul Micu
+ * @version     1.0
+ * @last_edit   11/01/2020
+ */
+package com.cbms.RUL_Models;
 
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.converters.ConverterUtils.DataSource;
 import weka.classifiers.functions.SMOreg;
 import weka.classifiers.Classifier;
-import weka.classifiers.Evaluation;
-import java.io.FileReader;
 
-public class RulModel {
+public class LinearRegressionModelImpl implements ModelStrategy {
     /**
      This function takes the filtered training dataset and trains a linear regression regression model,
      after that it returns the model.
      To use this method you need to pass the training dataset.
      @author Talal
      */
-    public static Classifier trainModel(Instances firstTrain) throws Exception {
+    @Override
+    public Classifier trainModel(Instances firstTrain) throws Exception {
         firstTrain.setClassIndex(firstTrain.numAttributes()-1);
         Instances trainDataset = removeInstances(firstTrain);
         SMOreg lr=new SMOreg();
@@ -32,7 +39,8 @@ public class RulModel {
      To use this function you need to pass the training dataset as a parameter.
      @author Talal
      */
-    private static Instances removeInstances (Instances trainDataset) {
+    private Instances removeInstances (Instances trainDataset) {
+        // TODO what is this variable for?
         Attribute rul = trainDataset.attribute("RUL");
         for (int i = 0; i < trainDataset.numInstances() ; i++) {
             Instance inst = trainDataset.instance(i);

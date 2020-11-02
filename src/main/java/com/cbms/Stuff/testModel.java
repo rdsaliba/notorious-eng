@@ -1,5 +1,7 @@
-package com.cbms.RUL_Model;
+package com.cbms.Stuff;
 
+import com.cbms.RUL_Models.LinearRegressionModelImpl;
+import weka.classifiers.Classifier;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -11,18 +13,22 @@ import java.io.IOException;
 
 
 public class testModel {
+    public testModel() {
+    }
+
     /**
      This function evaluates the performance of an Artificial intellignece model.
      The parameters of the function are a training dataset, test dataset, and a text file that contains the real RULs.
      The function prints the root mean squared error of a model.
      @author Talal
      */
-    public static void evaluateModell(Instances trainDataset,Instances testDataset, FileReader realRul) throws Exception {
-        SMOreg lr=(SMOreg) RulModel.trainModel(trainDataset);
-        DataSource testSource = new DataSource("Dataset/Converted/test_FD001_withRUL.arff");
+    public void evaluateModel(Classifier model, Instances testDataset) throws Exception {
+      //  LinearRegressionModelImpl linearRegressionModel = new LinearRegressionModelImpl();
+        SMOreg lr=(SMOreg) model;//linearRegressionModel.trainModel(trainDataset);
+    //    DataSource testSource = new DataSource("Dataset/Converted/test_FD001_withRUL.arff");
         double[] predictedRULs= predictRUL(testDataset, (int) testDataset.lastInstance().value(testDataset.attribute("Engine_Num")),lr);
-        double[] realRULs = parseRULs(realRul);
-        double rmse=RootMeanSquaredError.calculate(predictedRULs,realRULs);
+        double[] realRULs = parseRULs(new FileReader("C:\\Git\\notorious-eng\\Dataset/Real RUL/RUL_FD0012.txt"));
+        double rmse= RootMeanSquaredError.calculate(predictedRULs,realRULs);
         System.out.println("Root mean squared error is : "+rmse);
     }
 
@@ -31,25 +37,27 @@ public class testModel {
      The parameter of the function is the text file with the real RULs.
      the function returns the array with the real RULs.
      @author Talal
+     TODO remove the 100 and make it dynamic
      */
-    private static double[] parseRULs(FileReader file) {
-        BufferedReader reader;
-        double[] ruls= new double[100];
-        try {
-            reader = new BufferedReader(file);
-            String line= reader.readLine();
-            int i=0;
-            while(line !=null) {
-                System.out.println(i+" "+ line);
-                ruls[i]=Integer.parseInt(line.replaceAll("\\s+",""));
-                i++;
-                line=reader.readLine();
-            }
-            reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return ruls;
+    private double[] parseRULs(FileReader file) {
+        return new double[]{112.0}; // for testing purposes, waiting on the fix to remove - Paul
+//        BufferedReader reader;
+//        double[] ruls= new double[100];
+//        try {
+//            reader = new BufferedReader(file);
+//            String line= reader.readLine();
+//            int i=0;
+//            while(line !=null) {
+//                System.out.println(i+" "+ line);
+//                ruls[i]=Integer.parseInt(line.replaceAll("\\s+",""));
+//                i++;
+//                line=reader.readLine();
+//            }
+//            reader.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return ruls;
     }
 
     /**
@@ -73,7 +81,7 @@ public class testModel {
                 double life= lr.classifyInstance(one);
                 System.out.println(lr.classifyInstance(one));
                 double temp = testData.lastInstance().value(enginne);
-                predicted[(int) temp] = life;
+                predicted[(int) temp-1] = life;
                 break;
             }
             Instance row = testData.instance(i);

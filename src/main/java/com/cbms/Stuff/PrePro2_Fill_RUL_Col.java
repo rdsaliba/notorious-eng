@@ -1,4 +1,4 @@
-package com.cbms.preprocessing;
+package com.cbms.Stuff;
 
 import weka.attributeSelection.CfsSubsetEval;
 import weka.attributeSelection.BestFirst;

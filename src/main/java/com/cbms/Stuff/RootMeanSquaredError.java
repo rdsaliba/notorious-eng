@@ -1,4 +1,4 @@
-package com.cbms.RUL_Model;
+package com.cbms.Stuff;
 
 public class RootMeanSquaredError {
     /**

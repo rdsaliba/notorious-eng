@@ -1,12 +1,11 @@
-package com.cbms.RUL_Model;
+package com.cbms.Stuff;
 
+import com.cbms.Stuff.testModel;
 import weka.classifiers.functions.SMOreg;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils;
-
-import java.io.FileReader;
 
 public class EnginePerformance {
 
@@ -21,7 +20,7 @@ public class EnginePerformance {
         int totalEngines= (int) testDataset.lastInstance().value(testDataset.attribute("Engine_Num"));
         double[] enginePerformance = new double[totalEngines];
         double[] primeRUL= getPrimeRUL(testDataset, totalEngines, lr);
-        double[] lastRUL=testModel.predictRUL(testDataset, totalEngines,lr);
+        double[] lastRUL= testModel.predictRUL(testDataset, totalEngines,lr);
         for(int i=0;i<primeRUL.length;i++){
             enginePerformance[i]=(primeRUL[i]-lastRUL[i]/primeRUL[i])*100;
         }
