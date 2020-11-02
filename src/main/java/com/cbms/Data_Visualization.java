@@ -1,4 +1,4 @@
-package com.cbms.Stuff;
+package com.cbms;
 
 
 import weka.core.Instances;
@@ -11,7 +11,7 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-public class PrePro3_Data_Visualization extends PrePro2_Fill_RUL_Col
+public class Data_Visualization extends Fill_RUL_Col
 {
     public static void main(String[] args) throws Exception
     {

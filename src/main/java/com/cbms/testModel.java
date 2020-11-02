@@ -1,15 +1,12 @@
-package com.cbms.Stuff;
+package com.cbms;
 
-import com.cbms.RUL_Models.LinearRegressionModelImpl;
 import weka.classifiers.Classifier;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.classifiers.functions.SMOreg;
-import weka.core.converters.ConverterUtils.DataSource;
-import java.io.BufferedReader;
+
 import java.io.FileReader;
-import java.io.IOException;
 
 
 public class testModel {
@@ -30,6 +27,11 @@ public class testModel {
         double[] realRULs = parseRULs(new FileReader("C:\\Git\\notorious-eng\\Dataset/Real RUL/RUL_FD0012.txt"));
         double rmse= RootMeanSquaredError.calculate(predictedRULs,realRULs);
         System.out.println("Root mean squared error is : "+rmse);
+        for (double p:predictedRULs
+             ) {
+
+            System.out.println("RUL prediction is : "+p);
+        }
     }
 
     /**

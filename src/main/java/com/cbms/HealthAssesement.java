@@ -1,13 +1,12 @@
-package com.cbms.Stuff;
+package com.cbms;
 
-import com.cbms.Stuff.testModel;
 import weka.classifiers.functions.SMOreg;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils;
 
-public class EnginePerformance {
+public class HealthAssesement {
 
     /**
      This function calculates the performance of each engine.

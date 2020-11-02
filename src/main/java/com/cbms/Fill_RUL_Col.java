@@ -1,4 +1,4 @@
-package com.cbms.Stuff;
+package com.cbms;
 
 import weka.attributeSelection.CfsSubsetEval;
 import weka.attributeSelection.BestFirst;
@@ -13,7 +13,7 @@ import weka.filters.unsupervised.attribute.Remove;
 
 import java.io.File;
 
-public class PrePro2_Fill_RUL_Col
+public class Fill_RUL_Col
 {
     public static void main(String[] args) throws Exception
     {

@@ -10,7 +10,7 @@ package com.cbms.app;
 
 import com.cbms.RUL_Models.LinearRegressionModelImpl;
 import com.cbms.RUL_Models.ModelsController;
-import com.cbms.Stuff.testModel;
+import com.cbms.testModel;
 import com.cbms.preprocessing.DataPrePreprossesorController;
 import com.cbms.source.local.LocalDataSource;
 import weka.classifiers.Classifier;

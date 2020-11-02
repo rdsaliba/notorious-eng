@@ -1,4 +1,4 @@
-package com.cbms.Stuff;
+package com.cbms;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Scanner;
 
-public class PrePro1_ConvertToArff
+public class ConvertToArff
 {
     public static void main(String[] args) throws IOException
     {

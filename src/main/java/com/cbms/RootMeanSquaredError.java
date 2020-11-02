@@ -1,4 +1,4 @@
-package com.cbms.Stuff;
+package com.cbms;
 
 public class RootMeanSquaredError {
     /**
