@@ -29,6 +29,14 @@ public class Main   {
 
         Connection conn = getConnection();
         Statement stmt = conn.createStatement();
+
+        stmt.execute("CREATE TABLE test(id INT PRIMARY KEY, name VARCHAR(20))");
+        System.out.println("Table created");
+        stmt.executeUpdate("INSERT INTO test VALUES(1, 'one')");
+
+        ResultSet rs = stmt.executeQuery("SELECT * FROM test");
+        while(rs.next())
+            System.out.println(rs.getString("name"));
     }
 
     public static Connection getConnection(){
