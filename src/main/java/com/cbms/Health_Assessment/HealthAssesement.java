@@ -1,6 +1,8 @@
-package com.cbms;
+package com.cbms.Health_Assessment;
 
-import weka.classifiers.functions.SMOreg;
+import test.java.RUL_Models.testModel;
+import weka.classifiers.Classifier;
+import weka.classifiers.functions.LinearRegression;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -13,7 +15,7 @@ public class HealthAssesement {
      The function it takes as a parameter the linear regression model.
      @author Talal
      */
-    public static double[] healthAssesment(SMOreg lr)throws Exception{
+    public static double[] healthAssesment(LinearRegression lr)throws Exception{
         ConverterUtils.DataSource testSource = new ConverterUtils.DataSource("Dataset/Converted/test_FD001_withRUL.arff");
         Instances testDataset = testSource.getDataSet();
         int totalEngines= (int) testDataset.lastInstance().value(testDataset.attribute("Engine_Num"));
@@ -31,7 +33,7 @@ public class HealthAssesement {
      the function returns an array of the prime RULs of the systems.
      @author Talal
      */
-    public static double[] getPrimeRUL(Instances testData, int totalEngines, SMOreg lr) throws Exception
+    public static double[] getPrimeRUL(Instances testData, int totalEngines, Classifier lr) throws Exception
     {
         Attribute enginne = testData.attribute("Engine_Num");
 
