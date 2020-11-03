@@ -9,6 +9,7 @@
  */
 package com.cbms.RUL_Models;
 
+import weka.classifiers.functions.LinearRegression;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -26,7 +27,7 @@ public class LinearRegressionModelImpl implements ModelStrategy {
     public Classifier trainModel(Instances firstTrain) throws Exception {
         firstTrain.setClassIndex(firstTrain.numAttributes()-1);
         Instances trainDataset = removeInstances(firstTrain);
-        SMOreg lr=new SMOreg();
+        LinearRegression lr=new LinearRegression();
         lr.buildClassifier(trainDataset);
         return lr;
     }
@@ -40,11 +41,9 @@ public class LinearRegressionModelImpl implements ModelStrategy {
      @author Talal
      */
     private Instances removeInstances (Instances trainDataset) {
-        // TODO what is this variable for?
-        Attribute rul = trainDataset.attribute("RUL");
         for (int i = 0; i < trainDataset.numInstances() ; i++) {
             Instance inst = trainDataset.instance(i);
-            if (inst.value(inst.classAttribute())>175) {
+            if (inst.value(inst.classAttribute())>150) {
                 trainDataset.delete(i);
             }
         }
