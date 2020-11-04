@@ -15,7 +15,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="712.0" prefWidth="1026.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cbms.app.controllers.SystemInfoController">
+<AnchorPane stylesheets="@css/systeminfo.css" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="712.0" prefWidth="1026.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cbms.app.controllers.SystemInfoController">
     <children>
         <VBox layoutY="169.0" prefHeight="543.0" prefWidth="74.0" style="-fx-background-color: #0C072E;" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="169.0">
             <children>
@@ -34,36 +34,6 @@
             </children>
         </VBox>
         <VBox prefHeight="169.0" prefWidth="74.0" style="-fx-background-color: #0C072E;" AnchorPane.topAnchor="0.0" />
-        <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" layoutX="74.0" layoutY="288.0" prefHeight="424.0" prefWidth="962.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="74.0" AnchorPane.rightAnchor="0.0">
-            <content>
-                <FlowPane hgap="10.0" prefHeight="723.0" prefWidth="937.0" style="-fx-padding: 10;" vgap="10.0">
-                    <children>
-                  <Pane prefHeight="231.0" prefWidth="298.0" style="-fx-background-color: e0e0e0;">
-                     <children>
-                        <LineChart layoutX="12.0" layoutY="12.0" prefHeight="163.0" prefWidth="275.0">
-                          <xAxis>
-                            <CategoryAxis side="BOTTOM" />
-                          </xAxis>
-                          <yAxis>
-                            <NumberAxis side="LEFT" />
-                          </yAxis>
-                        </LineChart>
-                        <Text fill="#0c072e" layoutX="35.0" layoutY="191.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sensor Type">
-                           <font>
-                              <Font name="Segoe UI Bold" size="15.0" />
-                           </font>
-                        </Text>
-                        <Text fill="#0c072e" layoutX="35.0" layoutY="211.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Location">
-                           <font>
-                              <Font name="Segoe UI Bold" size="15.0" />
-                           </font>
-                        </Text>
-                     </children>
-                  </Pane>
-                    </children>
-                </FlowPane>
-            </content>
-        </ScrollPane>
         <AnchorPane layoutX="74.0" prefHeight="42.0" prefWidth="952.0" style="-fx-border-style: hidden hidden solid hidden; -fx-border-color: F0F0F0;" AnchorPane.leftAnchor="74.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
                 <Text fx:id="systemName" fill="#0c072e" layoutX="14.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="System Name">
@@ -114,5 +84,35 @@
                </font>
             </Text>
          </children></AnchorPane>
+        <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" layoutX="74.0" layoutY="288.0" prefHeight="424.0" prefWidth="962.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="74.0" AnchorPane.rightAnchor="0.0">
+            <content>
+                <FlowPane fx:id="sensorFlowPane" hgap="10.0" prefHeight="723.0" prefWidth="937.0" style="-fx-padding: 10;" vgap="10.0">
+                    <children>
+                  <Pane prefHeight="231.0" prefWidth="298.0" style="-fx-background-color: e0e0e0;">
+                     <children>
+                        <LineChart layoutX="12.0" layoutY="12.0" prefHeight="163.0" prefWidth="275.0">
+                          <xAxis>
+                            <CategoryAxis side="BOTTOM" />
+                          </xAxis>
+                          <yAxis>
+                            <NumberAxis side="LEFT" />
+                          </yAxis>
+                        </LineChart>
+                        <Text fill="#0c072e" layoutX="35.0" layoutY="191.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sensor Type">
+                           <font>
+                              <Font name="Segoe UI Bold" size="15.0" />
+                           </font>
+                        </Text>
+                        <Text fill="#0c072e" layoutX="35.0" layoutY="211.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Location">
+                           <font>
+                              <Font name="Segoe UI Bold" size="15.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </Pane>
+                    </children>
+                </FlowPane>
+            </content>
+        </ScrollPane>
     </children>
 </AnchorPane>
