@@ -1,5 +1,7 @@
 package com.cbms.app;
 
+import com.cbms.source.local.Database;
+
 public class Main   {
 
    /* @Override
@@ -19,6 +21,6 @@ public class Main   {
 
   //  launch(args);
 
-        //Database db = new Database();
+        Database db = new Database();
     }
 }
