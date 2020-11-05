@@ -1,5 +1,6 @@
 package com.cbms.source.local;
 
+import java.io.*;
 import java.sql.*;
 
 public class Database {
@@ -156,11 +157,11 @@ public class Database {
             }
 
             System.out.println("Data inserted into dataset");
-            ResultSet rs = stmt.executeQuery("SELECT * FROM dataset");
-            while (rs.next())
-                System.out.println(rs.getString("dataset_id") + " " + rs.getString("test_or_train") + " " + rs.getString("name"));
+            ResultSet dataRS = stmt.executeQuery("SELECT * FROM dataset");
+            while (dataRS.next())
+                System.out.println(dataRS.getString("dataset_id") + " " + dataRS.getString("test_or_train") + " " + dataRS.getString("name"));
 
-            rs.close();
+            dataRS.close();
             System.out.println();
 
             //INSERT TO THE TABLE OPERATIONAL_CONDITION
@@ -172,11 +173,11 @@ public class Database {
                     "('Fault Modes: TWO','(HPC Degradation, Fan Degradation)')");
 
             System.out.println("Data inserted into operational_condition");
-            ResultSet ds = stmt.executeQuery("SELECT * FROM operational_condition");
-            while (ds.next())
-                System.out.println(ds.getString("oc_name") + " " + ds.getString("oc_description"));
+            ResultSet opcRS = stmt.executeQuery("SELECT * FROM operational_condition");
+            while (opcRS.next())
+                System.out.println(opcRS.getString("oc_name") + " " + opcRS.getString("oc_description"));
 
-            ds.close();
+            opcRS.close();
             System.out.println();
 
             //INSERTING DATA INTO MEASURED_IN TABLE
@@ -200,11 +201,11 @@ public class Database {
                     "(8, 'Fault Modes: TWO')");
 
             System.out.println("Data inserted into measured_in");
-            ResultSet ms = stmt.executeQuery("SELECT * FROM measured_in");
-            while (ms.next())
-                System.out.println(ms.getString("dataset_id") + " " + ms.getString("oc_name"));
+            ResultSet measureInRS = stmt.executeQuery("SELECT * FROM measured_in");
+            while (measureInRS.next())
+                System.out.println(measureInRS.getString("dataset_id") + " " + measureInRS.getString("oc_name"));
 
-            ms.close();
+            measureInRS.close();
             System.out.println();
 
             //INSERTING DATA INTO SYSTEMS TABLE
@@ -228,24 +229,96 @@ public class Database {
             }
             for (int i = 1; i <= 248; i++) {
                 stmt.executeUpdate("INSERT INTO systems(dataset_id, unit_nb)" +
-                        "VALUES (7, " + i + ")");
+                        "VALUES (8, " + i + ")");
             }
             for (int i = 1; i <= 249; i++) {
                 stmt.executeUpdate("INSERT INTO systems(dataset_id, unit_nb)" +
-                        "VALUES (8, " + i + ")");
+                        "VALUES (7, " + i + ")");
             }
 
             System.out.println("Data inserted into systems");
-            ResultSet ss = stmt.executeQuery("SELECT * FROM systems ORDER BY dataset_id ASC");
-            while (ss.next())
-                System.out.println(ss.getString("dataset_id") + " " + ss.getString("unit_nb"));
+            ResultSet sysRS = stmt.executeQuery("SELECT * FROM systems ORDER BY dataset_id ASC");
+            while (sysRS.next())
+                System.out.println(sysRS.getString("dataset_id") + " " + sysRS.getString("unit_nb"));
 
-            ss.close();
+            sysRS.close();
+            System.out.println();
+
+            //INSERTING DATA INTO SENSOR TABLE
+            for (int i = 1; i <= 21; i++) {
+                stmt.executeUpdate("INSERT INTO sensor(sensor_nb)" +
+                        "VALUES (" + i + ")");
+            }
+
+            System.out.println("Data inserted into sensor");
+            ResultSet sensorRS = stmt.executeQuery("SELECT * FROM sensor");
+            while (sensorRS.next())
+                System.out.println(sensorRS.getString("sensor_nb"));
+
+            sensorRS.close();
+            System.out.println();
+
+            //INSERTING DATA INTO MODEL TABLE
+            stmt.executeUpdate("INSERT INTO model(name, description) " +
+                    "VALUES " +
+                    "('Linear', 'lorem ipsum')," +
+                    "('LSTM', 'lorem ipsum')");
+
+            System.out.println("Data inserted into model");
+            ResultSet modelRS = stmt.executeQuery("SELECT * FROM model");
+            while (modelRS.next())
+                System.out.println(modelRS.getString("name") + " " + modelRS.getString("description"));
+
+            modelRS.close();
+            System.out.println();
+
+            //INSERTING DATA INTO MEASURE TABLE
+            for (int j = 1; j <= 8; j++) {
+                //Iterating through the different dataset text files to read from them given on the dataset_ID identified in dataset table
+                String f = new File("").getAbsolutePath();
+                if (j % 2 == 0) {
+                    //For train files
+                    f = f.concat("/Dataset/Test/test_FD00" + j / 2 + ".txt");
+                } else {
+                    //For Test files
+                    f = f.concat("/Dataset/Train/train_FD00" + (j + 1) / 2 + ".txt");
+                }
+                BufferedReader br = null;
+                br = new BufferedReader(new FileReader(f));
+
+                while (br.ready()) {
+                    String check = null;
+                    try {
+                        check = br.readLine();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    String[] tokenizedTerms = check.split(" ");
+                    //Read each file line in split the different values into separate objects
+                    for (int i = 1; i <= 21; i++) {
+                        //Insert an entry into the table for each sensor given on file line
+                        stmt.executeUpdate("INSERT INTO measure(dataset_id, unit_nb, sensor_nb, time, sensor_value) VALUES (" + j + ", " + tokenizedTerms[0] + ", " + i + "," + tokenizedTerms[1] + ", " + tokenizedTerms[i + 4] + " )");
+                    }
+                }
+            }
+
+            System.out.println("Data inserted into measure");
+
+            ResultSet measureRS = stmt.executeQuery("SELECT * FROM measure WHERE dataset_id=7");
+            while (measureRS.next())
+                System.out.println(measureRS.getString("dataset_id") + " " + measureRS.getString("unit_nb") + " " + measureRS.getString("sensor_nb") + " " + measureRS.getString("time") + " " + measureRS.getString("sensor_value"));
+
+            measureRS.close();
             System.out.println();
 
             stmt.close();
+
+        } catch (FileNotFoundException fileNotFoundException) {
+            fileNotFoundException.printStackTrace();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
