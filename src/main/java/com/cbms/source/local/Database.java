@@ -29,106 +29,98 @@ public class Database {
     private void createTables() {
         try {
             Statement stmt = this.conn.createStatement();
+            //Make sure the naming convention is up to par variable name lowercase, sql statement uppercase
 
-            stmt.execute("CREATE TABLE datasets(" +
-                    "DatasetID int," +
-                    "Test_or_Train bool," +
-                    "Name char(20)," +
-                    "Train_nb int," +
-                    "Test_nb int," +
-                    "PRIMARY KEY (DatasetID, Test_or_Train))");
+            //Train is TRUE, Test is FALSE
+
+            stmt.execute("CREATE TABLE dataset(" +
+                    "dataset_id INT AUTO_INCREMENT," +
+                    "test_or_train BOOL," +
+                    "name CHAR(5)," +
+                    "PRIMARY KEY (dataset_id))");
             System.out.println("Dataset table created");
 
 
-            stmt.execute("CREATE TABLE operational_conditions(" +
-                    "OC_Name char(20)," +
-                    "OC_Description varchar(300)," +
-                    "PRIMARY KEY (OC_Name))");
+            stmt.execute("CREATE TABLE operational_condition(" +
+                    "oc_name VARCHAR(50)," +
+                    "oc_description VARCHAR(300)," +
+                    "PRIMARY KEY (oc_name))");
             System.out.println("Operational Conditions Table created");
 
 
             stmt.execute("CREATE TABLE measured_in(" +
-                    "DatasetID int," +
-                    "Test_or_Train bool," +
-                    "OC_Name char(20)," +
-                    "PRIMARY KEY (DatasetID, Test_or_Train, OC_Name)," +
-                    "FOREIGN KEY (DatasetID,Test_or_Train) REFERENCES Datasets (DatasetID,Test_or_Train)," +
-                    "FOREIGN KEY (OC_Name) REFERENCES Operational_Conditions (OC_Name))");
+                    "dataset_id INT," +
+                    "oc_name VARCHAR(50)," +
+                    "PRIMARY KEY (dataset_id, oc_name)," +
+                    "FOREIGN KEY (dataset_id) REFERENCES dataset (dataset_id)," +
+                    "FOREIGN KEY (oc_name) REFERENCES operational_condition (oc_name))");
             System.out.println("Measured In table created");
 
 
             stmt.execute("CREATE TABLE systems(" +
-                    "DatasetID int," +
-                    "Test_or_Train bool," +
-                    "Unit_nb int," +
-                    "Name char(20)," +
-                    "Type char(20)," +
-                    "Description varchar(300)," +
-                    "SN char(20)," +
-                    "Manufacturer char(20)," +
-                    "Category char(20)," +
-                    "Site char(20)," +
-                    "Location char(20)," +
-                    "PRIMARY KEY (DatasetID, Test_or_Train, Unit_nb)," +
-                    "FOREIGN KEY (DatasetID,Test_or_Train) REFERENCES Datasets (DatasetID,Test_or_Train))");
+                    "dataset_id INT," +
+                    "unit_nb INT," +
+                    "name VARCHAR(50)," +
+                    "type VARCHAR(20)," +
+                    "description VARCHAR(300)," +
+                    "sn VARCHAR(20)," +
+                    "manufacturer VARCHAR(20)," +
+                    "category VARCHAR(20)," +
+                    "site VARCHAR(20),location VARCHAR(20)," +
+                    "PRIMARY KEY (dataset_id, unit_nb)," +
+                    "FOREIGN KEY (dataset_id) REFERENCES dataset(dataset_id))");
             System.out.println("Systems table created");
 
 
-            stmt.execute("CREATE TABLE sensors(" +
-                    "DatasetID int," +
-                    "Test_or_Train bool," +
-                    "Unit_nb int," +
-                    "Sensor_nb int," +
-                    "SensorID char(20)," +
-                    "Type char(20)," +
-                    "Location char(20)," +
-                    "PRIMARY KEY (Sensor_nb))");
+            stmt.execute("CREATE TABLE sensor(" +
+                    "sensor_nb INT," +
+                    "sensor_id INT," +
+                    "type VARCHAR(20)," +
+                    "location VARCHAR(20)," +
+                    "PRIMARY KEY (sensor_nb))");
             System.out.println("Sensors table created");
 
 
-            stmt.execute("CREATE TABLE measures(" +
-                    "DatasetID int," +
-                    "Test_or_Train bool," +
-                    "Unit_nb int," +
-                    "Sensor_nb int," +
-                    "Time int," +
-                    "Sensor_value double," +
-                    "PRIMARY KEY (DatasetID, Test_or_Train, Unit_nb, Sensor_nb, Time)," +
-                    "FOREIGN KEY (DatasetID,Test_or_Train,Unit_nb ) REFERENCES Systems" +
-                    "(DatasetID,Test_or_Train,Unit_nb )," +
-                    "FOREIGN KEY (Sensor_nb) REFERENCES Sensors(Sensor_nb))");
+            stmt.execute("CREATE TABLE measure(" +
+                    "dataset_id INT," +
+                    "unit_nb INT," +
+                    "sensor_nb INT," +
+                    "time INT," +
+                    "sensor_value DOUBLE," +
+                    "PRIMARY KEY (dataset_id, unit_nb, sensor_nb, time)," +
+                    "FOREIGN KEY (dataset_id, unit_nb ) REFERENCES systems" +
+                    "(dataset_id,unit_nb )," +
+                    "FOREIGN KEY (sensor_nb) REFERENCES sensor(sensor_nb))");
             System.out.println("Measure table created");
 
 
-            stmt.execute("CREATE TABLE models(" +
-                    "Name char(20)," +
-                    "Description varchar(300)," +
-                    "PRIMARY KEY (Name))");
+            stmt.execute("CREATE TABLE model(" +
+                    "name VARCHAR(20)," +
+                    "description VARCHAR(300)," +
+                    "PRIMARY KEY (name))");
             System.out.println("Models table created");
 
 
-            stmt.execute("CREATE TABLE calculates_ruls(" +
-                    "DatasetID int," +
-                    "Test_or_Train bool," +
-                    "Unit_nb int," +
-                    "Model_name char(20)," +
-                    "Timestamp datetime," +
-                    "RUL double," +
-                    "PRIMARY KEY (DatasetID, Test_or_Train, Unit_nb, Model_name, Timestamp)," +
-                    "FOREIGN KEY (DatasetID,Test_or_Train,Unit_nb) REFERENCES Systems (DatasetID,Test_or_Train,Unit_nb)," +
-                    "FOREIGN KEY (Model_name) REFERENCES Models (Name))");
+            stmt.execute("CREATE TABLE calculates_rul(" +
+                    "dataset_id INT," +
+                    "unit_nb INT," +
+                    "model_name VARCHAR(20)," +
+                    "timestamp DATETIME," +
+                    "rul DOUBLE," +
+                    "PRIMARY KEY (dataset_id, unit_nb, model_name, timestamp)," +
+                    "FOREIGN KEY (dataset_id,unit_nb) REFERENCES systems(dataset_id,unit_nb)," +
+                    "FOREIGN KEY (model_name) REFERENCES model(name))");
             System.out.println("Calculates Ruls table created");
 
 
+
+            //EXAMPLE CODE
             stmt.execute("CREATE TABLE test(id INT PRIMARY KEY, name VARCHAR(20))");
             System.out.println("Table created");
             stmt.executeUpdate("INSERT INTO test VALUES(1, 'one')");
-
-
-
-            ResultSet rs = stmt.executeQuery("SELECT * FROM test");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM Test");
             while (rs.next())
-                System.out.println(rs.getString("name"));
+                System.out.println(rs.getString("NAME"));
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
