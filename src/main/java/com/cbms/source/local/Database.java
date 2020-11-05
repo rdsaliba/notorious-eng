@@ -11,6 +11,7 @@ public class Database {
     public Database() {
         this.conn = getConnection();
         createTables();
+        insertData();
     }
 
     private Connection getConnection() {
@@ -115,20 +116,62 @@ public class Database {
 
 
             //EXAMPLE CODE
-            stmt.execute("CREATE TABLE test(id INT PRIMARY KEY, name VARCHAR(20))");
-            System.out.println("Table created");
-            stmt.executeUpdate("INSERT INTO test VALUES(1, 'one')");
-            ResultSet rs = stmt.executeQuery("SELECT * FROM Test");
-            while (rs.next())
-                System.out.println(rs.getString("NAME"));
+//            stmt.execute("CREATE TABLE test(id INT PRIMARY KEY, name VARCHAR(20))");
+//            System.out.println("Table created");
+//            stmt.executeUpdate("INSERT INTO test VALUES(1, 'one')");
+//            ResultSet rs = stmt.executeQuery("SELECT * FROM Test");
+//            while (rs.next())
+//                System.out.println(rs.getString("NAME") +" " + rs.getString("id"));
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
     }
 
-    public void insertData() {
+    private void insertData() {
+        try {
+            Statement stmt = this.conn.createStatement();
+            //Insert to table dataset
+            int train_test = 0;
 
+            int textIndex=1;
+
+            int count = 0;
+
+            for(int i=1;i<9;i++){
+                if (train_test == 1){
+                    train_test = 0;
+                }else if(train_test == 0){
+                    train_test = 1;
+                }
+
+                if(count % 2 == 0 && count != 0){
+                    textIndex++;}
+                //System.out.println(i+" "+train_test+" "+"FD00"+textIndex);
+                String name = "FD00"+textIndex;
+                stmt.executeUpdate("INSERT INTO dataset(test_or_train,name) values ("+train_test+",'"+name+"' )");
+                count++;
+            }
+            ResultSet rs = stmt.executeQuery("SELECT * FROM dataset");
+            while (rs.next())
+                System.out.println(rs.getString("dataset_id") +" " + rs.getString("test_or_train")+" " + rs.getString("name"));
+
+
+            System.out.println();
+
+            //Insert to the table operational_condition
+            stmt.executeUpdate("INSERT INTO operational_condition(oc_name,oc_description) values ('Conditions:ONE','(Sea Level)')," +
+                    "('Conditions: SIX',' ')," +
+                    "('Fault Modes: ONE','(HPC Degradation)')," +
+                    "('Fault Modes: TWO','(HPC Degradation, Fan Degradation)')");
+
+            ResultSet ds = stmt.executeQuery("SELECT * FROM operational_condition");
+            while (ds.next())
+                System.out.println(ds.getString("oc_name") +" " + ds.getString("oc_description"));
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
     public void deleteData() {
