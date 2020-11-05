@@ -1,7 +1,10 @@
 package com.cbms.source.local;
 
 import java.io.*;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class Database {
     private static final String URL = "jdbc:h2:mem:cbms_db";
@@ -9,30 +12,46 @@ public class Database {
     private static final String PASSWORD = "";
     private Connection conn = null;
 
+    /**
+     * Constructor
+     * <p>
+     * Creates connection to the database, creates tables and inserts data.
+     *
+     * @author Najim
+     */
     public Database() {
         this.conn = getConnection();
         createTables();
         insertData();
     }
 
+    /**
+     * Creates connection to the in-memory database by specifying the proper URL string.
+     *
+     * @return (returns a Connection object)
+     * @author Najim
+     */
     private Connection getConnection() {
         Connection conn = null;
         try {
-            Class.forName("org.h2.Driver");
-            conn = DriverManager.getConnection(this.URL, this.USER, this.PASSWORD);
+            Class.forName("org.h2.Driver"); //Loading the H2 database Driver
+            conn = DriverManager.getConnection(this.URL, this.USER, this.PASSWORD); //Using JDBC's API we connect to the in-memory database
             System.out.println("Connection Created\n");
-
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return conn;
     }
 
+    /**
+     * Creates the necessary schemas.
+     *
+     * @author Najim, Jérémie, Shirwa
+     */
     private void createTables() {
         try {
+            //The Statement object is from JDBC's API. It enables us to execute SQL statements.
             Statement stmt = this.conn.createStatement();
-            //Make sure the naming convention is up to par variable name lowercase, sql statement uppercase
-
             //Train is TRUE, Test is FALSE
 
             stmt.execute("CREATE TABLE dataset(" +
@@ -42,13 +61,11 @@ public class Database {
                     "PRIMARY KEY (dataset_id))");
             System.out.println("Dataset table created");
 
-
             stmt.execute("CREATE TABLE operational_condition(" +
                     "oc_name VARCHAR(50)," +
                     "oc_description VARCHAR(300)," +
                     "PRIMARY KEY (oc_name))");
-            System.out.println("Operational Conditions Table created");
-
+            System.out.println("Operational Conditions table created");
 
             stmt.execute("CREATE TABLE measured_in(" +
                     "dataset_id INT," +
@@ -57,7 +74,6 @@ public class Database {
                     "FOREIGN KEY (dataset_id) REFERENCES dataset (dataset_id)," +
                     "FOREIGN KEY (oc_name) REFERENCES operational_condition (oc_name))");
             System.out.println("Measured In table created");
-
 
             stmt.execute("CREATE TABLE systems(" +
                     "dataset_id INT," +
@@ -73,7 +89,6 @@ public class Database {
                     "FOREIGN KEY (dataset_id) REFERENCES dataset(dataset_id))");
             System.out.println("Systems table created");
 
-
             stmt.execute("CREATE TABLE sensor(" +
                     "sensor_nb INT," +
                     "sensor_id INT," +
@@ -81,7 +96,6 @@ public class Database {
                     "location VARCHAR(20)," +
                     "PRIMARY KEY (sensor_nb))");
             System.out.println("Sensors table created");
-
 
             stmt.execute("CREATE TABLE measure(" +
                     "dataset_id INT," +
@@ -95,13 +109,11 @@ public class Database {
                     "FOREIGN KEY (sensor_nb) REFERENCES sensor(sensor_nb))");
             System.out.println("Measure table created");
 
-
             stmt.execute("CREATE TABLE model(" +
                     "name VARCHAR(20)," +
                     "description VARCHAR(300)," +
                     "PRIMARY KEY (name))");
             System.out.println("Models table created");
-
 
             stmt.execute("CREATE TABLE calculates_rul(" +
                     "dataset_id INT," +
@@ -113,27 +125,22 @@ public class Database {
                     "FOREIGN KEY (dataset_id,unit_nb) REFERENCES systems(dataset_id,unit_nb)," +
                     "FOREIGN KEY (model_name) REFERENCES model(name))");
             System.out.println("Calculates Ruls table created\n");
-
-
-
-            //EXAMPLE CODE
-//            stmt.execute("CREATE TABLE test(id INT PRIMARY KEY, name VARCHAR(20))");
-//            System.out.println("Table created");
-//            stmt.executeUpdate("INSERT INTO test VALUES(1, 'one')");
-//            ResultSet rs = stmt.executeQuery("SELECT * FROM Test");
-//            while (rs.next())
-//                System.out.println(rs.getString("NAME") +" " + rs.getString("id"));
-
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
     }
 
+    /**
+     * Inserts the data exctracted from the dataset files into the appropriate tables.
+     *
+     * @author Najim, Jérémie, Shirwa
+     */
     private void insertData() {
         try {
+            //The Statement object is from JDBC's API. It enables us to execute SQL statements.
             Statement stmt = this.conn.createStatement();
 
-            //INSERT TO TABLE DATASET
+            //INSERTING DATA INTO DATASET TABLE
             int train_test = 0;
 
             int textIndex = 1;
@@ -150,21 +157,14 @@ public class Database {
                 if (count % 2 == 0 && count != 0) {
                     textIndex++;
                 }
-                //System.out.println(i+" "+train_test+" "+"FD00"+textIndex);
                 String name = "FD00" + textIndex;
                 stmt.executeUpdate("INSERT INTO dataset(test_or_train,name) VALUES (" + train_test + ",'" + name + "' )");
                 count++;
             }
 
             System.out.println("Data inserted into dataset");
-            ResultSet dataRS = stmt.executeQuery("SELECT * FROM dataset");
-            while (dataRS.next())
-                System.out.println(dataRS.getString("dataset_id") + " " + dataRS.getString("test_or_train") + " " + dataRS.getString("name"));
 
-            dataRS.close();
-            System.out.println();
-
-            //INSERT TO THE TABLE OPERATIONAL_CONDITION
+            //INSERTING DATA INTO OPERATIONAL_CONDITION TABLE
             stmt.executeUpdate("INSERT INTO operational_condition(oc_name,oc_description) " +
                     "VALUES " +
                     "('Conditions: ONE','(Sea Level)')," +
@@ -173,12 +173,6 @@ public class Database {
                     "('Fault Modes: TWO','(HPC Degradation, Fan Degradation)')");
 
             System.out.println("Data inserted into operational_condition");
-            ResultSet opcRS = stmt.executeQuery("SELECT * FROM operational_condition");
-            while (opcRS.next())
-                System.out.println(opcRS.getString("oc_name") + " " + opcRS.getString("oc_description"));
-
-            opcRS.close();
-            System.out.println();
 
             //INSERTING DATA INTO MEASURED_IN TABLE
             stmt.executeUpdate("INSERT INTO measured_in(dataset_id, oc_name) " +
@@ -201,12 +195,6 @@ public class Database {
                     "(8, 'Fault Modes: TWO')");
 
             System.out.println("Data inserted into measured_in");
-            ResultSet measureInRS = stmt.executeQuery("SELECT * FROM measured_in");
-            while (measureInRS.next())
-                System.out.println(measureInRS.getString("dataset_id") + " " + measureInRS.getString("oc_name"));
-
-            measureInRS.close();
-            System.out.println();
 
             //INSERTING DATA INTO SYSTEMS TABLE
             for (int i = 1; i <= 100; i++) {
@@ -237,12 +225,6 @@ public class Database {
             }
 
             System.out.println("Data inserted into systems");
-            ResultSet sysRS = stmt.executeQuery("SELECT * FROM systems ORDER BY dataset_id ASC");
-            while (sysRS.next())
-                System.out.println(sysRS.getString("dataset_id") + " " + sysRS.getString("unit_nb"));
-
-            sysRS.close();
-            System.out.println();
 
             //INSERTING DATA INTO SENSOR TABLE
             for (int i = 1; i <= 21; i++) {
@@ -251,12 +233,6 @@ public class Database {
             }
 
             System.out.println("Data inserted into sensor");
-            ResultSet sensorRS = stmt.executeQuery("SELECT * FROM sensor");
-            while (sensorRS.next())
-                System.out.println(sensorRS.getString("sensor_nb"));
-
-            sensorRS.close();
-            System.out.println();
 
             //INSERTING DATA INTO MODEL TABLE
             stmt.executeUpdate("INSERT INTO model(name, description) " +
@@ -265,12 +241,6 @@ public class Database {
                     "('LSTM', 'lorem ipsum')");
 
             System.out.println("Data inserted into model");
-            ResultSet modelRS = stmt.executeQuery("SELECT * FROM model");
-            while (modelRS.next())
-                System.out.println(modelRS.getString("name") + " " + modelRS.getString("description"));
-
-            modelRS.close();
-            System.out.println();
 
             //INSERTING DATA INTO MEASURE TABLE
             for (int j = 1; j <= 8; j++) {
@@ -301,18 +271,10 @@ public class Database {
                     }
                 }
             }
-
             System.out.println("Data inserted into measure");
 
-            ResultSet measureRS = stmt.executeQuery("SELECT * FROM measure WHERE dataset_id=7");
-            while (measureRS.next())
-                System.out.println(measureRS.getString("dataset_id") + " " + measureRS.getString("unit_nb") + " " + measureRS.getString("sensor_nb") + " " + measureRS.getString("time") + " " + measureRS.getString("sensor_value"));
-
-            measureRS.close();
-            System.out.println();
-
+            //Closing the stmt object.
             stmt.close();
-
         } catch (FileNotFoundException fileNotFoundException) {
             fileNotFoundException.printStackTrace();
         } catch (SQLException throwables) {
@@ -321,9 +283,4 @@ public class Database {
             e.printStackTrace();
         }
     }
-
-    public void deleteData() {
-
-    }
-
 }
