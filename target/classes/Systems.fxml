@@ -16,7 +16,7 @@
     <children>
         <VBox layoutY="169.0" prefHeight="543.0" prefWidth="74.0" style="-fx-background-color: #0C072E;" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="169.0">
             <children>
-                <Button contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0" prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css" text="Systems" textAlignment="CENTER" textFill="#f0f0f0">
+                <Button fx:id="systemMenuButton" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0" prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css" text="Systems" textAlignment="CENTER" textFill="#f0f0f0">
                     <font>
                         <Font name="Segoe UI Bold" size="14.0" />
                     </font>
@@ -48,7 +48,7 @@
                 </Text>
             </children>
         </AnchorPane>
-        <Button id="addsystembtn" layoutX="914.0" layoutY="42.0" mnemonicParsing="false" stylesheets="@css/style.css" text="Add System" textFill="WHITE">
+        <Button fx:id="addSystemButton" layoutX="914.0" layoutY="42.0" mnemonicParsing="false" stylesheets="@css/style.css" text="Add System" textFill="WHITE">
             <font>
                 <Font name="Segoe UI Bold" size="12.0" />
             </font>

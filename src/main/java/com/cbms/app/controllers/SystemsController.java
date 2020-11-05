@@ -11,6 +11,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
@@ -25,6 +26,10 @@ import java.util.ResourceBundle;
 public class SystemsController implements Initializable {
 
     @FXML
+    private Button systemMenuButton;
+    @FXML
+    private Button addSystemButton;
+    @FXML
     private FlowPane systemsPane;
 
     private ObservableList<Pane> boxes = FXCollections.observableArrayList();
@@ -38,6 +43,45 @@ public class SystemsController implements Initializable {
         createFakeListOfSystems();
         for (Engine system: systems) {
             Pane pane = new Pane();
+
+            systemMenuButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    try {
+                        FXMLLoader loader = new FXMLLoader();
+                        loader.setLocation(getClass().getResource("/Systems.fxml"));
+                        Parent systemsParent = loader.load();
+                        Scene systemInfo = new Scene(systemsParent);
+
+                        Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
+                        window.setScene(systemInfo);
+                        window.show();
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+            addSystemButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    try {
+                        FXMLLoader loader = new FXMLLoader();
+                        loader.setLocation(getClass().getResource("/Add System.fxml"));
+                        Parent systemsParent = loader.load();
+                        Scene systemInfo = new Scene(systemsParent);
+
+                        Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
+                        window.setScene(systemInfo);
+                        window.show();
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
             pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
