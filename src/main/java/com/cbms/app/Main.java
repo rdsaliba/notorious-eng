@@ -22,5 +22,6 @@ public class Main   {
   //  launch(args);
 
         Database db = new Database();
+        db.getConnection().close();
     }
 }
