@@ -40,7 +40,7 @@ public class DataPreProcessorImpl implements DataPreProcessor {
      * @author Paul
      */
     @Override
-    public void process() throws Exception {
+    public void processFullReduction() throws Exception {
         AttributeSelection filter = new AttributeSelection();  // a filter needs an evaluator and a search method
         CfsSubsetEval eval = new CfsSubsetEval(); // the evaluator chosen is the CfsSubsetEval
         BestFirst search = new BestFirst(); // the search method used is BestFirst
@@ -74,7 +74,7 @@ public class DataPreProcessorImpl implements DataPreProcessor {
      * @author Khaled
      */
     @Override
-    public void process2() throws Exception{
+    public void processMinimalReduction() throws Exception {
 
         ArrayList<Integer> removeIndex = new ArrayList<>();     //keep indices to delete in a list.
 
