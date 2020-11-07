@@ -1,6 +1,7 @@
 package com.cbms.app;
 
 import com.cbms.source.local.Database;
+import com.cbms.source.local.DatabaseConnection;
 
 public class Main   {
 
@@ -15,13 +16,15 @@ public class Main   {
 */
 
     public static void main(String[] args) throws Exception {
-        
-    //    StartupController startupController = new StartupController();
-    //    startupController.generateModel();
 
-  //  launch(args);
+        //    StartupController startupController = new StartupController();
+        //    startupController.generateModel();
+
+        //  launch(args);
 
         Database db = new Database();
-        db.getConnection().close();
+        DatabaseConnection conn = DatabaseConnection.start();
+        db.test(conn.getConnection());
+        conn.stop();
     }
 }

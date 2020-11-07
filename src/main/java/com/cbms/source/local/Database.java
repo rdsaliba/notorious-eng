@@ -1,51 +1,39 @@
 package com.cbms.source.local;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class Database {
-    private static final String URL = "jdbc:mariadb://127.0.0.1:3306/cbms?";
-    //Make sure to set the user and password to the proper values.
-    //Credentials should be set to that which you are using on your local DB server.
-    private static final String USER = "root";
-    private static final String PASSWORD = "Kratos753951_";
-    private Connection conn;
-
     /**
      * Constructor
-     * Creates connection to the database, creates tables and inserts data.
      *
      * @author Najim
      */
     public Database() {
-        this.conn = setConnection();
+
     }
 
     /**
-     * Getter
+     * Simple function to test the database.
      *
-     * @return (returns Connection object)
-     * @author Najim
+     * @param conn Connection object used to create statements per JDBC's API
      */
-    public Connection getConnection() {
-        return this.conn;
-    }
-
-    /**
-     * Creates connection to the in-memory database by specifying the proper URL string.
-     *
-     * @return (returns a Connection object)
-     * @author Najim
-     */
-    private Connection setConnection() {
-        Connection conn = null;
+    public void test(Connection conn) {
         try {
-            conn = DriverManager.getConnection(this.URL, this.USER, this.PASSWORD); //Using JDBC's API we connect to the in-memory database
-            System.out.println("Connection Created\n");
+            Statement stmt = conn.createStatement();
+
+            ResultSet dataRS = stmt.executeQuery("SELECT * FROM dataset");
+            while (dataRS.next())
+                System.out.println(dataRS.getString("dataset_id") + "  " + dataRS.getString("test_or_train") + "  " + dataRS.getString("name"));
+
+            dataRS.close();
+            System.out.println();
+
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        return conn;
+
     }
 }
