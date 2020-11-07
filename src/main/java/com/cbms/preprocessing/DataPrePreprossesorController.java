@@ -23,9 +23,16 @@ public class DataPrePreprossesorController {
         return instance;
     }
 
+
     public Instances reduceData(Instances originalData) throws Exception {
         dataPreProcessorImpl = new DataPreProcessorImpl(originalData);
-        dataPreProcessorImpl.process();
+        dataPreProcessorImpl.processFullReduction();
         return dataPreProcessorImpl.getReducedDataset();
+    }
+
+    public Instances minimallyReduceData(Instances originalData) throws Exception {
+        dataPreProcessorImpl = new DataPreProcessorImpl(originalData);
+        dataPreProcessorImpl.processMinimalReduction();
+        return dataPreProcessorImpl.getMinimallyReducedDataset();
     }
 }

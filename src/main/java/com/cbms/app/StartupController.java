@@ -72,6 +72,10 @@ public class StartupController {
         ModelsController mC = new ModelsController(new LinearRegressionModelImpl());
 
         Instances reducedData = dPPC.reduceData(originalData);  // reduce data
+
+        //To only remove data that 100% don't hold any valuable information use minimallyReducedData
+        Instances minimallyReducedData = dPPC.minimallyReduceData(originalData);
+
         Classifier trained = mC.trainModel(originalData); // train model and return Classifier
 
         testModel tm = new testModel();

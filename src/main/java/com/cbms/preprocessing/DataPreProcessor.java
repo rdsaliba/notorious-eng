@@ -12,7 +12,10 @@ import weka.core.Instances;
 
 public interface DataPreProcessor {
     Instances reducedDataset = null;
+    Instances minimallyReducedDataset = null;
     
-    public void process() throws Exception;
+    public void processFullReduction() throws Exception;
+    public void processMinimalReduction() throws Exception;
     public Instances getReducedDataset();
+    public Instances getMinimallyReducedDataset();
 }
