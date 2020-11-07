@@ -1,24 +1,24 @@
 Data Set: FD001
-Train trjectories: 100
+Train trajectories: 100
 Test trajectories: 100
 Conditions: ONE (Sea Level)
 Fault Modes: ONE (HPC Degradation)
 
 Data Set: FD002
-Train trjectories: 260
+Train trajectories: 260
 Test trajectories: 259
 Conditions: SIX 
 Fault Modes: ONE (HPC Degradation)
 
 Data Set: FD003
-Train trjectories: 100
+Train trajectories: 100
 Test trajectories: 100
 Conditions: ONE (Sea Level)
 Fault Modes: TWO (HPC Degradation, Fan Degradation)
 
 Data Set: FD004
-Train trjectories: 248
-Test trajectories: 249
+Train trajectories: 249
+Test trajectories: 248
 Conditions: SIX 
 Fault Modes: TWO (HPC Degradation, Fan Degradation)
 
@@ -28,7 +28,7 @@ Experimental Scenario
 
 Data sets consists of multiple multivariate time series. 
 Each data set is further divided into training and test subsets. 
-Each time series is from a different engine – i.e., 
+Each time series is from a different engine ï¿½ i.e., 
 the data can be considered to be from a fleet of engines of the same type. 
 Each engine starts with different degrees of initial wear and manufacturing variation which is unknown to the user.
 This wear and variation is considered normal, i.e., it is not considered a fault condition. T
@@ -56,4 +56,4 @@ The columns correspond to:
 26)	sensor measurement  26
 
 
-Reference: A. Saxena, K. Goebel, D. Simon, and N. Eklund, “Damage Propagation Modeling for Aircraft Engine Run-to-Failure Simulation”, in the Proceedings of the Ist International Conference on Prognostics and Health Management (PHM08), Denver CO, Oct 2008.
+Reference: A. Saxena, K. Goebel, D. Simon, and N. Eklund, ï¿½Damage Propagation Modeling for Aircraft Engine Run-to-Failure Simulationï¿½, in the Proceedings of the Ist International Conference on Prognostics and Health Management (PHM08), Denver CO, Oct 2008.
