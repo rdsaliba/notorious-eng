@@ -15,7 +15,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane stylesheets="@css/systeminfo.css" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="712.0" prefWidth="1026.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cbms.app.controllers.SystemInfoController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="712.0" prefWidth="1026.0" stylesheets="@css/systeminfo.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cbms.app.controllers.SystemInfoController">
     <children>
         <VBox layoutY="169.0" prefHeight="543.0" prefWidth="74.0" style="-fx-background-color: #0C072E;" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="169.0">
             <children>
@@ -51,7 +51,7 @@
                 </Button>
             </children>
         </AnchorPane>
-        <AnchorPane fx:id="systemInfoPane" layoutX="84.0" layoutY="62.0" prefHeight="215.0" prefWidth="928.0" style="-fx-background-color: e0e0e0;" AnchorPane.bottomAnchor="435.0" AnchorPane.leftAnchor="84.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="62.0">
+        <AnchorPane fx:id="systemInfoPane" layoutX="84.0" layoutY="62.0" prefHeight="215.0" prefWidth="928.0" style="-fx-background-color: FFFFFF;" AnchorPane.bottomAnchor="435.0" AnchorPane.leftAnchor="84.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="62.0">
          <children>
             <Text fx:id="systemType" fill="#0c072e" layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="System Type">
                <font>
@@ -88,7 +88,7 @@
             <content>
                 <FlowPane fx:id="sensorFlowPane" hgap="10.0" prefHeight="723.0" prefWidth="937.0" style="-fx-padding: 10;" vgap="10.0">
                     <children>
-                  <Pane prefHeight="231.0" prefWidth="298.0" style="-fx-background-color: e0e0e0;">
+                  <Pane prefHeight="231.0" prefWidth="298.0" style="-fx-background-color: FFFFFF;">
                      <children>
                         <LineChart layoutX="12.0" layoutY="12.0" prefHeight="163.0" prefWidth="275.0">
                           <xAxis>

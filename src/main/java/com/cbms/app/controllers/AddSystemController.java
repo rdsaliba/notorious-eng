@@ -22,8 +22,26 @@ public class AddSystemController implements Initializable {
     @FXML
     private Button cancelButton;
 
+    /**
+     * Initialize runs before the scene is displayed.
+     * It initializes elements and data in the scene.
+     *
+     * @param url
+     * @param resourceBundle
+     *
+     * @author Jeff
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        attachEvents();
+    }
+
+    /**
+     * Attaches events to elements in the scene.
+     *
+     * @author Jeff
+     */
+    public void attachEvents() {
         systemMenuButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
@@ -42,6 +60,7 @@ public class AddSystemController implements Initializable {
                 }
             }
         });
+        // Change scenes to Systems.fxml
         cancelButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {

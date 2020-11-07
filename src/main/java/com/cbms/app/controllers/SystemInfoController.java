@@ -49,29 +49,28 @@ public class SystemInfoController implements Initializable {
     private Engine system;
 
 
+    /**
+     * Initialize runs before the scene is displayed.
+     * It initializes elements and data in the scene.
+     *
+     * @param url
+     * @param resourceBundle
+     *
+     * @author Jeff
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        systemMenuButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                try {
-                    FXMLLoader loader = new FXMLLoader();
-                    loader.setLocation(getClass().getResource("/Systems.fxml"));
-                    Parent systemsParent = loader.load();
-                    Scene systemInfo = new Scene(systemsParent);
-
-                    Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-                    window.setScene(systemInfo);
-                    window.show();
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
+        attachEvents();
     }
 
+    /**
+     * initData receives the Engine data that was selected from System.FXML
+     * Then, uses that data to populate the text fields in the scene.
+     *
+     * @param system
+     *
+     * @author Jeff
+     */
     void initData(Engine system) {
         this.system = system;
         systemName.setText(system.getName());
@@ -81,10 +80,15 @@ public class SystemInfoController implements Initializable {
         systemLocation.setText(system.getLocation());
         linearRUL.setText(String.valueOf(system.getLinearRUL()));
         lstmRUL.setText(String.valueOf(system.getLstmRUL()));
-        assembleSensorPanes();
+        constructSensorPanes();
     }
 
-    public void assembleSensorPanes() {
+    /**
+     * Constructs the sensor panes to be able to display data in a nice format.
+     *
+     * @author Jeff
+     */
+    public void constructSensorPanes() {
         for (Sensor sensor: system.getSensors()) {
             Pane pane = new Pane();
             pane.getStyleClass().add("sensorPane");
@@ -104,5 +108,32 @@ public class SystemInfoController implements Initializable {
 
             sensorFlowPane.getChildren().add(pane);
         }
+    }
+
+
+    /**
+     * Attaches events to elements in the scene.
+     *
+     * @author Jeff
+     */
+    public void attachEvents() {
+        systemMenuButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                try {
+                    FXMLLoader loader = new FXMLLoader();
+                    loader.setLocation(getClass().getResource("/Systems.fxml"));
+                    Parent systemsParent = loader.load();
+                    Scene systemInfo = new Scene(systemsParent);
+
+                    Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
+                    window.setScene(systemInfo);
+                    window.show();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }

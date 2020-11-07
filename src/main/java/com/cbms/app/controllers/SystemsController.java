@@ -37,13 +37,55 @@ public class SystemsController implements Initializable {
     private ArrayList<Engine> systems;
 
 
-
+    /**
+     * Initialize runs before the scene is displayed.
+     * It initializes elements and data in the scene.
+     *
+     * @param url
+     * @param resourceBundle
+     *
+     * @author Jeff
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         createFakeListOfSystems();
+        constructElements();
+    }
+
+    /**
+     * To be deleted
+     * This is just used for mocking purposes
+     *
+     * @author Jeff
+     */
+    public void createFakeListOfSystems() {
+        systems = new ArrayList<Engine>();
+        for(int i = 1; i < 10; i++) {
+
+            Sensor sensorA = new Sensor(123, new double[]{123,123,132,123,123},
+                    new double[]{123,123,132,123,123}, "location", "type");
+            Sensor sensorB = new Sensor(123, new double[]{123,123,132,123,123},
+                    new double[]{123,123,132,123,123}, "location", "type");
+            Sensor sensorC = new Sensor(123, new double[]{123,123,132,123,123},
+                    new double[]{123,123,132,123,123}, "location", "type");
+            Engine system = new Engine(123+i, 123+i, "System " + i, "Some Type", "34589ghg9", "Manufacturer",
+                    "Location area", new Sensor[]{sensorA, sensorB, sensorC});
+            systems.add(system);
+
+        }
+    }
+
+
+    /**
+     * Creates elements that are in the scene so the data can be displayed.
+     *
+     * @author Jeff
+     */
+    public void constructElements() {
         for (Engine system: systems) {
             Pane pane = new Pane();
 
+            //Attach link to systemMenuButton to go to Systems.fxml
             systemMenuButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
@@ -63,12 +105,13 @@ public class SystemsController implements Initializable {
                 }
             });
 
+            //Attach link to addSystemButton to go to AddSystem.fxml
             addSystemButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
                     try {
                         FXMLLoader loader = new FXMLLoader();
-                        loader.setLocation(getClass().getResource("/Add System.fxml"));
+                        loader.setLocation(getClass().getResource("/AddSystem.fxml"));
                         Parent systemsParent = loader.load();
                         Scene systemInfo = new Scene(systemsParent);
 
@@ -82,14 +125,12 @@ public class SystemsController implements Initializable {
                 }
             });
 
+            //When clicked on a system, open SystemInfo.FXML for that system.
             pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
                     Stage primaryStage = (Stage) pane.getScene().getWindow();
                     try {
-
-                        //Parent newRoot = FXMLLoader.load(getClass().getResource("/SystemInfo.fxml"));
-                        //primaryStage.getScene().setRoot(newRoot);
 
                         FXMLLoader loader = new FXMLLoader();
                         loader.setLocation(getClass().getResource("/SystemInfo.fxml"));
@@ -102,33 +143,12 @@ public class SystemsController implements Initializable {
                         controller.initData(system);
                         window.show();
 
-
-                        /*Stage st = new Stage();
-                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/SystemInfo.fxml"));
-                        Region root = (Region) loader.load();
-                        Scene scene = new Scene(root);
-                        st.setScene(scene);
-                        SystemInfoController controller = loader.getController();
-                        controller.initData(system);
-                        st.show();*/
-
-
-                        /*FXMLLoader loader = new FXMLLoader(getClass().getResource("/SystemInfo.fxml"));
-                        Stage stage = new Stage(StageStyle.DECORATED);
-                        stage.setScene(new Scene(loader.load()));
-                        SystemInfoController controller = loader.getController();
-                        controller.initData(system);
-                        stage.show();*/
-
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
             });
             pane.getStyleClass().add("systemPane");
-            //pane.setPrefHeight(231.0);
-            //pane.setPrefWidth(298.0);
-
             Text systemName = new Text(system.getName());
             Text systemType = new Text("Type");
             Text linearLabel = new Text("Linear Regression RUL:");
@@ -167,25 +187,5 @@ public class SystemsController implements Initializable {
         }
 
         systemsPane.getChildren().addAll(boxes);
-    }
-
-    /**
-     * To be deleted
-     */
-    public void createFakeListOfSystems() {
-        systems = new ArrayList<Engine>();
-        for(int i = 1; i < 10; i++) {
-
-            Sensor sensorA = new Sensor(123, new double[]{123,123,132,123,123},
-                    new double[]{123,123,132,123,123}, "location", "type");
-            Sensor sensorB = new Sensor(123, new double[]{123,123,132,123,123},
-                    new double[]{123,123,132,123,123}, "location", "type");
-            Sensor sensorC = new Sensor(123, new double[]{123,123,132,123,123},
-                    new double[]{123,123,132,123,123}, "location", "type");
-            Engine system = new Engine(123+i, 123+i, "System " + i, "Some Type", "34589ghg9", "Jeff Manufacturer",
-                    "The back room", new Sensor[]{sensorA, sensorB, sensorC});
-            systems.add(system);
-
-        }
     }
 }
