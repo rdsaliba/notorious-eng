@@ -13,20 +13,16 @@ public class Main extends Application {
     public static void main(String[] args) throws Exception {
 
 
-        ModelController modelController = ModelController.getInstance();
+        /*ModelController modelController = ModelController.getInstance();
         modelController.initializer();
         modelController.estimate();
 
-        launch(args);
+        launch(args);*/
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-<<<<<<< HEAD
         Parent root = FXMLLoader.load(getClass().getResource("/Systems.fxml"));
-=======
-        Parent root = FXMLLoader.load(getClass().getResource("/SystemInfo.fxml"));
->>>>>>> origin/#84_Backend_Connections
         Scene sample = new Scene(root);
         primaryStage.setTitle("CBMS");
         primaryStage.setScene(sample);
