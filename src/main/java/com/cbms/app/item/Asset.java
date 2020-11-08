@@ -1,26 +1,26 @@
 /**
  * Model for the assets of the predictive system.
  *
- * @author      Roy Saliba
- * @version     1.0
- * @last_edit   11/07/2020
+ * @author Roy Saliba
+ * @version 1.0
+ * @last_edit 11/07/2020
  */
 package com.cbms.app.item;
 
 public class Asset extends Item {
 
-    public String serialNo;
-    public String assetType;
-    public String location;
-    public String description;
-    public AssetInfo assetInfo;
+    private String serialNo;
+    private String assetType;
+    private String location;
+    private String description;
+    private AssetInfo assetInfo;
 
-    public Asset(){
+    public Asset() {
 
     }
 
 
-    public Asset(String serialNo, String assetType, String location, String description){
+    public Asset(String serialNo, String assetType, String location, String description) {
         this.assetType = assetType;
         this.serialNo = serialNo;
         this.location = location;
@@ -28,7 +28,7 @@ public class Asset extends Item {
 
     }
 
-    public Asset(String serialNo, String assetType, String location, String description, AssetInfo assetInfo){
+    public Asset(String serialNo, String assetType, String location, String description, AssetInfo assetInfo) {
         this.assetType = assetType;
         this.serialNo = serialNo;
         this.location = location;
@@ -75,5 +75,16 @@ public class Asset extends Item {
 
     public void setAssetInfo(AssetInfo assetInfo) {
         this.assetInfo = assetInfo;
+    }
+
+    @Override
+    public String toString() {
+        return "Asset{" +
+                "serialNo='" + serialNo + '\'' +
+                ", assetType='" + assetType + '\'' +
+                ", location='" + location + '\'' +
+                ", description='" + description + '\'' +
+                ", assetInfo=" + assetInfo.toString() +
+                '}';
     }
 }

@@ -3,22 +3,22 @@
  * it requires the dataset to reduce in an Instances object
  * it will return an Instances object with the attributes and their corresponding data selected by the algorithm removed
  *
- * @author      Paul Micu
- * @version     1.0
- * @last_edit   11/01/2020
+ * @author Paul Micu
+ * @version 1.0
+ * @last_edit 11/01/2020
  */
 package com.cbms.preprocessing;
 
 import weka.core.Instances;
-import weka.filters.unsupervised.attribute.Remove;
 
 public class DataPrePreprossesorController {
     private static DataPrePreprossesorController instance = null;
-    private  DataPreProcessorImpl dataPreProcessorImpl = null;
+    private DataPreProcessorImpl dataPreProcessorImpl = null;
 
-    private DataPrePreprossesorController() { }
+    private DataPrePreprossesorController() {
+    }
 
-    public static DataPrePreprossesorController getInstance(){
+    public static DataPrePreprossesorController getInstance() {
         if (instance == null)
             instance = new DataPrePreprossesorController();
         return instance;

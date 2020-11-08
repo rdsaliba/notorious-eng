@@ -11,8 +11,6 @@ package com.cbms.preprocessing;
 import weka.core.Instances;
 import weka.filters.unsupervised.attribute.Remove;
 
-import java.util.ArrayList;
-
 public interface DataPreProcessor {
     Instances reducedDataset = null;
     Instances minimallyReducedDataset = null;

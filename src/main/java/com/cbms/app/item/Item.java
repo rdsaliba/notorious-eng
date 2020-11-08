@@ -1,16 +1,16 @@
 /**
  * All assets to be create must be registered as Items
  *
- * @author      Roy Saliba
- * @version     1.0
- * @last_edit   11/07/2020
+ * @author Roy Saliba
+ * @version 1.0
+ * @last_edit 11/07/2020
  */
 package com.cbms.app.item;
 
 public class Item {
 
-    public int id;
-    public String userTag;
+    private int id;
+    private String userTag;
 
     public Item(int id, String userTag) {
         this.id = id;
