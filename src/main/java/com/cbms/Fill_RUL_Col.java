@@ -13,6 +13,8 @@ import weka.filters.unsupervised.attribute.Remove;
 
 import java.io.File;
 
+import static com.cbms.AppConstants.SYSTEM_NAME;
+
 public class Fill_RUL_Col
 {
     public static void main(String[] args) throws Exception
@@ -118,7 +120,7 @@ public class Fill_RUL_Col
     //Returns max cycles of each engine in an Array (size = # of engine in the trainingData that is passed in)
     private static double[] getMaxCycles(Instances trainingData, int totalEngines)
     {
-        Attribute engine = trainingData.attribute("Engine_Num");
+        Attribute engine = trainingData.attribute(SYSTEM_NAME);
         Attribute timeCycle = trainingData.attribute("Time_Cycle");
 
         double engineNum = 1;
@@ -161,7 +163,7 @@ public class Fill_RUL_Col
         filter.setInputFormat(trainingData);
         trainingData = Filter.useFilter(trainingData, filter);*/
         int engineNum = 1;
-        Attribute engine = trainingData.attribute("Engine_Num");
+        Attribute engine = trainingData.attribute(SYSTEM_NAME);
         Instance row;
 
         int timeCycleIndex = 1;

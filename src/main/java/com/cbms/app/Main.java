@@ -1,30 +1,31 @@
 package com.cbms.app;
 
-import com.cbms.source.local.Database;
-import com.cbms.source.local.DatabaseConnection;
 
-public class Main   {
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
-   /* @Override
-    public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("/SystemInfo.fxml"));
+
+public class Main extends Application {
+
+    public static void main(String[] args) throws Exception {
+
+
+        /*ModelController modelController = ModelController.getInstance();
+        modelController.initializer();
+        modelController.estimate();*/
+
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        Parent root = FXMLLoader.load(getClass().getResource("/Systems.fxml"));
         Scene sample = new Scene(root);
         primaryStage.setTitle("CBMS");
         primaryStage.setScene(sample);
         primaryStage.show();
-    }
-*/
-
-    public static void main(String[] args) throws Exception {
-
-        //    StartupController startupController = new StartupController();
-        //    startupController.generateModel();
-
-        //  launch(args);
-
-        Database db = new Database();
-        DatabaseConnection conn = DatabaseConnection.start();
-        db.test(conn.getConnection());
-        conn.stop();
     }
 }

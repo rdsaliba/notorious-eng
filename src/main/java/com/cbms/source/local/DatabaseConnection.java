@@ -8,8 +8,8 @@ public class DatabaseConnection {
     private static final String URL = "jdbc:mariadb://127.0.0.1:3306/cbms?";
     //Make sure to set the user and password to the proper values.
     //Credentials should be set to that which you are using on your local DB server.
-    private static final String USER = "";
-    private static final String PASSWORD = "";
+    private static final String USER = "root";
+    private static final String PASSWORD = "PaulM1994";
     private static DatabaseConnection openConnection;
     private Connection conn;
 
@@ -43,7 +43,7 @@ public class DatabaseConnection {
      */
     private void init() {
         try {
-            this.conn = DriverManager.getConnection(this.URL, this.USER, this.PASSWORD); //Using JDBC's API we connect to the in-memory database
+            this.conn = DriverManager.getConnection(URL, USER, PASSWORD); //Using JDBC's API we connect to the in-memory database
             System.out.println("Connection Created\n");
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -65,6 +65,7 @@ public class DatabaseConnection {
      */
     public void stop() {
         try {
+            openConnection = null;
             this.conn.close();
             System.out.println("Connection stopped.");
         } catch (SQLException throwables) {

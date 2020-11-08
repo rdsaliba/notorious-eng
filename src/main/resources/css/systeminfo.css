@@ -1,0 +1,14 @@
+.sensorPane
+{
+    -fx-background-color: #FFFFFF;
+    -fx-pref-height: 231.0;
+    -fx-pref-width: 298.0;
+}
+
+#sensorType, #sensorLocation
+{
+    -fx-font-family: 'Segoe UI';
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-fill: '#0c072e';
+}

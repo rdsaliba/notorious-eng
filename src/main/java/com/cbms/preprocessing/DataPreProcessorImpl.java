@@ -2,33 +2,87 @@
  * Implementation of the data pre-processor interface
  * the Process function will reduce the data and store it in the reducedDataSet variable
  *
- * @author      Paul Micu
- * @version     1.0
- * @last_edit   11/01/2020
+ * @author Paul Micu
+ * @version 1.0
+ * @last_edit 11/01/2020
  */
 package com.cbms.preprocessing;
 
 import weka.attributeSelection.BestFirst;
 import weka.attributeSelection.CfsSubsetEval;
-import weka.attributeSelection.GreedyStepwise;
+import weka.core.Attribute;
 import weka.core.AttributeStats;
+import weka.core.Instance;
 import weka.core.Instances;
 import weka.experiment.Stats;
 import weka.filters.Filter;
 import weka.filters.supervised.attribute.AttributeSelection;
+import weka.filters.unsupervised.attribute.Add;
 import weka.filters.unsupervised.attribute.Remove;
 
 import java.util.ArrayList;
+
+import static com.cbms.AppConstants.SYSOUT_DEBUG;
+import static com.cbms.AppConstants.SYSTEM_NAME;
 
 public class DataPreProcessorImpl implements DataPreProcessor {
     private Instances originalDataset;
     private Instances reducedDataset;
     private Instances minimallyReducedDataset;
+    private ArrayList<Integer> removedIndex;
 
-    public DataPreProcessorImpl(Instances originalDataset) {
+    public DataPreProcessorImpl(Instances originalDataset) throws Exception {
         this.originalDataset = originalDataset;
         this.reducedDataset = originalDataset;
         this.minimallyReducedDataset = originalDataset;
+        this.removedIndex = new ArrayList<>();
+    }
+
+    private static Instances addRUL(Instances trainingData, double[] maxCycles) throws Exception {
+
+      /*  Add filter = new Add();
+        filter.setAttributeIndex("last");
+        filter.setAttributeName("@RUL");
+        filter.setInputFormat(trainingData);
+        trainingData = Filter.useFilter(trainingData, filter);*/
+        int engineNum = 1;
+        Attribute engine = trainingData.attribute(SYSTEM_NAME);
+        Instance row;
+
+        int timeCycleIndex = 1;
+
+        for (int i = 0; i < trainingData.numInstances(); i++) {
+            row = trainingData.instance(i);
+
+            if (row.value(engine) != engineNum) {
+                engineNum++;
+                timeCycleIndex = 1;
+            }
+
+            row.setClassValue((maxCycles[engineNum - 1] - timeCycleIndex++));
+        }
+        return trainingData;
+    }
+
+    private static double[] getMaxCycles(Instances trainingData, int totalEngines) {
+        Attribute engine = trainingData.attribute(SYSTEM_NAME);
+        Attribute timeCycle = trainingData.attribute("Time_Cycle");
+
+        double engineNum = 1;
+        double[] maxCycles = new double[totalEngines];
+
+        for (int i = 0; i < trainingData.numInstances(); i++) {
+            Instance row = trainingData.instance(i);
+            if (row.value(engine) - 1 == engineNum) {
+                Instance prevRow = trainingData.instance(i - 1);
+                maxCycles[(int) engineNum - 1] = prevRow.value(timeCycle);
+                engineNum++;
+            } else if (engineNum == 100) {
+                Instance lastRow = trainingData.lastInstance();
+                maxCycles[(int) engineNum - 1] = lastRow.value(timeCycle);
+            }
+        }
+        return maxCycles;
     }
 
     /**
@@ -59,54 +113,74 @@ public class DataPreProcessorImpl implements DataPreProcessor {
 
 
         // print out the attributes that are kept
-        System.out.println("After performing CfsSubset evaluator with BestFirst search method on the dataset, " +
-                "the following attributes are kept:");
+        if (SYSOUT_DEBUG) {
+            System.out.println("After performing CfsSubset evaluator with BestFirst search method on the dataset, " +
+                    "the following attributes are kept:");
 
-        for (int i = 0; i < reducedDataset.numAttributes(); i++) {
-            System.out.println(reducedDataset.attribute(i).name());
+            for (int i = 0; i < reducedDataset.numAttributes(); i++) {
+                System.out.println(reducedDataset.attribute(i).name());
+            }
         }
+        reducedDataset = addRULCol(reducedDataset);
     }
 
     /**
      * Using the AttributeSelection filter from Weka library can eliminate attributes that could potentially hold information
      * that aren't insignificant. The following method guarantees that ONLY the attributes that have no fluctuation (i.e
      * standard deviation of 0) are removed and the rest are kept to produce a dataset that is minimally reduced.
+     *
      * @author Khaled
      */
     @Override
     public void processMinimalReduction() throws Exception {
 
-        ArrayList<Integer> removeIndex = new ArrayList<>();     //keep indices to delete in a list.
-
-        for(int i = 0; i < originalDataset.numAttributes(); i++)
-        {
+        for (int i = 0; i < originalDataset.numAttributes(); i++) {
             AttributeStats as = originalDataset.attributeStats(i);
             Stats stats = as.numericStats;
 
-            System.out.println("Standard deviation of attribute: " + originalDataset.attribute(i).name() + ": " + stats.stdDev);
+            if (SYSOUT_DEBUG)
+                System.out.println("Standard deviation of attribute: " + originalDataset.attribute(i).name() + ": " + stats.stdDev);
 
-            if(stats.stdDev < 0.001)        //want to remove only the attributes that are 0 or very close to 0
+            if (stats.stdDev < 0.001)        //want to remove only the attributes that are 0 or very close to 0
             {
-                removeIndex.add(i);         //add the index to the list
+                removedIndex.add(i);         //add the index to the list
             }
 
         }
 
-        System.out.println("The removed attributes will be: ");
-        for(Integer e: removeIndex)
-        {
-            System.out.println(originalDataset.attribute(e).name());
+        if (SYSOUT_DEBUG) {
+            System.out.println("The removed attributes will be: ");
+            for (Integer e : removedIndex) {
+                System.out.println(originalDataset.attribute(e).name());
+            }
         }
 
         //Remove filter to remove the attributes
         Remove remove = new Remove();
-        int[] indicesToDelete = removeIndex.stream().mapToInt(i->(int) i).toArray();   //convert Integer list to int array
+        int[] indicesToDelete = removedIndex.stream().mapToInt(i -> i).toArray();   //convert Integer list to int array
         remove.setAttributeIndicesArray(indicesToDelete);
 
         remove.setInputFormat(originalDataset);
         minimallyReducedDataset = Filter.useFilter(originalDataset, remove);
+        minimallyReducedDataset = addRULCol(minimallyReducedDataset);
     }
 
+    public Instances addRULCol(Instances newData) throws Exception {
+        Instance lastRow = newData.lastInstance();
+        Add filter = new Add();
+        filter.setAttributeIndex("last");
+        filter.setAttributeName("RUL");
+        filter.setInputFormat(newData);
+        newData = Filter.useFilter(newData, filter);
+        newData.setClass(newData.attribute("RUL"));
+
+        int totalEngines = (int) lastRow.value(0);
+        double[] maxCycles = getMaxCycles(newData, totalEngines);
+
+        newData = addRUL(newData, maxCycles);
+        return newData;
+
+    }
 
     @Override
     public Instances getReducedDataset() {
@@ -117,5 +191,16 @@ public class DataPreProcessorImpl implements DataPreProcessor {
     public Instances getMinimallyReducedDataset() {
         return minimallyReducedDataset;
     }
+
+    @Override
+    public Remove getRemovedIndexList() throws Exception {
+        Remove remove = new Remove();
+        int[] indicesToDelete = removedIndex.stream().mapToInt(i -> i).toArray();   //convert Integer list to int array
+        remove.setAttributeIndicesArray(indicesToDelete);
+
+        remove.setInputFormat(originalDataset);
+        return remove;
+    }
+
 
 }
