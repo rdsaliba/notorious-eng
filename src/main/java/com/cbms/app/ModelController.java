@@ -15,13 +15,14 @@ import com.cbms.preprocessing.DataPrePreprossesorController;
 import com.cbms.source.local.Database;
 import com.cbms.source.local.LocalDataSource;
 import weka.classifiers.Classifier;
-import weka.classifiers.functions.LinearRegression;
 import weka.core.Instances;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.TreeMap;
 
 //    TODO 1 - query the db and get all of the datasets that have a a train tag and query the model table to get all the models we want to train get a map dataset,model we want to train
 //    TODO 2- get all the data for each of the datasets and convert them to ARFF, list of arff files with models to use on them
@@ -30,18 +31,31 @@ import java.util.ArrayList;
 //        models for each dataset (4)
 //        return an model object
 
-public class StartupController {
-    private static StartupController instance = null;
-    LocalDataSource localDataSource = null;
-    Database db = new Database();
+public class ModelController {
+    private ArrayList<Integer> trainingSets;
+    private Map<String,Instances> instancesSets;
+    private Map<String,Instances> reducedInstancesSets;
+    private Map<String,Classifier> classifierSets ;
+    private static ModelController instance = null;
+    private DataPrePreprossesorController dataPrePreprossesorController;
+    private ModelsController modelsController;
+    private HealthAssesement healthAssesement;
+    private Database db;
 
-    StartupController() throws Exception {
-        localDataSource = new LocalDataSource();
+    private ModelController() throws Exception {
+        db = new Database();
+        trainingSets = db.getTrainDatasets();
+        instancesSets = new TreeMap<>();
+        reducedInstancesSets = new TreeMap<>();
+        classifierSets = new TreeMap<>();
+        modelsController = new ModelsController(new LinearRegressionModelImpl());
+        dataPrePreprossesorController = DataPrePreprossesorController.getInstance();
+        healthAssesement = new HealthAssesement();
     }
 
-    public static StartupController getInstance() throws Exception {
+    public static ModelController getInstance() throws Exception {
         if (instance == null)
-            instance = new StartupController();
+            instance = new ModelController();
         return instance;
     }
 
@@ -50,15 +64,37 @@ public class StartupController {
      *
      * @author Paul
      * */
-    public void initializer() throws SQLException {
-        ArrayList<Integer> trainingSets = db.getTrainDatasets();
+    public void initializer() throws Exception {
+        // to get all of the sets
+        // trainingSets = db.getTrainDatasets();
+        trainingSets = new ArrayList<>();
+        trainingSets.add(1);
 
+
+        // get instances from db
         for (Integer setID: trainingSets) {
+            instancesSets.put(db.getDatasetNameFromID(setID),db.createInstances(setID));
+            System.out.println("Created Instances for "+setID);
+        }
 
+        // get trained classifier
+        for (Map.Entry<String,Instances> instances : instancesSets.entrySet()){
+            Instances minimallyReducedData = dataPrePreprossesorController.minimallyReduceData(instances.getValue());
+            reducedInstancesSets.put(instances.getKey(),minimallyReducedData);
+            classifierSets.put(instances.getKey() , modelsController.trainModel(minimallyReducedData));
+            System.out.println("Created classifier for "+instances.getKey());
         }
 
     }
-    public Classifier generateModels() throws Exception {
+
+    public void evaluate() throws Exception {
+        Instances toTest = db.createInstanceFromAssetID(155);
+        toTest = dataPrePreprossesorController.addRULCol(toTest);
+        //dataPrePreprossesorController.removeAttributes(toTest, reducedInstancesSets.get("FD001"));
+
+        System.out.println(healthAssesement.predictRUL(toTest,classifierSets.get("FD001")));
+    }
+    /*public Classifier generateModels() throws Exception {
         // todo get a list of instances that need training
         Instances originalData = LocalDataSource.loadTrainingData("Dataset/Converted/train_FD001_withRUL.arff");
         DataPrePreprossesorController dataPrePreprossesorController = DataPrePreprossesorController.getInstance();
@@ -80,5 +116,5 @@ public class StartupController {
 
         System.out.println("trained");
         return trained;
-    }
+    }*/
 }

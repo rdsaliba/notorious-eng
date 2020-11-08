@@ -11,16 +11,20 @@ package com.cbms.preprocessing;
 import weka.attributeSelection.BestFirst;
 import weka.attributeSelection.CfsSubsetEval;
 import weka.attributeSelection.GreedyStepwise;
+import weka.core.Attribute;
 import weka.core.AttributeStats;
+import weka.core.Instance;
 import weka.core.Instances;
 import weka.experiment.Stats;
 import weka.filters.Filter;
 import weka.filters.supervised.attribute.AttributeSelection;
+import weka.filters.unsupervised.attribute.Add;
 import weka.filters.unsupervised.attribute.Remove;
 
 import java.util.ArrayList;
 
 import static com.cbms.AppConstants.SYSOUT_DEBUG;
+import static com.cbms.AppConstants.SYSTEM_NAME;
 
 public class DataPreProcessorImpl implements DataPreProcessor {
     private Instances originalDataset;
@@ -28,7 +32,7 @@ public class DataPreProcessorImpl implements DataPreProcessor {
     private Instances minimallyReducedDataset;
     private ArrayList<Integer> removedIndex;
 
-    public DataPreProcessorImpl(Instances originalDataset) {
+    public DataPreProcessorImpl(Instances originalDataset) throws Exception {
         this.originalDataset = originalDataset;
         this.reducedDataset = originalDataset;
         this.minimallyReducedDataset = originalDataset;
@@ -71,6 +75,7 @@ public class DataPreProcessorImpl implements DataPreProcessor {
                 System.out.println(reducedDataset.attribute(i).name());
             }
         }
+        reducedDataset= addRULCol(reducedDataset);
     }
 
     /**
@@ -112,7 +117,81 @@ public class DataPreProcessorImpl implements DataPreProcessor {
 
         remove.setInputFormat(originalDataset);
         minimallyReducedDataset = Filter.useFilter(originalDataset, remove);
+        minimallyReducedDataset= addRULCol(minimallyReducedDataset);
     }
+
+    public Instances addRULCol(Instances newData) throws Exception {
+        Instance lastRow = newData.lastInstance();;
+        Add filter = new Add();
+        filter.setAttributeIndex("last");
+        filter.setAttributeName("RUL");
+        filter.setInputFormat(newData);
+        newData = Filter.useFilter(newData,filter);
+        newData.setClass(newData.attribute("RUL"));
+
+        int totalEngines = (int) lastRow.value(0);
+        double[] maxCycles = getMaxCycles(newData, totalEngines);
+
+        newData = addRUL(newData, maxCycles);
+        return newData;
+
+    }
+
+    private static Instances addRUL(Instances trainingData, double[] maxCycles) throws Exception {
+
+      /*  Add filter = new Add();
+        filter.setAttributeIndex("last");
+        filter.setAttributeName("@RUL");
+        filter.setInputFormat(trainingData);
+        trainingData = Filter.useFilter(trainingData, filter);*/
+        int engineNum = 1;
+        Attribute engine = trainingData.attribute(SYSTEM_NAME);
+        Instance row;
+
+        int timeCycleIndex = 1;
+
+        for(int i = 0; i < trainingData.numInstances(); i++)
+        {
+            row = trainingData.instance(i);
+
+            if(row.value(engine) != engineNum)
+            {
+                engineNum++;
+                timeCycleIndex = 1;
+            }
+
+            row.setClassValue((maxCycles[engineNum - 1] - timeCycleIndex++));
+        }
+        return trainingData;
+    }
+
+    private static double[] getMaxCycles(Instances trainingData, int totalEngines)
+    {
+        Attribute engine = trainingData.attribute(SYSTEM_NAME);
+        Attribute timeCycle = trainingData.attribute("Time_Cycle");
+
+        double engineNum = 1;
+        double[] maxCycles = new double[totalEngines];
+
+        for (int i = 0; i < trainingData.numInstances(); i++)
+        {
+            Instance row = trainingData.instance(i);
+            if(row.value(engine) -1 == engineNum)
+            {
+                Instance prevRow = trainingData.instance(i - 1);
+                maxCycles[(int) engineNum - 1] = prevRow.value(timeCycle);
+                engineNum++;
+            }
+
+            else if(engineNum == 100)
+            {
+                Instance lastRow = trainingData.lastInstance();
+                maxCycles[(int) engineNum - 1] = lastRow.value(timeCycle);
+            }
+        }
+        return maxCycles;
+    }
+
 
 
     @Override
@@ -134,4 +213,6 @@ public class DataPreProcessorImpl implements DataPreProcessor {
         remove.setInputFormat(originalDataset);
         return remove;
     }
+
+
 }

@@ -37,7 +37,7 @@ public class DataPrePreprossesorController {
         return dataPreProcessorImpl.getMinimallyReducedDataset();
     }
 
-    public Remove getRemovedIndexList() throws Exception {
-        return dataPreProcessorImpl.getRemovedIndexList();
+    public Instances addRULCol(Instances toADD) throws Exception {
+        return dataPreProcessorImpl.addRULCol(toADD);
     }
 }

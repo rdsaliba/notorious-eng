@@ -32,42 +32,79 @@ public class Database {
         return datasets;
     }
 
+
     public ArrayList<Asset> getAssetsFromDatasetID(int datasetID) throws SQLException {
         ArrayList<Asset> assets = new ArrayList<>();
         ResultSet assetsQuery = executeQuery("SELECT a.asset_id, a.type, a.sn, a.location,a.description FROM asset a, dataset_asset_assoc daa WHERE a.asset_id = daa.asset_id AND daa.dataset_id="+datasetID);
 
-            while (assetsQuery.next()){
-                Asset newAsset = new Asset();
-                newAsset.setId(assetsQuery.getInt("asset_id"));
-                newAsset.setAssetType(assetsQuery.getString("type"));
-                newAsset.setDescription(assetsQuery.getString("description"));
-                newAsset.setLocation(assetsQuery.getString("location"));
-                newAsset.setSerialNo(assetsQuery.getString("sn"));
-                AssetInfo newAssetInfo = new AssetInfo();
-                ResultSet attributesQuery = executeQuery("SELECT * FROM attribute_measurements am, attribute att WHERE att.attribute_id=am.attribute_id and  am.asset_id = "+newAsset.getId());
-                int previousAttributeID=1;
-                String previousAttributeName="";
-                AssetAttribute newAttribute = new AssetAttribute();
-                while (attributesQuery.next()){
-                    int attributeID = attributesQuery.getInt("attribute_id");
-                    if (previousAttributeID != attributeID || attributesQuery.isLast()) {
-                        if(attributesQuery.isLast())
-                            newAttribute.addMeasurement(attributesQuery.getInt("time"),attributesQuery.getDouble("value"));
-                        newAttribute.setId(previousAttributeID);
-                        newAttribute.setName(previousAttributeName);
-                        previousAttributeID = attributeID;
-                        newAssetInfo.addAttribute(newAttribute);
-                        newAttribute = new AssetAttribute();
-                    }
-                    previousAttributeName=attributesQuery.getString("attribute_name");
-                    newAttribute.addMeasurement(attributesQuery.getInt("time"),attributesQuery.getDouble("value"));
-
+        while (assetsQuery.next()){
+            Asset newAsset = new Asset();
+            newAsset.setId(assetsQuery.getInt("asset_id"));
+            newAsset.setAssetType(assetsQuery.getString("type"));
+            newAsset.setDescription(assetsQuery.getString("description"));
+            newAsset.setLocation(assetsQuery.getString("location"));
+            newAsset.setSerialNo(assetsQuery.getString("sn"));
+            AssetInfo newAssetInfo = new AssetInfo();
+            ResultSet attributesQuery = executeQuery("SELECT * FROM attribute_measurements am, attribute att WHERE att.attribute_id=am.attribute_id and  am.asset_id = "+newAsset.getId());
+            int previousAttributeID=1;
+            String previousAttributeName="";
+            AssetAttribute newAttribute = new AssetAttribute();
+            while (attributesQuery.next()){
+                int attributeID = attributesQuery.getInt("attribute_id");
+                if (previousAttributeID != attributeID || attributesQuery.isLast()) {
+                    if(attributesQuery.isLast())
+                        newAttribute.addMeasurement(attributesQuery.getInt("time"),attributesQuery.getDouble("value"));
+                    newAttribute.setId(previousAttributeID);
+                    newAttribute.setName(previousAttributeName);
+                    previousAttributeID = attributeID;
+                    newAssetInfo.addAttribute(newAttribute);
+                    newAttribute = new AssetAttribute();
                 }
-                newAsset.setAssetInfo(newAssetInfo);
+                previousAttributeName=attributesQuery.getString("attribute_name");
+                newAttribute.addMeasurement(attributesQuery.getInt("time"),attributesQuery.getDouble("value"));
 
-                assets.add(newAsset);
             }
+            newAsset.setAssetInfo(newAssetInfo);
+
+            assets.add(newAsset);
+        }
         return assets;
+    }
+
+    public Asset getAssetsFromAssetID(int assetID) throws SQLException {
+        ResultSet assetsQuery = executeQuery("SELECT a.asset_id, a.type, a.sn, a.location,a.description FROM asset a WHERE a.asset_id="+assetID);
+        Asset newAsset = new Asset();
+        while (assetsQuery.next()){
+            newAsset.setId(assetsQuery.getInt("asset_id"));
+            newAsset.setAssetType(assetsQuery.getString("type"));
+            newAsset.setDescription(assetsQuery.getString("description"));
+            newAsset.setLocation(assetsQuery.getString("location"));
+            newAsset.setSerialNo(assetsQuery.getString("sn"));
+            AssetInfo newAssetInfo = new AssetInfo();
+            ResultSet attributesQuery = executeQuery("SELECT * FROM attribute_measurements am, attribute att WHERE att.attribute_id=am.attribute_id and  am.asset_id = "+newAsset.getId());
+            int previousAttributeID=1;
+            String previousAttributeName="";
+            AssetAttribute newAttribute = new AssetAttribute();
+            while (attributesQuery.next()){
+                int attributeID = attributesQuery.getInt("attribute_id");
+                if (previousAttributeID != attributeID || attributesQuery.isLast()) {
+                    if(attributesQuery.isLast())
+                        newAttribute.addMeasurement(attributesQuery.getInt("time"),attributesQuery.getDouble("value"));
+                    newAttribute.setId(previousAttributeID);
+                    newAttribute.setName(previousAttributeName);
+                    previousAttributeID = attributeID;
+                    newAssetInfo.addAttribute(newAttribute);
+                    newAttribute = new AssetAttribute();
+                }
+                previousAttributeName=attributesQuery.getString("attribute_name");
+                newAttribute.addMeasurement(attributesQuery.getInt("time"),attributesQuery.getDouble("value"));
+
+            }
+            newAsset.setAssetInfo(newAssetInfo);
+
+
+        }
+        return newAsset;
     }
 
     public ResultSet executeQuery(String query){
@@ -83,6 +120,39 @@ public class Database {
             throwables.printStackTrace();
         }
         return dataRS;
+    }
+
+    public Instances createInstanceFromAssetID(int assetID) throws SQLException {
+        FastVector atts;
+        Instances data;
+        double[] vals;
+        String datasetName = Integer.toString(assetID);
+        Asset  asset = getAssetsFromAssetID(assetID);
+        ArrayList<String> attributeNames = getAttributesNameFromAssetID(assetID);
+
+
+        // 1. set up attributes
+        atts = new FastVector();
+        // - numeric
+        atts.addElement(new Attribute("Asset_id"));
+        atts.addElement(new Attribute("Time_Cycle"));
+        for (String attributeName : attributeNames) {
+            atts.addElement(new Attribute(attributeName));
+        }
+        // 2. create Instances object
+        data = new Instances(datasetName, atts, 0);
+
+        for (int timeCycle = 1; timeCycle <= asset.getAssetInfo().getLastRecorderTimeCycle(); timeCycle++) {
+            vals = new double[data.numAttributes()];
+            vals[0] = asset.getId();
+            vals[1]=timeCycle;
+            for (int i =0; i < asset.getAssetInfo().getAssetAttributes().size(); i++) {
+                vals[i+2]= asset.getAssetInfo().getAssetAttributes().get(i).getMeasurements(timeCycle);
+            }
+            data.add(new Instance(1.0, vals));
+        }
+
+        return data;
     }
 
     public Instances createInstances(int datasetID) throws ParseException, SQLException {
@@ -116,14 +186,11 @@ public class Database {
                 data.add(new Instance(1.0, vals));
             }
         }
-
-        // 4. output data
-        System.out.println(data);
         return data;
     }
 
     private ArrayList<String> getAttributesNameFromDatasetID(int datasetID) throws SQLException {
-        ArrayList<String> attributeNames = new ArrayList<String>();
+        ArrayList<String> attributeNames = new ArrayList<>();
         String query="SELECT DISTINCT att.attribute_name FROM attribute att, attribute_measurements am, asset a, dataset_asset_assoc daa\n" +
                 "WHERE daa.dataset_id=" + datasetID + " AND \n" +
                 "daa.asset_id = a.asset_id AND\n" +
@@ -136,7 +203,16 @@ public class Database {
         return attributeNames;
     }
 
-    private String getDatasetNameFromID(int datasetID) throws SQLException {
+    private ArrayList<String> getAttributesNameFromAssetID(int assetID) throws SQLException {
+        ArrayList<String> attributeNames = new ArrayList<>();
+        String query="SELECT DISTINCT att.attribute_name FROM attribute att, attribute_measurements am, asset a WHERE a.asset_id=" + assetID + " AND am.asset_id = a.asset_id AND att.attribute_id = am.attribute_id order by att.attribute_id";
+        ResultSet queryResult= executeQuery(query);
+        while (queryResult.next())
+            attributeNames.add(queryResult.getString("attribute_name"));
+        return attributeNames;
+    }
+
+    public String getDatasetNameFromID(int datasetID) throws SQLException {
         String name="null";
         String query="select dataset.name from dataset where dataset_id="+datasetID;
         ResultSet queryResult= executeQuery(query);
