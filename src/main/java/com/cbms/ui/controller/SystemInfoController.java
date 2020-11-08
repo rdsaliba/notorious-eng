@@ -1,15 +1,14 @@
-package com.cbms.app.controllers;
+package com.cbms.ui.controller;
 
-import com.cbms.app.Sensor;
+import com.cbms.app.item.Asset;
+import com.cbms.app.item.AssetAttribute;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import com.cbms.app.Engine;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.chart.LineChart;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -46,7 +45,7 @@ public class SystemInfoController implements Initializable {
     private FlowPane sensorFlowPane;
 
 
-    private Engine system;
+    private Asset system;
 
 
     /**
@@ -71,15 +70,15 @@ public class SystemInfoController implements Initializable {
      *
      * @author Jeff
      */
-    void initData(Engine system) {
+    void initData(Asset system) {
         this.system = system;
-        systemName.setText(system.getName());
-        systemType.setText(system.getType());
-        serialNumber.setText(system.getSerialNumber());
-        manufacturer.setText(system.getManufacturer());
+        //systemName.setText(system.getName());
+        systemType.setText(system.getAssetType());
+        serialNumber.setText(system.getSerialNo());
+        //manufacturer.setText(system.getManufacturer());
         systemLocation.setText(system.getLocation());
-        linearRUL.setText(String.valueOf(system.getLinearRUL()));
-        lstmRUL.setText(String.valueOf(system.getLstmRUL()));
+        //linearRUL.setText(String.valueOf(system.getLinearRUL()));
+        //lstmRUL.setText(String.valueOf(system.getLstmRUL()));
         constructSensorPanes();
     }
 
@@ -89,22 +88,22 @@ public class SystemInfoController implements Initializable {
      * @author Jeff
      */
     public void constructSensorPanes() {
-        for (Sensor sensor: system.getSensors()) {
+        for (AssetAttribute sensor: system.getAssetInfo().getAssetAttributes()) {
             Pane pane = new Pane();
             pane.getStyleClass().add("sensorPane");
             //LineChart sensorChat = new LineChart();
-            Text sensorType = new Text(sensor.getType());
-            Text sensorLocation = new Text(sensor.getLocation());
-            sensorType.setId("sensorType");
-            sensorType.setLayoutX(35.0);
-            sensorType.setLayoutY(191.0);
+            Text sensorName = new Text(sensor.getName());
+            //Text sensorLocation = new Text(sensor.getLocation());
+            sensorName.setId("sensorType");
+            sensorName.setLayoutX(35.0);
+            sensorName.setLayoutY(191.0);
 
-            sensorLocation.setId("sensorLocation");
-            sensorLocation.setLayoutX(35.0);
-            sensorLocation.setLayoutY(211.0);
+            //sensorLocation.setId("sensorLocation");
+            //sensorLocation.setLayoutX(35.0);
+            //sensorLocation.setLayoutY(211.0);
 
-            pane.getChildren().add(sensorType);
-            pane.getChildren().add(sensorLocation);
+            pane.getChildren().add(sensorName);
+            //pane.getChildren().add(sensorLocation);
 
             sensorFlowPane.getChildren().add(pane);
         }

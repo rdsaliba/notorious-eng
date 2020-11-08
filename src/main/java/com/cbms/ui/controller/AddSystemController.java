@@ -1,4 +1,4 @@
-package com.cbms.app.controllers;
+package com.cbms.ui.controller;
 
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;

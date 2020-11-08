@@ -15,9 +15,9 @@ public class Main extends Application {
 
         /*ModelController modelController = ModelController.getInstance();
         modelController.initializer();
-        modelController.estimate();
+        modelController.estimate();*/
 
-        launch(args);*/
+        launch(args);
     }
 
     @Override
