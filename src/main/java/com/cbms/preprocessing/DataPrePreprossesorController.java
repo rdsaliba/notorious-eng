@@ -10,6 +10,7 @@
 package com.cbms.preprocessing;
 
 import weka.core.Instances;
+import weka.filters.unsupervised.attribute.Remove;
 
 public class DataPrePreprossesorController {
     private static DataPrePreprossesorController instance = null;
@@ -34,5 +35,9 @@ public class DataPrePreprossesorController {
         dataPreProcessorImpl = new DataPreProcessorImpl(originalData);
         dataPreProcessorImpl.processMinimalReduction();
         return dataPreProcessorImpl.getMinimallyReducedDataset();
+    }
+
+    public Remove getRemovedIndexList() throws Exception {
+        return dataPreProcessorImpl.getRemovedIndexList();
     }
 }

@@ -6,7 +6,7 @@
  * @version     1.0
  * @last_edit   11/01/2020
  */
-package com.cbms.RUL_Models;
+package com.cbms.rul.models;
 
 import weka.classifiers.Classifier;
 import weka.core.Instances;

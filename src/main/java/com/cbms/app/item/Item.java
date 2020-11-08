@@ -5,7 +5,7 @@
  * @version     1.0
  * @last_edit   11/07/2020
  */
-package com.cbms.app.Item;
+package com.cbms.app.item;
 
 public class Item {
 

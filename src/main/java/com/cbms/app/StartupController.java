@@ -8,16 +8,20 @@
  */
 package com.cbms.app;
 
-import com.cbms.RUL_Models.LinearRegressionModelImpl;
-import com.cbms.RUL_Models.ModelsController;
-import test.java.RUL_Models.testModel;
+import com.cbms.rul.assessment.HealthAssesement;
+import com.cbms.rul.models.LinearRegressionModelImpl;
+import com.cbms.rul.models.ModelsController;
 import com.cbms.preprocessing.DataPrePreprossesorController;
+import com.cbms.source.local.Database;
 import com.cbms.source.local.LocalDataSource;
 import weka.classifiers.Classifier;
+import weka.classifiers.functions.LinearRegression;
 import weka.core.Instances;
-import java.io.File;
-import java.io.FileReader;
-import java.util.Scanner;
+import weka.filters.Filter;
+import weka.filters.unsupervised.attribute.Remove;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 //    TODO 1 - query the db and get all of the datasets that have a a train tag and query the model table to get all the models we want to train get a map dataset,model we want to train
 //    TODO 2- get all the data for each of the datasets and convert them to ARFF, list of arff files with models to use on them
@@ -29,6 +33,7 @@ import java.util.Scanner;
 public class StartupController {
     private static StartupController instance = null;
     LocalDataSource localDataSource = null;
+    Database db = new Database();
 
     StartupController() throws Exception {
         localDataSource = new LocalDataSource();
@@ -45,42 +50,33 @@ public class StartupController {
      *
      * @author Paul
      * */
-    public Classifier generateModel() throws Exception {
-        Instances testingData;
-        FileReader file;
-        Scanner user = new Scanner(System.in);
-        System.out.println("Do you want to predict the value of RUL for one engine only? (yes/no)");
-        String choice=user.nextLine();
-        System.out.println("Which file do you want to train? (you can only train the first file)");
-        String fileNum=user.nextLine();
-        if(choice.equals("yes")){
-        System.out.println("Which engine do you want to predict?");
-        String engine=user.nextLine();
-        testingData = LocalDataSource.loadTrainingData("Dataset/Converted/engine"+engine+".arff");
-        file=new FileReader("Dataset/Real RUL/engine"+engine+".txt");
-        }
-        else{
-            testingData = LocalDataSource.loadTrainingData("Dataset/Converted/test_FD00"+fileNum+"_withRUL.arff");
-            file=new FileReader("Dataset/Real RUL/RUL_FD00"+fileNum+".txt");
+    public void initializer() throws SQLException {
+        ArrayList<Integer> trainingSets = db.getTrainDatasets();
+
+        for (Integer setID: trainingSets) {
+
         }
 
-//        LocalDataSource.convertToArff(new File("Dataset/Train/train_FD0012.txt"),"train");
-//        LocalDataSource.convertToArff(new File("Dataset/Test/test.txt"),"test");
-        Instances originalData = LocalDataSource.loadTrainingData("Dataset/Converted/train_FD00"+fileNum+"_withRUL.arff");
+    }
+    public Classifier generateModels() throws Exception {
+        // todo get a list of instances that need training
+        Instances originalData = LocalDataSource.loadTrainingData("Dataset/Converted/train_FD001_withRUL.arff");
+        DataPrePreprossesorController dataPrePreprossesorController = DataPrePreprossesorController.getInstance();
+        ModelsController modelsController = new ModelsController(new LinearRegressionModelImpl());
 
-        DataPrePreprossesorController dPPC = DataPrePreprossesorController.getInstance();
-        ModelsController mC = new ModelsController(new LinearRegressionModelImpl());
-
-        Instances reducedData = dPPC.reduceData(originalData);  // reduce data
+        Instances reducedData = dataPrePreprossesorController.reduceData(originalData);  // reduce data
+        Instances testData = LocalDataSource.loadTrainingData("Dataset/Converted/engine2.arff");
 
         //To only remove data that 100% don't hold any valuable information use minimallyReducedData
-        Instances minimallyReducedData = dPPC.minimallyReduceData(originalData);
+        Instances minimallyReducedData = dataPrePreprossesorController.minimallyReduceData(originalData);
 
-        Classifier trained = mC.trainModel(originalData); // train model and return Classifier
+        Classifier trained = modelsController.trainModel(minimallyReducedData); // train model and return Classifier
+        HealthAssesement healthAssesement = new HealthAssesement();
+        Remove remove= dataPrePreprossesorController.getRemovedIndexList();
+        testData = Filter.useFilter(testData, remove);
+        double  results =  healthAssesement.predictRUL(testData,trained);
 
-        testModel tm = new testModel();
-        tm.evaluateModel(trained,testingData, file );
-
+        System.out.println(results);
 
         System.out.println("trained");
         return trained;

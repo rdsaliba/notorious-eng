@@ -7,13 +7,11 @@
  * @version     1.0
  * @last_edit   11/01/2020
  */
-package com.cbms.RUL_Models;
+package com.cbms.rul.models;
 
 import weka.classifiers.functions.LinearRegression;
-import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.classifiers.functions.SMOreg;
 import weka.classifiers.Classifier;
 
 public class LinearRegressionModelImpl implements ModelStrategy {

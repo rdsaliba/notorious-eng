@@ -20,15 +20,19 @@ import weka.filters.unsupervised.attribute.Remove;
 
 import java.util.ArrayList;
 
+import static com.cbms.AppConstants.SYSOUT_DEBUG;
+
 public class DataPreProcessorImpl implements DataPreProcessor {
     private Instances originalDataset;
     private Instances reducedDataset;
     private Instances minimallyReducedDataset;
+    private ArrayList<Integer> removedIndex;
 
     public DataPreProcessorImpl(Instances originalDataset) {
         this.originalDataset = originalDataset;
         this.reducedDataset = originalDataset;
         this.minimallyReducedDataset = originalDataset;
+        this.removedIndex = new ArrayList<>();
     }
 
     /**
@@ -59,11 +63,13 @@ public class DataPreProcessorImpl implements DataPreProcessor {
 
 
         // print out the attributes that are kept
-        System.out.println("After performing CfsSubset evaluator with BestFirst search method on the dataset, " +
-                "the following attributes are kept:");
+        if(SYSOUT_DEBUG){
+            System.out.println("After performing CfsSubset evaluator with BestFirst search method on the dataset, " +
+                    "the following attributes are kept:");
 
-        for (int i = 0; i < reducedDataset.numAttributes(); i++) {
-            System.out.println(reducedDataset.attribute(i).name());
+            for (int i = 0; i < reducedDataset.numAttributes(); i++) {
+                System.out.println(reducedDataset.attribute(i).name());
+            }
         }
     }
 
@@ -76,31 +82,32 @@ public class DataPreProcessorImpl implements DataPreProcessor {
     @Override
     public void processMinimalReduction() throws Exception {
 
-        ArrayList<Integer> removeIndex = new ArrayList<>();     //keep indices to delete in a list.
-
         for(int i = 0; i < originalDataset.numAttributes(); i++)
         {
             AttributeStats as = originalDataset.attributeStats(i);
             Stats stats = as.numericStats;
 
-            System.out.println("Standard deviation of attribute: " + originalDataset.attribute(i).name() + ": " + stats.stdDev);
+            if(SYSOUT_DEBUG)
+                System.out.println("Standard deviation of attribute: " + originalDataset.attribute(i).name() + ": " + stats.stdDev);
 
             if(stats.stdDev < 0.001)        //want to remove only the attributes that are 0 or very close to 0
             {
-                removeIndex.add(i);         //add the index to the list
+                removedIndex.add(i);         //add the index to the list
             }
 
         }
 
-        System.out.println("The removed attributes will be: ");
-        for(Integer e: removeIndex)
-        {
-            System.out.println(originalDataset.attribute(e).name());
+        if(SYSOUT_DEBUG){
+            System.out.println("The removed attributes will be: ");
+            for(Integer e: removedIndex)
+            {
+                System.out.println(originalDataset.attribute(e).name());
+            }
         }
 
         //Remove filter to remove the attributes
         Remove remove = new Remove();
-        int[] indicesToDelete = removeIndex.stream().mapToInt(i->(int) i).toArray();   //convert Integer list to int array
+        int[] indicesToDelete = removedIndex.stream().mapToInt(i->(int) i).toArray();   //convert Integer list to int array
         remove.setAttributeIndicesArray(indicesToDelete);
 
         remove.setInputFormat(originalDataset);
@@ -118,4 +125,13 @@ public class DataPreProcessorImpl implements DataPreProcessor {
         return minimallyReducedDataset;
     }
 
+    @Override
+    public Remove getRemovedIndexList() throws Exception {
+        Remove remove = new Remove();
+        int[] indicesToDelete = removedIndex.stream().mapToInt(i->(int) i).toArray();   //convert Integer list to int array
+        remove.setAttributeIndicesArray(indicesToDelete);
+
+        remove.setInputFormat(originalDataset);
+        return remove;
+    }
 }

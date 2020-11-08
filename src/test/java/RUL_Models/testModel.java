@@ -1,5 +1,5 @@
-package test.java.RUL_Models;
-import test.java.RUL_Models.RootMeanSquaredError;
+package java.RUL_Models;
+import java.RUL_Models.RootMeanSquaredError;
 import weka.classifiers.Classifier;
 import weka.classifiers.functions.LinearRegression;
 import weka.core.Attribute;
@@ -10,6 +10,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
+
+import static com.cbms.AppConstants.SYSTEM_NAME;
 
 
 public class testModel {
@@ -24,7 +26,7 @@ public class testModel {
      */
     public void evaluateModel(Classifier model, Instances testDataset, FileReader realRUls) throws Exception {
         LinearRegression lr=(LinearRegression) model;
-        double[] predictedRULs= predictRUL(testDataset, (int) testDataset.lastInstance().value(testDataset.attribute("Engine_Num")),lr);
+        double[] predictedRULs= predictRUL(testDataset, (int) testDataset.lastInstance().value(testDataset.attribute(SYSTEM_NAME)),lr);
         Double[] realRULs = parseRULs(realRUls);
         double rmse= RootMeanSquaredError.calculate(predictedRULs,realRULs);
         System.out.println("Root mean squared error is : "+rmse);
@@ -75,7 +77,7 @@ public class testModel {
      */
     public static double[] predictRUL(Instances testData, int totalEngines, LinearRegression lr) throws Exception
     {
-        Attribute enginne = testData.attribute("Engine_Num");
+        Attribute enginne = testData.attribute(SYSTEM_NAME);
 
         double engineNum = 0;
         double[] predicted = new double[totalEngines];
@@ -93,7 +95,7 @@ public class testModel {
             Instance nextRow = testData.instance(i+1);
             if(row.value(enginne) != nextRow.value(enginne)){
                 System.out.println("a b c d"+row.value(enginne));
-                double engine=row.value(testData.attribute("Engine_Num"));
+                double engine=row.value(testData.attribute(SYSTEM_NAME));
                 double life= lr.classifyInstance(row);
                 System.out.println(lr.classifyInstance(row));
                 predicted[(int) engineNum] = life;

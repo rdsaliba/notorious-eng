@@ -9,13 +9,18 @@
 package com.cbms.preprocessing;
 
 import weka.core.Instances;
+import weka.filters.unsupervised.attribute.Remove;
+
+import java.util.ArrayList;
 
 public interface DataPreProcessor {
     Instances reducedDataset = null;
     Instances minimallyReducedDataset = null;
+    Instances removedIndex = null;
     
     public void processFullReduction() throws Exception;
     public void processMinimalReduction() throws Exception;
     public Instances getReducedDataset();
     public Instances getMinimallyReducedDataset();
+    public Remove getRemovedIndexList() throws Exception;
 }

@@ -1,4 +1,4 @@
-package test.java.RUL_Models;
+package java.RUL_Models;
 
 public class RootMeanSquaredError {
     /**
