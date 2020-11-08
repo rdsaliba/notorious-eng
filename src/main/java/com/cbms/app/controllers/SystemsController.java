@@ -36,6 +36,9 @@ public class SystemsController implements Initializable {
 
     private ArrayList<Engine> systems;
 
+    public SystemsController() {
+
+    }
 
     /**
      * Initialize runs before the scene is displayed.
