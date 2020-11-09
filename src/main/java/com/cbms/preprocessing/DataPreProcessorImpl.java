@@ -38,6 +38,10 @@ public class DataPreProcessorImpl implements DataPreProcessor {
         this.removedIndex = new ArrayList<>();
     }
 
+    /**  this will add the RUL to the training instances object, this is needed for the model training
+     *
+     * @author Khaled
+     * */
     private static Instances addRUL(Instances trainingData, double[] maxCycles) throws Exception {
 
       /*  Add filter = new Add();
@@ -64,6 +68,9 @@ public class DataPreProcessorImpl implements DataPreProcessor {
         return trainingData;
     }
 
+    /**
+     * @author Khaled
+     * */
     private static double[] getMaxCycles(Instances trainingData, int totalEngines) {
         Attribute engine = trainingData.attribute(SYSTEM_NAME);
         Attribute timeCycle = trainingData.attribute("Time_Cycle");
@@ -165,6 +172,10 @@ public class DataPreProcessorImpl implements DataPreProcessor {
         minimallyReducedDataset = addRULCol(minimallyReducedDataset);
     }
 
+    /**Given an Instance object, this will add an RUL attribute at the end of the other attributes
+     *
+     * @author Khaled
+     * */
     public Instances addRULCol(Instances newData) throws Exception {
         Instance lastRow = newData.lastInstance();
         Add filter = new Add();

@@ -1,3 +1,10 @@
+/**
+ * This object will hold all the queries that we are making to the database
+ *
+ * @author Paul Micu
+ * @version 1.0
+ * @last_edit 11/08/2020
+ */
 package com.cbms.source.local;
 
 import com.cbms.app.item.Asset;
@@ -18,16 +25,16 @@ import java.util.ArrayList;
 public class Database {
     private static DatabaseConnection openConnection;
 
-    /**
-     * Constructor
-     *
-     * @author Najim
-     */
+
     public Database() {
         openConnection = DatabaseConnection.start();
     }
 
-
+    /** When given an sql command in a string object, this method will execute that command
+     * and return the corresponding ResultSet
+     *
+     * @autor Paul Micu
+     * */
     public ResultSet executeQuery(String query) {
         ResultSet dataRS = null;
         try {
@@ -43,6 +50,10 @@ public class Database {
         return dataRS;
     }
 
+    /** This will return an arrayList containing all the dataset_id of the datasets with a train tag
+     *
+     * @autor Paul Micu
+     * */
     public ArrayList<Integer> getTrainDatasets() throws SQLException {
         ArrayList<Integer> datasets = new ArrayList<>();
         ResultSet datasetQuery = executeQuery("select dataset_id from cbms.dataset where train=1");
@@ -51,7 +62,11 @@ public class Database {
         return datasets;
     }
 
-
+    /** When given a dataset_id, this will return an arraylist of Assets containing all of the assets in that dataset
+     * the asset object will also contain a reference to all the asset attributes(sensors) and all their measurements
+     *
+     * @autor Paul Micu
+     * */
     public ArrayList<Asset> getAssetsFromDatasetID(int datasetID) throws SQLException {
         ArrayList<Asset> assets = new ArrayList<>();
         ResultSet assetsQuery = executeQuery("SELECT a.asset_id, a.type, a.sn, a.location,a.description FROM asset a, dataset_asset_assoc daa WHERE a.asset_id = daa.asset_id AND daa.dataset_id=" + datasetID);
@@ -90,6 +105,10 @@ public class Database {
         return assets;
     }
 
+    /** When given an asset_id, this will return an Asset object containing a reference to all the asset attributes(sensors) and all their measurements
+     *
+     * @autor Paul Micu
+     * */
     public Asset getAssetsFromAssetID(int assetID) throws SQLException {
         ResultSet assetsQuery = executeQuery("SELECT a.asset_id, a.type, a.sn, a.location,a.description FROM asset a WHERE a.asset_id=" + assetID);
         Asset newAsset = new Asset();
@@ -126,7 +145,10 @@ public class Database {
         return newAsset;
     }
 
-
+    /** when given an asset_id, this will query the database for that asset and create an instance object
+     *
+     * @autor Paul Micu
+     * */
     public Instances createInstanceFromAssetID(int assetID) throws SQLException {
         FastVector atts;
         Instances data;
@@ -160,6 +182,11 @@ public class Database {
         return data;
     }
 
+    /** when given an dataset_id, this will query the database for that asset and create an instance object
+     * containing all the assets that are part of that dataset
+     *
+     * @autor Paul Micu
+     * */
     public Instances createInstances(int datasetID) throws ParseException, SQLException {
         FastVector atts;
         Instances data;
@@ -194,6 +221,10 @@ public class Database {
         return data;
     }
 
+    /** When given an dataset_id this will return an arraylist of all the attributes name that the assets in that dataset have
+     *
+     * @autor Paul Micu
+     * */
     private ArrayList<String> getAttributesNameFromDatasetID(int datasetID) throws SQLException {
         ArrayList<String> attributeNames = new ArrayList<>();
         String query = "SELECT DISTINCT att.attribute_name FROM attribute att, attribute_measurements am, asset a, dataset_asset_assoc daa\n" +
@@ -208,6 +239,10 @@ public class Database {
         return attributeNames;
     }
 
+    /** When given an asset_id this will return an arraylist of all the attributes name that specific asset has
+     *
+     * @autor Paul Micu
+     * */
     private ArrayList<String> getAttributesNameFromAssetID(int assetID) throws SQLException {
         ArrayList<String> attributeNames = new ArrayList<>();
         String query = "SELECT DISTINCT att.attribute_name FROM attribute att, attribute_measurements am, asset a WHERE a.asset_id=" + assetID + " AND am.asset_id = a.asset_id AND att.attribute_id = am.attribute_id order by att.attribute_id";
@@ -217,6 +252,10 @@ public class Database {
         return attributeNames;
     }
 
+    /** When given an dataset_id this will return the name of the dataset
+     *
+     * @autor Paul Micu
+     * */
     public String getDatasetNameFromID(int datasetID) throws SQLException {
         String name = "null";
         String query = "select dataset.name from dataset where dataset_id=" + datasetID;
@@ -226,30 +265,13 @@ public class Database {
         return name;
     }
 
-    /**
-     * Simple function to test the database.
+    /** When given and an asset_id and an rul estimate, this will add the corresponfing entry in the asset_model_calculation table
+     * this only works for Linear regression model
      *
-     * @param conn Connection object used to create statements per JDBC's API
-     */
-    public void test(Connection conn) {
-        try {
-            Statement stmt = conn.createStatement();
-
-            ResultSet dataRS = stmt.executeQuery("SELECT * FROM dataset");
-            while (dataRS.next())
-                System.out.println(dataRS.getString("dataset_id") + "  " + dataRS.getString("test_or_train") + "  " + dataRS.getString("name"));
-
-            dataRS.close();
-            System.out.println();
-
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-
-    }
-
+     * @autor Paul Micu
+     * */
     public void addRULEstimate(int id, double estimate) {
         String query = "insert into asset_model_calculation values(" + id + ",1,now()," + estimate + ")";
-        ResultSet queryResult = executeQuery(query);
+        executeQuery(query);
     }
 }

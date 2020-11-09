@@ -13,9 +13,8 @@ public class Main extends Application {
     public static void main(String[] args) throws Exception {
 
 
-        /*ModelController modelController = ModelController.getInstance();
+        ModelController modelController = ModelController.getInstance();
         modelController.initializer();
-        modelController.estimate();*/
 
         launch(args);
     }
