@@ -38,6 +38,10 @@ public class DataPreProcessorImpl implements DataPreProcessor {
         this.removedIndex = new ArrayList<>();
     }
 
+    /**  this will add the RUL to the training instances object, this is needed for the model training
+     *
+     * @author Khaled
+     * */
     private static Instances addRUL(Instances trainingData, double[] maxCycles) throws Exception {
 
       /*  Add filter = new Add();
@@ -64,6 +68,9 @@ public class DataPreProcessorImpl implements DataPreProcessor {
         return trainingData;
     }
 
+    /**
+     * @author Khaled
+     * */
     private static double[] getMaxCycles(Instances trainingData, int totalEngines) {
         Attribute engine = trainingData.attribute(SYSTEM_NAME);
         Attribute timeCycle = trainingData.attribute("Time_Cycle");
@@ -165,6 +172,10 @@ public class DataPreProcessorImpl implements DataPreProcessor {
         minimallyReducedDataset = addRULCol(minimallyReducedDataset);
     }
 
+    /**Given an Instance object, this will add an RUL attribute at the end of the other attributes
+     *
+     * @author Khaled
+     * */
     public Instances addRULCol(Instances newData) throws Exception {
         Instance lastRow = newData.lastInstance();
         Add filter = new Add();
@@ -180,6 +191,38 @@ public class DataPreProcessorImpl implements DataPreProcessor {
         newData = addRUL(newData, maxCycles);
         return newData;
 
+    }
+
+    /**Given 2 instances Object, it will remove the attributes that are not shared between the two and return the testset
+     *
+     * @author Paul Micu
+     * */
+    public Instances removeAttributes(Instances trainDataset, Instances testDataset) throws Exception {
+        ArrayList<Integer> indexes = new ArrayList<>();
+        for (int i = 0; i < testDataset.numAttributes(); i++) {
+            if (!setContains(trainDataset, testDataset.attribute(i))) {
+                indexes.add(i);
+            }
+        }
+        int[] arr = new int[indexes.size()];
+
+        for (int i = 0; i < indexes.size(); i++)
+            arr[i] = indexes.get(i);
+
+        Remove remove = new Remove();
+        remove.setAttributeIndicesArray(arr);
+        remove.setInputFormat(testDataset);
+        return Filter.useFilter(testDataset, remove);
+    }
+
+    private boolean setContains(Instances dataset, Attribute att) {
+        for (int i = 0; i < dataset.numAttributes(); i++) {
+            if (att.name().equals(dataset.attribute(i).name())) {
+                return true;
+            }
+
+        }
+        return false;
     }
 
     @Override
@@ -201,6 +244,7 @@ public class DataPreProcessorImpl implements DataPreProcessor {
         remove.setInputFormat(originalDataset);
         return remove;
     }
+
 
 
 }

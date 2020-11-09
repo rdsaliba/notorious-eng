@@ -9,6 +9,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -19,6 +22,8 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.DecimalFormat;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class SystemInfoController implements Initializable {
@@ -72,13 +77,13 @@ public class SystemInfoController implements Initializable {
      */
     void initData(Asset system) {
         this.system = system;
-        //systemName.setText(system.getName());
+        systemName.setText(system.getAssetType() + system.getSerialNo());
         systemType.setText(system.getAssetType());
         serialNumber.setText(system.getSerialNo());
-        //manufacturer.setText(system.getManufacturer());
-        systemLocation.setText(system.getLocation());
-        //linearRUL.setText(String.valueOf(system.getLinearRUL()));
-        //lstmRUL.setText(String.valueOf(system.getLstmRUL()));
+        manufacturer.setText("");
+        systemLocation.setText("Location: ");
+        linearRUL.setText(String.valueOf("Linear RUL: " + new DecimalFormat("#.##").format(system.getAssetInfo().getRULMeasurement())));
+        lstmRUL.setText(String.valueOf("Description: "));
         constructSensorPanes();
     }
 
@@ -91,7 +96,27 @@ public class SystemInfoController implements Initializable {
         for (AssetAttribute sensor: system.getAssetInfo().getAssetAttributes()) {
             Pane pane = new Pane();
             pane.getStyleClass().add("sensorPane");
-            //LineChart sensorChat = new LineChart();
+            final NumberAxis xAxis = new NumberAxis();
+            final NumberAxis yAxis = new NumberAxis();
+            xAxis.setLabel("Cycle");
+            final LineChart<Number, Number> sensorChart =
+                    new LineChart<Number, Number>(xAxis, yAxis);
+            sensorChart.setTitle("Sensor Values");
+            XYChart.Series series = new XYChart.Series();
+            Map<Integer, Double> measurements = sensor.getMeasurements();
+            series.getData().add(new XYChart.Data(1, measurements.get(1)));
+            series.getData().add(new XYChart.Data(2, measurements.get(2)));
+            series.getData().add(new XYChart.Data(3, measurements.get(3)));
+            series.getData().add(new XYChart.Data(4, measurements.get(4)));
+            series.getData().add(new XYChart.Data(5, measurements.get(5)));
+            sensorChart.getData().add(series);
+            sensorChart.setPrefWidth(275.0);
+            sensorChart.setPrefHeight(163.0);
+            sensorChart.setLayoutX(12.0);
+            sensorChart.setLayoutY(12.0);
+            pane.getChildren().add(sensorChart);
+
+
             Text sensorName = new Text(sensor.getName());
             //Text sensorLocation = new Text(sensor.getLocation());
             sensorName.setId("sensorType");

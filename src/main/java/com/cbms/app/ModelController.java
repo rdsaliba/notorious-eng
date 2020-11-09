@@ -1,5 +1,5 @@
 /**
- * This Controller is the first thing to run as the programm is started
+ * This Controller is the first thing to run as the program is started
  * It will setup the database and train the models
  *
  * @author Paul Micu
@@ -49,8 +49,8 @@ public class ModelController {
         return instance;
     }
 
-    /**
-     * Work in progress
+    /** this is the first thing that gets run, it will initialize the instances sets and train the models as Classifiers
+     * for now, only the first dataset is handled
      *
      * @author Paul
      * */
@@ -71,31 +71,35 @@ public class ModelController {
         for (Map.Entry<String, Instances> instances : instancesSets.entrySet()) {
             Instances minimallyReducedData = dataPrePreprossesorController.minimallyReduceData(instances.getValue());
             reducedInstancesSets.put(instances.getKey(), minimallyReducedData);
-            Instances notReduced = dataPrePreprossesorController.addRULCol(instances.getValue());
-            classifierSets.put(instances.getKey(), modelsController.trainModel(notReduced));
+            classifierSets.put(instances.getKey(), modelsController.trainModel(minimallyReducedData));
             System.out.println("Created classifier for " + instances.getKey());
         }
 
     }
 
-    public void estimate() throws Exception {
+    /**Calling this method will return an arraylist of assets that have been estimated using the linear regression
+     *
+     * @author Paul Micu
+     * */
+    public ArrayList<Asset> estimate() throws Exception {
 
         ArrayList<Asset> assets = db.getAssetsFromDatasetID(2);
         assets = estimateRUL(assets, "FD001");
 
-        for (Asset a : assets) {
-            System.out.println(a.toString());
-        }
+        return assets;
     }
 
+    /** Given an arraylist of testing assets and the classifier's name, this will return the same arraylist
+     *
+     * @author Paul Micu
+     */
     public ArrayList<Asset> estimateRUL(ArrayList<Asset> assets, String classifierID) throws Exception {
         double estimate = -0.0;
 
         for (Asset asset : assets) {
             Instances toTest = db.createInstanceFromAssetID(asset.getId());
+            toTest =dataPrePreprossesorController.removeAttributes(reducedInstancesSets.get("FD001"),toTest);
             toTest = dataPrePreprossesorController.addRULCol(toTest);
-
-            //dataPrePreprossesorController.removeAttributes(toTest, reducedInstancesSets.get("FD001"));
             estimate = assessmentController.estimateRUL(toTest, classifierSets.get(classifierID));
             asset.getAssetInfo().addRULMeasurement(estimate);
             db.addRULEstimate(asset.getId(), estimate);

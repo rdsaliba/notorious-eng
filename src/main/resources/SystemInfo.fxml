@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.chart.CategoryAxis?>
-<?import javafx.scene.chart.LineChart?>
-<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.FlowPane?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
@@ -51,7 +47,7 @@
                 </Button>
             </children>
         </AnchorPane>
-        <AnchorPane fx:id="systemInfoPane" layoutX="84.0" layoutY="62.0" prefHeight="215.0" prefWidth="928.0" style="-fx-background-color: FFFFFF;" AnchorPane.bottomAnchor="435.0" AnchorPane.leftAnchor="84.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="62.0">
+        <AnchorPane fx:id="systemInfoPane" layoutX="84.0" layoutY="62.0" maxHeight="215.0" prefHeight="215.0" prefWidth="928.0" style="-fx-background-color: FFFFFF;" AnchorPane.leftAnchor="84.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="62.0">
             <children>
                 <Text fx:id="systemType" fill="#0c072e" layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="System Type">
                     <font>
@@ -84,32 +80,11 @@
                     </font>
                 </Text>
             </children></AnchorPane>
-        <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" layoutX="74.0" layoutY="288.0" prefHeight="424.0" prefWidth="962.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="74.0" AnchorPane.rightAnchor="0.0">
+        <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" layoutX="74.0" layoutY="288.0" prefHeight="424.0" prefWidth="962.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="74.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="288.0">
             <content>
                 <FlowPane fx:id="sensorFlowPane" hgap="10.0" prefHeight="723.0" prefWidth="937.0" style="-fx-padding: 10;" vgap="10.0">
                     <children>
-                        <Pane prefHeight="231.0" prefWidth="298.0" style="-fx-background-color: FFFFFF;">
-                            <children>
-                                <LineChart layoutX="12.0" layoutY="12.0" prefHeight="163.0" prefWidth="275.0">
-                                    <xAxis>
-                                        <CategoryAxis side="BOTTOM" />
-                                    </xAxis>
-                                    <yAxis>
-                                        <NumberAxis side="LEFT" />
-                                    </yAxis>
-                                </LineChart>
-                                <Text fill="#0c072e" layoutX="35.0" layoutY="191.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Sensor Type">
-                                    <font>
-                                        <Font name="Segoe UI Bold" size="15.0" />
-                                    </font>
-                                </Text>
-                                <Text fill="#0c072e" layoutX="35.0" layoutY="211.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Location">
-                                    <font>
-                                        <Font name="Segoe UI Bold" size="15.0" />
-                                    </font>
-                                </Text>
-                            </children>
-                        </Pane>
+
                     </children>
                 </FlowPane>
             </content>

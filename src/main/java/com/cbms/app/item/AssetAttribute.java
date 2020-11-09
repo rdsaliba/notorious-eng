@@ -1,3 +1,11 @@
+/**
+ * The asset Attribute class contains all the details of the asset attribute
+ * this includes the id of the asset, its name and all the measurements we have for it
+ *
+ * @author Paul Micu
+ * @version 1.0
+ * @last_edit 11/08/2020
+ */
 package com.cbms.app.item;
 
 import java.util.Map;

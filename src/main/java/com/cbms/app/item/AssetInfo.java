@@ -5,6 +5,12 @@
  * @author Roy Saliba
  * @version 1.0
  * @last_edit 11/07/2020
+ *
+ * Added a reference to the asset attributes
+ * Added a map containing a reference to all the RUL measurements and when they were taken
+ * @author Paul Micu
+ * @version 1.1
+ * @last_edit 11/08/2020
  */
 package com.cbms.app.item;
 
@@ -13,6 +19,7 @@ import java.util.*;
 public class AssetInfo {
     private ArrayList<AssetAttribute> assetAttributes;
     private Map<Date, Double> estimates;
+    private Date lastRULDate;
 
     public AssetInfo() {
         assetAttributes = new ArrayList<>();
@@ -36,7 +43,12 @@ public class AssetInfo {
 
     public void addRULMeasurement(double estimate) {
         Calendar cal = Calendar.getInstance();
-        estimates.put(cal.getTime(), estimate);
+        lastRULDate = cal.getTime();
+        estimates.put(lastRULDate, estimate);
+    }
+
+    public double getRULMeasurement() {
+        return estimates.get(lastRULDate);
     }
 
     @Override

@@ -9,7 +9,12 @@
  */
 package com.cbms.preprocessing;
 
+import weka.core.Attribute;
 import weka.core.Instances;
+import weka.filters.Filter;
+import weka.filters.unsupervised.attribute.Remove;
+
+import java.util.ArrayList;
 
 public class DataPrePreprossesorController {
     private static DataPrePreprossesorController instance = null;
@@ -39,5 +44,9 @@ public class DataPrePreprossesorController {
 
     public Instances addRULCol(Instances toADD) throws Exception {
         return dataPreProcessorImpl.addRULCol(toADD);
+    }
+
+    public Instances removeAttributes(Instances trainDataset, Instances testDataset) throws Exception {
+        return dataPreProcessorImpl.removeAttributes(trainDataset,testDataset);
     }
 }
