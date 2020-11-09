@@ -193,6 +193,38 @@ public class DataPreProcessorImpl implements DataPreProcessor {
 
     }
 
+    /**Given 2 instances Object, it will remove the attributes that are not shared between the two and return the testset
+     *
+     * @author Paul Micu
+     * */
+    public Instances removeAttributes(Instances trainDataset, Instances testDataset) throws Exception {
+        ArrayList<Integer> indexes = new ArrayList<>();
+        for (int i = 0; i < testDataset.numAttributes(); i++) {
+            if (!setContains(trainDataset, testDataset.attribute(i))) {
+                indexes.add(i);
+            }
+        }
+        int[] arr = new int[indexes.size()];
+
+        for (int i = 0; i < indexes.size(); i++)
+            arr[i] = indexes.get(i);
+
+        Remove remove = new Remove();
+        remove.setAttributeIndicesArray(arr);
+        remove.setInputFormat(testDataset);
+        return Filter.useFilter(testDataset, remove);
+    }
+
+    private boolean setContains(Instances dataset, Attribute att) {
+        for (int i = 0; i < dataset.numAttributes(); i++) {
+            if (att.name().equals(dataset.attribute(i).name())) {
+                return true;
+            }
+
+        }
+        return false;
+    }
+
     @Override
     public Instances getReducedDataset() {
         return reducedDataset;
@@ -212,6 +244,7 @@ public class DataPreProcessorImpl implements DataPreProcessor {
         remove.setInputFormat(originalDataset);
         return remove;
     }
+
 
 
 }
