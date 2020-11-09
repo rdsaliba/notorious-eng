@@ -11,11 +11,11 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="712.0" prefWidth="1026.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="712.0" prefWidth="1026.0" stylesheets="@css/systeminfo.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cbms.ui.controller.SystemInfoController">
     <children>
         <VBox layoutY="169.0" prefHeight="543.0" prefWidth="74.0" style="-fx-background-color: #0C072E;" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="169.0">
             <children>
-                <Button contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0" prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css" text="Systems" textAlignment="CENTER" textFill="#f0f0f0">
+                <Button fx:id="systemMenuButton" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0" prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css" text="Systems" textAlignment="CENTER" textFill="#f0f0f0">
                     <font>
                         <Font name="Segoe UI Bold" size="14.0" />
                     </font>
@@ -30,31 +30,14 @@
             </children>
         </VBox>
         <VBox prefHeight="169.0" prefWidth="74.0" style="-fx-background-color: #0C072E;" AnchorPane.topAnchor="0.0" />
-        <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" layoutX="74.0" layoutY="288.0" prefHeight="424.0" prefWidth="962.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="74.0" AnchorPane.rightAnchor="0.0">
-            <content>
-                <FlowPane hgap="10.0" prefHeight="723.0" prefWidth="937.0" style="-fx-padding: 10;" vgap="10.0">
-                    <children>
-                        <VBox prefHeight="231.0" prefWidth="298.0" style="-fx-background-color: #bfbfbf;" />
-                        <VBox layoutX="10.0" layoutY="10.0" prefHeight="231.0" prefWidth="298.0" style="-fx-background-color: #bfbfbf;" />
-                        <VBox layoutX="308.0" layoutY="10.0" prefHeight="231.0" prefWidth="298.0" style="-fx-background-color: #bfbfbf;" />
-                        <VBox layoutX="636.0" layoutY="20.0" prefHeight="231.0" prefWidth="298.0" style="-fx-background-color: #bfbfbf;" />
-                        <VBox layoutX="20.0" layoutY="261.0" prefHeight="231.0" prefWidth="298.0" style="-fx-background-color: #bfbfbf;" />
-                        <VBox layoutX="328.0" layoutY="261.0" prefHeight="231.0" prefWidth="298.0" style="-fx-background-color: #bfbfbf;" />
-                        <VBox layoutX="636.0" layoutY="261.0" prefHeight="231.0" prefWidth="298.0" style="-fx-background-color: #bfbfbf;" />
-                        <VBox layoutX="636.0" layoutY="261.0" prefHeight="231.0" prefWidth="298.0" style="-fx-background-color: #bfbfbf;" />
-                        <VBox layoutX="636.0" layoutY="261.0" prefHeight="231.0" prefWidth="298.0" style="-fx-background-color: #bfbfbf;" />
-                    </children>
-                </FlowPane>
-            </content>
-        </ScrollPane>
         <AnchorPane layoutX="74.0" prefHeight="42.0" prefWidth="952.0" style="-fx-border-style: hidden hidden solid hidden; -fx-border-color: F0F0F0;" AnchorPane.leftAnchor="74.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
-                <Text fill="#0c072e" layoutX="14.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="System Name">
+                <Text fx:id="systemName" fill="#0c072e" layoutX="14.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="System Name">
                     <font>
                         <Font name="Segoe UI Bold" size="18.0" />
                     </font>
                 </Text>
-                <Button id="deletebtn" layoutX="871.0" layoutY="9.0" mnemonicParsing="false" stylesheets="@css/style.css" text="Delete" textFill="WHITE" AnchorPane.rightAnchor="14.0">
+                <Button fx:id="deletebtn" layoutX="871.0" layoutY="9.0" mnemonicParsing="false" stylesheets="@css/style.css" text="Delete" textFill="WHITE" AnchorPane.rightAnchor="14.0">
                     <font>
                         <Font name="Segoe UI Bold" size="12.0" />
                     </font>
@@ -64,6 +47,47 @@
                 </Button>
             </children>
         </AnchorPane>
-        <AnchorPane layoutX="84.0" layoutY="62.0" prefHeight="215.0" prefWidth="928.0" style="-fx-background-color: e0e0e0;" AnchorPane.bottomAnchor="435.0" AnchorPane.leftAnchor="84.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="62.0" />
+        <AnchorPane fx:id="systemInfoPane" layoutX="84.0" layoutY="62.0" maxHeight="215.0" prefHeight="215.0" prefWidth="928.0" style="-fx-background-color: FFFFFF;" AnchorPane.leftAnchor="84.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="62.0">
+            <children>
+                <Text fx:id="systemType" fill="#0c072e" layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="System Type">
+                    <font>
+                        <Font name="Segoe UI Bold" size="16.0" />
+                    </font>
+                </Text>
+                <Text fx:id="serialNumber" fill="#0c072e" layoutX="14.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Serial Number">
+                    <font>
+                        <Font name="Segoe UI Bold" size="16.0" />
+                    </font>
+                </Text>
+                <Text fx:id="manufacturer" fill="#0c072e" layoutX="14.0" layoutY="84.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Manufacturer">
+                    <font>
+                        <Font name="Segoe UI Bold" size="16.0" />
+                    </font>
+                </Text>
+                <Text fx:id="systemLocation" fill="#0c072e" layoutX="14.0" layoutY="113.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Location">
+                    <font>
+                        <Font name="Segoe UI Bold" size="16.0" />
+                    </font>
+                </Text>
+                <Text fx:id="linearRUL" fill="#0c072e" layoutX="14.0" layoutY="141.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Linear Regression RUL">
+                    <font>
+                        <Font name="Segoe UI Bold" size="16.0" />
+                    </font>
+                </Text>
+                <Text fx:id="lstmRUL" fill="#0c072e" layoutX="14.0" layoutY="169.0" strokeType="OUTSIDE" strokeWidth="0.0" text="LSTM RUL">
+                    <font>
+                        <Font name="Segoe UI Bold" size="16.0" />
+                    </font>
+                </Text>
+            </children></AnchorPane>
+        <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" layoutX="74.0" layoutY="288.0" prefHeight="424.0" prefWidth="962.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="74.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="288.0">
+            <content>
+                <FlowPane fx:id="sensorFlowPane" hgap="10.0" prefHeight="723.0" prefWidth="937.0" style="-fx-padding: 10;" vgap="10.0">
+                    <children>
+
+                    </children>
+                </FlowPane>
+            </content>
+        </ScrollPane>
     </children>
 </AnchorPane>

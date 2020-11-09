@@ -1,6 +1,0 @@
-projectKey=org.capstone.notorious:cbms
-serverUrl=http://localhost:9000
-serverVersion=7.5.0.20543
-dashboardUrl=http://localhost:9000/dashboard?id=org.capstone.notorious%3Acbms
-ceTaskId=AXT0zzo5bkulF8Gb8E0g
-ceTaskUrl=http://localhost:9000/api/ce/task?id=AXT0zzo5bkulF8Gb8E0g
