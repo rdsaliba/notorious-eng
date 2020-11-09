@@ -19,6 +19,7 @@ import java.util.*;
 public class AssetInfo {
     private ArrayList<AssetAttribute> assetAttributes;
     private Map<Date, Double> estimates;
+    private Date lastRULDate;
 
     public AssetInfo() {
         assetAttributes = new ArrayList<>();
@@ -42,7 +43,12 @@ public class AssetInfo {
 
     public void addRULMeasurement(double estimate) {
         Calendar cal = Calendar.getInstance();
-        estimates.put(cal.getTime(), estimate);
+        lastRULDate = cal.getTime();
+        estimates.put(lastRULDate, estimate);
+    }
+
+    public double getRULMeasurement() {
+        return estimates.get(lastRULDate);
     }
 
     @Override

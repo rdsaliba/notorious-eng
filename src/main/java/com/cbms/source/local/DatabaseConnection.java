@@ -9,7 +9,7 @@ public class DatabaseConnection {
     //Make sure to set the user and password to the proper values.
     //Credentials should be set to that which you are using on your local DB server.
     private static final String USER = "root";
-    private static final String PASSWORD = "PaulM1994";
+    private static final String PASSWORD = "jeff1234";
     private static DatabaseConnection openConnection;
     private Connection conn;
 

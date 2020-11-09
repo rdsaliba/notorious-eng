@@ -22,6 +22,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
@@ -137,38 +138,38 @@ public class SystemsController implements Initializable {
                 }
             });
             pane.getStyleClass().add("systemPane");
-            //Text systemName = new Text(system.getName());
+            Text systemName = new Text(system.getSerialNo());
             Text systemType = new Text(system.getAssetType());
             Text linearLabel = new Text("Linear Regression RUL:");
-            //Text linearRUL = new Text(String.valueOf(system.getLinearRUL()));
-            Text lstmLabel = new Text("LSTM RUL:");
+            Text linearRUL = new Text(String.valueOf(new DecimalFormat("#.##").format(system.getAssetInfo().getRULMeasurement())));
+            //Text lstmLabel = new Text("LSTM RUL:");
             //Text lstmRUL = new Text(String.valueOf(system.getLstmRUL()));
 
-            //systemName.setId("systemName");
+            systemName.setId("systemName");
             systemType.setId("systemType");
             linearLabel.setId("linearLabel");
-            //linearRUL.setId("linearRUL");
-            lstmLabel.setId(("lstmLabel"));
+            linearRUL.setId("linearRUL");
+            //lstmLabel.setId(("lstmLabel"));
             //lstmRUL.setId("lstmRUL");
 
-            //systemName.setLayoutX(14.0);
-            //systemName.setLayoutY(28.0);
+            systemName.setLayoutX(14.0);
+            systemName.setLayoutY(28.0);
             systemType.setLayoutX(14.0);
             systemType.setLayoutY(60.0);
             linearLabel.setLayoutX(14.0);
             linearLabel.setLayoutY(121.0);
-            //linearRUL.setLayoutX(250.0);
-            //linearRUL.setLayoutY(120.0);
-            lstmLabel.setLayoutX(14.0);
-            lstmLabel.setLayoutY(190.0);
+            linearRUL.setLayoutX(230.0);
+            linearRUL.setLayoutY(120.0);
+            //lstmLabel.setLayoutX(14.0);
+            //lstmLabel.setLayoutY(190.0);
             //lstmRUL.setLayoutX(250.0);
             //lstmRUL.setLayoutY(190.0);
 
-            //pane.getChildren().add(systemName);
+            pane.getChildren().add(systemName);
             pane.getChildren().add(systemType);
             pane.getChildren().add(linearLabel);
-            //pane.getChildren().add(linearRUL);
-            pane.getChildren().add(lstmLabel);
+            pane.getChildren().add(linearRUL);
+            //pane.getChildren().add(lstmLabel);
             //pane.getChildren().add(lstmRUL);
 
             boxes.add(pane);
