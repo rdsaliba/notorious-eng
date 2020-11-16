@@ -55,5 +55,7 @@
                 <Insets bottom="5.0" left="15.0" right="15.0" top="5.0" />
             </padding>
         </Button>
+      <Button fx:id="thumbnailButton" layoutX="88.0" layoutY="42.0" mnemonicParsing="false" text="Thumbnail" />
+      <Button fx:id="listButton" layoutX="167.0" layoutY="42.0" mnemonicParsing="false" text="List" />
     </children>
 </AnchorPane>

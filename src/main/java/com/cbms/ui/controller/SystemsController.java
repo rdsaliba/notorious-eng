@@ -2,21 +2,24 @@ package com.cbms.ui.controller;
 
 import com.cbms.app.ModelController;
 import com.cbms.app.item.Asset;
-import com.cbms.app.item.AssetAttribute;
-import com.cbms.app.item.AssetInfo;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -34,11 +37,15 @@ public class SystemsController implements Initializable {
     private Button addSystemButton;
     @FXML
     private FlowPane systemsPane;
+    @FXML
+    private Button thumbnailButton;
+    @FXML
+    private Button listButton;
 
     private ObservableList<Pane> boxes = FXCollections.observableArrayList();
 
     //private ArrayList<Engine> systems;
-    private ArrayList<Asset> systems;
+    private ObservableList<Asset> systems;
 
     public SystemsController() {
 
@@ -57,12 +64,72 @@ public class SystemsController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         try {
-                systems = ModelController.getInstance().estimate();
+            systems = FXCollections.observableArrayList(ModelController.getInstance().estimate());
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        constructElements();
+        linkButtons();
+        generateThumbnails();
+    }
+
+    public void linkButtons() {
+        thumbnailButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                systemsPane.getChildren().clear();
+                generateThumbnails();
+            }
+        });
+
+        listButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                systemsPane.getChildren().clear();
+                generateList();
+            }
+        });
+
+        //Attach link to systemMenuButton to go to Systems.fxml
+        systemMenuButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                try {
+                    FXMLLoader loader = new FXMLLoader();
+                    loader.setLocation(getClass().getResource("/Systems.fxml"));
+                    Parent systemsParent = loader.load();
+                    Scene systemInfo = new Scene(systemsParent);
+
+                    Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
+                    window.setScene(systemInfo);
+                    window.show();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        //Attach link to addSystemButton to go to AddSystem.fxml
+        addSystemButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                try {
+                    FXMLLoader loader = new FXMLLoader();
+                    loader.setLocation(getClass().getResource("/AddSystem.fxml"));
+                    Parent systemsParent = loader.load();
+                    Scene systemInfo = new Scene(systemsParent);
+
+                    Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
+                    window.setScene(systemInfo);
+                    window.show();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
     }
 
     /**
@@ -70,49 +137,9 @@ public class SystemsController implements Initializable {
      *
      * @author Jeff
      */
-    public void constructElements() {
+    public void generateThumbnails() {
         for (Asset system: systems) {
             Pane pane = new Pane();
-
-            //Attach link to systemMenuButton to go to Systems.fxml
-            systemMenuButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent mouseEvent) {
-                    try {
-                        FXMLLoader loader = new FXMLLoader();
-                        loader.setLocation(getClass().getResource("/Systems.fxml"));
-                        Parent systemsParent = loader.load();
-                        Scene systemInfo = new Scene(systemsParent);
-
-                        Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-                        window.setScene(systemInfo);
-                        window.show();
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-
-            //Attach link to addSystemButton to go to AddSystem.fxml
-            addSystemButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent mouseEvent) {
-                    try {
-                        FXMLLoader loader = new FXMLLoader();
-                        loader.setLocation(getClass().getResource("/AddSystem.fxml"));
-                        Parent systemsParent = loader.load();
-                        Scene systemInfo = new Scene(systemsParent);
-
-                        Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-                        window.setScene(systemInfo);
-                        window.show();
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
 
             //When clicked on a system, open SystemInfo.FXML for that system.
             pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -176,5 +203,26 @@ public class SystemsController implements Initializable {
         }
 
         systemsPane.getChildren().addAll(boxes);
+    }
+
+    public void generateList() {
+        TableView table = new TableView();
+        TableColumn systemTypeCol = new TableColumn("Type");
+        systemTypeCol.setCellValueFactory(
+                new PropertyValueFactory<Asset, String>("assetType"));
+        TableColumn serialNoCol = new TableColumn("Serial No.");
+        serialNoCol.setCellValueFactory(
+                new PropertyValueFactory<Asset, String>("serialNo"));
+        //TableColumn linearRULCol = new TableColumn("Linear RUL");
+        //linearRULCol.setCellValueFactory("3");
+
+        table.setItems(systems);
+        table.getColumns().addAll(systemTypeCol, serialNoCol);
+        final VBox vbox = new VBox();
+        vbox.setSpacing(5);
+        vbox.setPadding(new Insets(10,0,0,10));
+        vbox.getChildren().addAll(table);
+        systemsPane.getChildren().addAll(vbox);
+
     }
 }
