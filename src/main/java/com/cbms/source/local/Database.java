@@ -74,7 +74,7 @@ public class Database {
         while (assetsQuery.next()) {
             Asset newAsset = new Asset();
             newAsset.setId(assetsQuery.getInt("asset_id"));
-            newAsset.setAssetType(assetsQuery.getString("asset_type_id"));
+            newAsset.setAssetTypeID(assetsQuery.getString("asset_type_id"));
             newAsset.setDescription(assetsQuery.getString("description"));
             newAsset.setLocation(assetsQuery.getString("location"));
             newAsset.setSerialNo(assetsQuery.getString("sn"));
@@ -110,11 +110,11 @@ public class Database {
      * @autor Paul Micu
      * */
     public Asset getAssetsFromAssetID(int assetID) throws SQLException {
-        ResultSet assetsQuery = executeQuery("SELECT a.asset_id, a.type, a.sn, a.location,a.description FROM asset a WHERE a.asset_id=" + assetID);
+        ResultSet assetsQuery = executeQuery("SELECT a.asset_id, a.asset_type_id, a.sn, a.location,a.description FROM asset a WHERE a.asset_id=" + assetID);
         Asset newAsset = new Asset();
         while (assetsQuery.next()) {
             newAsset.setId(assetsQuery.getInt("asset_id"));
-            newAsset.setAssetType(assetsQuery.getString("type"));
+            newAsset.setAssetTypeID(assetsQuery.getString("asset_type_id"));
             newAsset.setDescription(assetsQuery.getString("description"));
             newAsset.setLocation(assetsQuery.getString("location"));
             newAsset.setSerialNo(assetsQuery.getString("sn"));

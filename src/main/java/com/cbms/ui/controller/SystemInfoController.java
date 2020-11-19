@@ -77,8 +77,8 @@ public class SystemInfoController implements Initializable {
      */
     void initData(Asset system) {
         this.system = system;
-        systemName.setText(system.getAssetType() + system.getSerialNo());
-        systemType.setText(system.getAssetType());
+        systemName.setText(system.getAssetTypeID() + system.getSerialNo());
+        systemType.setText(system.getAssetTypeID());
         serialNumber.setText(system.getSerialNo());
         manufacturer.setText("");
         systemLocation.setText("Location: ");
