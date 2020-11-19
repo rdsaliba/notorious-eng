@@ -1,4 +1,4 @@
-/**
+/**docker run -d --name sonarqube -p 9000:9000 sonarqube:7.5-community
  * This object will hold all the queries that we are making to the database
  *
  * @author Paul Micu
@@ -19,7 +19,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.ParseException;
 import java.util.ArrayList;
 
 public class Database {
@@ -187,7 +186,7 @@ public class Database {
      *
      * @autor Paul Micu
      * */
-    public Instances createInstances(int datasetID) throws ParseException, SQLException {
+    public Instances createInstances(int datasetID) throws SQLException {
         FastVector atts;
         Instances data;
         double[] vals;
@@ -225,7 +224,7 @@ public class Database {
      *
      * @autor Paul Micu
      * */
-    private ArrayList<String> getAttributesNameFromDatasetID(int datasetID) throws SQLException {
+    ArrayList<String> getAttributesNameFromDatasetID(int datasetID) throws SQLException {
         ArrayList<String> attributeNames = new ArrayList<>();
         String query = "SELECT DISTINCT att.attribute_name FROM attribute att, attribute_measurements am, asset a, dataset_asset_assoc daa\n" +
                 "WHERE daa.dataset_id=" + datasetID + " AND \n" +
@@ -273,5 +272,13 @@ public class Database {
     public void addRULEstimate(int id, double estimate) {
         String query = "insert into asset_model_calculation values(" + id + ",1,now()," + estimate + ")";
         executeQuery(query);
+    }
+
+    public int getLatestRULEstimate(int id) throws SQLException {
+        String query = "SELECT * from cbms.asset_model_calculation amc Where amc.asset_id ="+id+" and amc.model_id =1 order by amc.`timestamp` desc limit 1";
+        ResultSet queryResult = executeQuery(query);
+        if (queryResult.next())
+            return queryResult.getInt("value");
+        return -1000;
     }
 }
