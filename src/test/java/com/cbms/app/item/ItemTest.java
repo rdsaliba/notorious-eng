@@ -1,16 +1,16 @@
 package com.cbms.app.item;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class ItemTest {
-    private static Item item;
+    private Item item;
 
-    @BeforeClass
-    public static void setup(){
+    @Before
+    public void setup(){
         item = new Item(123,"usertag");
     }
 
