@@ -17,8 +17,8 @@ package com.cbms.app.item;
 import java.util.*;
 
 public class AssetInfo {
-    private final ArrayList<AssetAttribute> assetAttributes;
-    private final Map<Date, Double> estimates;
+    private ArrayList<AssetAttribute> assetAttributes;
+    private Map<Date, Double> estimates;
     private Date lastRULDate;
 
     public AssetInfo() {
