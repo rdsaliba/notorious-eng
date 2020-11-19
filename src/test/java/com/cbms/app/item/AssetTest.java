@@ -39,13 +39,13 @@ public class AssetTest {
 
     @Test
     public void getAssetType() {
-        assertEquals("default assetType should be 'AssetType'", "AssetType",asset.getAssetType());
+        assertEquals("default assetType should be 'AssetType'", "AssetType",asset.getAssetTypeID());
     }
 
     @Test
     public void setAssetType() {
-        asset.setAssetType("newAssetType");
-        assertEquals("new assetType should be 'newAssetType'", "newAssetType",asset.getAssetType());
+        asset.setAssetTypeID("newAssetType");
+        assertEquals("new assetType should be 'newAssetType'", "newAssetType",asset.getAssetTypeID());
     }
 
     @Test
