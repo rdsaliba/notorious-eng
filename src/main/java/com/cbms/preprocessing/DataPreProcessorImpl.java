@@ -42,14 +42,9 @@ public class DataPreProcessorImpl implements DataPreProcessor {
      *
      * @author Khaled
      * */
-    private static Instances addRUL(Instances trainingData, double[] maxCycles) throws Exception {
+    public static Instances addRUL(Instances trainingData, double[] maxCycles) throws Exception {
 
-      /*  Add filter = new Add();
-        filter.setAttributeIndex("last");
-        filter.setAttributeName("@RUL");
-        filter.setInputFormat(trainingData);
-        trainingData = Filter.useFilter(trainingData, filter);*/
-        int engineNum = 1;
+        int engineNum = 1;      // TODO: Will need to be made dynamic for new systems types
         Attribute engine = trainingData.attribute(SYSTEM_NAME);
         Instance row;
 
@@ -71,7 +66,7 @@ public class DataPreProcessorImpl implements DataPreProcessor {
     /**
      * @author Khaled
      * */
-    private static double[] getMaxCycles(Instances trainingData, int totalEngines) {
+    public static double[] getMaxCycles(Instances trainingData, int totalEngines) {
         Attribute engine = trainingData.attribute(SYSTEM_NAME);
         Attribute timeCycle = trainingData.attribute("Time_Cycle");
 
@@ -84,7 +79,7 @@ public class DataPreProcessorImpl implements DataPreProcessor {
                 Instance prevRow = trainingData.instance(i - 1);
                 maxCycles[(int) engineNum - 1] = prevRow.value(timeCycle);
                 engineNum++;
-            } else if (engineNum == 100) {
+            } else if (engineNum == 100) { // TODO: Will need to be made dynamic for more than 100 systems
                 Instance lastRow = trainingData.lastInstance();
                 maxCycles[(int) engineNum - 1] = lastRow.value(timeCycle);
             }
@@ -172,7 +167,7 @@ public class DataPreProcessorImpl implements DataPreProcessor {
         minimallyReducedDataset = addRULCol(minimallyReducedDataset);
     }
 
-    /**Given an Instance object, this will add an RUL attribute at the end of the other attributes
+    /**Given an Instance object, this will add an RUL attribute (column) at the end of the other attributes
      *
      * @author Khaled
      * */
