@@ -38,6 +38,11 @@ public class DataPreProcessorImpl implements DataPreProcessor {
         this.removedIndex = new ArrayList<>();
     }
 
+    public DataPreProcessorImpl()
+    {
+
+    }
+
     /**  this will add the RUL to the training instances object, this is needed for the model training
      *
      * @author Khaled

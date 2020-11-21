@@ -23,3 +23,7 @@
 target/*
 .idea/compiler.xml
 .idea/misc.xml
+.idea/dataSources
+.idea/sqldialects.xml
+.idea/dataSources.xml
+.idea/dataSources.local.xml
