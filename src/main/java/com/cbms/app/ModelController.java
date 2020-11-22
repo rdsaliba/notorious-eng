@@ -17,6 +17,7 @@ import com.cbms.source.local.Database;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
@@ -77,10 +78,21 @@ public class ModelController {
 
     }
 
-    /**Calling this method will return an arraylist of assets that have been estimated using the linear regression
+    /**
+     * This function is to stop the connection to the database.
+     *
+     * @throws SQLException
+     * @author Najim
+     */
+    public void stopDatabase() throws SQLException {
+        db.stop();
+    }
+
+    /**
+     * Calling this method will return an arraylist of assets that have been estimated using the linear regression
      *
      * @author Paul Micu
-     * */
+     */
     public ArrayList<Asset> estimate() throws Exception {
 
         ArrayList<Asset> assets = db.getAssetsFromDatasetID(2);

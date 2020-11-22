@@ -38,7 +38,7 @@ public class Database {
     public ResultSet executeQuery(String query) {
         ResultSet dataRS = null;
         try {
-            Connection conn = DatabaseConnection.start().getConnection();
+            Connection conn = openConnection.getConnection();
             Statement stmt = conn.createStatement();
 
             dataRS = stmt.executeQuery(query);
@@ -281,7 +281,7 @@ public class Database {
      *
      * @author Najim
      */
-    public void stopDatabase() {
+    public void stop() {
         openConnection.stop();
     }
 }
