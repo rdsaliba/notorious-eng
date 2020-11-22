@@ -16,7 +16,6 @@ public class Main extends Application {
         ModelController modelController = ModelController.getInstance();
         modelController.initializer();
         modelController.stopDatabase();
-
         launch(args);
     }
 

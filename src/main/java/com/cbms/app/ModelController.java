@@ -79,7 +79,7 @@ public class ModelController {
     }
 
     /**
-     * This function is to stop the connection to the database.
+     * This function is to stop the connection to the database
      *
      * @throws SQLException
      * @author Najim

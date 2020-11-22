@@ -52,7 +52,7 @@ CREATE INDEX `fk_asset_asset_type1_idx` on asset (`asset_type_id` ASC);
 ALTER TABLE asset
     ADD CONSTRAINT `fk_asset_asset_type1`
         FOREIGN KEY (`asset_type_id`)
-            REFERENCES `cbms`.`asset_type` (`asset_type_id`) ON DELETE CASCADE;
+            REFERENCES `cbms`.`asset_type` (`asset_type_id`);
     
     
 DROP TABLE IF EXISTS trained_model;
@@ -70,13 +70,13 @@ CREATE TABLE IF NOT EXISTS `cbms`.`trained_model`
     INDEX `fk_table1_dataset1_idx` (`dataset_id` ASC),
     CONSTRAINT `fk_table1_model1`
         FOREIGN KEY (`model_id`)
-            REFERENCES `cbms`.`model` (`model_id`) ON DELETE CASCADE,
+            REFERENCES `cbms`.`model` (`model_id`),
     CONSTRAINT `fk_table1_asset_type1`
         FOREIGN KEY (`asset_type_id`)
-            REFERENCES `cbms`.`asset_type` (`asset_type_id`) ON DELETE CASCADE,
+            REFERENCES `cbms`.`asset_type` (`asset_type_id`),
     CONSTRAINT `fk_table1_dataset1`
         FOREIGN KEY (`dataset_id`)
-            REFERENCES `cbms`.`dataset` (`dataset_id`) ON DELETE CASCADE
+            REFERENCES `cbms`.`dataset` (`dataset_id`)
 )
     ENGINE = InnoDB;
     
@@ -95,7 +95,7 @@ CREATE TABLE IF NOT EXISTS `cbms`.`asset_type_parameters`
     INDEX `fk_asset_type_parameters_asset_type1_idx` (`asset_type_id` ASC),
     CONSTRAINT `fk_asset_type_parameters_asset_type1`
         FOREIGN KEY (`asset_type_id`)
-            REFERENCES `cbms`.`asset_type` (`asset_type_id`) ON DELETE CASCADE
+            REFERENCES `cbms`.`asset_type` (`asset_type_id`)
 )
     ENGINE = InnoDB;
     

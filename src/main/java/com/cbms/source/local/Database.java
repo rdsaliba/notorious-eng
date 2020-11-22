@@ -30,11 +30,12 @@ public class Database {
         openConnection = DatabaseConnection.start();
     }
 
-    /** When given an sql command in a string object, this method will execute that command
-     * and return the corresponding ResultSet
+    /**
+     * When given an sql command in a string object, this method will execute that command
+     * and return the corresponding ResultSet.
      *
      * @autor Paul Micu
-     * */
+     */
     public ResultSet executeQuery(String query) {
         ResultSet dataRS = null;
         try {
