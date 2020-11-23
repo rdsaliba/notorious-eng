@@ -11,7 +11,7 @@ import weka.classifiers.Classifier;
 import weka.core.Instances;
 
 public class AssessmentController {
-    private HealthAssessment healthAssessment;
+    private final HealthAssessment healthAssessment;
 
     public AssessmentController() {
         healthAssessment = new HealthAssessment();

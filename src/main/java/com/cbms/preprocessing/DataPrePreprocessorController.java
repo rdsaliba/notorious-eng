@@ -11,16 +11,16 @@ package com.cbms.preprocessing;
 
 import weka.core.Instances;
 
-public class DataPrePreprossessorController {
-    private static DataPrePreprossessorController instance = null;
+public class DataPrePreprocessorController {
+    private static DataPrePreprocessorController instance = null;
     private DataPreProcessorImpl dataPreProcessorImpl = null;
 
-    private DataPrePreprossessorController() {
+    private DataPrePreprocessorController() {
     }
 
-    public static DataPrePreprossessorController getInstance() {
+    public static DataPrePreprocessorController getInstance() {
         if (instance == null)
-            instance = new DataPrePreprossessorController();
+            instance = new DataPrePreprocessorController();
         return instance;
     }
 

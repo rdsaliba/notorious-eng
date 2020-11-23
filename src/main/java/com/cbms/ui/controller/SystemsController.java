@@ -33,7 +33,7 @@ public class SystemsController implements Initializable {
     @FXML
     private FlowPane systemsPane;
 
-    private ObservableList<Pane> boxes = FXCollections.observableArrayList();
+    private final ObservableList<Pane> boxes = FXCollections.observableArrayList();
 
     //private ArrayList<Engine> systems;
     private ArrayList<Asset> systems;

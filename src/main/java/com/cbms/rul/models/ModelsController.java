@@ -12,7 +12,7 @@ import weka.classifiers.Classifier;
 import weka.core.Instances;
 
 public class ModelsController {
-    private ModelStrategy modelStrategy;
+    private final ModelStrategy modelStrategy;
 
     public ModelsController(ModelStrategy modelStrategy) {
         this.modelStrategy = modelStrategy;

@@ -93,6 +93,6 @@
                 prefHeight="424.0" prefWidth="962.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="74.0"
                 AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="288.0">
         <FlowPane fx:id="sensorFlowPane" hgap="10.0" prefHeight="723.0" prefWidth="937.0" style="-fx-padding: 10;"
-                  vgap="10.0"></FlowPane>
+                  vgap="10.0"/>
     </ScrollPane>
 </AnchorPane>

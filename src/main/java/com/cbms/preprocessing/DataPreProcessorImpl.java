@@ -26,10 +26,10 @@ import static com.cbms.AppConstants.SYSOUT_DEBUG;
 import static com.cbms.AppConstants.SYSTEM_NAME;
 
 public class DataPreProcessorImpl implements DataPreProcessor {
-    private Instances originalDataset;
+    private final Instances originalDataset;
     private Instances reducedDataset;
     private Instances minimallyReducedDataset;
-    private ArrayList<Integer> removedIndex;
+    private final ArrayList<Integer> removedIndex;
 
     public DataPreProcessorImpl(Instances originalDataset) throws Exception {
         this.originalDataset = originalDataset;

@@ -1,5 +1,5 @@
 /*
-  The HealthAssessment class is responsible to handle any assessement requests coming from the assessment Controller
+  The HealthAssessment class is responsible to handle any assessment requests coming from the assessment Controller
 
   @author Paul Micu
  * @version 1.0
@@ -22,7 +22,7 @@ public class HealthAssessment {
 
     /** When given an test Instances and a Classifier, this method will return an estimated RUL
      * 
-     * @autor Talal
+     * @author Talal
      * */
     public double predictRUL(Instances testData, Classifier lr) throws Exception
     {

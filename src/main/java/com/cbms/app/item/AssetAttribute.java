@@ -14,7 +14,7 @@ import java.util.TreeMap;
 public class AssetAttribute {
     private int id;
     private String name;
-    private Map<Integer, Double> measurements;
+    private final Map<Integer, Double> measurements;
 
     public AssetAttribute() {
         measurements = new TreeMap<>();

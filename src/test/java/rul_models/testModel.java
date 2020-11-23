@@ -1,5 +1,5 @@
 package rul_models;
-import java.rul_models.RootMeanSquaredError;
+import rul_models.RootMeanSquaredError;
 import weka.classifiers.Classifier;
 import weka.classifiers.functions.LinearRegression;
 import weka.core.Attribute;
@@ -19,7 +19,7 @@ public class testModel {
     }
 
     /**
-     This function evaluates the performance of an Artificial intellignece model.
+     This function evaluates the performance of an Artificial intelligence model.
      The parameters of the function are a training dataset, test dataset, and a text file that contains the real RULs.
      The function prints the root mean squared error of a model.
      @author Talal
@@ -45,7 +45,7 @@ public class testModel {
      */
     private Double[] parseRULs(FileReader file) throws IOException {
         BufferedReader reader;
-        List<Double> ruls=new ArrayList<Double>();
+        List<Double> ruls= new ArrayList<>();
         try {
             reader =  new BufferedReader(file);
             String line= reader.readLine();
@@ -77,7 +77,7 @@ public class testModel {
      */
     public static double[] predictRUL(Instances testData, int totalEngines, LinearRegression lr) throws Exception
     {
-        Attribute enginne = testData.attribute(SYSTEM_NAME);
+        Attribute asset = testData.attribute(SYSTEM_NAME);
 
         double engineNum = 0;
         double[] predicted = new double[totalEngines];
@@ -87,14 +87,14 @@ public class testModel {
                 Instance one = testData.instance(i+1);
                 double life= lr.classifyInstance(one);
                 System.out.println(lr.classifyInstance(one));
-                double temp = testData.lastInstance().value(enginne);
+                double temp = testData.lastInstance().value(asset);
                 predicted[(int) temp-1] = life;
                 break;
             }
             Instance row = testData.instance(i);
             Instance nextRow = testData.instance(i+1);
-            if(row.value(enginne) != nextRow.value(enginne)){
-                System.out.println("a b c d"+row.value(enginne));
+            if(row.value(asset) != nextRow.value(asset)){
+                System.out.println("a b c d"+row.value(asset));
                 double engine=row.value(testData.attribute(SYSTEM_NAME));
                 double life= lr.classifyInstance(row);
                 System.out.println(lr.classifyInstance(row));
