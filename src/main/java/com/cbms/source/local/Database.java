@@ -1,7 +1,7 @@
-/**
- * This object will hold all the queries that we are making to the database
- *
- * @author Paul Micu
+/*
+  This object will hold all the queries that we are making to the database
+
+  @author Paul Micu
  * @version 1.0
  * @last_edit 11/08/2020
  */

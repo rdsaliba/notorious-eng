@@ -1,7 +1,7 @@
-/**
- * The HealthAssessment class is responsible to handle any assessement requests coming from the assessment Controller
- *
- * @author Paul Micu
+/*
+  The HealthAssessment class is responsible to handle any assessement requests coming from the assessment Controller
+
+  @author Paul Micu
  * @version 1.0
  * @last_edit 11/08/2020
  */

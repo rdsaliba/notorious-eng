@@ -1,7 +1,7 @@
-/**
- * Model for the assets of the predictive system.
- *
- * @author Roy Saliba
+/*
+  Model for the assets of the predictive system.
+
+  @author Roy Saliba
  * @version 1.0
  * @last_edit 11/07/2020
  */

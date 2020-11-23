@@ -1,5 +1,5 @@
-package java.RUL_Models;
-import java.RUL_Models.RootMeanSquaredError;
+package rul_models;
+import java.rul_models.RootMeanSquaredError;
 import weka.classifiers.Classifier;
 import weka.classifiers.functions.LinearRegression;
 import weka.core.Attribute;

@@ -1,7 +1,7 @@
-/**
- * The assessment controller is responsible to handle any assessement requests
- *
- * @author Paul Micu
+/*
+  The assessment controller is responsible to handle any assessment requests
+
+  @author Paul Micu
  * @version 1.0
  * @last_edit 11/08/2020
  */
