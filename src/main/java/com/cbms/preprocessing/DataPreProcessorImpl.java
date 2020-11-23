@@ -1,8 +1,8 @@
-/**
- * Implementation of the data pre-processor interface
- * the Process function will reduce the data and store it in the reducedDataSet variable
- *
- * @author Paul Micu
+/*
+  Implementation of the data pre-processor interface
+  the Process function will reduce the data and store it in the reducedDataSet variable
+
+  @author Paul Micu
  * @version 1.0
  * @last_edit 11/01/2020
  */
@@ -193,7 +193,7 @@ public class DataPreProcessorImpl implements DataPreProcessor {
 
     }
 
-    /**Given 2 instances Object, it will remove the attributes that are not shared between the two and return the testset
+    /**Given 2 instances Object, it will remove the attributes that are not shared between the two and return the test set
      *
      * @author Paul Micu
      * */
