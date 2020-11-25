@@ -30,7 +30,7 @@
             </children>
         </VBox>
         <VBox prefHeight="169.0" prefWidth="74.0" style="-fx-background-color: #0C072E;" AnchorPane.topAnchor="0.0" />
-        <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" layoutX="74.0" layoutY="288.0" prefHeight="638.0" prefWidth="952.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="74.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="74.0">
+        <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" layoutX="74.0" layoutY="288.0" prefHeight="638.0" prefWidth="952.0" vbarPolicy="NEVER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="74.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="74.0">
             <content>
                 <FlowPane fx:id="systemsPane" hgap="10.0" prefHeight="662.0" prefWidth="937.0" style="-fx-padding: 10;" vgap="10.0">
                     <children>
