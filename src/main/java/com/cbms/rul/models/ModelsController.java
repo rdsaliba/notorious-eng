@@ -3,8 +3,8 @@
   allows for a model to be chosen dynamically
 
   @author Paul Micu
- * @version 1.0
- * @last_edit 11/01/2020
+  @version 1.0
+  @last_edit 11/01/2020
  */
 package com.cbms.rul.models;
 
