@@ -1,9 +1,9 @@
-/**
- * This object will hold all the queries that we are making to the database
- *
- * @author Paul Micu
- * @version 1.0
- * @last_edit 11/08/2020
+/*
+  This object will hold all the queries that we are making to the database
+
+  @author Paul Micu
+  @version 1.0
+  @last_edit 11/08/2020
  */
 package com.cbms.source.local;
 
@@ -23,17 +23,15 @@ import java.text.ParseException;
 import java.util.ArrayList;
 
 public class Database {
-    private static DatabaseConnection openConnection;
-
 
     public Database() {
-        openConnection = DatabaseConnection.start();
+        DatabaseConnection.start();
     }
 
     /** When given an sql command in a string object, this method will execute that command
      * and return the corresponding ResultSet
      *
-     * @autor Paul Micu
+     * @author Paul Micu
      * */
     public ResultSet executeQuery(String query) {
         ResultSet dataRS = null;
@@ -52,7 +50,7 @@ public class Database {
 
     /** This will return an arrayList containing all the dataset_id of the datasets with a train tag
      *
-     * @autor Paul Micu
+     * @author Paul Micu
      * */
     public ArrayList<Integer> getTrainDatasets() throws SQLException {
         ArrayList<Integer> datasets = new ArrayList<>();
@@ -65,7 +63,7 @@ public class Database {
     /** When given a dataset_id, this will return an arraylist of Assets containing all of the assets in that dataset
      * the asset object will also contain a reference to all the asset attributes(sensors) and all their measurements
      *
-     * @autor Paul Micu
+     * @author Paul Micu
      * */
     public ArrayList<Asset> getAssetsFromDatasetID(int datasetID) throws SQLException {
         ArrayList<Asset> assets = new ArrayList<>();
@@ -107,7 +105,7 @@ public class Database {
 
     /** When given an asset_id, this will return an Asset object containing a reference to all the asset attributes(sensors) and all their measurements
      *
-     * @autor Paul Micu
+     * @author Paul Micu
      * */
     public Asset getAssetsFromAssetID(int assetID) throws SQLException {
         ResultSet assetsQuery = executeQuery("SELECT a.asset_id, a.asset_type_id, a.sn, a.location,a.description FROM asset a WHERE a.asset_id=" + assetID);
@@ -147,7 +145,7 @@ public class Database {
 
     /** when given an asset_id, this will query the database for that asset and create an instance object
      *
-     * @autor Paul Micu
+     * @author Paul Micu
      * */
     public Instances createInstanceFromAssetID(int assetID) throws SQLException {
         FastVector atts;
@@ -185,7 +183,7 @@ public class Database {
     /** when given an dataset_id, this will query the database for that asset and create an instance object
      * containing all the assets that are part of that dataset
      *
-     * @autor Paul Micu
+     * @author Paul Micu
      * */
     public Instances createInstances(int datasetID) throws ParseException, SQLException {
         FastVector atts;
@@ -223,7 +221,7 @@ public class Database {
 
     /** When given an dataset_id this will return an arraylist of all the attributes name that the assets in that dataset have
      *
-     * @autor Paul Micu
+     * @author Paul Micu
      * */
     private ArrayList<String> getAttributesNameFromDatasetID(int datasetID) throws SQLException {
         ArrayList<String> attributeNames = new ArrayList<>();
@@ -241,7 +239,7 @@ public class Database {
 
     /** When given an asset_id this will return an arraylist of all the attributes name that specific asset has
      *
-     * @autor Paul Micu
+     * @author Paul Micu
      * */
     private ArrayList<String> getAttributesNameFromAssetID(int assetID) throws SQLException {
         ArrayList<String> attributeNames = new ArrayList<>();
@@ -254,7 +252,7 @@ public class Database {
 
     /** When given an dataset_id this will return the name of the dataset
      *
-     * @autor Paul Micu
+     * @author Paul Micu
      * */
     public String getDatasetNameFromID(int datasetID) throws SQLException {
         String name = "null";
@@ -268,7 +266,7 @@ public class Database {
     /** When given and an asset_id and an rul estimate, this will add the corresponfing entry in the asset_model_calculation table
      * this only works for Linear regression model
      *
-     * @autor Paul Micu
+     * @author Paul Micu
      * */
     public void addRULEstimate(int id, double estimate) {
         String query = "insert into asset_model_calculation values(" + id + ",1,now()," + estimate + ")";

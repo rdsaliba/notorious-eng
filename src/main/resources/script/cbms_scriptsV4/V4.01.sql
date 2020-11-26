@@ -17,7 +17,7 @@ Trained model that is a work in progress while a previously trained model can st
 The combination type-model-training dataset will hold the path to the developing version of the model/classifier
 The combination type-model-testing dataset will hold the path to the live version of the model/classifier
 
-@Autor Paul Micu
+@Author Paul Micu
 @version 4.01 (sprint 4, script 1)
 */
 
@@ -37,7 +37,7 @@ ALTER TABLE `asset` DROP FOREIGN KEY if exists `fk_asset_asset_type1`;
 ALTER TABLE `asset` DROP INDEX if exists `fk_asset_asset_type1_idx`;
 -- -----------------------------------------------------
 -- alter Table `cbms`.`asset`
--- removing type column, addining asset_type_id colomn and adding the association with Asset_type table
+-- removing type column, adding asset_type_id column and adding the association with Asset_type table
 -- -----------------------------------------------------
 ALTER TABLE asset DROP COLUMN if exists type;
 ALTER TABLE asset ADD if not exists asset_type_id int;
