@@ -4,6 +4,7 @@ import com.cbms.app.ModelController;
 import com.cbms.app.item.Asset;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,6 +14,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -26,7 +28,6 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class SystemsController implements Initializable {
@@ -36,15 +37,18 @@ public class SystemsController implements Initializable {
     @FXML
     private Button addSystemButton;
     @FXML
-    private FlowPane systemsPane;
+    private FlowPane systemsThumbPane;
     @FXML
-    private Button thumbnailButton;
+    private FlowPane systemsListPane;
     @FXML
-    private Button listButton;
+    private Tab thumbnailTab;
+    @FXML
+    private Tab listTab;
 
     private ObservableList<Pane> boxes = FXCollections.observableArrayList();
 
     //private ArrayList<Engine> systems;
+    private UIUtilities uiUtilities;
     private ObservableList<Asset> systems;
 
     public SystemsController() {
@@ -62,6 +66,7 @@ public class SystemsController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        uiUtilities = new UIUtilities();
 
         try {
             systems = FXCollections.observableArrayList(ModelController.getInstance().estimate());
@@ -74,18 +79,18 @@ public class SystemsController implements Initializable {
     }
 
     public void linkButtons() {
-        thumbnailButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        thumbnailTab.setOnSelectionChanged(new EventHandler<Event>() {
             @Override
-            public void handle(MouseEvent mouseEvent) {
-                systemsPane.getChildren().clear();
+            public void handle(Event event) {
+                systemsThumbPane.getChildren().clear();
                 generateThumbnails();
             }
         });
 
-        listButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        listTab.setOnSelectionChanged(new EventHandler<Event>() {
             @Override
-            public void handle(MouseEvent mouseEvent) {
-                systemsPane.getChildren().clear();
+            public void handle(Event event) {
+                systemsListPane.getChildren().clear();
                 generateList();
             }
         });
@@ -201,14 +206,14 @@ public class SystemsController implements Initializable {
             boxes.add(pane);
         }
 
-        systemsPane.getChildren().addAll(boxes);
+        systemsThumbPane.getChildren().addAll(boxes);
     }
 
     public void generateList() {
         TableView table = new TableView();
         TableColumn systemTypeCol = new TableColumn("Type");
-        systemTypeCol.setCellValueFactory(
-                new PropertyValueFactory<Asset, String>("assetType"));
+//        systemTypeCol.setCellValueFactory(
+//                new PropertyValueFactory<Asset, String>("assetType"));
         TableColumn serialNoCol = new TableColumn("Serial No.");
         serialNoCol.setCellValueFactory(
                 new PropertyValueFactory<Asset, String>("serialNo"));
@@ -221,7 +226,7 @@ public class SystemsController implements Initializable {
         vbox.setSpacing(5);
         vbox.setPadding(new Insets(10,0,0,10));
         vbox.getChildren().addAll(table);
-        systemsPane.getChildren().addAll(vbox);
+        systemsListPane.getChildren().addAll(vbox);
 
     }
 }
