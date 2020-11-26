@@ -99,19 +99,7 @@ public class SystemsController implements Initializable {
         systemMenuButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                try {
-                    FXMLLoader loader = new FXMLLoader();
-                    loader.setLocation(getClass().getResource("/Systems.fxml"));
-                    Parent systemsParent = loader.load();
-                    Scene systemInfo = new Scene(systemsParent);
-
-                    Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-                    window.setScene(systemInfo);
-                    window.show();
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                uiUtilities.changeScene(mouseEvent, "/Systems");
             }
         });
 
@@ -119,19 +107,7 @@ public class SystemsController implements Initializable {
         addSystemButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                try {
-                    FXMLLoader loader = new FXMLLoader();
-                    loader.setLocation(getClass().getResource("/AddSystem.fxml"));
-                    Parent systemsParent = loader.load();
-                    Scene systemInfo = new Scene(systemsParent);
-
-                    Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-                    window.setScene(systemInfo);
-                    window.show();
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                uiUtilities.changeScene(mouseEvent, "/AddSystem");
             }
         });
     }
