@@ -21,15 +21,11 @@ import static com.cbms.AppConstants.SYSTEM_NAME;
 
 public class DataPreProcessorImplTest
 {
-    //@Mock
     Instances originalDataset;
-    //@Mock
     Instances reducedDataset;
-    //@Mock
     Instances minimallyReducedDataset;
-    //@Mock
     ArrayList<Integer> removedIndex;
-    //@InjectMocks
+
     DataPreProcessorImpl dataPreProcessorImpl;
 
     private static DataSource src;
@@ -88,7 +84,6 @@ public class DataPreProcessorImplTest
         }
     }
 
-
     private static int classIndex = data.numAttributes() - 1;
 
     @Before
@@ -119,15 +114,17 @@ public class DataPreProcessorImplTest
     }
 
     @Test
-    public void testProcessFullReduction() throws Exception
+    public void testProcessFullReduction()
     {
-        //assertTrue();
+        Instances fullReduction = dataPreProcessorImpl.getReducedDataset();
+        assertSame(reducedDataset, fullReduction);
     }
 
     @Test
     public void testProcessMinimalReduction() throws Exception
     {
-        dataPreProcessorImpl.processMinimalReduction();
+        Instances minimalReduction = dataPreProcessorImpl.getMinimallyReducedDataset();
+        assertSame(minimallyReducedDataset, minimalReduction);
     }
 
     @Test
@@ -147,25 +144,18 @@ public class DataPreProcessorImplTest
         assertTrue("Testing set should have less attributes than training set after removal.", trainTotal > testTotal);
     }
 
-//    @Test
-//    public void testGetRemovedIndexList() throws Exception
-//    {
-//        ArrayList<Integer> removedIndex = new ArrayList<>();
-//        Remove remove                   = new Remove();
-//        int[] indicesToDelete = removedIndex.stream().mapToInt(i -> i).toArray();   //convert Integer list to int array
-//        remove.setAttributeIndicesArray(indicesToDelete);
-//        remove.setInputFormat(data);
-//
-//        Remove result = dataPreProcessorImpl.
-//        //assertEquals(remove, result);
-//
-////        Remove remove = new Remove();
-////        int[] indicesToDelete = removedIndex.stream().mapToInt(i -> i).toArray();   //convert Integer list to int array
-////        remove.setAttributeIndicesArray(indicesToDelete);
-////
-////        remove.setInputFormat(originalDataset);
-////        return remove;
-//    }
+    @Test
+    public void testGetRemovedIndexList() throws Exception
+    {
+        ArrayList<Integer> removedIndex = new ArrayList<>();
+        Remove remove                   = new Remove();
+        int[] indicesToDelete = removedIndex.stream().mapToInt(i -> i).toArray();   //convert Integer list to int array
+        remove.setAttributeIndicesArray(indicesToDelete);
+        remove.setInputFormat(data);
+
+        assertTrue("Data should have less attributes than originalDataset (27) after applying Remove filter."
+                   , data.numAttributes() < 27);
+    }
 
     @Test
     public void testGetReducedDataset()
@@ -178,4 +168,12 @@ public class DataPreProcessorImplTest
     {
         assertEquals("The minimally reduced datasets should match.", minimallyReducedDataset, dataPreProcessorImpl.getMinimallyReducedDataset());
     }
+
+    //setContains is private method
+//    @Test
+//    public void testSetContains()
+//    {
+//        //assertFalse(dataPreProcessorImpl.setContains(data, data.classAttribute()));
+//        assertEquals(true, dataPreProcessorImpl.setContains(data, data.classAttribute()));
+//    }
 }
