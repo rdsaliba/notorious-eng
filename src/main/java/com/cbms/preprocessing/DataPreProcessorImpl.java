@@ -38,10 +38,6 @@ public class DataPreProcessorImpl implements DataPreProcessor {
         this.removedIndex = new ArrayList<>();
     }
 
-    public DataPreProcessorImpl()
-    {
-
-    }
 
     /**  this will add the RUL to the training instances object, this is needed for the model training
      *
@@ -105,12 +101,6 @@ public class DataPreProcessorImpl implements DataPreProcessor {
         AttributeSelection filter = new AttributeSelection();  // a filter needs an evaluator and a search method
         CfsSubsetEval eval = new CfsSubsetEval(); // the evaluator chosen is the CfsSubsetEval
         BestFirst search = new BestFirst(); // the search method used is BestFirst
-
-        //GreedyStepwise search = new GreedyStepwise();
-        /* Could also use GreedyStepWise search along with this evaluator.
-            Difference between using GreedyStepwise and BestFirst searches: BestFirst removes one extra sensor
-            (Sensor 6, std dev of 0.001)
-         */
 
         filter.setEvaluator(eval); // set the filter evaluator and search method
         filter.setSearch(search);
