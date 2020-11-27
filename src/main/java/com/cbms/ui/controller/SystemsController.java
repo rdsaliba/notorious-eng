@@ -2,6 +2,9 @@ package com.cbms.ui.controller;
 
 import com.cbms.app.ModelController;
 import com.cbms.app.item.Asset;
+import com.cbms.app.item.AssetInfo;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
@@ -46,8 +49,6 @@ public class SystemsController implements Initializable {
     private Tab listTab;
 
     private ObservableList<Pane> boxes = FXCollections.observableArrayList();
-
-    //private ArrayList<Engine> systems;
     private UIUtilities uiUtilities;
     private ObservableList<Asset> systems;
 
@@ -188,21 +189,24 @@ public class SystemsController implements Initializable {
     public void generateList() {
         TableView table = new TableView();
         TableColumn systemTypeCol = new TableColumn("Type");
-//        systemTypeCol.setCellValueFactory(
-//                new PropertyValueFactory<Asset, String>("assetType"));
+        systemTypeCol.setCellValueFactory(
+                new PropertyValueFactory<Asset, String>("assetTypeID"));
         TableColumn serialNoCol = new TableColumn("Serial No.");
         serialNoCol.setCellValueFactory(
                 new PropertyValueFactory<Asset, String>("serialNo"));
-        //TableColumn linearRULCol = new TableColumn("Linear RUL");
-        //linearRULCol.setCellValueFactory("3");
+        TableColumn<Asset, Double> linearRULCol = new TableColumn<>("Linear RUL");
+        linearRULCol.setCellValueFactory(cellData -> new SimpleDoubleProperty(
+                Double.parseDouble(new DecimalFormat("#.##").format(cellData.getValue().getAssetInfo().getRULMeasurement()))).asObject());
+        TableColumn locationCol = new TableColumn("Location");
+        locationCol.setCellValueFactory(
+                new PropertyValueFactory<Asset, String>("location"));
 
         table.setItems(systems);
-        table.getColumns().addAll(systemTypeCol, serialNoCol);
+        table.getColumns().addAll(systemTypeCol, serialNoCol, linearRULCol, locationCol);
         final VBox vbox = new VBox();
         vbox.setSpacing(5);
         vbox.setPadding(new Insets(10,0,0,10));
         vbox.getChildren().addAll(table);
         systemsListPane.getChildren().addAll(vbox);
-
     }
 }
