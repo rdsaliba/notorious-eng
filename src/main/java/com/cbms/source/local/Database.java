@@ -279,6 +279,13 @@ public class Database {
      * @param id
      */
     public void deleteAssetByID(int id) {
-
+        String query = "DELETE FROM attribute_measurements WHERE asset_id = " + id;
+        executeQuery(query);
+        query = "DELETE FROM asset_model_calculation WHERE asset_id = " + id;
+        executeQuery(query);
+        query = "DELETE FROM dataset_asset_assoc WHERE asset_id = " + id;
+        executeQuery(query);
+        query = "DELETE FROM asset WHERE asset_id = " + id;
+        executeQuery(query);
     }
 }

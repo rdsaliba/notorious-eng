@@ -168,6 +168,20 @@ public class SystemInfoController implements Initializable {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 deleteAsset();
+
+                try {
+                    FXMLLoader loader = new FXMLLoader();
+                    loader.setLocation(getClass().getResource("/Systems.fxml"));
+                    Parent systemsParent = loader.load();
+                    Scene systemInfo = new Scene(systemsParent);
+
+                    Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
+                    window.setScene(systemInfo);
+                    window.show();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
