@@ -272,4 +272,13 @@ public class Database {
         String query = "insert into asset_model_calculation values(" + id + ",1,now()," + estimate + ")";
         executeQuery(query);
     }
+
+    /**
+     * Deletes the asset from the database.
+     *
+     * @param id
+     */
+    public void deleteAssetByID(int id) {
+
+    }
 }

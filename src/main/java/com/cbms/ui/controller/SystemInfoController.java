@@ -2,6 +2,7 @@ package com.cbms.ui.controller;
 
 import com.cbms.app.item.Asset;
 import com.cbms.app.item.AssetAttribute;
+import com.cbms.source.local.Database;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -48,9 +49,11 @@ public class SystemInfoController implements Initializable {
     private Text lstmRUL;
     @FXML
     private FlowPane sensorFlowPane;
-
+    @FXML
+    private Button deletebtn;
 
     private Asset system;
+    private Database db;
 
 
     /**
@@ -64,6 +67,7 @@ public class SystemInfoController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        db = new Database();
         attachEvents();
     }
 
@@ -159,5 +163,21 @@ public class SystemInfoController implements Initializable {
                 }
             }
         });
+
+        deletebtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                deleteAsset();
+            }
+        });
+    }
+
+    /**
+     * Send the asset ID to the Database class in order for it to be deleted.
+     *
+     * @author Jeff
+     */
+    public void deleteAsset() {
+        db.deleteAssetByID(system.getId());
     }
 }
