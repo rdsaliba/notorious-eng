@@ -69,15 +69,15 @@
                         </Tab>
                         <Tab fx:id="listTab" text="List">
                             <content>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                    <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefHeight="642.0" prefWidth="950.0" vbarPolicy="NEVER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
-                                        <content>
-                                            <FlowPane fx:id="systemsListPane" hgap="10.0" prefHeight="582.0" prefWidth="882.0" style="-fx-padding: 10;" vgap="10.0">
-                                                <children>
-                                                </children>
-                                            </FlowPane>
-                                        </content>
-                                    </ScrollPane>
+                                <AnchorPane fx:id="systemsListPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+<!--                                    <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefHeight="642.0" prefWidth="950.0" vbarPolicy="NEVER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">-->
+<!--                                        <content>-->
+<!--                                            <FlowPane fx:id="systemsListPane" hgap="10.0" prefHeight="582.0" prefWidth="882.0" style="-fx-padding: 10;" vgap="10.0">-->
+<!--                                                <children>-->
+<!--                                                </children>-->
+<!--                                            </FlowPane>-->
+<!--                                        </content>-->
+<!--                                    </ScrollPane>-->
                                 </AnchorPane>
                             </content>
                         </Tab>

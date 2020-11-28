@@ -2,9 +2,7 @@ package com.cbms.ui.controller;
 
 import com.cbms.app.ModelController;
 import com.cbms.app.item.Asset;
-import com.cbms.app.item.AssetInfo;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
@@ -12,22 +10,17 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -42,7 +35,7 @@ public class SystemsController implements Initializable {
     @FXML
     private FlowPane systemsThumbPane;
     @FXML
-    private FlowPane systemsListPane;
+    private AnchorPane systemsListPane;
     @FXML
     private Tab thumbnailTab;
     @FXML
@@ -186,27 +179,46 @@ public class SystemsController implements Initializable {
         systemsThumbPane.getChildren().addAll(boxes);
     }
 
+
+    /**
+     * Creates a table element to list all the assets.
+     *
+     * @author Jeff
+     */
     public void generateList() {
         TableView table = new TableView();
+
+        // When TableRow is clicked, send data to SystemInfo scene.
+        table.setRowFactory(tv -> {
+            TableRow<Asset> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                uiUtilities.changeScene(event, row, "/SystemInfo", row.getItem());
+            });
+            return row;
+        });
+
         TableColumn systemTypeCol = new TableColumn("Type");
         systemTypeCol.setCellValueFactory(
                 new PropertyValueFactory<Asset, String>("assetTypeID"));
+
         TableColumn serialNoCol = new TableColumn("Serial No.");
         serialNoCol.setCellValueFactory(
                 new PropertyValueFactory<Asset, String>("serialNo"));
+
         TableColumn<Asset, Double> linearRULCol = new TableColumn<>("Linear RUL");
         linearRULCol.setCellValueFactory(cellData -> new SimpleDoubleProperty(
                 Double.parseDouble(new DecimalFormat("#.##").format(cellData.getValue().getAssetInfo().getRULMeasurement()))).asObject());
+
         TableColumn locationCol = new TableColumn("Location");
         locationCol.setCellValueFactory(
                 new PropertyValueFactory<Asset, String>("location"));
 
         table.setItems(systems);
         table.getColumns().addAll(systemTypeCol, serialNoCol, linearRULCol, locationCol);
-        final VBox vbox = new VBox();
-        vbox.setSpacing(5);
-        vbox.setPadding(new Insets(10,0,0,10));
-        vbox.getChildren().addAll(table);
-        systemsListPane.getChildren().addAll(vbox);
+        AnchorPane.setBottomAnchor(table, 0.0);
+        AnchorPane.setTopAnchor(table, 5.0);
+        AnchorPane.setRightAnchor(table, 0.0);
+        AnchorPane.setLeftAnchor(table, 0.0);
+        systemsListPane.getChildren().addAll(table);
     }
 }
