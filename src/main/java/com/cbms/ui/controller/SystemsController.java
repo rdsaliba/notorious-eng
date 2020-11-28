@@ -72,6 +72,11 @@ public class SystemsController implements Initializable {
         generateThumbnails();
     }
 
+    /**
+     * Adds mouse events to all the buttons
+     *
+     * @author Jeff
+     */
     public void linkButtons() {
         thumbnailTab.setOnSelectionChanged(new EventHandler<Event>() {
             @Override
