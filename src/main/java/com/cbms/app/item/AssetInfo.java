@@ -1,24 +1,24 @@
-/**
- * This class can be extended to the system need.
- * Will include all sensors information, data source origin and whatever is relevant to the asset
- *
- * @author Roy Saliba
- * @version 1.0
- * @last_edit 11/07/2020
- *
- * Added a reference to the asset attributes
- * Added a map containing a reference to all the RUL measurements and when they were taken
- * @author Paul Micu
- * @version 1.1
- * @last_edit 11/08/2020
+/*
+  This class can be extended to the system need.
+  Will include all sensors information, data source origin and whatever is relevant to the asset
+
+  @author Roy Saliba
+  @version 1.0
+  @last_edit 11/07/2020
+
+  Added a reference to the asset attributes
+  Added a map containing a reference to all the RUL measurements and when they were taken
+  @author Paul Micu
+  @version 1.1
+  @last_edit 11/08/2020
  */
 package com.cbms.app.item;
 
 import java.util.*;
 
 public class AssetInfo {
-    private ArrayList<AssetAttribute> assetAttributes;
-    private Map<Date, Double> estimates;
+    private final ArrayList<AssetAttribute> assetAttributes;
+    private final Map<Date, Double> estimates;
     private Date lastRULDate;
 
     public AssetInfo() {

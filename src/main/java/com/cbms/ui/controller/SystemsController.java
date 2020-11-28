@@ -41,7 +41,7 @@ public class SystemsController implements Initializable {
     @FXML
     private Tab listTab;
 
-    private ObservableList<Pane> boxes = FXCollections.observableArrayList();
+    private final ObservableList<Pane> boxes = FXCollections.observableArrayList();
     private UIUtilities uiUtilities;
     private ObservableList<Asset> systems;
 

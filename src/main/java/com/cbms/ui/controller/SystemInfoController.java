@@ -77,8 +77,8 @@ public class SystemInfoController implements Initializable {
         serialNumber.setText(system.getSerialNo());
         manufacturer.setText("");
         systemLocation.setText("Location: ");
-        linearRUL.setText(String.valueOf("Linear RUL: " + new DecimalFormat("#.##").format(system.getAssetInfo().getRULMeasurement())));
-        lstmRUL.setText(String.valueOf("Description: "));
+        linearRUL.setText("Linear RUL: " + new DecimalFormat("#.##").format(system.getAssetInfo().getRULMeasurement()));
+        lstmRUL.setText("Description: ");
         constructSensorPanes();
     }
 
@@ -95,7 +95,7 @@ public class SystemInfoController implements Initializable {
             final NumberAxis yAxis = new NumberAxis();
             xAxis.setLabel("Cycle");
             final LineChart<Number, Number> sensorChart =
-                    new LineChart<Number, Number>(xAxis, yAxis);
+                    new LineChart<>(xAxis, yAxis);
             sensorChart.setTitle("Sensor Values");
             XYChart.Series series = new XYChart.Series();
             Map<Integer, Double> measurements = sensor.getMeasurements();
