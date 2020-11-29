@@ -2,8 +2,6 @@ package com.cbms.ui.controller;
 
 import com.cbms.app.ModelController;
 import com.cbms.app.item.Asset;
-import com.cbms.app.item.AssetAttribute;
-import com.cbms.app.item.AssetInfo;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -35,7 +33,7 @@ public class SystemsController implements Initializable {
     @FXML
     private FlowPane systemsPane;
 
-    private ObservableList<Pane> boxes = FXCollections.observableArrayList();
+    private final ObservableList<Pane> boxes = FXCollections.observableArrayList();
 
     //private ArrayList<Engine> systems;
     private ArrayList<Asset> systems;
@@ -139,7 +137,7 @@ public class SystemsController implements Initializable {
             });
             pane.getStyleClass().add("systemPane");
             Text systemName = new Text(system.getSerialNo());
-            Text systemType = new Text(system.getAssetType());
+            Text systemType = new Text(system.getAssetTypeID());
             Text linearLabel = new Text("Linear Regression RUL:");
             Text linearRUL = new Text(String.valueOf(new DecimalFormat("#.##").format(system.getAssetInfo().getRULMeasurement())));
             //Text lstmLabel = new Text("LSTM RUL:");

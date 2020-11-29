@@ -1,16 +1,16 @@
-/**
- * Model for the assets of the predictive system.
- *
- * @author Roy Saliba
- * @version 1.0
- * @last_edit 11/07/2020
+/*
+  Model for the assets of the predictive system.
+
+  @author Roy Saliba
+  @version 1.0
+  @last_edit 11/07/2020
  */
 package com.cbms.app.item;
 
 public class Asset extends Item {
 
     private String serialNo;
-    private String assetType;
+    private String assetTypeID;
     private String location;
     private String description;
     private AssetInfo assetInfo;
@@ -20,16 +20,16 @@ public class Asset extends Item {
     }
 
 
-    public Asset(String serialNo, String assetType, String location, String description) {
-        this.assetType = assetType;
+    public Asset(String serialNo, String assetTypeID, String location, String description) {
+        this.assetTypeID = assetTypeID;
         this.serialNo = serialNo;
         this.location = location;
         this.description = description;
 
     }
 
-    public Asset(String serialNo, String assetType, String location, String description, AssetInfo assetInfo) {
-        this.assetType = assetType;
+    public Asset(String serialNo, String assetTypeID, String location, String description, AssetInfo assetInfo) {
+        this.assetTypeID = assetTypeID;
         this.serialNo = serialNo;
         this.location = location;
         this.description = description;
@@ -45,12 +45,12 @@ public class Asset extends Item {
         this.serialNo = serialNo;
     }
 
-    public String getAssetType() {
-        return assetType;
+    public String getAssetTypeID() {
+        return assetTypeID;
     }
 
-    public void setAssetType(String assetType) {
-        this.assetType = assetType;
+    public void setAssetTypeID(String assetTypeID) {
+        this.assetTypeID = assetTypeID;
     }
 
     public String getLocation() {
@@ -81,7 +81,7 @@ public class Asset extends Item {
     public String toString() {
         return "Asset{" +
                 "serialNo='" + serialNo + '\'' +
-                ", assetType='" + assetType + '\'' +
+                ", assetType='" + assetTypeID + '\'' +
                 ", location='" + location + '\'' +
                 ", description='" + description + '\'' +
                 ", assetInfo=" + assetInfo.toString() +
