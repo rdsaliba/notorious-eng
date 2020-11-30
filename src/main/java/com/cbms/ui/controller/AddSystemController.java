@@ -22,6 +22,8 @@ public class AddSystemController implements Initializable {
     @FXML
     private Button cancelButton;
 
+    private UIUtilities uiUtilities;
+
     /**
      * Initialize runs before the scene is displayed.
      * It initializes elements and data in the scene.
@@ -33,6 +35,7 @@ public class AddSystemController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        uiUtilities = new UIUtilities();
         attachEvents();
     }
 
@@ -42,41 +45,18 @@ public class AddSystemController implements Initializable {
      * @author Jeff
      */
     public void attachEvents() {
+        // Change scenes to Systems.fxml
         systemMenuButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                try {
-                    FXMLLoader loader = new FXMLLoader();
-                    loader.setLocation(getClass().getResource("/Systems.fxml"));
-                    Parent systemsParent = loader.load();
-                    Scene systemInfo = new Scene(systemsParent);
-
-                    Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-                    window.setScene(systemInfo);
-                    window.show();
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                uiUtilities.changeScene(mouseEvent, "/Systems");
             }
         });
         // Change scenes to Systems.fxml
         cancelButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                try {
-                    FXMLLoader loader = new FXMLLoader();
-                    loader.setLocation(getClass().getResource("/Systems.fxml"));
-                    Parent systemsParent = loader.load();
-                    Scene systemInfo = new Scene(systemsParent);
-
-                    Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-                    window.setScene(systemInfo);
-                    window.show();
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                uiUtilities.changeScene(mouseEvent, "/Systems");
             }
         });
     }

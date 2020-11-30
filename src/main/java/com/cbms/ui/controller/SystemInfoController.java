@@ -4,11 +4,7 @@ import com.cbms.app.item.Asset;
 import com.cbms.app.item.AssetAttribute;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
@@ -18,9 +14,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
-
-import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.Map;
@@ -51,6 +44,7 @@ public class SystemInfoController implements Initializable {
 
 
     private Asset system;
+    private UIUtilities uiUtilities;
 
 
     /**
@@ -64,6 +58,7 @@ public class SystemInfoController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        uiUtilities = new UIUtilities();
         attachEvents();
     }
 
@@ -144,19 +139,7 @@ public class SystemInfoController implements Initializable {
         systemMenuButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                try {
-                    FXMLLoader loader = new FXMLLoader();
-                    loader.setLocation(getClass().getResource("/Systems.fxml"));
-                    Parent systemsParent = loader.load();
-                    Scene systemInfo = new Scene(systemsParent);
-
-                    Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-                    window.setScene(systemInfo);
-                    window.show();
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                uiUtilities.changeScene(mouseEvent, "/Systems");
             }
         });
     }
