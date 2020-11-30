@@ -28,15 +28,16 @@ public class Database {
         DatabaseConnection.start();
     }
 
-    /** When given an sql command in a string object, this method will execute that command
-     * and return the corresponding ResultSet
+    /**
+     * When given an sql command in a string object, this method will execute that command
+     * and return the corresponding ResultSet.
      *
      * @author Paul Micu
      * */
     public ResultSet executeQuery(String query) {
         ResultSet dataRS = null;
         try {
-            Connection conn = DatabaseConnection.start().getConnection();
+            Connection conn = openConnection.getConnection();
             Statement stmt = conn.createStatement();
 
             dataRS = stmt.executeQuery(query);
@@ -263,7 +264,8 @@ public class Database {
         return name;
     }
 
-    /** When given and an asset_id and an rul estimate, this will add the corresponfing entry in the asset_model_calculation table
+    /**
+     * When given and an asset_id and an rul estimate, this will add the corresponfing entry in the asset_model_calculation table
      * this only works for Linear regression model
      *
      * @author Paul Micu
@@ -271,5 +273,14 @@ public class Database {
     public void addRULEstimate(int id, double estimate) {
         String query = "insert into asset_model_calculation values(" + id + ",1,now()," + estimate + ")";
         executeQuery(query);
+    }
+
+    /**
+     * Stops the connection to the database
+     *
+     * @author Najim
+     */
+    public void stop() {
+        openConnection.stop();
     }
 }
