@@ -1,10 +1,10 @@
-/**
- * Implementation of the data pre-processor interface
- * the Process function will reduce the data and store it in the reducedDataSet variable
- *
- * @author Paul Micu
- * @version 1.0
- * @last_edit 11/01/2020
+/*
+  Implementation of the data pre-processor interface
+  the Process function will reduce the data and store it in the reducedDataSet variable
+
+  @author Paul Micu
+  @version 1.0
+  @last_edit 11/01/2020
  */
 package com.cbms.preprocessing;
 
@@ -26,10 +26,10 @@ import static com.cbms.AppConstants.SYSOUT_DEBUG;
 import static com.cbms.AppConstants.SYSTEM_NAME;
 
 public class DataPreProcessorImpl implements DataPreProcessor {
-    private Instances originalDataset;
+    private final Instances originalDataset;
     private Instances reducedDataset;
     private Instances minimallyReducedDataset;
-    private ArrayList<Integer> removedIndex;
+    private final ArrayList<Integer> removedIndex;
 
     public DataPreProcessorImpl(Instances originalDataset) throws Exception {
         this.originalDataset = originalDataset;
@@ -193,7 +193,7 @@ public class DataPreProcessorImpl implements DataPreProcessor {
 
     }
 
-    /**Given 2 instances Object, it will remove the attributes that are not shared between the two and return the testset
+    /**Given 2 instances Object, it will remove the attributes that are not shared between the two and return the test set
      *
      * @author Paul Micu
      * */

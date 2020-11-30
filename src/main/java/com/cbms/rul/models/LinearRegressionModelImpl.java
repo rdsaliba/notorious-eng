@@ -1,17 +1,16 @@
-/**
- * Implementation of the model strategy interface, part of the Strategy design pattern
- * Contains 2 methods, one to train the data and another private function to remove instances that are too old
- * and cannot provide useful information
- *
- * @author      Paul Micu
- * @version     1.0
- * @last_edit   11/01/2020
+/*
+  Implementation of the model strategy interface, part of the Strategy design pattern
+  Contains 2 methods, one to train the data and another private function to remove instances that are too old
+  and cannot provide useful information
+
+  @author      Paul Micu
+  @version     1.0
+  @last_edit   11/01/2020
  */
 package com.cbms.rul.models;
 
 import weka.classifiers.Classifier;
 import weka.classifiers.functions.LinearRegression;
-import weka.classifiers.functions.SMOreg;
 import weka.core.Instance;
 import weka.core.Instances;
 

@@ -1,15 +1,15 @@
-/**
- * This Controller is the first thing to run as the program is started
- * It will setup the database and train the models
- *
- * @author Paul Micu
- * @version 1.0
- * @last_edit 11/01/2020
+/*
+  This Controller is the first thing to run as the program is started
+  It will setup the database and train the models
+
+  @author Paul Micu
+  @version 1.0
+  @last_edit 11/01/2020
  */
 package com.cbms.app;
 
 import com.cbms.app.item.Asset;
-import com.cbms.preprocessing.DataPrePreprossesorController;
+import com.cbms.preprocessing.DataPrePreprocessorController;
 import com.cbms.rul.assessment.AssessmentController;
 import com.cbms.rul.models.LinearRegressionModelImpl;
 import com.cbms.rul.models.ModelsController;
@@ -25,13 +25,13 @@ import java.util.TreeMap;
 public class ModelController {
     private static ModelController instance = null;
     private ArrayList<Integer> trainingSets;
-    private Map<String, Instances> instancesSets;
-    private Map<String, Instances> reducedInstancesSets;
-    private Map<String, Classifier> classifierSets;
-    private DataPrePreprossesorController dataPrePreprossesorController;
-    private ModelsController modelsController;
-    private AssessmentController assessmentController;
-    private Database db;
+    private final Map<String, Instances> instancesSets;
+    private final Map<String, Instances> reducedInstancesSets;
+    private final Map<String, Classifier> classifierSets;
+    private final DataPrePreprocessorController dataPrePreprocessorController;
+    private final ModelsController modelsController;
+    private final AssessmentController assessmentController;
+    private final Database db;
 
     private ModelController() throws Exception {
         db = new Database();
@@ -40,7 +40,7 @@ public class ModelController {
         reducedInstancesSets = new TreeMap<>();
         classifierSets = new TreeMap<>();
         modelsController = new ModelsController(new LinearRegressionModelImpl());
-        dataPrePreprossesorController = DataPrePreprossesorController.getInstance();
+        dataPrePreprocessorController = DataPrePreprocessorController.getInstance();
         assessmentController = new AssessmentController();
     }
 
@@ -70,7 +70,7 @@ public class ModelController {
 
         // get trained classifier
         for (Map.Entry<String, Instances> instances : instancesSets.entrySet()) {
-            Instances minimallyReducedData = dataPrePreprossesorController.minimallyReduceData(instances.getValue());
+            Instances minimallyReducedData = dataPrePreprocessorController.minimallyReduceData(instances.getValue());
             reducedInstancesSets.put(instances.getKey(), minimallyReducedData);
             classifierSets.put(instances.getKey(), modelsController.trainModel(minimallyReducedData));
             System.out.println("Created classifier for " + instances.getKey());
@@ -106,12 +106,12 @@ public class ModelController {
      * @author Paul Micu
      */
     public ArrayList<Asset> estimateRUL(ArrayList<Asset> assets, String classifierID) throws Exception {
-        double estimate = -0.0;
+        double estimate;
 
         for (Asset asset : assets) {
             Instances toTest = db.createInstanceFromAssetID(asset.getId());
-            toTest =dataPrePreprossesorController.removeAttributes(reducedInstancesSets.get("FD001"),toTest);
-            toTest = dataPrePreprossesorController.addRULCol(toTest);
+            toTest = dataPrePreprocessorController.removeAttributes(reducedInstancesSets.get("FD001"),toTest);
+            toTest = dataPrePreprocessorController.addRULCol(toTest);
             estimate = assessmentController.estimateRUL(toTest, classifierSets.get(classifierID));
             asset.getAssetInfo().addRULMeasurement(estimate);
             db.addRULEstimate(asset.getId(), estimate);
