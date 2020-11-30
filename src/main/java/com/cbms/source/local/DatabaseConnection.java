@@ -37,7 +37,7 @@ public class DatabaseConnection {
     }
 
     /**
-     * Creates a connection to a specified database (with the URL) using the JDBC API
+     * Creates a connection to a specified database (with the URL) using the JDBC API.
      *
      * @author Najim
      */
@@ -62,6 +62,7 @@ public class DatabaseConnection {
 
     /**
      * Stops the connection to the database.
+     *
      */
     public void stop() {
         try {
