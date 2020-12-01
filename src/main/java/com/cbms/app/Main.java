@@ -2,6 +2,7 @@ package com.cbms.app;
 
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -15,7 +16,6 @@ public class Main extends Application {
 
         ModelController modelController = ModelController.getInstance();
         modelController.initializer();
-        modelController.stopDatabase();
         launch(args);
     }
 
@@ -26,5 +26,21 @@ public class Main extends Application {
         primaryStage.setTitle("CBMS");
         primaryStage.setScene(sample);
         primaryStage.show();
+        primaryStage.setOnCloseRequest(e -> {
+            try {
+                closeProgram();
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+        });
+    }
+
+    private void closeProgram() throws Exception {
+        System.out.println("Program closing.");
+        ModelController modelController = ModelController.getInstance();
+        //Closing database connection.
+        modelController.stopDatabase();
+        Platform.exit();
+        System.exit(0);
     }
 }
