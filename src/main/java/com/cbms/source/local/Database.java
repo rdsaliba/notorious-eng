@@ -26,7 +26,7 @@ public class Database {
     private static DatabaseConnection openConnection;
 
     public Database() {
-        DatabaseConnection.start();
+        openConnection = DatabaseConnection.start();
     }
 
     /**
