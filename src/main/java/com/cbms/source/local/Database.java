@@ -277,6 +277,21 @@ public class Database {
     }
 
     /**
+    * When given an asset ID this will delete the the asset from the database as well as the corresponding
+     * tables that reference the asset ID
+    * */
+    public void deleteAssetByID(int id) {
+        String query = "DELETE FROM attribute_measurements WHERE asset_id = " + id;
+        executeQuery(query);
+        query = "DELETE FROM asset_model_calculation WHERE asset_id = " + id;
+        executeQuery(query);
+        query = "DELETE FROM dataset_asset_assoc WHERE asset_id = " + id;
+        executeQuery(query);
+        query = "DELETE FROM asset WHERE asset_id = " + id;
+        executeQuery(query);
+    }
+
+    /**
      * Stops the connection to the database
      *
      * @author Najim

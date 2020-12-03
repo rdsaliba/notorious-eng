@@ -2,13 +2,16 @@ package com.cbms.ui.controller;
 
 import com.cbms.app.item.Asset;
 import com.cbms.app.item.AssetAttribute;
+import com.cbms.source.local.Database;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
@@ -17,12 +20,15 @@ import javafx.scene.text.Text;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class SystemInfoController implements Initializable {
 
     @FXML
     private Button systemMenuButton;
+    @FXML
+    private Button deletebtn;
     @FXML
     private AnchorPane systemInfoPane;
     @FXML
@@ -44,6 +50,7 @@ public class SystemInfoController implements Initializable {
 
 
     private Asset system;
+    private Database db;
     private UIUtilities uiUtilities;
 
 
@@ -58,6 +65,7 @@ public class SystemInfoController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        db = new Database();
         uiUtilities = new UIUtilities();
         attachEvents();
     }
@@ -142,5 +150,30 @@ public class SystemInfoController implements Initializable {
                 uiUtilities.changeScene(mouseEvent, "/Systems");
             }
         });
+
+        deletebtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Confirmation Dialog");
+                alert.setHeaderText("Confirmation of system deletion");
+                alert.setContentText("Are you sure you want to delete this system?");
+
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.OK){
+                    deleteAsset();
+                }
+            }
+        });
+    }
+
+    /**
+     * Send the asset ID to the Database class in order for it to be deleted.
+     *
+     * @author Jeff
+     */
+    public void deleteAsset() {
+        db.deleteAssetByID(system.getId());
     }
 }
