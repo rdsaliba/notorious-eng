@@ -23,9 +23,10 @@ import java.text.ParseException;
 import java.util.ArrayList;
 
 public class Database {
+    private static DatabaseConnection openConnection;
 
     public Database() {
-        DatabaseConnection.start();
+        openConnection = DatabaseConnection.start();
     }
 
     /**

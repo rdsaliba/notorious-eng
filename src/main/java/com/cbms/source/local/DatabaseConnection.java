@@ -66,7 +66,6 @@ public class DatabaseConnection {
      */
     public void stop() {
         try {
-            openConnection = null;
             this.conn.close();
             System.out.println("Connection stopped.");
         } catch (SQLException throwables) {
