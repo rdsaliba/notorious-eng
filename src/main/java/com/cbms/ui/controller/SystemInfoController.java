@@ -163,6 +163,7 @@ public class SystemInfoController implements Initializable {
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == ButtonType.OK){
                     deleteAsset();
+                    uiUtilities.changeScene(mouseEvent, "/Systems");
                 }
             }
         });
