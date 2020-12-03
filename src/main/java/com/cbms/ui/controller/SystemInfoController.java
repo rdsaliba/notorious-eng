@@ -9,7 +9,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
@@ -18,12 +20,15 @@ import javafx.scene.text.Text;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class SystemInfoController implements Initializable {
 
     @FXML
     private Button systemMenuButton;
+    @FXML
+    private Button deletebtn;
     @FXML
     private AnchorPane systemInfoPane;
     @FXML
@@ -150,20 +155,15 @@ public class SystemInfoController implements Initializable {
         deletebtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                deleteAsset();
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Confirmation Dialog");
+                alert.setHeaderText("Confirmation of system deletion");
+                alert.setContentText("Are you sure you want to delete this system?");
 
-                try {
-                    FXMLLoader loader = new FXMLLoader();
-                    loader.setLocation(getClass().getResource("/Systems.fxml"));
-                    Parent systemsParent = loader.load();
-                    Scene systemInfo = new Scene(systemsParent);
-
-                    Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-                    window.setScene(systemInfo);
-                    window.show();
-
-                } catch (IOException e) {
-                    e.printStackTrace();
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.OK){
+                    deleteAsset();
+                    uiUtilities.changeScene(mouseEvent, "/Systems");
                 }
             }
         });

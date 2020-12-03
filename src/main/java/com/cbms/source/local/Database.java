@@ -277,8 +277,8 @@ public class Database {
     }
 
     /**
-     * Deletes the asset from the database.
-     *
+     * When given an asset ID this will delete the the asset from the database as well as the corresponding
+     * tables that reference the asset ID
      * @param id
      */
     public void deleteAssetByID(int id) {
