@@ -47,7 +47,8 @@ public class SystemInfoController implements Initializable {
     private Text lstmRUL;
     @FXML
     private FlowPane sensorFlowPane;
-
+    @FXML
+    private Button deletebtn;
 
     private Asset system;
     private Database db;
@@ -154,7 +155,6 @@ public class SystemInfoController implements Initializable {
         deletebtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle("Confirmation Dialog");
                 alert.setHeaderText("Confirmation of system deletion");
