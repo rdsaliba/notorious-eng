@@ -47,8 +47,7 @@ public class SystemInfoController implements Initializable {
     private Text lstmRUL;
     @FXML
     private FlowPane sensorFlowPane;
-    @FXML
-    private Button deletebtn;
+
 
     private Asset system;
     private Database db;
