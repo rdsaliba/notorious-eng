@@ -54,22 +54,22 @@ public class Database {
      *
      * @author Paul Micu
      * */
-    public ArrayList<Integer> getTrainDatasets() throws SQLException {
-        ArrayList<Integer> datasets = new ArrayList<>();
-        ResultSet datasetQuery = executeQuery("select dataset_id from cbms.dataset where train=1");
-        while (datasetQuery.next())
-            datasets.add(datasetQuery.getInt("dataset_id"));
-        return datasets;
-    }
+//    public ArrayList<Integer> getTrainDatasets() throws SQLException {
+//        ArrayList<Integer> datasets = new ArrayList<>();
+//        ResultSet datasetQuery = executeQuery("select dataset_id from cbms.dataset where train=1");
+//        while (datasetQuery.next())
+//            datasets.add(datasetQuery.getInt("dataset_id"));
+//        return datasets;
+//    }
 
     /** When given a dataset_id, this will return an arraylist of Assets containing all of the assets in that dataset
      * the asset object will also contain a reference to all the asset attributes(sensors) and all their measurements
      *
      * @author Paul Micu
      * */
-    public ArrayList<Asset> getAssetsFromDatasetID(int datasetID) throws SQLException {
+    public ArrayList<Asset> getAssetsFromAssetTypeID(int assetTypeID) throws SQLException {
         ArrayList<Asset> assets = new ArrayList<>();
-        ResultSet assetsQuery = executeQuery("SELECT a.asset_id, a.asset_type_id, a.sn, a.location,a.description FROM asset a, dataset_asset_assoc daa WHERE a.asset_id = daa.asset_id AND daa.dataset_id=" + datasetID);
+        ResultSet assetsQuery = executeQuery("SELECT a.asset_id, a.asset_type_id, a.sn, a.location,a.description FROM asset a WHERE a.asset_type_id = " + assetTypeID);
 
         while (assetsQuery.next()) {
             Asset newAsset = new Asset();
@@ -192,7 +192,7 @@ public class Database {
         Instances data;
         double[] vals;
         String datasetName = getDatasetNameFromID(datasetID);
-        ArrayList<Asset> assets = getAssetsFromDatasetID(datasetID);
+        ArrayList<Asset> assets = getAssetsFromAssetTypeID(datasetID);
         ArrayList<String> attributeNames = getAttributesNameFromDatasetID(datasetID);
 
 

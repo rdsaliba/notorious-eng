@@ -35,7 +35,7 @@ public class ModelController {
 
     private ModelController() throws Exception {
         db = new Database();
-        trainingSets = db.getTrainDatasets();
+        //trainingSets = db.getTrainDatasets();
         instancesSets = new TreeMap<>();
         reducedInstancesSets = new TreeMap<>();
         classifierSets = new TreeMap<>();
@@ -95,7 +95,7 @@ public class ModelController {
      */
     public ArrayList<Asset> estimate() throws Exception {
 
-        ArrayList<Asset> assets = db.getAssetsFromDatasetID(2);
+        ArrayList<Asset> assets = db.getAssetsFromAssetTypeID(1);
         assets = estimateRUL(assets, "FD001");
 
         return assets;
