@@ -17,7 +17,6 @@ import com.cbms.source.local.Database;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
@@ -35,7 +34,7 @@ public class ModelController {
 
     private ModelController() throws Exception {
         db = new Database();
-        //trainingSets = db.getTrainDatasets();
+        trainingSets = db.getTrainAssetTypes();
         instancesSets = new TreeMap<>();
         reducedInstancesSets = new TreeMap<>();
         classifierSets = new TreeMap<>();
@@ -50,22 +49,19 @@ public class ModelController {
         return instance;
     }
 
-    /** this is the first thing that gets run, it will initialize the instances sets and train the models as Classifiers
-     * for now, only the first dataset is handled
+    /**
+     * This is the first thing that gets run when opening the application. it will initialize
+     * the instances sets based on the asset types and train the models as Classifiers.
      *
      * @author Paul
      * */
     public void initializer() throws Exception {
-        // to get all of the sets
-        // trainingSets = db.getTrainDatasets();
-        trainingSets = new ArrayList<>();
-        trainingSets.add(1);
-
+            trainingSets = db.getTrainAssetTypes();
 
         // get instances from db
-        for (Integer setID : trainingSets) {
-            instancesSets.put(db.getDatasetNameFromID(setID), db.createInstances(setID));
-            System.out.println("Created Instances for " + setID);
+        for (Integer assetTypeID : trainingSets) {
+            instancesSets.put(db.getAssetTypeNameFromID(assetTypeID), db.createInstancesFromAssetTypeID(assetTypeID, 1));
+            System.out.println("Created Instances for " + assetTypeID);
         }
 
         // get trained classifier
@@ -81,10 +77,9 @@ public class ModelController {
     /**
      * This function is to stop the connection to the database
      *
-     * @throws SQLException
      * @author Najim
      */
-    public void stopDatabase() throws SQLException {
+    public void stopDatabase() {
         db.stop();
     }
 
@@ -94,14 +89,15 @@ public class ModelController {
      * @author Paul Micu
      */
     public ArrayList<Asset> estimate() throws Exception {
-
-        ArrayList<Asset> assets = db.getAssetsFromAssetTypeID(1);
-        assets = estimateRUL(assets, "FD001");
+    // TODO: 2020-12-05 This estimate will have to eventually be changed to accept user input as the asset type instead of hard coded.
+        ArrayList<Asset> assets = db.getAssetsFromAssetTypeID(1, 0);
+        assets = estimateRUL(assets, "Engine");
 
         return assets;
     }
 
-    /** Given an arraylist of testing assets and the classifier's name, this will return the same arraylist
+    /**
+     * Given an arraylist of testing assets and the classifier's name, this will return the same arraylist
      *
      * @author Paul Micu
      */
@@ -110,7 +106,7 @@ public class ModelController {
 
         for (Asset asset : assets) {
             Instances toTest = db.createInstanceFromAssetID(asset.getId());
-            toTest = dataPrePreprocessorController.removeAttributes(reducedInstancesSets.get("FD001"),toTest);
+            toTest = dataPrePreprocessorController.removeAttributes(reducedInstancesSets.get(classifierID),toTest);
             toTest = dataPrePreprocessorController.addRULCol(toTest);
             estimate = assessmentController.estimateRUL(toTest, classifierSets.get(classifierID));
             asset.getAssetInfo().addRULMeasurement(estimate);
