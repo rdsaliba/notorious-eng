@@ -10,10 +10,7 @@ package com.cbms.source.local;
 import com.cbms.app.item.Asset;
 import com.cbms.app.item.AssetAttribute;
 import com.cbms.app.item.AssetInfo;
-import weka.core.Attribute;
-import weka.core.FastVector;
-import weka.core.Instance;
-import weka.core.Instances;
+import weka.core.*;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -176,7 +173,7 @@ public class Database {
             for (int i = 0; i < asset.getAssetInfo().getAssetAttributes().size(); i++) {
                 vals[i + 2] = asset.getAssetInfo().getAssetAttributes().get(i).getMeasurements(timeCycle);
             }
-            data.add(new Instance(1.0, vals));
+            data.add(new DenseInstance(1.0, vals));      //Changed from Instance to DenseInstance
         }
 
         return data;
@@ -215,7 +212,7 @@ public class Database {
                 for (int i = 0; i < asset.getAssetInfo().getAssetAttributes().size(); i++) {
                     vals[i + 2] = asset.getAssetInfo().getAssetAttributes().get(i).getMeasurements(timeCycle);
                 }
-                data.add(new Instance(1.0, vals));
+                data.add(new DenseInstance(1.0, vals));    //Changed to DenseInstance due to updating Weka version
             }
         }
         return data;
