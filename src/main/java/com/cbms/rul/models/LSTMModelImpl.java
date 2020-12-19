@@ -22,6 +22,9 @@ public class LSTMModelImpl implements ModelStrategy
     {
         firstTrain.setClassIndex(firstTrain.numAttributes() - 1);
 
+        Instances trainDataset = LinearRegressionModelImpl.removeInstances(firstTrain);
+        trainDataset.setClassIndex(trainDataset.numAttributes() - 1);
+
         //DL4J Recurrent Neural Network (RNN)
         Dl4jMlpClassifier network = new Dl4jMlpClassifier();
 
@@ -64,7 +67,7 @@ public class LSTMModelImpl implements ModelStrategy
             network.setLayers(lstmLayer1, outLayer);                //Two layers for now, LSTM and the output
 
             //train with the DL4J classifier
-            network.buildClassifier(firstTrain);
+            network.buildClassifier(trainDataset);
 
             // TODO: Evaluate
 //        Evaluation ev = new Evaluation(firstTrain);
@@ -77,6 +80,7 @@ public class LSTMModelImpl implements ModelStrategy
             ex.printStackTrace();
         }
 
+        //return Neural network Classifier for LSTM
         return network;
     }
 
