@@ -40,6 +40,10 @@ public class ModelController {
         reducedInstancesSets = new TreeMap<>();
         classifierSets = new TreeMap<>();
         modelsController = new ModelsController(new LinearRegressionModelImpl());
+
+        //To test getting RUL values using LSTM instead of LinearRegression:
+        //modelsController = new ModelsController(new LSTMModelImpl());
+
         dataPrePreprocessorController = DataPrePreprocessorController.getInstance();
         assessmentController = new AssessmentController();
     }
