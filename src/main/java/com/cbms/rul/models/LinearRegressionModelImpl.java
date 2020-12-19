@@ -39,7 +39,7 @@ public class LinearRegressionModelImpl implements ModelStrategy {
      To use this function you need to pass the training dataset as a parameter.
      @author Talal
      */
-    private Instances removeInstances (Instances trainDataset) {
+    public static Instances removeInstances (Instances trainDataset) {
         for (int i = 0; i < trainDataset.numInstances() ; i++) {
             Instance inst = trainDataset.instance(i);
             if (inst.value(inst.classAttribute())>150) {
