@@ -109,7 +109,7 @@ public class ModelController {
             toTest = dataPrePreprocessorController.removeAttributes(reducedInstancesSets.get(classifierID),toTest);
             toTest = dataPrePreprocessorController.addRULCol(toTest);
             estimate = assessmentController.estimateRUL(toTest, classifierSets.get(classifierID));
-            asset.getAssetInfo().addRULMeasurement(estimate);
+            asset.getAssetInfo().addRULEstimate(estimate);
             db.addRULEstimate(asset.getId(), estimate);
         }
 

@@ -2,6 +2,7 @@ package com.cbms.ui.controller;
 
 import com.cbms.app.item.Asset;
 import com.cbms.app.item.AssetAttribute;
+import com.cbms.app.item.Measurement;
 import com.cbms.source.local.Database;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -19,7 +20,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import java.net.URL;
 import java.text.DecimalFormat;
-import java.util.Map;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -85,7 +86,7 @@ public class SystemInfoController implements Initializable {
         serialNumber.setText(system.getSerialNo());
         manufacturer.setText("");
         systemLocation.setText("Location: ");
-        linearRUL.setText("Linear RUL: " + new DecimalFormat("#.##").format(system.getAssetInfo().getRULMeasurement()));
+        linearRUL.setText("Linear RUL: " + new DecimalFormat("#.##").format(system.getAssetInfo().getRULEstimate()));
         lstmRUL.setText("Description: ");
         constructSensorPanes();
     }
@@ -106,7 +107,7 @@ public class SystemInfoController implements Initializable {
                     new LineChart<>(xAxis, yAxis);
             sensorChart.setTitle("Sensor Values");
             XYChart.Series series = new XYChart.Series();
-            Map<Integer, Double> measurements = sensor.getMeasurements();
+            ArrayList<Measurement> measurements = sensor.getMeasurements();
             series.getData().add(new XYChart.Data(1, measurements.get(1)));
             series.getData().add(new XYChart.Data(2, measurements.get(2)));
             series.getData().add(new XYChart.Data(3, measurements.get(3)));

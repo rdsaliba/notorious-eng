@@ -147,7 +147,7 @@ public class SystemsController implements Initializable {
             Text systemName = new Text(system.getSerialNo());
             Text systemType = new Text(system.getAssetTypeID());
             Text linearLabel = new Text("Linear Regression RUL:");
-            Text linearRUL = new Text(String.valueOf(new DecimalFormat("#.##").format(system.getAssetInfo().getRULMeasurement())));
+            Text linearRUL = new Text(String.valueOf(new DecimalFormat("#.##").format(system.getAssetInfo().getRULEstimate())));
             //Text lstmLabel = new Text("LSTM RUL:");
             //Text lstmRUL = new Text(String.valueOf(system.getLstmRUL()));
 
@@ -212,7 +212,7 @@ public class SystemsController implements Initializable {
 
         TableColumn<Asset, Double> linearRULCol = new TableColumn<>("Linear RUL");
         linearRULCol.setCellValueFactory(cellData -> new SimpleDoubleProperty(
-                Double.parseDouble(new DecimalFormat("#.##").format(cellData.getValue().getAssetInfo().getRULMeasurement()))).asObject());
+                Double.parseDouble(new DecimalFormat("#.##").format(cellData.getValue().getAssetInfo().getRULEstimate()))).asObject());
 
         TableColumn locationCol = new TableColumn("Location");
         locationCol.setCellValueFactory(
