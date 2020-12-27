@@ -109,6 +109,8 @@ public class ModelController {
                     trainModel(trainedModel);
                 } catch (SQLException e) {
                     e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
             modelDAOImpl.setModelsToTrain(trainedModelsToRetrain);
@@ -123,7 +125,7 @@ public class ModelController {
      *
      * @author Paul
      */
-    private void trainModel(TrainedModel trainedModel) throws SQLException {
+    private void trainModel(TrainedModel trainedModel) throws Exception {
         Instances trainingSet = createInstancesFromAssets(assetDaoImpl.getAssetsFromAssetTypeID(trainedModel.getAssetTypeID()));
         Instances reducedData = DataPrePreprocessorController.getInstance().minimallyReduceData(trainingSet);
         ModelStrategy modelStrategy = getModelStrategy(trainedModel);
