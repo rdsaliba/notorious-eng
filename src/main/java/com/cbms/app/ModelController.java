@@ -3,8 +3,8 @@
   It will setup the database and train the models
 
   @author Paul Micu
-  @version 1.0
-  @last_edit 11/01/2020
+  @version 2.0
+  @last_edit 12/27/2020
  */
 package com.cbms.app;
 
@@ -45,8 +45,9 @@ public class ModelController {
     }
 
     /**
-     * This is the first thing that gets run when opening the application. it will initialize
-     * the instances sets based on the asset types and train the models as Classifiers.
+     * This is the first thing that gets run when opening the application.
+     * It will check and update any models that need to
+     * it will check and recalculate the RUL for any asset that got new measurements
      *
      * @author Paul
      */
@@ -55,12 +56,23 @@ public class ModelController {
         checkAssets();
     }
 
+    /**
+     *  This function will return an arraylist of all live assets
+     *
+     * @author Paul
+     */
     public ArrayList<Asset> getAllLiveAssets() {
         if (checkAssets())
             liveAssets = assetDaoImpl.getAllLiveAssets();
         return liveAssets;
     }
 
+    /**
+     *  this function checks all Assets for updated status
+     *  and if the asset needs to be updated, it will recalculate the RUL using the corresponding model
+     *
+     * @author Paul
+     */
     private boolean checkAssets() {
         //check for assets that need a new calculation
         ArrayList<Asset> assetsToUpdate = assetDaoImpl.getAssetsToUpdate();
@@ -77,6 +89,14 @@ public class ModelController {
         return !assetsToUpdate.isEmpty();
     }
 
+    /**
+     *  This function checks all models for a retrain tag
+     *  the retrain tag is only actif if new archived assets are added
+     *  if it needs retraining it will retrain using the corresponding
+     *  asset and model info
+     *
+     * @author Paul
+     */
     public void checkModels() {
 
         // check for models that need retraining
@@ -98,6 +118,11 @@ public class ModelController {
         modelDAOImpl.closeConnection();
     }
 
+    /**
+     *  Given a trained model this function will retrain it with the current data and settings of the model
+     *
+     * @author Paul
+     */
     private void trainModel(TrainedModel trainedModel) throws SQLException {
         Instances trainingSet = createInstancesFromAssets(assetDaoImpl.getAssetsFromAssetTypeID(trainedModel.getAssetTypeID()));
         Instances reducedData = DataPrePreprocessorController.getInstance().minimallyReduceData(trainingSet);
@@ -108,6 +133,12 @@ public class ModelController {
         }
     }
 
+    /**
+     *  This function simply returns the Model Strategy object that is referenced
+     *  in the trained model object
+     *
+     * @author Paul
+     */
     private ModelStrategy getModelStrategy(TrainedModel trainedModel) {
         String stratName = modelDAOImpl.getModelNameFromModelID(trainedModel.getModelID());
         switch (stratName) {
@@ -120,7 +151,7 @@ public class ModelController {
 
 
     /**
-     * Given an arraylist of testing assets and the classifier's name, this will return the same arraylist
+     * Given an asset and the classifier, this will return the double value of the estimation
      *
      * @author Paul Micu
      */
@@ -140,6 +171,12 @@ public class ModelController {
         }
     }
 
+    /**
+     *  given a list of assets this function will return the corresponding
+     *  WEKA instances object
+     *
+     * @author Paul
+     */
     public Instances createInstancesFromAssets(ArrayList<Asset> assets) {
         FastVector attributesVector;
         Instances data;
