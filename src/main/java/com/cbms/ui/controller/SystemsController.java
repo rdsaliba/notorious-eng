@@ -2,6 +2,7 @@ package com.cbms.ui.controller;
 
 import com.cbms.app.ModelController;
 import com.cbms.app.item.Asset;
+import com.cbms.rul.assessment.AssessmentController;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -21,6 +22,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+
 import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -63,7 +65,7 @@ public class SystemsController implements Initializable {
         uiUtilities = new UIUtilities();
 
         try {
-            systems = FXCollections.observableArrayList(ModelController.getInstance().estimate());
+            systems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -147,7 +149,7 @@ public class SystemsController implements Initializable {
             Text systemName = new Text(system.getSerialNo());
             Text systemType = new Text(system.getAssetTypeID());
             Text linearLabel = new Text("Linear Regression RUL:");
-            Text linearRUL = new Text(String.valueOf(new DecimalFormat("#.##").format(system.getAssetInfo().getRULMeasurement())));
+            Text linearRUL = new Text(String.valueOf(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(system.getId()))));
             //Text lstmLabel = new Text("LSTM RUL:");
             //Text lstmRUL = new Text(String.valueOf(system.getLstmRUL()));
 
