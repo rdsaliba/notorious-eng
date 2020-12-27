@@ -26,12 +26,15 @@ import static com.cbms.AppConstants.SYSOUT_DEBUG;
 import static com.cbms.AppConstants.SYSTEM_NAME;
 
 public class DataPreProcessorImpl implements DataPreProcessor {
-    private final Instances originalDataset;
+    private Instances originalDataset;
     private Instances reducedDataset;
     private Instances minimallyReducedDataset;
-    private final ArrayList<Integer> removedIndex;
+    private ArrayList<Integer> removedIndex;
 
-    public DataPreProcessorImpl(Instances originalDataset) throws Exception {
+    public DataPreProcessorImpl(){
+
+    }
+    public DataPreProcessorImpl(Instances originalDataset) {
         this.originalDataset = originalDataset;
         this.reducedDataset = originalDataset;
         this.minimallyReducedDataset = originalDataset;
@@ -42,7 +45,7 @@ public class DataPreProcessorImpl implements DataPreProcessor {
      *
      * @author Khaled
      * */
-    private static Instances addRUL(Instances trainingData, double[] maxCycles) throws Exception {
+    private static Instances addRUL(Instances trainingData, double[] maxCycles) {
 
       /*  Add filter = new Add();
         filter.setAttributeIndex("last");
@@ -139,7 +142,7 @@ public class DataPreProcessorImpl implements DataPreProcessor {
      * @author Khaled
      */
     @Override
-    public void processMinimalReduction() throws Exception {
+    public void processMinimalReduction() {
 
         for (int i = 0; i < originalDataset.numAttributes(); i++) {
             AttributeStats as = originalDataset.attributeStats(i);
@@ -167,9 +170,14 @@ public class DataPreProcessorImpl implements DataPreProcessor {
         int[] indicesToDelete = removedIndex.stream().mapToInt(i -> i).toArray();   //convert Integer list to int array
         remove.setAttributeIndicesArray(indicesToDelete);
 
-        remove.setInputFormat(originalDataset);
-        minimallyReducedDataset = Filter.useFilter(originalDataset, remove);
-        minimallyReducedDataset = addRULCol(minimallyReducedDataset);
+        try {
+            remove.setInputFormat(originalDataset);
+            minimallyReducedDataset = Filter.useFilter(originalDataset, remove);
+            minimallyReducedDataset = addRULCol(minimallyReducedDataset);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     /**Given an Instance object, this will add an RUL attribute at the end of the other attributes

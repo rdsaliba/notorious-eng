@@ -31,17 +31,19 @@ public class DataPrePreprocessorController {
         return dataPreProcessorImpl.getReducedDataset();
     }
 
-    public Instances minimallyReduceData(Instances originalData) throws Exception {
+    public Instances minimallyReduceData(Instances originalData) {
         dataPreProcessorImpl = new DataPreProcessorImpl(originalData);
         dataPreProcessorImpl.processMinimalReduction();
         return dataPreProcessorImpl.getMinimallyReducedDataset();
     }
 
     public Instances addRULCol(Instances toADD) throws Exception {
+        dataPreProcessorImpl = new DataPreProcessorImpl();
         return dataPreProcessorImpl.addRULCol(toADD);
     }
 
     public Instances removeAttributes(Instances trainDataset, Instances testDataset) throws Exception {
-        return dataPreProcessorImpl.removeAttributes(trainDataset,testDataset);
+        dataPreProcessorImpl = new DataPreProcessorImpl();
+        return dataPreProcessorImpl.removeAttributes(trainDataset, testDataset);
     }
 }
