@@ -1,6 +1,6 @@
 /*
   Implementation of the DAO design pattern
-
+  This class extends the general DAO object and implements the AssetDAO interface
 
   @author      Paul Micu
   @version     1.0
