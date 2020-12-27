@@ -214,7 +214,7 @@ public class SystemsController implements Initializable {
 
         TableColumn<Asset, Double> linearRULCol = new TableColumn<>("Linear RUL");
         linearRULCol.setCellValueFactory(cellData -> new SimpleDoubleProperty(
-                Double.parseDouble(new DecimalFormat("#.##").format(cellData.getValue().getAssetInfo().getRULMeasurement()))).asObject());
+                Double.parseDouble(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(cellData.getValue().getId())))).asObject());
 
         TableColumn locationCol = new TableColumn("Location");
         locationCol.setCellValueFactory(
