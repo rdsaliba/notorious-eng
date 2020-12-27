@@ -1,3 +1,11 @@
+/*
+  Implementation of the DAO design pattern
+
+
+  @author      Paul Micu
+  @version     1.0
+  @last_edit   12/27/2020
+ */
 package com.cbms.source.local;
 
 import com.cbms.app.TrainedModel;
@@ -22,6 +30,12 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
     private static final String INSERT_NEW_ASSET_MEASUREMENT="INSERT INTO asset_model_calculation values( ? , ? ,now(), ?)";
     private static final String SET_UPDATED_FALSE="UPDATE asset set updated = 0 where asset_id = ?";
 
+    /**
+     * This will return an arraylist of assets that have the updated tag set to true
+     * it will be used to identify which asset need new RUL measurements
+     *
+     * @author Paul
+     */
     @Override
     public ArrayList<Asset> getAssetsToUpdate() {
         ArrayList<Asset> assets = new ArrayList<>();
@@ -43,6 +57,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
      * tables that reference the asset ID
      *
      * @param assetID represents the asset's ID
+     * @author Jeff
      */
     @Override
     public void deleteAssetByID(int assetID) {
@@ -75,6 +90,13 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         }
     }
 
+    /**
+     * When given an asset ID this return an arraylist of string containing all the names of the attributes
+     * that have a relationship to the asset
+     *
+     * @param assetID represents the asset's ID
+     * @author Paul
+     */
     @Override
     public ArrayList<String> getAttributesNameFromAssetID(int assetID) {
         ArrayList<String> attributeNames = new ArrayList<>();
@@ -92,6 +114,14 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         return attributeNames;
     }
 
+    /**
+     * When given an asset type id it will return an ArrayList of asset
+     * that are archived and of that type
+     * used for classifier calculation
+     *
+     * @param assetTypeID represents the asset's type ID
+     * @author Paul
+     */
     @Override
     public ArrayList<Asset> getAssetsFromAssetTypeID(int assetTypeID) {
         ArrayList<Asset> assets = new ArrayList<>();
@@ -110,6 +140,12 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         return assets;
     }
 
+    /**
+     * When given an asset type id it will return the name of that asset type
+     *
+     * @param assetTypeID represents the asset's type ID
+     * @author Paul
+     */
     @Override
     public String getAssetTypeNameFromID(String assetTypeID) {
         String name = "null";
@@ -128,6 +164,11 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         }
     }
 
+    /**
+     * This will return an arraylist of all assets that are not archived
+     *
+     * @author Paul
+     */
     @Override
     public ArrayList<Asset> getAllLiveAssets() {
         ArrayList<Asset> assets = new ArrayList<>();
@@ -144,6 +185,15 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         return assets;
     }
 
+    /**
+     * given an rul estimation, an asset and a trained model, this function will add
+     * a new measurement for that asset and model
+     *
+     * @param estimation represents the RUL estimation
+     * @param asset represents the asset object
+     * @param model represents the trained model object
+     * @author Paul
+     */
     @Override
     public void addRULEstimation(Double estimation, Asset asset, TrainedModel model) {
         try {
@@ -158,6 +208,12 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         resetAssetUpdate(asset.getId());
     }
 
+    /**
+     * Given an asset id, this function will set the updated status of that asset to false;
+     *
+     * @param assetID represents the asset's ID
+     * @author Paul
+     */
     private void resetAssetUpdate(int assetID){
         try {
             PreparedStatement ps = getConnection().prepareStatement(SET_UPDATED_FALSE);
@@ -168,6 +224,13 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         }
     }
 
+    /**
+     * Given a result set of assets, this function will create the Asset object corresponding to the current
+     * result set values
+     *
+     * @param assetsQuery represents the result set of asset query
+     * @author Paul
+     */
     private Asset createAssetFromQueryResult(ResultSet assetsQuery) throws SQLException {
         Asset newAsset = new Asset();
         newAsset.setId(assetsQuery.getInt("asset_id"));
@@ -179,6 +242,13 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         return newAsset;
     }
 
+    /**
+     * Given an asset id, this function will create an assetInfo object containing
+     * all the corresponding assetinfo of the asset identified by the assetID
+     *
+     * @param assetID represents asset's id
+     * @author Paul
+     */
     private AssetInfo createAssetInfo(int assetID){
         AssetInfo newAssetInfo = new AssetInfo();
 
