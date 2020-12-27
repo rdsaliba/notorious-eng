@@ -1,3 +1,11 @@
+/*
+  Implementation of the DAO design pattern
+  This class extends the general DAO object and implements the ModelDAO interface
+
+  @author      Paul Micu
+  @version     1.0
+  @last_edit   12/27/2020
+ */
 package com.cbms.source.local;
 
 import com.cbms.app.TrainedModel;
@@ -17,6 +25,13 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     private static final String GET_MODEL_NAME_FROM_ID = "SELECT name from model where model_id = ?";
     private static final String GET_MODEL_FROM_ASSET_TYPE = "SELECT * FROM trained_model WHERE asset_type_id = ?";
 
+    /**
+     * Given a model id, this function will return the string corresponding
+     * to the name of the model in the database
+     *
+     * @param modelID represents a model's id
+     * @author Paul
+     */
     @Override
     public String getModelNameFromModelID(int modelID) {
         String name = null;
@@ -33,6 +48,13 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
         }
     }
 
+    /**
+     * Given an arraylist of trained models this function will write the new Classifier object
+     * to the corresponding trained model entry after an model training phase
+     *
+     * @param ArrayList<TrainedModel> represents a list of trainedmodels
+     * @author Paul
+     */
     @Override
     public void setModelsToTrain(ArrayList<TrainedModel> tms) {
         try {
@@ -49,6 +71,12 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
         }
     }
 
+    /**
+     * This function will return an arraylist of all the models that need to be retrained
+     * by looking at the retrain tag. it also deserializes the current model stored in the db
+     *
+     * @author Paul
+     */
     @Override
     public ArrayList<TrainedModel> getModelsToTrain() {
 
@@ -68,6 +96,14 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
 
     }
 
+    /**
+     * Given the id of an asset type, this function will return the trained model
+     * corresponding the that asset type. Since only one model can be associated to
+     * an asset type at a time only one TrainedModel object is returned
+     *
+     * @param assetTypeID represents a the id of an asset type
+     * @author Paul
+     */
     @Override
     public TrainedModel getModelsByAssetTypeID(String assetTypeID) {
         TrainedModel tm = null;
@@ -85,6 +121,12 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
         }
     }
 
+    /**
+     * Given a result set object, this function will create the corresponding trained model object
+     *
+     * @param rs represents the result from a trained model query
+     * @author Paul
+     */
     private TrainedModel createTrainedModelFromResultSet(ResultSet rs) throws SQLException {
         TrainedModel tm = new TrainedModel();
         tm.setModelID(rs.getInt("model_id"));
