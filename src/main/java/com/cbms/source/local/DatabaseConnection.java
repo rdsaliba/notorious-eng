@@ -8,8 +8,8 @@ public class DatabaseConnection {
     private static final String URL = "jdbc:mariadb://127.0.0.1:3306/cbms?";
     //Make sure to set the user and password to the proper values.
     //Credentials should be set to that which you are using on your local DB server.
-    private static final String USER = "root"; // todo  use username and password specific to your machine
-    private static final String PASSWORD = "PaulM1994";
+    private static final String USER = ""; // todo use username and password specific to your machine
+    private static final String PASSWORD = "";
     private static DatabaseConnection openConnection;
     private Connection conn;
 
@@ -66,9 +66,7 @@ public class DatabaseConnection {
      */
     public void stop() {
         try {
-            if (this.conn != null)
-                this.conn.close();
-            this.openConnection = null;
+            this.conn.close();
             System.out.println("Connection stopped.");
         } catch (SQLException throwables) {
             throwables.printStackTrace();
