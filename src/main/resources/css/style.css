@@ -14,17 +14,34 @@
     -fx-background-color: #48C774;
 }
 
-#cancelButton
-{
+#cancelButton {
     -fx-background-color: #D2D2D2;
 }
 
-#deletebtn
-{
+#deletebtn {
     -fx-background-color: #FB3860;
 }
 
-#addSystemButton
-{
+#addSystemButton {
     -fx-background-color: #48C774;
+    -fx-pref-height: 27;
+}
+
+#sortSystem {
+    -fx-background-color: #48C774;
+    -fx-mark-color: white;
+    -fx-pref-width: 117;
+    -fx-pref-height: 27;
+}
+
+#sortSystem .menu-item:focused {
+    -fx-background-color: #48C774;
+}
+
+#sortSystem .menu-item:focused > .label {
+    -fx-text-fill: white;
+}
+
+#sortSystem > .label {
+    -fx-text-fill: white;
 }

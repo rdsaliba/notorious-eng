@@ -3,9 +3,10 @@ package com.cbms.ui.controller;
 import com.cbms.app.ModelController;
 import com.cbms.app.item.Asset;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -21,9 +22,11 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+
 import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.util.Collections;
 import java.util.ResourceBundle;
 
 public class SystemsController implements Initializable {
@@ -40,6 +43,10 @@ public class SystemsController implements Initializable {
     private Tab thumbnailTab;
     @FXML
     private Tab listTab;
+    @FXML
+    private ChoiceBox<String> sortSystem;
+    @FXML
+    private TabPane tabs;
 
     private final ObservableList<Pane> boxes = FXCollections.observableArrayList();
     private UIUtilities uiUtilities;
@@ -69,7 +76,7 @@ public class SystemsController implements Initializable {
         }
 
         linkButtons();
-        generateThumbnails();
+        generateThumbnails("Default");
     }
 
     /**
@@ -78,21 +85,41 @@ public class SystemsController implements Initializable {
      * @author Jeff
      */
     public void linkButtons() {
-        thumbnailTab.setOnSelectionChanged(new EventHandler<Event>() {
+
+        tabs.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>() {
             @Override
-            public void handle(Event event) {
-                systemsThumbPane.getChildren().clear();
-                generateThumbnails();
+            public void changed(ObservableValue<? extends Tab> observable, Tab oldTab, Tab newTab) {
+                if (newTab == thumbnailTab) {
+                    System.out.println("When Clicking on thumbnail tab, value of sort selected: " + sortSystem.getValue());
+                    systemsThumbPane.getChildren().clear();
+                    generateThumbnails(sortSystem.getValue());
+                }
+                if (newTab == listTab) {
+                    System.out.println("When Clicking on list tab, value of sort selected: " + sortSystem.getValue());
+                    systemsListPane.getChildren().clear();
+                    generateList(sortSystem.getValue());
+                }
             }
         });
 
-        listTab.setOnSelectionChanged(new EventHandler<Event>() {
-            @Override
-            public void handle(Event event) {
-                systemsListPane.getChildren().clear();
-                generateList();
-            }
-        });
+//        thumbnailTab.setOnSelectionChanged(new EventHandler<Event>() {
+//            @Override
+//            public void handle(Event event) {
+//                currentTabIsThumbnails = true;
+//                System.out.println("When Clicking on thumbnail tab, value of sort selected: " + sortSystem.getValue());
+//                systemsThumbPane.getChildren().clear();
+//                generateThumbnails(sortSystem.getValue());
+//            }
+//        });
+//
+//        listTab.setOnSelectionChanged(new EventHandler<Event>() {
+//            @Override
+//            public void handle(Event event) {
+//                currentTabIsThumbnails = false;
+//                systemsListPane.getChildren().clear();
+//                generateList(sortSystem.getValue());
+//            }
+//        });
 
         //Attach link to systemMenuButton to go to Systems.fxml
         systemMenuButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -109,6 +136,50 @@ public class SystemsController implements Initializable {
                 uiUtilities.changeScene(mouseEvent, "/AddSystem");
             }
         });
+
+        //Adding items to the choiceBox (drop down list)
+        sortSystem.getItems().add("Default");
+        sortSystem.getItems().add("Ascending RUL");
+        sortSystem.getItems().add("Descending RUL");
+        //Default Value
+        sortSystem.setValue("Default");
+        sortSystem.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
+                switch (newValue) {
+                    case "Ascending RUL":
+                        if (thumbnailTab.isSelected()) {
+                            systemsThumbPane.getChildren().clear();
+                            generateThumbnails("Ascending RUL");
+                        } else {
+                            systemsListPane.getChildren().clear();
+                            generateList("Ascending RUL");
+                        }
+                        System.out.println("After generate ascending");
+                        break;
+                    case "Descending RUL":
+                        if (thumbnailTab.isSelected()) {
+                            systemsThumbPane.getChildren().clear();
+                            generateThumbnails("Descending RUL");
+                        } else {
+                            systemsListPane.getChildren().clear();
+                            generateList("Descending RUL");
+                        }
+                        System.out.println("After generate Descending");
+                        break;
+                    default:
+                        if (thumbnailTab.isSelected()) {
+                            systemsThumbPane.getChildren().clear();
+                            generateThumbnails("Default");
+                        } else {
+                            systemsListPane.getChildren().clear();
+                            generateList("Default");
+                        }
+                        System.out.println("After generate Default");
+                        break;
+                }
+            }
+        });
     }
 
     /**
@@ -116,8 +187,12 @@ public class SystemsController implements Initializable {
      *
      * @author Jeff
      */
-    public void generateThumbnails() {
-        for (Asset system: systems) {
+    public void generateThumbnails(String sortSelected) {
+        ObservableList<Asset> sortedSystems = sortSystems(sortSelected);
+        for (Asset system : sortedSystems) {
+            System.out.println("Asset ID: " + system.getSerialNo() + " // Asset RUL: " + system.getAssetInfo().getRULMeasurement());
+        }
+        for (Asset system : sortedSystems) {
             Pane pane = new Pane();
 
             //When clicked on a system, open SystemInfo.FXML for that system.
@@ -190,7 +265,11 @@ public class SystemsController implements Initializable {
      *
      * @author Jeff
      */
-    public void generateList() {
+    public void generateList(String sortSelected) {
+        ObservableList<Asset> sortedSystems = sortSystems(sortSelected);
+        for (Asset system : sortedSystems) {
+            System.out.println("Asset ID: " + system.getSerialNo() + " // Asset RUL: " + system.getAssetInfo().getRULMeasurement());
+        }
         TableView table = new TableView();
 
         // When TableRow is clicked, send data to SystemInfo scene.
@@ -218,12 +297,68 @@ public class SystemsController implements Initializable {
         locationCol.setCellValueFactory(
                 new PropertyValueFactory<Asset, String>("location"));
 
-        table.setItems(systems);
+        table.setItems(sortedSystems);
         table.getColumns().addAll(systemTypeCol, serialNoCol, linearRULCol, locationCol);
         AnchorPane.setBottomAnchor(table, 0.0);
         AnchorPane.setTopAnchor(table, 5.0);
         AnchorPane.setRightAnchor(table, 0.0);
         AnchorPane.setLeftAnchor(table, 0.0);
         systemsListPane.getChildren().addAll(table);
+    }
+
+    /**
+     * Returns a sorted ObservableList depending on
+     * the type of sort selected.
+     *
+     * @author Najim
+     */
+    public ObservableList<Asset> sortSystems(String selectedSort) {
+        ObservableList<Asset> sortedSystems = FXCollections.observableArrayList(systems);
+        switch (selectedSort) {
+            case "Ascending RUL":
+                System.out.println(selectedSort + " Sort");
+                sort(sortedSystems);
+                break;
+            case "Descending RUL":
+                System.out.println(selectedSort + " Sort");
+                sort(sortedSystems);
+                Collections.reverse(sortedSystems);
+                break;
+            default:
+                System.out.println("Default Sort");
+                sortedSystems = FXCollections.observableArrayList(systems);
+                break;
+        }
+
+        return sortedSystems;
+    }
+
+    public void sort(ObservableList<Asset> list) {
+        quickSort(list, 0, list.size() - 1);
+    }
+
+    public void quickSort(ObservableList<Asset> list, int from, int to) {
+        if (from < to) {
+            int pivot = from;
+            int left = from + 1;
+            int right = to;
+            double pivotValue = list.get(pivot).getAssetInfo().getRULMeasurement();
+            while (left <= right) {
+                // left <= to -> limit protection
+                while (left <= to && pivotValue >= list.get(left).getAssetInfo().getRULMeasurement()) {
+                    left++;
+                }
+                // right > from -> limit protection
+                while (right > from && pivotValue < list.get(right).getAssetInfo().getRULMeasurement()) {
+                    right--;
+                }
+                if (left < right) {
+                    Collections.swap(list, left, right);
+                }
+            }
+            Collections.swap(list, pivot, left - 1);
+            quickSort(list, from, right - 1);
+            quickSort(list, right + 1, to);
+        }
     }
 }
