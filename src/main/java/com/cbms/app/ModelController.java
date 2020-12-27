@@ -12,38 +12,33 @@ import com.cbms.app.item.Asset;
 import com.cbms.preprocessing.DataPrePreprocessorController;
 import com.cbms.rul.assessment.AssessmentController;
 import com.cbms.rul.models.LinearRegressionModelImpl;
+import com.cbms.rul.models.ModelStrategy;
 import com.cbms.rul.models.ModelsController;
-import com.cbms.source.local.Database;
+import com.cbms.source.local.AssetDAOImpl;
+import com.cbms.source.local.ModelDAOImpl;
 import weka.classifiers.Classifier;
+import weka.core.Attribute;
+import weka.core.FastVector;
+import weka.core.Instance;
 import weka.core.Instances;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.List;
 
 public class ModelController {
     private static ModelController instance = null;
-    private ArrayList<Integer> trainingSets;
-    private final Map<String, Instances> instancesSets;
-    private final Map<String, Instances> reducedInstancesSets;
-    private final Map<String, Classifier> classifierSets;
-    private final DataPrePreprocessorController dataPrePreprocessorController;
-    private final ModelsController modelsController;
-    private final AssessmentController assessmentController;
-    private final Database db;
+    private final AssetDAOImpl assetDaoImpl;
+    private final ModelDAOImpl modelDAOImpl;
+    private ArrayList<Asset> liveAssets;
 
-    private ModelController() throws Exception {
-        db = new Database();
-        trainingSets = db.getTrainAssetTypes();
-        instancesSets = new TreeMap<>();
-        reducedInstancesSets = new TreeMap<>();
-        classifierSets = new TreeMap<>();
-        modelsController = new ModelsController(new LinearRegressionModelImpl());
-        dataPrePreprocessorController = DataPrePreprocessorController.getInstance();
-        assessmentController = new AssessmentController();
+    private ModelController() {
+        assetDaoImpl = new AssetDAOImpl();
+        modelDAOImpl = new ModelDAOImpl();
+        liveAssets = assetDaoImpl.getAllLiveAssets();
     }
 
-    public static ModelController getInstance() throws Exception {
+    public static ModelController getInstance() {
         if (instance == null)
             instance = new ModelController();
         return instance;
@@ -54,66 +49,127 @@ public class ModelController {
      * the instances sets based on the asset types and train the models as Classifiers.
      *
      * @author Paul
-     * */
-    public void initializer() throws Exception {
-            trainingSets = db.getTrainAssetTypes();
+     */
+    public void initializer() {
+        checkModels();
+        checkAssets();
+    }
 
-        // get instances from db
-        for (Integer assetTypeID : trainingSets) {
-            instancesSets.put(db.getAssetTypeNameFromID(assetTypeID), db.createInstancesFromAssetTypeID(assetTypeID, 1));
-            System.out.println("Created Instances for " + assetTypeID);
+    public ArrayList<Asset> getAllLiveAssets() {
+        if (checkAssets())
+            liveAssets = assetDaoImpl.getAllLiveAssets();
+        return liveAssets;
+    }
+
+    private boolean checkAssets() {
+        //check for assets that need a new calculation
+        ArrayList<Asset> assetsToUpdate = assetDaoImpl.getAssetsToUpdate();
+
+        for (Asset asset : assetsToUpdate) {
+            TrainedModel trainedModel = modelDAOImpl.getModelsByAssetTypeID(asset.getAssetTypeID());
+            Double estimation = estimateRUL(asset, trainedModel.getModelClassifier());
+            assetDaoImpl.addRULEstimation(estimation, asset, trainedModel);
         }
 
-        // get trained classifier
-        for (Map.Entry<String, Instances> instances : instancesSets.entrySet()) {
-            Instances minimallyReducedData = dataPrePreprocessorController.minimallyReduceData(instances.getValue());
-            reducedInstancesSets.put(instances.getKey(), minimallyReducedData);
-            classifierSets.put(instances.getKey(), modelsController.trainModel(minimallyReducedData));
-            System.out.println("Created classifier for " + instances.getKey());
+        assetDaoImpl.closeConnection();
+        modelDAOImpl.closeConnection();
+
+        return !assetsToUpdate.isEmpty();
+    }
+
+    public void checkModels() {
+
+        // check for models that need retraining
+        ArrayList<TrainedModel> trainedModelsToRetrain = modelDAOImpl.getModelsToTrain();
+
+        // retrain models if necessary
+        if (!trainedModelsToRetrain.isEmpty()) {
+            for (TrainedModel trainedModel : trainedModelsToRetrain) {
+                try {
+                    trainModel(trainedModel);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            modelDAOImpl.setModelsToTrain(trainedModelsToRetrain);
         }
 
+        assetDaoImpl.closeConnection();
+        modelDAOImpl.closeConnection();
     }
 
-    /**
-     * This function is to stop the connection to the database
-     *
-     * @author Najim
-     */
-    public void stopDatabase() {
-        db.stop();
+    private void trainModel(TrainedModel trainedModel) throws SQLException {
+        Instances trainingSet = createInstancesFromAssets(assetDaoImpl.getAssetsFromAssetTypeID(trainedModel.getAssetTypeID()));
+        Instances reducedData = DataPrePreprocessorController.getInstance().minimallyReduceData(trainingSet);
+        ModelStrategy modelStrategy = getModelStrategy(trainedModel);
+        if (modelStrategy != null) {
+            ModelsController modelsController = new ModelsController(modelStrategy);
+            trainedModel.setModelClassifier(modelsController.trainModel(reducedData));
+        }
     }
 
-    /**
-     * Calling this method will return an arraylist of assets that have been estimated using the linear regression
-     *
-     * @author Paul Micu
-     */
-    public ArrayList<Asset> estimate() throws Exception {
-    // TODO: 2020-12-05 This estimate will have to eventually be changed to accept user input as the asset type instead of hard coded.
-        ArrayList<Asset> assets = db.getAssetsFromAssetTypeID(1, 0);
-        assets = estimateRUL(assets, "Engine");
-
-        return assets;
+    private ModelStrategy getModelStrategy(TrainedModel trainedModel) {
+        String stratName = modelDAOImpl.getModelNameFromModelID(trainedModel.getModelID());
+        switch (stratName) {
+            case "Linear":
+                return new LinearRegressionModelImpl();
+            default:
+                return null;
+        }
     }
+
 
     /**
      * Given an arraylist of testing assets and the classifier's name, this will return the same arraylist
      *
      * @author Paul Micu
      */
-    public ArrayList<Asset> estimateRUL(ArrayList<Asset> assets, String classifierID) throws Exception {
-        double estimate;
+    public Double estimateRUL(Asset asset, Classifier classifier) {
+        AssessmentController assessmentController = new AssessmentController();
+        Double estimate = -10000000.0;
+        Instances toTest = createInstancesFromAssets(new ArrayList<Asset>(List.of(asset)));
+        //toTest = DataPrePreprocessorController.getInstance().removeAttributes(reducedInstancesSets.get(classifierID),toTest);
+        try {
+            DataPrePreprocessorController dppc = DataPrePreprocessorController.getInstance();
+            toTest = dppc.addRULCol(toTest);
+            estimate = assessmentController.estimateRUL(toTest, classifier);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            return estimate;
+        }
+    }
+
+    public Instances createInstancesFromAssets(ArrayList<Asset> assets) {
+        FastVector attributesVector;
+        Instances data;
+        double[] values;
+        ArrayList<String> attributeNames = assetDaoImpl.getAttributesNameFromAssetID(assets.get(0).getId());
+        String assetTypeName = assetDaoImpl.getAssetTypeNameFromID(assets.get(0).getAssetTypeID());
+
+        // 1. set up attributes
+        attributesVector = new FastVector();
+        // - numeric
+        attributesVector.addElement(new Attribute("Asset_id"));
+        attributesVector.addElement(new Attribute("Time_Cycle"));
+        for (String attributeName : attributeNames) {
+            attributesVector.addElement(new Attribute(attributeName));
+        }
+        // 2. create Instances object
+        data = new Instances(assetTypeName, attributesVector, 0);
 
         for (Asset asset : assets) {
-            Instances toTest = db.createInstanceFromAssetID(asset.getId());
-            toTest = dataPrePreprocessorController.removeAttributes(reducedInstancesSets.get(classifierID),toTest);
-            toTest = dataPrePreprocessorController.addRULCol(toTest);
-            estimate = assessmentController.estimateRUL(toTest, classifierSets.get(classifierID));
-            asset.getAssetInfo().addRULMeasurement(estimate);
-            db.addRULEstimate(asset.getId(), estimate);
+            for (int timeCycle = 1; timeCycle <= asset.getAssetInfo().getLastRecorderTimeCycle(); timeCycle++) {
+                values = new double[data.numAttributes()];
+                values[0] = asset.getId();
+                values[1] = timeCycle;
+                for (int i = 0; i < asset.getAssetInfo().getAssetAttributes().size(); i++) {
+                    values[i + 2] = asset.getAssetInfo().getAssetAttributes().get(i).getMeasurements(timeCycle);
+                }
+                data.add(new Instance(1.0, values));
+            }
         }
-
-        return assets;
-
+        return data;
     }
+
 }
