@@ -15,14 +15,10 @@ public interface DataPreProcessor {
     Instances reducedDataset = null;
     Instances minimallyReducedDataset = null;
     Instances removedIndex = null;
-
-    void processFullReduction() throws Exception;
-
-    void processMinimalReduction() throws Exception;
-
-    Instances getReducedDataset();
-
-    Instances getMinimallyReducedDataset();
-
-    Remove getRemovedIndexList() throws Exception;
+    
+    public void processFullReduction() throws Exception;
+    public void processMinimalReduction() throws Exception;
+    public Instances getReducedDataset();
+    public Instances getMinimallyReducedDataset();
+    public Remove getRemovedIndexList() throws Exception;
 }
