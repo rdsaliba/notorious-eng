@@ -1,3 +1,10 @@
+/* Second strategy design pattern and implementation of Model Strategy
+ *
+ * @author Khaled
+ * @version 1.0
+ * @last_edit 12/28/2020
+ */
+
 package com.cbms.rul.models;
 
 import org.deeplearning4j.nn.weights.WeightInit;
@@ -17,8 +24,13 @@ import static org.deeplearning4j.nn.api.OptimizationAlgorithm.STOCHASTIC_GRADIEN
 
 public class LSTMModelImpl implements ModelStrategy
 {
+    /**
+     * This function takes the filtered training dataset, builds a Neural Network using Weka's Deep Learning 4 Java plugin
+     * and trains and returns an LSTM model.
+     * @author Khaled
+     */
     @Override
-    public Classifier trainModel(Instances firstTrain) throws Exception
+    public Classifier trainModel(Instances firstTrain)
     {
         firstTrain.setClassIndex(firstTrain.numAttributes() - 1);
 

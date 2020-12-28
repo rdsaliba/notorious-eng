@@ -7,6 +7,7 @@
  */
 package com.cbms.rul.assessment;
 
+import com.cbms.source.local.RulDAOImpl;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 
@@ -15,6 +16,11 @@ public class AssessmentController {
 
     public AssessmentController() {
         healthAssessment = new HealthAssessment();
+    }
+
+    public static double getLatestEstimate(int assetID) {
+        RulDAOImpl rulDAO = new RulDAOImpl();
+        return rulDAO.getLatestRUL(assetID);
     }
 
     public double estimateRUL(Instances testData, Classifier classifier) throws Exception {
