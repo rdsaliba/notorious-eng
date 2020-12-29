@@ -18,7 +18,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
-
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.Map;
@@ -26,13 +25,10 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class SystemInfoController implements Initializable {
-
     @FXML
     private Button systemMenuButton;
     @FXML
     private Button deletebtn;
-    @FXML
-    private AnchorPane systemInfoPane;
     @FXML
     private Text systemName;
     @FXML
@@ -50,11 +46,20 @@ public class SystemInfoController implements Initializable {
     @FXML
     private FlowPane sensorFlowPane;
 
-
     private Asset system;
     private AssetDAOImpl assetDAOImpl;
     private UIUtilities uiUtilities;
 
+    // UI String constants
+    private final String MANUFACTURER = "";
+    private final String LOCATION = "Location: ";
+    private final String LINEAR_RUL = "Linear RUL: ";
+    private final String DESCRIPTION = "Description: ";
+    private final String CYCLE = "Cycle";
+    private final String SENSOR_VALUES = "Sensor Values";
+    private final String ALERT_TITLE = "Confirmation Dialog";
+    private final String ALERT_HEADER = "Confirmation of system deletion";
+    private final String ALERT_CONTENT = "Are you sure you want to delete this system?";
 
     /**
      * Initialize runs before the scene is displayed.
@@ -85,10 +90,10 @@ public class SystemInfoController implements Initializable {
         systemName.setText(system.getAssetTypeID() + system.getSerialNo());
         systemType.setText(system.getAssetTypeID());
         serialNumber.setText(system.getSerialNo());
-        manufacturer.setText("");
-        systemLocation.setText("Location: ");
-        linearRUL.setText("Linear RUL: " + new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(system.getId())));
-        lstmRUL.setText("Description: ");
+        manufacturer.setText(MANUFACTURER);
+        systemLocation.setText(LOCATION);
+        linearRUL.setText(LINEAR_RUL + new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(system.getId())));
+        lstmRUL.setText(DESCRIPTION);
         constructSensorPanes();
     }
 
@@ -103,10 +108,10 @@ public class SystemInfoController implements Initializable {
             pane.getStyleClass().add("sensorPane");
             final NumberAxis xAxis = new NumberAxis();
             final NumberAxis yAxis = new NumberAxis();
-            xAxis.setLabel("Cycle");
+            xAxis.setLabel(CYCLE);
             final LineChart<Number, Number> sensorChart =
                     new LineChart<>(xAxis, yAxis);
-            sensorChart.setTitle("Sensor Values");
+            sensorChart.setTitle(SENSOR_VALUES);
             XYChart.Series series = new XYChart.Series();
             Map<Integer, Double> measurements = sensor.getMeasurements();
             series.getData().add(new XYChart.Data(1, measurements.get(1)));
@@ -120,20 +125,11 @@ public class SystemInfoController implements Initializable {
             sensorChart.setLayoutX(12.0);
             sensorChart.setLayoutY(12.0);
             pane.getChildren().add(sensorChart);
-
-
             Text sensorName = new Text(sensor.getName());
-            //Text sensorLocation = new Text(sensor.getLocation());
             sensorName.setId("sensorType");
             sensorName.setLayoutX(35.0);
             sensorName.setLayoutY(191.0);
-
-            //sensorLocation.setId("sensorLocation");
-            //sensorLocation.setLayoutX(35.0);
-            //sensorLocation.setLayoutY(211.0);
-
             pane.getChildren().add(sensorName);
-            //pane.getChildren().add(sensorLocation);
 
             sensorFlowPane.getChildren().add(pane);
         }
@@ -156,16 +152,7 @@ public class SystemInfoController implements Initializable {
         deletebtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setTitle("Confirmation Dialog");
-                alert.setHeaderText("Confirmation of system deletion");
-                alert.setContentText("Are you sure you want to delete this system?");
-
-                Optional<ButtonType> result = alert.showAndWait();
-                if (result.get() == ButtonType.OK){
-                    deleteAsset();
-                    uiUtilities.changeScene(mouseEvent, "/Systems");
-                }
+                deleteDialog(mouseEvent);
             }
         });
     }
@@ -177,5 +164,23 @@ public class SystemInfoController implements Initializable {
      */
     public void deleteAsset() {
         assetDAOImpl.deleteAssetByID(system.getId());
+    }
+
+    /**
+     * Creates a dialog box that asks user if they want to delete an asset.
+     *
+     * @param mouseEvent
+     */
+    void deleteDialog(MouseEvent mouseEvent) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(ALERT_TITLE);
+        alert.setHeaderText(ALERT_HEADER);
+        alert.setContentText(ALERT_CONTENT);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK){
+            deleteAsset();
+            uiUtilities.changeScene(mouseEvent, "/Systems");
+        }
     }
 }
