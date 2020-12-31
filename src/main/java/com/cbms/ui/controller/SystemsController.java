@@ -48,7 +48,6 @@ public class SystemsController implements Initializable {
     @FXML
     private TabPane tabs;
 
-    private final ObservableList<Pane> boxes = FXCollections.observableArrayList();
     private UIUtilities uiUtilities;
     private ObservableList<Asset> systems;
 
@@ -95,31 +94,11 @@ public class SystemsController implements Initializable {
                     generateThumbnails(sortSystem.getValue());
                 }
                 if (newTab == listTab) {
-                    System.out.println("When Clicking on list tab, value of sort selected: " + sortSystem.getValue());
                     systemsListPane.getChildren().clear();
-                    generateList(sortSystem.getValue());
+                    generateList();
                 }
             }
         });
-
-//        thumbnailTab.setOnSelectionChanged(new EventHandler<Event>() {
-//            @Override
-//            public void handle(Event event) {
-//                currentTabIsThumbnails = true;
-//                System.out.println("When Clicking on thumbnail tab, value of sort selected: " + sortSystem.getValue());
-//                systemsThumbPane.getChildren().clear();
-//                generateThumbnails(sortSystem.getValue());
-//            }
-//        });
-//
-//        listTab.setOnSelectionChanged(new EventHandler<Event>() {
-//            @Override
-//            public void handle(Event event) {
-//                currentTabIsThumbnails = false;
-//                systemsListPane.getChildren().clear();
-//                generateList(sortSystem.getValue());
-//            }
-//        });
 
         //Attach link to systemMenuButton to go to Systems.fxml
         systemMenuButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -143,6 +122,8 @@ public class SystemsController implements Initializable {
         sortSystem.getItems().add("Descending RUL");
         //Default Value
         sortSystem.setValue("Default");
+        //Listener on the sort ChoiceBox. Depending on the sort selected, all systems panes are cleared and generated again
+        //with the appropriate sort applied.
         sortSystem.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
@@ -151,31 +132,19 @@ public class SystemsController implements Initializable {
                         if (thumbnailTab.isSelected()) {
                             systemsThumbPane.getChildren().clear();
                             generateThumbnails("Ascending RUL");
-                        } else {
-                            systemsListPane.getChildren().clear();
-                            generateList("Ascending RUL");
                         }
-                        System.out.println("After generate ascending");
                         break;
                     case "Descending RUL":
                         if (thumbnailTab.isSelected()) {
                             systemsThumbPane.getChildren().clear();
                             generateThumbnails("Descending RUL");
-                        } else {
-                            systemsListPane.getChildren().clear();
-                            generateList("Descending RUL");
                         }
-                        System.out.println("After generate Descending");
                         break;
                     default:
                         if (thumbnailTab.isSelected()) {
                             systemsThumbPane.getChildren().clear();
                             generateThumbnails("Default");
-                        } else {
-                            systemsListPane.getChildren().clear();
-                            generateList("Default");
                         }
-                        System.out.println("After generate Default");
                         break;
                 }
             }
@@ -185,13 +154,14 @@ public class SystemsController implements Initializable {
     /**
      * Creates elements that are in the scene so the data can be displayed.
      *
+     * @param sortSelected The sort selected by the user.
      * @author Jeff
      */
     public void generateThumbnails(String sortSelected) {
+        ObservableList<Pane> boxes = FXCollections.observableArrayList();
+        //Based on the sort selected by the user, the appropriate list of Asset in the appropriate order is returned.
         ObservableList<Asset> sortedSystems = sortSystems(sortSelected);
-        for (Asset system : sortedSystems) {
-            System.out.println("Asset ID: " + system.getSerialNo() + " // Asset RUL: " + system.getAssetInfo().getRULMeasurement());
-        }
+
         for (Asset system : sortedSystems) {
             Pane pane = new Pane();
 
@@ -265,11 +235,7 @@ public class SystemsController implements Initializable {
      *
      * @author Jeff
      */
-    public void generateList(String sortSelected) {
-        ObservableList<Asset> sortedSystems = sortSystems(sortSelected);
-        for (Asset system : sortedSystems) {
-            System.out.println("Asset ID: " + system.getSerialNo() + " // Asset RUL: " + system.getAssetInfo().getRULMeasurement());
-        }
+    public void generateList() {
         TableView table = new TableView();
 
         // When TableRow is clicked, send data to SystemInfo scene.
@@ -297,7 +263,7 @@ public class SystemsController implements Initializable {
         locationCol.setCellValueFactory(
                 new PropertyValueFactory<Asset, String>("location"));
 
-        table.setItems(sortedSystems);
+        table.setItems(systems);
         table.getColumns().addAll(systemTypeCol, serialNoCol, linearRULCol, locationCol);
         AnchorPane.setBottomAnchor(table, 0.0);
         AnchorPane.setTopAnchor(table, 5.0);
@@ -307,25 +273,23 @@ public class SystemsController implements Initializable {
     }
 
     /**
-     * Returns a sorted ObservableList depending on
-     * the type of sort selected.
+     * Sorts a list of Assets based on the type of sort selected (Ascending RUL, Descending RUL or Default).
      *
+     * @return A sorted ObservableList
      * @author Najim
      */
     public ObservableList<Asset> sortSystems(String selectedSort) {
+        //Copying the systems Assets list into another ObservableList so as to not impact the original one.
         ObservableList<Asset> sortedSystems = FXCollections.observableArrayList(systems);
         switch (selectedSort) {
             case "Ascending RUL":
-                System.out.println(selectedSort + " Sort");
                 sort(sortedSystems);
                 break;
             case "Descending RUL":
-                System.out.println(selectedSort + " Sort");
                 sort(sortedSystems);
                 Collections.reverse(sortedSystems);
                 break;
             default:
-                System.out.println("Default Sort");
                 sortedSystems = FXCollections.observableArrayList(systems);
                 break;
         }
@@ -333,10 +297,24 @@ public class SystemsController implements Initializable {
         return sortedSystems;
     }
 
+    /**
+     * This function lets you sort an ObservableList of type Asset using the quicksort method.
+     *
+     * @param list An Observable list of type Asset
+     * @author Najim
+     */
     public void sort(ObservableList<Asset> list) {
         quickSort(list, 0, list.size() - 1);
     }
 
+    /**
+     * This function sorts a list of Assets based on their RUL using the quicksort method.
+     *
+     * @param list An Observable list of type Asset
+     * @param from Pivot used for the sort. The beginning index of the list.
+     * @param to   The last index of the list
+     * @author Najim
+     */
     public void quickSort(ObservableList<Asset> list, int from, int to) {
         if (from < to) {
             int pivot = from;
@@ -356,6 +334,7 @@ public class SystemsController implements Initializable {
                     Collections.swap(list, left, right);
                 }
             }
+            //Using the Collections class to swap elements in the list
             Collections.swap(list, pivot, left - 1);
             quickSort(list, from, right - 1);
             quickSort(list, right + 1, to);
