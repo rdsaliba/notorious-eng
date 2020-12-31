@@ -1,8 +1,12 @@
 package com.cbms.ui.controller;
 
+import com.cbms.app.item.AssetType;
+import com.cbms.source.local.AssetDAOImpl;
+import com.cbms.source.local.Database;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
@@ -12,6 +16,7 @@ import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class AddSystemTypeController implements Initializable {
@@ -26,10 +31,14 @@ public class AddSystemTypeController implements Initializable {
     private AnchorPane systemTypeInformation;
     @FXML
     private Button saveBtn;
+    @FXML
+    private TextField systemTypeName;
 
     private int thresholdCount = 1;
     private double spacing = 40.0;
     private UIUtilities uiUtilities;
+    private ArrayList<TextField> thresholdValues;
+    private AssetDAOImpl db;
 
     /**
      * Initialize runs before the scene is displayed.
@@ -42,7 +51,9 @@ public class AddSystemTypeController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        thresholdValues = new ArrayList<>();
         uiUtilities = new UIUtilities();
+        db = new AssetDAOImpl();
         attachEvents();
     }
 
@@ -75,7 +86,7 @@ public class AddSystemTypeController implements Initializable {
         saveBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                saveSystemType();
+                saveAssetType(assembleSystemType());
             }
         });
     }
@@ -93,13 +104,26 @@ public class AddSystemTypeController implements Initializable {
         thresholdTextField.setLayoutY(175.0 + (spacing * thresholdCount));
         thresholdTextField.setPrefHeight(25.0);
         thresholdTextField.setPrefWidth(350.0);
-
-        systemTypeInformation.getChildren().add(thresholdLabel);
-        systemTypeInformation.getChildren().add(thresholdTextField);
         thresholdCount++;
+        thresholdTextField.setId("threshold" + thresholdCount);
+
+        systemTypeInformation.getChildren().addAll(thresholdLabel, thresholdTextField);
+
     }
 
-    public void saveSystemType() {
+    public AssetType assembleSystemType() {
+        AssetType assetType = new AssetType(systemTypeName.getText());
+        for (Node node : systemTypeInformation.getChildren()) {
+            if (node instanceof TextField) {
+                if(node.getId().contains("threshold")) {
+                    assetType.addThresholdValue(Double.parseDouble(((TextField) node).getText()));
+                }
+            }
+        }
+        return assetType;
+    }
 
+    public void saveAssetType(AssetType assetType) {
+        db.insertAssetType(assetType);
     }
 }

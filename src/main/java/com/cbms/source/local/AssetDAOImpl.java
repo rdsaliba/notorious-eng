@@ -12,16 +12,20 @@ import com.cbms.app.TrainedModel;
 import com.cbms.app.item.Asset;
 import com.cbms.app.item.AssetAttribute;
 import com.cbms.app.item.AssetInfo;
+import com.cbms.app.item.AssetType;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 public class AssetDAOImpl extends DAO implements AssetDAO {
 
     private static final String GET_ASSETS_TO_UPDATE = "SELECT * FROM asset WHERE archived = false AND updated = true";
     private static final String DELETE_ASSET = "DELETE FROM ? WHERE asset_id = ?";
+    private static final String INSERT_ASSET_TYPE = "INSERT INTO asset_type values( ? , ? )";
+    private static final String INSERT_ASSET_TYPE_PARAMETERS = "INSERT INTO asset_type_parameters values(? , ? , ? , ?)";
     private static final String GET_ASSET_INFO_FROM_ASSET_ID = "SELECT * FROM attribute_measurements am, attribute att WHERE att.attribute_id=am.attribute_id AND am.asset_id = ?";
     private static final String GET_ATTRIBUTES_NAMES_FROM_ASSET_ID="SELECT DISTINCT att.attribute_name FROM attribute att, attribute_measurements am, asset a WHERE a.asset_id= ? AND am.asset_id = a.asset_id AND att.attribute_id = am.attribute_id order by att.attribute_id";
     private static final String GET_ASSETS_FROM_ASSET_TYPE_ID = "SELECT a.asset_id, a.asset_type_id, a.sn, a.location,a.description FROM asset a WHERE a.archived = true AND a.asset_type_id = ?";
@@ -50,6 +54,36 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
             e.printStackTrace();
         }
         return assets;
+    }
+
+    @Override
+    public void insertAssetType(AssetType assetType) {
+        try {
+            PreparedStatement ps = getConnection().prepareStatement(INSERT_ASSET_TYPE,
+                    Statement.RETURN_GENERATED_KEYS);
+            ps.setInt(1, 192);
+            ps.setString(2, assetType.getName());
+            ps.executeQuery();
+
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    for (double value: assetType.getThresholdList()) {
+                        PreparedStatement statement = getConnection().prepareStatement(INSERT_ASSET_TYPE_PARAMETERS);
+                        statement.setInt(1, 1);
+                        statement.setInt(2, Integer.parseInt(String.valueOf(generatedKeys.getLong(1))));
+                        statement.setString(3, "Test");
+                        statement.setString(4, String.valueOf(value));
+                        statement.executeQuery();
+                    }
+                }
+                else {
+                    throw new SQLException("Creating threshold failed, no ID obtained.");
+                }
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

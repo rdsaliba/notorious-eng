@@ -53,7 +53,7 @@
                     <Font name="Segoe UI Bold" size="16.0" />
                 </font>
             </Text>
-            <TextField layoutX="181.0" layoutY="61.0" prefHeight="25.0" prefWidth="350.0" />
+            <TextField fx:id="systemTypeName" layoutX="181.0" layoutY="61.0" prefHeight="25.0" prefWidth="350.0" />
             <Text fill="#0c072e" layoutX="26.0" layoutY="79.0" strokeType="OUTSIDE" strokeWidth="0.0" text="System Type Name">
                 <font>
                     <Font name="Segoe UI Bold" size="14.0" />

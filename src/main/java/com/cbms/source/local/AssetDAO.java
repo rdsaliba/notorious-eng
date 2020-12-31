@@ -9,6 +9,7 @@ package com.cbms.source.local;
 
 import com.cbms.app.TrainedModel;
 import com.cbms.app.item.Asset;
+import com.cbms.app.item.AssetType;
 
 import java.util.ArrayList;
 
@@ -16,6 +17,8 @@ public interface AssetDAO {
     ArrayList<Asset> getAssetsToUpdate();
 
     void deleteAssetByID(int assetID);
+
+    void insertAssetType(AssetType assetType);
 
     ArrayList<Asset> getAssetsFromAssetTypeID(int assetTypeID);
 
