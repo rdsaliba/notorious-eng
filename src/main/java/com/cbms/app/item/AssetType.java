@@ -4,14 +4,14 @@ import java.util.ArrayList;
 
 public class AssetType {
     private String name;
-    private ArrayList<Double> thresholdList;
+    private ArrayList<AssetTypeParameter> thresholdList;
 
     public AssetType(String name) {
         this.name = name;
         thresholdList = new ArrayList<>();
     }
 
-    public AssetType(String name, ArrayList<Double> thresholdList) {
+    public AssetType(String name, ArrayList<AssetTypeParameter> thresholdList) {
         this.name = name;
         this.thresholdList = thresholdList;
     }
@@ -24,16 +24,16 @@ public class AssetType {
         this.name = name;
     }
 
-    public ArrayList<Double> getThresholdList() {
+    public ArrayList<AssetTypeParameter> getThresholdList() {
         return thresholdList;
     }
 
-    public void setThresholdList(ArrayList<Double> thresholdList) {
+    public void setThresholdList(ArrayList<AssetTypeParameter> thresholdList) {
         this.thresholdList = thresholdList;
     }
 
-    public void addThresholdValue(double threshold) {
-        thresholdList.add(threshold);
+    public void addThresholdValue(AssetTypeParameter parameter) {
+        thresholdList.add(parameter);
     }
 
     @Override

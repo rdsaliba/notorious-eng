@@ -18,8 +18,6 @@ public interface AssetDAO {
 
     void deleteAssetByID(int assetID);
 
-    void insertAssetType(AssetType assetType);
-
     ArrayList<Asset> getAssetsFromAssetTypeID(int assetTypeID);
 
     ArrayList<String> getAttributesNameFromAssetID(int assetID);
