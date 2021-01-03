@@ -2,6 +2,7 @@ package com.cbms.ui.controller;
 
 import com.cbms.app.ModelController;
 import com.cbms.app.item.Asset;
+import com.cbms.rul.assessment.AssessmentController;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -69,7 +70,7 @@ public class SystemsController implements Initializable {
         uiUtilities = new UIUtilities();
 
         try {
-            systems = FXCollections.observableArrayList(ModelController.getInstance().estimate());
+            systems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -192,7 +193,7 @@ public class SystemsController implements Initializable {
             Text systemName = new Text(system.getSerialNo());
             Text systemType = new Text(system.getAssetTypeID());
             Text linearLabel = new Text("Linear Regression RUL:");
-            Text linearRUL = new Text(String.valueOf(new DecimalFormat("#.##").format(system.getAssetInfo().getRULMeasurement())));
+            Text linearRUL = new Text(String.valueOf(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(system.getId()))));
             //Text lstmLabel = new Text("LSTM RUL:");
             //Text lstmRUL = new Text(String.valueOf(system.getLstmRUL()));
 
@@ -257,7 +258,7 @@ public class SystemsController implements Initializable {
 
         TableColumn<Asset, Double> linearRULCol = new TableColumn<>("Linear RUL");
         linearRULCol.setCellValueFactory(cellData -> new SimpleDoubleProperty(
-                Double.parseDouble(new DecimalFormat("#.##").format(cellData.getValue().getAssetInfo().getRULMeasurement()))).asObject());
+                Double.parseDouble(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(cellData.getValue().getId())))).asObject());
 
         TableColumn locationCol = new TableColumn("Location");
         locationCol.setCellValueFactory(

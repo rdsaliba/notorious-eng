@@ -2,6 +2,7 @@ package com.cbms.ui.controller;
 
 import com.cbms.app.item.Asset;
 import com.cbms.app.item.AssetAttribute;
+import com.cbms.rul.assessment.AssessmentController;
 import com.cbms.source.local.Database;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -17,6 +18,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
+
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.Map;
@@ -85,7 +87,7 @@ public class SystemInfoController implements Initializable {
         serialNumber.setText(system.getSerialNo());
         manufacturer.setText("");
         systemLocation.setText("Location: ");
-        linearRUL.setText("Linear RUL: " + new DecimalFormat("#.##").format(system.getAssetInfo().getRULMeasurement()));
+        linearRUL.setText("Linear RUL: " + new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(system.getId())));
         lstmRUL.setText("Description: ");
         constructSensorPanes();
     }

@@ -18,7 +18,7 @@ public class ModelsController {
         this.modelStrategy = modelStrategy;
     }
 
-    public Classifier trainModel(Instances reducedData) throws Exception {
+    public Classifier trainModel(Instances reducedData) {
         return modelStrategy.trainModel(reducedData);
     }
 

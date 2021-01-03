@@ -14,5 +14,7 @@ import weka.core.Instances;
 
 public interface ModelStrategy {
 
-    Classifier trainModel(Instances reducedData) throws Exception;
+
+    Classifier trainModel(Instances reducedData);
+
 }

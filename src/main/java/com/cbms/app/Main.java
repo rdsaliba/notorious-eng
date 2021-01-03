@@ -11,7 +11,7 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
 
 
         ModelController modelController = ModelController.getInstance();
@@ -37,9 +37,6 @@ public class Main extends Application {
 
     private void closeProgram() throws Exception {
         System.out.println("Program closing.");
-        ModelController modelController = ModelController.getInstance();
-        //Closing database connection.
-        modelController.stopDatabase();
         Platform.exit();
         System.exit(0);
     }

@@ -127,7 +127,7 @@
                 <Insets bottom="10.0" left="30.0" right="30.0" top="10.0"/>
             </padding>
         </Button>
-        <Button fx:id="systemMenuButton" layoutX="812.0" layoutY="645.0" mnemonicParsing="false"
+        <Button fx:id="cancelButton" layoutX="812.0" layoutY="645.0" mnemonicParsing="false"
                 stylesheets="@css/style.css" text="Cancel" textFill="#4a4a4a" AnchorPane.bottomAnchor="31.0"
                 AnchorPane.rightAnchor="43.0">
             <padding>
