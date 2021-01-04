@@ -49,8 +49,10 @@ public class SystemsController implements Initializable {
     private final String LINEAR_RUL = "Linear RUL: ";
     private final String TYPE_COL = "Type";
     private final String SERIAL_NO_COL = "Serial No.";
-    private final String LINEAR_COL = "Linear RUL";
+    private final String MODEL_COL = "Model";
+    private final String RUL_COL = "RUL";
     private final String LOCATION_COL = "Location";
+    private final String RECOMMENDATION_COL = "Recommendation";
 
     public SystemsController() {
 
@@ -202,19 +204,26 @@ public class SystemsController implements Initializable {
 
         TableColumn systemTypeCol = new TableColumn(TYPE_COL);
         systemTypeCol.setCellValueFactory(
-                new PropertyValueFactory<Asset, String>("assetTypeID"));
+                new PropertyValueFactory<Asset, String>("assetTypeName"));
 
         TableColumn serialNoCol = new TableColumn(SERIAL_NO_COL);
         serialNoCol.setCellValueFactory(
                 new PropertyValueFactory<Asset, String>("serialNo"));
 
-        TableColumn<Asset, Double> linearRULCol = new TableColumn<>(LINEAR_COL);
+        // TableColumn modelCol = new TableColumn(MODEL_COL);
+        // modelCol.setCellValueFactory();
+
+        TableColumn<Asset, Double> linearRULCol = new TableColumn<>(RUL_COL);
         linearRULCol.setCellValueFactory(cellData -> new SimpleDoubleProperty(
                 Double.parseDouble(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(cellData.getValue().getId())))).asObject());
 
         TableColumn locationCol = new TableColumn(LOCATION_COL);
         locationCol.setCellValueFactory(
                 new PropertyValueFactory<Asset, String>("location"));
+
+        TableColumn recommendationCol = new TableColumn(RECOMMENDATION_COL);
+        recommendationCol.setCellValueFactory(
+                new PropertyValueFactory<Asset, String>("recommendation"));
 
         table.setItems(systems);
         table.getColumns().addAll(systemTypeCol, serialNoCol, linearRULCol, locationCol);

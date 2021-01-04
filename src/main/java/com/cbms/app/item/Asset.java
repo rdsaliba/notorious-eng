@@ -11,8 +11,10 @@ public class Asset extends Item {
 
     private String serialNo;
     private String assetTypeID;
+    private String assetTypeName;
     private String location;
     private String description;
+    private String recommendation;
     private AssetInfo assetInfo;
 
     public Asset() {
@@ -20,21 +22,23 @@ public class Asset extends Item {
     }
 
 
-    public Asset(String serialNo, String assetTypeID, String location, String description) {
+    public Asset(String serialNo, String assetTypeID, String assetTypeName, String location, String description, String recommendation) {
         this.assetTypeID = assetTypeID;
+        this.assetTypeName = assetTypeName;
         this.serialNo = serialNo;
         this.location = location;
         this.description = description;
-
+        this.recommendation = recommendation;
     }
 
-    public Asset(String serialNo, String assetTypeID, String location, String description, AssetInfo assetInfo) {
+    public Asset(String serialNo, String assetTypeID, String assetTypeName, String location, String description, String recommendation, AssetInfo assetInfo) {
         this.assetTypeID = assetTypeID;
+        this.assetTypeName = assetTypeName;
         this.serialNo = serialNo;
         this.location = location;
         this.description = description;
         this.assetInfo = assetInfo;
-
+        this.recommendation = recommendation;
     }
 
     public String getSerialNo() {
@@ -52,6 +56,10 @@ public class Asset extends Item {
     public void setAssetTypeID(String assetTypeID) {
         this.assetTypeID = assetTypeID;
     }
+
+    public String getAssetTypeName() { return assetTypeName; }
+
+    public void setAssetTypeName(String assetTypeName) { this.assetTypeName = assetTypeName; }
 
     public String getLocation() {
         return location;
@@ -77,14 +85,19 @@ public class Asset extends Item {
         this.assetInfo = assetInfo;
     }
 
+    public String getRecommendation() { return recommendation; }
+
+    public void setRecommendation(String recommendation) { this.recommendation = recommendation; }
+
     @Override
     public String toString() {
         return "Asset{" +
                 "serialNo='" + serialNo + '\'' +
-                ", assetType='" + assetTypeID + '\'' +
+                ", assetTypeID='" + assetTypeID + '\'' +
                 ", location='" + location + '\'' +
                 ", description='" + description + '\'' +
-                ", assetInfo=" + assetInfo.toString() +
+                ", recommendation='" + recommendation + '\'' +
+                ", assetInfo=" + assetInfo +
                 '}';
     }
 }
