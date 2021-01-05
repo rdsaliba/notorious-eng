@@ -10,6 +10,7 @@ package com.cbms.app.item;
 public class Asset extends Item {
 
     private String serialNo;
+    private String name;
     private String assetTypeID;
     private String assetTypeName;
     private String location;
@@ -22,8 +23,9 @@ public class Asset extends Item {
     }
 
 
-    public Asset(String serialNo, String assetTypeID, String assetTypeName, String location, String description, String recommendation) {
+    public Asset(String serialNo, String name, String assetTypeID, String assetTypeName, String location, String description, String recommendation) {
         this.assetTypeID = assetTypeID;
+        this.name = name;
         this.assetTypeName = assetTypeName;
         this.serialNo = serialNo;
         this.location = location;
@@ -31,8 +33,9 @@ public class Asset extends Item {
         this.recommendation = recommendation;
     }
 
-    public Asset(String serialNo, String assetTypeID, String assetTypeName, String location, String description, String recommendation, AssetInfo assetInfo) {
+    public Asset(String serialNo, String name, String assetTypeID, String assetTypeName, String location, String description, String recommendation, AssetInfo assetInfo) {
         this.assetTypeID = assetTypeID;
+        this.name = name;
         this.assetTypeName = assetTypeName;
         this.serialNo = serialNo;
         this.location = location;
@@ -48,6 +51,10 @@ public class Asset extends Item {
     public void setSerialNo(String serialNo) {
         this.serialNo = serialNo;
     }
+
+    public String getName() { return name; }
+
+    public void setName(String name) { this.name = name; }
 
     public String getAssetTypeID() {
         return assetTypeID;

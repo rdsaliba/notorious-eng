@@ -234,6 +234,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
     private Asset createAssetFromQueryResult(ResultSet assetsQuery) throws SQLException {
         Asset newAsset = new Asset();
         newAsset.setId(assetsQuery.getInt("asset_id"));
+        newAsset.setName(assetsQuery.getString("asset.name"));
         newAsset.setAssetTypeID(assetsQuery.getString("asset_type_id"));
         newAsset.setAssetTypeName(assetsQuery.getString("asset_type.name"));
         newAsset.setDescription(assetsQuery.getString("description"));
