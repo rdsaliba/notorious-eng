@@ -2,6 +2,7 @@ package com.cbms.ui.controller;
 
 import com.cbms.app.ModelController;
 import com.cbms.app.item.Asset;
+import com.cbms.rul.assessment.AssessmentController;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -27,7 +28,6 @@ import java.text.DecimalFormat;
 import java.util.ResourceBundle;
 
 public class SystemsController implements Initializable {
-
     @FXML
     private Button systemMenuButton;
     @FXML
@@ -44,6 +44,15 @@ public class SystemsController implements Initializable {
     private final ObservableList<Pane> boxes = FXCollections.observableArrayList();
     private UIUtilities uiUtilities;
     private ObservableList<Asset> systems;
+
+    // UI String constants
+    private final String LINEAR_RUL = "Linear RUL: ";
+    private final String TYPE_COL = "Type";
+    private final String SERIAL_NO_COL = "Serial No.";
+    private final String MODEL_COL = "Model";
+    private final String RUL_COL = "RUL";
+    private final String LOCATION_COL = "Location";
+    private final String RECOMMENDATION_COL = "Recommendation";
 
     public SystemsController() {
 
@@ -63,12 +72,12 @@ public class SystemsController implements Initializable {
         uiUtilities = new UIUtilities();
 
         try {
-            systems = FXCollections.observableArrayList(ModelController.getInstance().estimate());
+            systems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        linkButtons();
+        attachEvents();
         generateThumbnails();
     }
 
@@ -77,7 +86,7 @@ public class SystemsController implements Initializable {
      *
      * @author Jeff
      */
-    public void linkButtons() {
+    public void attachEvents() {
         thumbnailTab.setOnSelectionChanged(new EventHandler<Event>() {
             @Override
             public void handle(Event event) {
@@ -143,20 +152,17 @@ public class SystemsController implements Initializable {
                     }
                 }
             });
+
             pane.getStyleClass().add("systemPane");
             Text systemName = new Text(system.getSerialNo());
             Text systemType = new Text(system.getAssetTypeID());
-            Text linearLabel = new Text("Linear Regression RUL:");
-            Text linearRUL = new Text(String.valueOf(new DecimalFormat("#.##").format(system.getAssetInfo().getRULMeasurement())));
-            //Text lstmLabel = new Text("LSTM RUL:");
-            //Text lstmRUL = new Text(String.valueOf(system.getLstmRUL()));
+            Text linearLabel = new Text(LINEAR_RUL);
+            Text linearRUL = new Text(String.valueOf(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(system.getId()))));
 
             systemName.setId("systemName");
             systemType.setId("systemType");
             linearLabel.setId("linearLabel");
             linearRUL.setId("linearRUL");
-            //lstmLabel.setId(("lstmLabel"));
-            //lstmRUL.setId("lstmRUL");
 
             systemName.setLayoutX(14.0);
             systemName.setLayoutY(28.0);
@@ -166,17 +172,11 @@ public class SystemsController implements Initializable {
             linearLabel.setLayoutY(121.0);
             linearRUL.setLayoutX(230.0);
             linearRUL.setLayoutY(120.0);
-            //lstmLabel.setLayoutX(14.0);
-            //lstmLabel.setLayoutY(190.0);
-            //lstmRUL.setLayoutX(250.0);
-            //lstmRUL.setLayoutY(190.0);
 
             pane.getChildren().add(systemName);
             pane.getChildren().add(systemType);
             pane.getChildren().add(linearLabel);
             pane.getChildren().add(linearRUL);
-            //pane.getChildren().add(lstmLabel);
-            //pane.getChildren().add(lstmRUL);
 
             boxes.add(pane);
         }
@@ -202,21 +202,28 @@ public class SystemsController implements Initializable {
             return row;
         });
 
-        TableColumn systemTypeCol = new TableColumn("Type");
+        TableColumn systemTypeCol = new TableColumn(TYPE_COL);
         systemTypeCol.setCellValueFactory(
-                new PropertyValueFactory<Asset, String>("assetTypeID"));
+                new PropertyValueFactory<Asset, String>("assetTypeName"));
 
-        TableColumn serialNoCol = new TableColumn("Serial No.");
+        TableColumn serialNoCol = new TableColumn(SERIAL_NO_COL);
         serialNoCol.setCellValueFactory(
                 new PropertyValueFactory<Asset, String>("serialNo"));
 
-        TableColumn<Asset, Double> linearRULCol = new TableColumn<>("Linear RUL");
-        linearRULCol.setCellValueFactory(cellData -> new SimpleDoubleProperty(
-                Double.parseDouble(new DecimalFormat("#.##").format(cellData.getValue().getAssetInfo().getRULMeasurement()))).asObject());
+        // TableColumn modelCol = new TableColumn(MODEL_COL);
+        // modelCol.setCellValueFactory();
 
-        TableColumn locationCol = new TableColumn("Location");
+        TableColumn<Asset, Double> linearRULCol = new TableColumn<>(RUL_COL);
+        linearRULCol.setCellValueFactory(cellData -> new SimpleDoubleProperty(
+                Double.parseDouble(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(cellData.getValue().getId())))).asObject());
+
+        TableColumn locationCol = new TableColumn(LOCATION_COL);
         locationCol.setCellValueFactory(
                 new PropertyValueFactory<Asset, String>("location"));
+
+        TableColumn recommendationCol = new TableColumn(RECOMMENDATION_COL);
+        recommendationCol.setCellValueFactory(
+                new PropertyValueFactory<Asset, String>("recommendation"));
 
         table.setItems(systems);
         table.getColumns().addAll(systemTypeCol, serialNoCol, linearRULCol, locationCol);

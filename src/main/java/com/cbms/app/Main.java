@@ -7,13 +7,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 
 public class Main extends Application {
 
-    public static void main(String[] args) throws Exception {
-
-
+    public static void main(String[] args) {
         ModelController modelController = ModelController.getInstance();
         modelController.initializer();
         launch(args);
@@ -24,6 +23,7 @@ public class Main extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("/Systems.fxml"));
         Scene sample = new Scene(root);
         primaryStage.setTitle("CBMS");
+        primaryStage.initStyle(StageStyle.UNDECORATED);
         primaryStage.setScene(sample);
         primaryStage.show();
         primaryStage.setOnCloseRequest(e -> {
@@ -37,9 +37,6 @@ public class Main extends Application {
 
     private void closeProgram() throws Exception {
         System.out.println("Program closing.");
-        ModelController modelController = ModelController.getInstance();
-        //Closing database connection.
-        modelController.stopDatabase();
         Platform.exit();
         System.exit(0);
     }
