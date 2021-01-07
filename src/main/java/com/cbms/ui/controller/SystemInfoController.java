@@ -14,7 +14,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
@@ -26,9 +25,9 @@ import java.util.ResourceBundle;
 
 public class SystemInfoController implements Initializable {
     @FXML
-    private Button systemMenuButton;
+    private Button systemMenuBtn;
     @FXML
-    private Button deletebtn;
+    private Button deleteBtn;
     @FXML
     private Text systemName;
     @FXML
@@ -142,14 +141,14 @@ public class SystemInfoController implements Initializable {
      * @author Jeff
      */
     public void attachEvents() {
-        systemMenuButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        systemMenuBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 uiUtilities.changeScene(mouseEvent, "/Systems");
             }
         });
 
-        deletebtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        deleteBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 deleteDialog(mouseEvent);

@@ -29,9 +29,9 @@ import java.util.ResourceBundle;
 
 public class SystemsController implements Initializable {
     @FXML
-    private Button systemMenuButton;
+    private Button systemMenuBtn;
     @FXML
-    private Button addSystemButton;
+    private Button addSystemBtn;
     @FXML
     private FlowPane systemsThumbPane;
     @FXML
@@ -104,7 +104,7 @@ public class SystemsController implements Initializable {
         });
 
         //Attach link to systemMenuButton to go to Systems.fxml
-        systemMenuButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        systemMenuBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 uiUtilities.changeScene(mouseEvent, "/Systems");
@@ -112,7 +112,7 @@ public class SystemsController implements Initializable {
         });
 
         //Attach link to addSystemButton to go to AddSystem.fxml
-        addSystemButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        addSystemBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 uiUtilities.changeScene(mouseEvent, "/AddSystem");
