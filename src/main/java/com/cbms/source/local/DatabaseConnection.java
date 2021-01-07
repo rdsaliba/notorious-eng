@@ -9,7 +9,7 @@ public class DatabaseConnection {
     //Make sure to set the user and password to the proper values.
     //Credentials should be set to that which you are using on your local DB server.
     private static final String USER = "root"; // todo  use username and password specific to your machine
-    private static final String PASSWORD = "PaulM1994";
+    private static final String PASSWORD = "JayC6912!";
     private static DatabaseConnection openConnection;
     private Connection conn;
 
@@ -68,7 +68,7 @@ public class DatabaseConnection {
         try {
             if (this.conn != null)
                 this.conn.close();
-            this.openConnection = null;
+            openConnection = null;
             System.out.println("Connection stopped.");
         } catch (SQLException throwables) {
             throwables.printStackTrace();
