@@ -38,8 +38,7 @@ public class DataPreProcessorImpl implements DataPreProcessor {
         this.removedIndex = new ArrayList<>();
     }
 
-
-    /**  This method takes in a dataset and shows all of its attribute values for every row of data.
+    /**  This method takes in instances and shows all of its attribute values for every row of data.
      *
      * @author Khaled
      * */
@@ -78,19 +77,19 @@ public class DataPreProcessorImpl implements DataPreProcessor {
         for (int i = 0; i < trainingData.numInstances(); i++) {
             row = trainingData.instance(i);
 
-            if (engineNum == 100 && trainingData.instance(i - 1).classValue() == 0) {   //2nd dataset
+            if (engineNum == 100 && trainingData.instance(i - 1).classValue() == 0) {   //Engines corresponding to AssetID 201-460
                 engineNum = 201;
                 timeCycleIndex = 1;
                 engineIndex++;
             }
 
-            else if (engineNum == 460 && trainingData.instance(i - 1).classValue() == 0) {  //3rd dataset
+            else if (engineNum == 460 && trainingData.instance(i - 1).classValue() == 0) {  //Engines corresponding to AssetID 720-819
                 engineNum = 720;
                 timeCycleIndex = 1;
                 engineIndex++;
             }
 
-            else if (engineNum == 819 && trainingData.instance(i - 1).classValue() == 0) {  //4th dataset
+            else if (engineNum == 819 && trainingData.instance(i - 1).classValue() == 0) {  ////Engines corresponding to AssetID 920-1167
                 engineNum = 920;
                 timeCycleIndex = 1;
                 engineIndex++;
@@ -109,7 +108,7 @@ public class DataPreProcessorImpl implements DataPreProcessor {
         return trainingData;
     }
 
-    /**This method takes in the dataset and total number of engines in the dataset (1168) to parse the maximum cycle
+    /**This method takes in instances and the totalEngines which is the last row's AssetID value to parse the maximum cycle
      * of each engine in the dataset and returns it in an array.
      *
      * @author Khaled
@@ -125,25 +124,25 @@ public class DataPreProcessorImpl implements DataPreProcessor {
         for (int i = 0; i < trainingData.numInstances(); i++) {         //every instance
             Instance row = trainingData.instance(i);                    //current instance
 
-            if (row.value(engine) - 1 == engineNum) {                   //if val of current engine - 1 is same as
+            if (row.value(engine) - 1 == engineNum) {
                 Instance prevRow = trainingData.instance(i - 1);
                 maxCycles[index++] = prevRow.value(timeCycle);
                 engineNum++;
             }
-            else if (engineNum == 100) {                        //moving to second dataset
+            else if (engineNum == 100) {                        //last maxCycle of assetID = 100 and moving to assetID = 201
                 maxCycles[index++] = 200;
                 engineNum = 201;
             }
-            else if(engineNum == 460) {                          //moving to 3rd dataset
+            else if(engineNum == 460) {                           //last maxCycle of assetID = 460 and moving to assetID = 720
                 maxCycles[index++] = 316;
                 engineNum = 720;
             }
-            else if(engineNum == 819) {                         //moving to 4th dataset
+            else if(engineNum == 819) {                          //last maxCycle of assetID = 819 and moving to assetID = 920
                 maxCycles[index++] = 152;
                 engineNum = 920;
             }
 
-            else if(engineNum == 1168) {                         //end (last asset id = 1168)
+            else if(engineNum == 1168) {                         //end and put maxCycle of last assetID
                 maxCycles[index++] = 255;
                 break;
             }
