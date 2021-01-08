@@ -128,12 +128,12 @@ public class SystemInfoController implements Initializable {
             sensorChart.setPrefWidth(275.0);
             sensorChart.setPrefHeight(163.0);
             sensorChart.setLayoutX(12.0);
-            sensorChart.setLayoutY(12.0);
+            sensorChart.setLayoutY(50.0);
             pane.getChildren().add(sensorChart);
             Text sensorName = new Text(sensor.getName());
             sensorName.setId("sensorType");
             sensorName.setLayoutX(35.0);
-            sensorName.setLayoutY(191.0);
+            sensorName.setLayoutY(30.0);
             pane.getChildren().add(sensorName);
 
             sensorFlowPane.getChildren().add(pane);
@@ -189,6 +189,14 @@ public class SystemInfoController implements Initializable {
         }
     }
 
+    /**
+     * Set the minimum and maximum values in the X or Y axis on a graph.
+     *
+     * @param sensorChart
+     * @param min
+     * @param max
+     * @param isXAxis
+     */
     public void setAxisBounds(LineChart<Number, Number> sensorChart, double min, double max, boolean isXAxis) {
         NumberAxis axis;
         if(isXAxis) {
@@ -202,21 +210,48 @@ public class SystemInfoController implements Initializable {
         axis.setUpperBound(max);
     }
 
+    /**
+     * Returns the lowest sensor measurement from a map.
+     *
+     * @param measurements
+     * @return
+     */
     double getLowestMeasurement(Map<Integer, Double> measurements) {
-        return minUsingCollectionsMaxAndLambda(measurements);
+        return minValueInMap(measurements);
     }
 
+    /**
+     * Returns the highest sensor measurement from a map.
+     *
+     * @param measurements
+     * @return
+     */
     double getHighestMeasurement(Map<Integer, Double> measurements) {
-        return maxUsingCollectionsMaxAndLambda(measurements);
+        return maxValueInMap(measurements);
     }
 
-    public <K, V extends Comparable<V>> V minUsingCollectionsMaxAndLambda(Map<K, V> map) {
+    /**
+     * Returns the minimum value in a map.
+     * @param map
+     * @param <K>
+     * @param <V>
+     * @return
+     */
+    public <K, V extends Comparable<V>> V minValueInMap(Map<K, V> map) {
         Map.Entry<K, V> maxEntry = Collections.min(map.entrySet(), (Map.Entry<K, V> e1, Map.Entry<K, V> e2) -> e1.getValue()
                 .compareTo(e2.getValue()));
         return maxEntry.getValue();
     }
 
-    public <K, V extends Comparable<V>> V maxUsingCollectionsMaxAndLambda(Map<K, V> map) {
+    /**
+     * Returns the maximum value in a map.
+     *
+     * @param map
+     * @param <K>
+     * @param <V>
+     * @return
+     */
+    public <K, V extends Comparable<V>> V maxValueInMap(Map<K, V> map) {
         Map.Entry<K, V> maxEntry = Collections.max(map.entrySet(), (Map.Entry<K, V> e1, Map.Entry<K, V> e2) -> e1.getValue()
                 .compareTo(e2.getValue()));
         return maxEntry.getValue();
