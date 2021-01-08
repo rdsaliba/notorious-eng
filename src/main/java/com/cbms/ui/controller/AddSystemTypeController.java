@@ -22,15 +22,15 @@ import java.util.ResourceBundle;
 public class AddSystemTypeController implements Initializable {
 
     @FXML
-    private Button systemMenuButton;
+    private Button systemMenuBtn;
     @FXML
-    private Button cancelButton;
+    private Button cancelBtn;
     @FXML
     private Button addThresholdBtn;
     @FXML
     private AnchorPane systemTypeInformation;
     @FXML
-    private Button savebtn;
+    private Button saveBtn;
     @FXML
     private TextField systemTypeName;
 
@@ -67,14 +67,14 @@ public class AddSystemTypeController implements Initializable {
      */
     public void attachEvents() {
         // Change scenes to Systems.fxml
-        systemMenuButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        systemMenuBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 uiUtilities.changeScene(mouseEvent, "/Systems");
             }
         });
         // Change scenes to Systems.fxml
-        cancelButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        cancelBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 uiUtilities.changeScene(mouseEvent, "/Systems");
@@ -86,7 +86,7 @@ public class AddSystemTypeController implements Initializable {
                 addThresholdForm();
             }
         });
-        savebtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        saveBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 saveAssetType(assembleSystemType());
