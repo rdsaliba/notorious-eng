@@ -19,6 +19,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -113,6 +114,13 @@ public class SystemInfoController implements Initializable {
             sensorChart.setTitle(SENSOR_VALUES);
             XYChart.Series series = new XYChart.Series();
             Map<Integer, Double> measurements = sensor.getMeasurements();
+
+            setAxisBounds(sensorChart, 0 , 5, true);
+            setAxisBounds(sensorChart, getLowestMeasurement(sensor.getMeasurements()),
+                    getHighestMeasurement(sensor.getMeasurements()), false);
+
+            
+
             series.getData().add(new XYChart.Data(1, measurements.get(1)));
             series.getData().add(new XYChart.Data(2, measurements.get(2)));
             series.getData().add(new XYChart.Data(3, measurements.get(3)));
@@ -181,5 +189,38 @@ public class SystemInfoController implements Initializable {
             deleteAsset();
             uiUtilities.changeScene(mouseEvent, "/Systems");
         }
+    }
+
+    public void setAxisBounds(LineChart<Number, Number> sensorChart, double min, double max, boolean isXAxis) {
+        NumberAxis axis;
+        if(isXAxis) {
+            axis = (NumberAxis) sensorChart.getXAxis();
+        }
+        else {
+            axis = (NumberAxis) sensorChart.getYAxis();
+        }
+        axis.setAutoRanging(false);
+        axis.setLowerBound(min);
+        axis.setUpperBound(max);
+    }
+
+    double getLowestMeasurement(Map<Integer, Double> measurements) {
+        return minUsingCollectionsMaxAndLambda(measurements);
+    }
+
+    double getHighestMeasurement(Map<Integer, Double> measurements) {
+        return maxUsingCollectionsMaxAndLambda(measurements);
+    }
+
+    public <K, V extends Comparable<V>> V minUsingCollectionsMaxAndLambda(Map<K, V> map) {
+        Map.Entry<K, V> maxEntry = Collections.min(map.entrySet(), (Map.Entry<K, V> e1, Map.Entry<K, V> e2) -> e1.getValue()
+                .compareTo(e2.getValue()));
+        return maxEntry.getValue();
+    }
+
+    public <K, V extends Comparable<V>> V maxUsingCollectionsMaxAndLambda(Map<K, V> map) {
+        Map.Entry<K, V> maxEntry = Collections.max(map.entrySet(), (Map.Entry<K, V> e1, Map.Entry<K, V> e2) -> e1.getValue()
+                .compareTo(e2.getValue()));
+        return maxEntry.getValue();
     }
 }
