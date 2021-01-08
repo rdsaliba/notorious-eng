@@ -115,17 +115,15 @@ public class SystemInfoController implements Initializable {
             XYChart.Series series = new XYChart.Series();
             Map<Integer, Double> measurements = sensor.getMeasurements();
 
-            setAxisBounds(sensorChart, 0 , 5, true);
+            int latestTime = sensor.getLatestTime();
+            setAxisBounds(sensorChart, latestTime - 4 , latestTime, true);
             setAxisBounds(sensorChart, getLowestMeasurement(sensor.getMeasurements()),
                     getHighestMeasurement(sensor.getMeasurements()), false);
-
-            
-
-            series.getData().add(new XYChart.Data(1, measurements.get(1)));
-            series.getData().add(new XYChart.Data(2, measurements.get(2)));
-            series.getData().add(new XYChart.Data(3, measurements.get(3)));
-            series.getData().add(new XYChart.Data(4, measurements.get(4)));
-            series.getData().add(new XYChart.Data(5, measurements.get(5)));
+            series.getData().add(new XYChart.Data(latestTime - 4, measurements.get(latestTime - 4)));
+            series.getData().add(new XYChart.Data(latestTime - 3, measurements.get(latestTime - 3)));
+            series.getData().add(new XYChart.Data(latestTime - 2, measurements.get(latestTime - 2)));
+            series.getData().add(new XYChart.Data(latestTime - 1, measurements.get(latestTime - 1)));
+            series.getData().add(new XYChart.Data(latestTime, measurements.get(latestTime)));
             sensorChart.getData().add(series);
             sensorChart.setPrefWidth(275.0);
             sensorChart.setPrefHeight(163.0);

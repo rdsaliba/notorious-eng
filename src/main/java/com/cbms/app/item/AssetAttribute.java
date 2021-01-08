@@ -15,12 +15,14 @@ public class AssetAttribute {
     private int id;
     private String name;
     private final Map<Integer, Double> measurements;
+    private int latestTime;
 
     public AssetAttribute() {
         measurements = new TreeMap<>();
     }
 
     public void addMeasurement(int time, double measurement) {
+        latestTime = time;
         measurements.put(time, measurement);
     }
 
@@ -47,6 +49,10 @@ public class AssetAttribute {
     public void setName(String name) {
         this.name = name;
     }
+
+    public int getLatestTime() { return latestTime; }
+
+    public void setLatestTime(int latestTime) { this.latestTime = latestTime; }
 
     @Override
     public String toString() {
