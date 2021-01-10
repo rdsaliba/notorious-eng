@@ -2,6 +2,7 @@ package com.cbms.ui.controller;
 
 import com.cbms.app.item.Asset;
 import com.cbms.app.item.AssetAttribute;
+import com.cbms.app.item.Measurement;
 import com.cbms.rul.assessment.AssessmentController;
 import com.cbms.source.local.AssetDAOImpl;
 import javafx.event.EventHandler;
@@ -19,10 +20,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import java.net.URL;
 import java.text.DecimalFormat;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class SystemInfoController implements Initializable {
     @FXML
@@ -113,7 +111,7 @@ public class SystemInfoController implements Initializable {
                     new LineChart<>(xAxis, yAxis);
             sensorChart.setTitle(SENSOR_VALUES);
             XYChart.Series series = new XYChart.Series();
-            Map<Integer, Double> measurements = sensor.getMeasurements();
+            ArrayList<Measurement> measurements = sensor.getMeasurements();
 
             int latestTime = sensor.getLatestTime();
             setAxisBounds(sensorChart, latestTime - 4 , latestTime, true);
