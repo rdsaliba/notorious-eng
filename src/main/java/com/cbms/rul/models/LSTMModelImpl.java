@@ -81,10 +81,6 @@ public class LSTMModelImpl implements ModelStrategy
             //train with the DL4J classifier
             network.buildClassifier(trainDataset);
 
-            // TODO: Evaluate
-//        Evaluation ev = new Evaluation(firstTrain);
-//        ev.crossValidateModel(network, firstTrain, 10, new Random(0));
-//        System.out.println(ev.toSummaryString());
         }
 
         catch(Exception ex)
