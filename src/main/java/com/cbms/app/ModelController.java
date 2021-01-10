@@ -11,16 +11,14 @@ package com.cbms.app;
 import com.cbms.app.item.Asset;
 import com.cbms.preprocessing.DataPrePreprocessorController;
 import com.cbms.rul.assessment.AssessmentController;
+import com.cbms.rul.models.LSTMModelImpl;
 import com.cbms.rul.models.LinearRegressionModelImpl;
 import com.cbms.rul.models.ModelStrategy;
 import com.cbms.rul.models.ModelsController;
 import com.cbms.source.local.AssetDAOImpl;
 import com.cbms.source.local.ModelDAOImpl;
 import weka.classifiers.Classifier;
-import weka.core.Attribute;
-import weka.core.FastVector;
-import weka.core.Instance;
-import weka.core.Instances;
+import weka.core.*;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -146,6 +144,8 @@ public class ModelController {
         switch (stratName) {
             case "Linear":
                 return new LinearRegressionModelImpl();
+            case "LSTM":
+                return new LSTMModelImpl();
             default:
                 return null;
         }
@@ -205,10 +205,9 @@ public class ModelController {
                 for (int i = 0; i < asset.getAssetInfo().getAssetAttributes().size(); i++) {
                     values[i + 2] = asset.getAssetInfo().getAssetAttributes().get(i).getMeasurements(timeCycle);
                 }
-                data.add(new Instance(1.0, values));
+                data.add(new DenseInstance(1.0, values));       //changed from Instance to DenseInstance
             }
         }
         return data;
     }
-
 }

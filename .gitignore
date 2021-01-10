@@ -28,3 +28,4 @@ target/*
 cbms.iml
 
 .DS_Store
+/.idea/aws.xml
