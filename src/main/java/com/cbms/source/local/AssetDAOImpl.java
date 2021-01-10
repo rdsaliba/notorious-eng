@@ -12,10 +12,12 @@ import com.cbms.app.TrainedModel;
 import com.cbms.app.item.Asset;
 import com.cbms.app.item.AssetAttribute;
 import com.cbms.app.item.AssetInfo;
+import com.cbms.app.item.AssetType;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 public class AssetDAOImpl extends DAO implements AssetDAO {

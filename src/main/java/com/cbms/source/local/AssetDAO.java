@@ -9,6 +9,7 @@ package com.cbms.source.local;
 
 import com.cbms.app.TrainedModel;
 import com.cbms.app.item.Asset;
+import com.cbms.app.item.AssetType;
 
 import java.util.ArrayList;
 
