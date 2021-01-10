@@ -1,37 +1,40 @@
 /*
-  The asset Attribute class contains all the details of the asset attribute
-  this includes the id of the asset, its name and all the measurements we have for it
+  The asset Attribute class contains all the details of the asset attribute (sensors, operational settings, etc).
+  This includes the id of the asset, its name and all the measurements we have for it.
 
-  @author Paul Micu
-  @version 1.0
-  @last_edit 11/08/2020
+  @author Paul Micu, Jeremie Chouteau
+  @version 2.0
+  @last_edit 24/12/2020
  */
 package com.cbms.app.item;
 
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.ArrayList;
 
 public class AssetAttribute {
     private int id;
     private String name;
-    private final Map<Integer, Double> measurements;
+    private final ArrayList<Measurement> measurements;
     private int latestTime;
 
-    public AssetAttribute() {
-        measurements = new TreeMap<>();
-    }
+    public AssetAttribute() {measurements = new ArrayList<>();}
 
-    public void addMeasurement(int time, double measurement) {
+    public void addMeasurement(int time, double value) {
         latestTime = time;
-        measurements.put(time, measurement);
+        Measurement mNew = new Measurement(time, value);
+        measurements.add(mNew);
     }
 
-    public Map<Integer, Double> getMeasurements() {
+    public ArrayList<Measurement> getMeasurements() {
         return measurements;
     }
 
     public Double getMeasurements(int time) {
-        return measurements.get(time);
+        for (Measurement measurement : measurements) {
+            if (measurement.getTime() == time) {
+                return measurement.getValue();
+            }
+        }
+        return null;
     }
 
     public int getId() {
@@ -59,7 +62,7 @@ public class AssetAttribute {
         return "AssetAttribute{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", measurements=" + measurements +
+                ", measurements=" + measurements.toString() +
                 '}';
     }
 }

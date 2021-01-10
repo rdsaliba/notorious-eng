@@ -1,16 +1,14 @@
 /*
   This class can be extended to the system need.
-  Will include all sensors information, data source origin and whatever is relevant to the asset
+  Will include all information relevant to an asset such as sensors information, data source origin,
+  RUL estimates and others.
+  It contains a reference to the asset attributes (sensors, operational settings)
+  It contains a reference to the RUL estimates calculated for the asset including when
+  that estimation was made (timestamp) as well as the value attached to it.
 
-  @author Roy Saliba
-  @version 1.0
-  @last_edit 11/07/2020
-
-  Added a reference to the asset attributes
-  Added a map containing a reference to all the RUL measurements and when they were taken
-  @author Paul Micu
-  @version 1.1
-  @last_edit 11/08/2020
+  @author Roy, Saliba, Paul Micu, Jeremie Chouteau
+  @version 2.1
+  @last_edit 12/24/2020
  */
 package com.cbms.app.item;
 
@@ -18,44 +16,47 @@ import java.util.*;
 
 public class AssetInfo {
     private final ArrayList<AssetAttribute> assetAttributes;
-    private final Map<Date, Double> estimates;
+    private final ArrayList<RULEstimate> RULEstimates;
     private Date lastRULDate;
 
     public AssetInfo() {
         assetAttributes = new ArrayList<>();
-        estimates = new TreeMap<>();
+        RULEstimates = new ArrayList<>();
     }
 
     public void addAttribute(AssetAttribute newAtt) {
-
         assetAttributes.add(newAtt);
     }
 
     public ArrayList<AssetAttribute> getAssetAttributes() {
-
         return assetAttributes;
     }
 
     public int getLastRecorderTimeCycle() {
-
         return assetAttributes.get(0).getMeasurements().size();
     }
 
-    public void addRULMeasurement(double estimate) {
+    public void addRULEstimate(double estimate) {
         Calendar cal = Calendar.getInstance();
         lastRULDate = cal.getTime();
-        estimates.put(lastRULDate, estimate);
+        RULEstimate RULeNew = new RULEstimate(lastRULDate, estimate);
+        RULEstimates.add(RULeNew);
     }
 
-    public double getRULMeasurement() {
-        return estimates.get(lastRULDate);
+    public double getRULEstimate() {
+        for (RULEstimate rulEstimate : RULEstimates) {
+            if (rulEstimate.getTimestamp().equals(lastRULDate)) {
+                return rulEstimate.getValue();
+            }
+        }
+        return 0;
     }
 
     @Override
     public String toString() {
         return "AssetInfo{" +
                 "assetAttributes=" + assetAttributes.toString() +
-                ", estimates=" + estimates.toString() +
+                ", estimates=" + RULEstimates.toString() +
                 '}';
     }
 }
