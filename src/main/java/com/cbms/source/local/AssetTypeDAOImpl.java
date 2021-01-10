@@ -7,10 +7,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
     private static final String INSERT_ASSET_TYPE = "INSERT INTO asset_type (name) values( ? )";
     private static final String INSERT_ASSET_TYPE_PARAMETERS = "INSERT INTO asset_type_parameters (asset_type_id, parameter_name, boundary) values(?, ?, ?)";
+    private static final String GET_ASSET_TYPES = "SELECT * FROM asset_type";
 
     @Override
     public void insertAssetType(AssetType assetType) {
@@ -38,5 +40,23 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
         catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * This method retrieves the complete list of possible asset types and return their
+     * names
+     */
+    @Override
+    public ArrayList<String> getAssetTypeList() {
+        ArrayList<String> assetTypeList = new ArrayList<>();
+        try {
+            PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_TYPES);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next())
+                assetTypeList.add(rs.getString("name"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return assetTypeList;
     }
 }

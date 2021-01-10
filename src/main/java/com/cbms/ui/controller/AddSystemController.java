@@ -1,6 +1,6 @@
 package com.cbms.ui.controller;
 
-import com.cbms.source.local.DatabaseConnection;
+import com.cbms.source.local.AssetTypeDAOImpl;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -10,10 +10,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextArea;
 
 import java.net.URL;
-import java.sql.*;
 import java.util.*;
-
-import java.sql.ResultSet;
 
 public class AddSystemController implements Initializable {
 
@@ -28,7 +25,8 @@ public class AddSystemController implements Initializable {
     @FXML
     private ChoiceBox<String> systemTypeChoiceBox;
 
-    private static final String GET_ASSET_TYPES = "SELECT * FROM asset_type";
+    private static ObservableList<String> assetTypeNamesList;
+    private AssetTypeDAOImpl assetTypeDAOImpl;
     private UIUtilities uiUtilities;
 
     /**
@@ -42,6 +40,7 @@ public class AddSystemController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        assetTypeDAOImpl = new AssetTypeDAOImpl();
         uiUtilities = new UIUtilities();
         attachEvents();
         initializeFieldValues();
@@ -66,19 +65,7 @@ public class AddSystemController implements Initializable {
      */
     public void initializeFieldValues() {
         // Establishes the asset types available for selection in the dropdown
-        try {
-            PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_TYPES);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()){
-                ObservableList<String> assetTypeNames = FXCollections.observableArrayList(rs.getString("name"));
-                systemTypeChoiceBox.setItems(assetTypeNames);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        assetTypeNamesList = FXCollections.observableArrayList(assetTypeDAOImpl.getAssetTypeList());
+        systemTypeChoiceBox.setItems(assetTypeNamesList);
         }
-    }
-
-    public Connection getConnection() {
-        return DatabaseConnection.start().getConnection();
-    }
 }
