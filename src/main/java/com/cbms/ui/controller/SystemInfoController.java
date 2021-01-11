@@ -12,7 +12,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -21,19 +20,14 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
-
 import java.net.URL;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SystemInfoController implements Initializable {
     @FXML
@@ -153,55 +147,25 @@ public class SystemInfoController implements Initializable {
             sensorChart.setTitle(SENSOR_VALUES);
             XYChart.Series series = new XYChart.Series();
             sensorChart.setAnimated(false);
-            //ArrayList<Measurement> measurements = sensor.getMeasurements();
-            //int lastCycle = sensor.getMeasurements().size() - 1;
-//            double lowestMeasurement = getLowestMeasurement(sensor.getMeasurements());
-//            double highestMeasurement = getHighestMeasurement(sensor.getMeasurements());
-//            setAxisBounds(sensorChart, lowestMeasurement - (lowestMeasurement * 0.002),
-//                    highestMeasurement + (highestMeasurement * 0.002), false);
-
-//            if(lastCycle >= 4) {
-//                setAxisBounds(sensorChart, lastCycle - 3, lastCycle + 1, true);
-//                for(int i = 4; i >= 0; i--) {
-//                    series.getData().add(new XYChart.Data(lastCycle + 1 - i, measurements.get(lastCycle - i).getValue()));
-//                }
-//            }
-//            else {
-//                setAxisBounds(sensorChart, 0, lastCycle, true);
-//                for(int i = lastCycle; i >= 0; i--) {
-//                    series.getData().add(new XYChart.Data(i, measurements.get(i).getValue()));
-//                }
-//            }
 
             // setup a scheduled executor to periodically put data into the chart
             scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("ss");
-            // put dummy data onto graph per second
-
-            AtomicBoolean isFirst = new AtomicBoolean(true);
-
             scheduledExecutorService.scheduleAtFixedRate(() -> {
                 ArrayList<Measurement> measurements = attributeDAOImpl.getLastXMeasurementsByAssetIDAndAttributeID(Integer.toString(system.getId()), Integer.toString(sensor.getId()), 5);
 
                 // Update the chart
                 Platform.runLater(() -> {
-                    // get current time
-                    Date now = new Date();
-
                     if(!sensorChart.getXAxis().isValueOnAxis(Integer.toString(measurements.get(0).getTime())))
-                        // put random number with current time
                         series.getData().add(new XYChart.Data(Integer.toString(measurements.get(0).getTime()), Double.toString(measurements.get(0).getValue())));
                     else if (series.getData().size() != measurements.size()) {
                         for(int i = measurements.size() - 1; i >= 0; i--) {
                             series.getData().add(new XYChart.Data(Integer.toString(measurements.get(i).getTime()), Double.toString(measurements.get(i).getValue())));
                         }
                     }
-
                     if (series.getData().size() > 5)
                         series.getData().remove(0);
                 });
             }, 0, 1, TimeUnit.SECONDS);
-
 
             sensorChart.getData().add(series);
             sensorChart.setPrefWidth(275.0);
@@ -219,7 +183,6 @@ public class SystemInfoController implements Initializable {
         }
     }
 
-
     /**
      * Attaches events to elements in the scene.
      *
@@ -232,7 +195,6 @@ public class SystemInfoController implements Initializable {
                 uiUtilities.changeScene(mouseEvent, "/Systems");
             }
         });
-
         deleteBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
@@ -266,72 +228,5 @@ public class SystemInfoController implements Initializable {
             deleteAsset();
             uiUtilities.changeScene(mouseEvent, "/Systems");
         }
-    }
-
-    /**
-     * Set the minimum and maximum values in the X or Y axis on a graph.
-     *
-     * @param sensorChart
-     * @param min
-     * @param max
-     * @param isXAxis
-     */
-    public void setAxisBounds(LineChart<String, Number> sensorChart, double min, double max, boolean isXAxis) {
-
-        if(isXAxis) {
-            CategoryAxis axis;
-            axis = (CategoryAxis) sensorChart.getXAxis();
-            axis.setAutoRanging(false);
-        }
-        else {
-            NumberAxis axis;
-            axis = (NumberAxis) sensorChart.getYAxis();
-            axis.setAutoRanging(false);
-            axis.setLowerBound(min);
-            axis.setUpperBound(max);
-        }
-
-    }
-
-    public double getLowerXAxisBound(LineChart<Number, Number> sensorChart) {
-        return ((NumberAxis) sensorChart.getXAxis()).getLowerBound();
-    }
-
-    public double getUpperXAxisBound(LineChart<Number, Number> sensorChart) {
-        return ((NumberAxis) sensorChart.getXAxis()).getUpperBound();
-    }
-
-    /**
-     * Returns the lowest sensor measurement from an arrayList of measurements objects.
-     *
-     * @param measurements
-     * @return
-     */
-    double getLowestMeasurement( ArrayList<Measurement> measurements) {
-        double minValue = 0.0;
-        if (!measurements.isEmpty()){
-            minValue = measurements.get(0).getValue();
-            for (Measurement m : measurements)
-                if (minValue > m.getValue())
-                    minValue = m.getValue();
-        }
-        return minValue;
-    }
-
-    /**
-     * Returns the highest sensor measurement from a map.
-     *
-     * @param measurements
-     * @return
-     */
-    double getHighestMeasurement(ArrayList<Measurement> measurements) {
-        double maxValue = 0.0;
-        if (!measurements.isEmpty()){
-            maxValue = measurements.get(0).getValue();
-            for (Measurement m : measurements)
-                if (maxValue < m.getValue())
-                    maxValue = m.getValue();
-        }
-        return maxValue;
     }
 }
