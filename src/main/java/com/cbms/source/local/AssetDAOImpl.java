@@ -24,7 +24,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
     private static final String DELETE_ASSET = "DELETE FROM ? WHERE asset_id = ?";
     private static final String GET_ASSET_INFO_FROM_ASSET_ID = "SELECT * FROM attribute_measurements am, attribute att WHERE att.attribute_id=am.attribute_id AND am.asset_id = ?";
     private static final String GET_ATTRIBUTES_NAMES_FROM_ASSET_ID="SELECT DISTINCT att.attribute_name FROM attribute att, attribute_measurements am, asset a WHERE a.asset_id= ? AND am.asset_id = a.asset_id AND att.attribute_id = am.attribute_id order by att.attribute_id";
-    private static final String GET_ASSETS_FROM_ASSET_TYPE_ID = "SELECT a.asset_id, a.asset_type_id, a.sn, a.location,a.description FROM asset a WHERE a.archived = true AND a.asset_type_id = ?";
+    private static final String GET_ASSETS_FROM_ASSET_TYPE_ID = "SELECT * FROM asset a WHERE a.archived = true AND a.asset_type_id = ?";
     private static final String GET_ASSET_TYPE_NAME_FROM_ASSET_ID="SELECT at.name FROM asset_type at WHERE at.asset_type_id = ?";
     private static final String GET_ALL_LIVE_ASSETS="SELECT * FROM asset, asset_type WHERE asset.asset_type_id=asset_type.asset_type_id AND archived = false";
     private static final String INSERT_NEW_ASSET_MEASUREMENT="INSERT INTO asset_model_calculation values( ? , ? ,now(), ?)";
@@ -234,9 +234,8 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
     private Asset createAssetFromQueryResult(ResultSet assetsQuery) throws SQLException {
         Asset newAsset = new Asset();
         newAsset.setId(assetsQuery.getInt("asset_id"));
-        newAsset.setName(assetsQuery.getString("asset.name"));
+        newAsset.setName(assetsQuery.getString("name"));
         newAsset.setAssetTypeID(assetsQuery.getString("asset_type_id"));
-        newAsset.setAssetTypeName(assetsQuery.getString("asset_type.name"));
         newAsset.setDescription(assetsQuery.getString("description"));
         newAsset.setLocation(assetsQuery.getString("location"));
         newAsset.setSerialNo(assetsQuery.getString("sn"));

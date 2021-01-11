@@ -12,7 +12,6 @@ public class Asset extends Item {
     private String serialNo;
     private String name;
     private String assetTypeID;
-    private String assetTypeName;
     private String location;
     private String description;
     private String recommendation;
@@ -23,20 +22,18 @@ public class Asset extends Item {
     }
 
 
-    public Asset(String serialNo, String name, String assetTypeID, String assetTypeName, String location, String description, String recommendation) {
+    public Asset(String serialNo, String name, String assetTypeID, String location, String description, String recommendation) {
         this.assetTypeID = assetTypeID;
         this.name = name;
-        this.assetTypeName = assetTypeName;
         this.serialNo = serialNo;
         this.location = location;
         this.description = description;
         this.recommendation = recommendation;
     }
 
-    public Asset(String serialNo, String name, String assetTypeID, String assetTypeName, String location, String description, String recommendation, AssetInfo assetInfo) {
+    public Asset(String serialNo, String name, String assetTypeID, String location, String description, String recommendation, AssetInfo assetInfo) {
         this.assetTypeID = assetTypeID;
         this.name = name;
-        this.assetTypeName = assetTypeName;
         this.serialNo = serialNo;
         this.location = location;
         this.description = description;
@@ -63,10 +60,6 @@ public class Asset extends Item {
     public void setAssetTypeID(String assetTypeID) {
         this.assetTypeID = assetTypeID;
     }
-
-    public String getAssetTypeName() { return assetTypeName; }
-
-    public void setAssetTypeName(String assetTypeName) { this.assetTypeName = assetTypeName; }
 
     public String getLocation() {
         return location;

@@ -5,6 +5,7 @@ import com.cbms.app.item.AssetAttribute;
 import com.cbms.app.item.Measurement;
 import com.cbms.rul.assessment.AssessmentController;
 import com.cbms.source.local.AssetDAOImpl;
+import com.cbms.source.local.AssetTypeDAOImpl;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -49,6 +50,7 @@ public class SystemInfoController implements Initializable {
 
     private Asset system;
     private AssetDAOImpl assetDAOImpl;
+    private AssetTypeDAOImpl assetTypeDAOImpl;
     private UIUtilities uiUtilities;
 
     // UI String constants
@@ -74,6 +76,7 @@ public class SystemInfoController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         assetDAOImpl = new AssetDAOImpl();
+        assetTypeDAOImpl = new AssetTypeDAOImpl();
         uiUtilities = new UIUtilities();
         attachEvents();
     }
@@ -88,7 +91,7 @@ public class SystemInfoController implements Initializable {
      */
     void initData(Asset system) {
         this.system = system;
-        systemName.setText(system.getName() + " " + system.getAssetTypeName() + " - " + system.getSerialNo());
+        systemName.setText(system.getName() + " " + assetTypeDAOImpl.getNameFromID(system.getAssetTypeID()) + " - " + system.getSerialNo());
         systemType.setText(system.getAssetTypeID());
         serialNumber.setText(system.getSerialNo());
         manufacturer.setText(MANUFACTURER);
@@ -120,11 +123,11 @@ public class SystemInfoController implements Initializable {
             setAxisBounds(sensorChart, latestTime - 4 , latestTime, true);
             setAxisBounds(sensorChart, getLowestMeasurement(sensor.getMeasurements()),
                     getHighestMeasurement(sensor.getMeasurements()), false);
-            series.getData().add(new XYChart.Data(latestTime - 4, measurements.get(latestTime - 4)));
-            series.getData().add(new XYChart.Data(latestTime - 3, measurements.get(latestTime - 3)));
-            series.getData().add(new XYChart.Data(latestTime - 2, measurements.get(latestTime - 2)));
-            series.getData().add(new XYChart.Data(latestTime - 1, measurements.get(latestTime - 1)));
-            series.getData().add(new XYChart.Data(latestTime, measurements.get(latestTime)));
+            series.getData().add(new XYChart.Data(latestTime - 4, measurements.get(latestTime - 5)));
+            series.getData().add(new XYChart.Data(latestTime - 3, measurements.get(latestTime - 4)));
+            series.getData().add(new XYChart.Data(latestTime - 2, measurements.get(latestTime - 3)));
+            series.getData().add(new XYChart.Data(latestTime - 1, measurements.get(latestTime - 2)));
+            series.getData().add(new XYChart.Data(latestTime, measurements.get(latestTime-1)));
             sensorChart.getData().add(series);
             sensorChart.setPrefWidth(275.0);
             sensorChart.setPrefHeight(163.0);
