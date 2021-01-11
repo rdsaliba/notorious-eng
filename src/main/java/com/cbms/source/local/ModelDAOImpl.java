@@ -44,7 +44,6 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            closeConnection();
             return name;
         }
     }
@@ -70,9 +69,6 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
         catch (SQLException e){
             e.printStackTrace();
         }
-        finally {
-            closeConnection();
-        }
     }
 
     /**
@@ -95,7 +91,6 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
         catch (SQLException e){
             e.printStackTrace();
         } finally {
-            closeConnection();
             return tms;
         }
 
@@ -122,7 +117,6 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            closeConnection();
             return tm;
         }
     }
@@ -151,9 +145,6 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
             e.printStackTrace();
             return null;
         }
-        finally {
-            closeConnection();
-            return tm;
-        }
+        return tm;
     }
 }

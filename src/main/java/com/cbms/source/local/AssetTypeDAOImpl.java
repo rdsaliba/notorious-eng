@@ -41,9 +41,6 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
         catch (SQLException e) {
             e.printStackTrace();
         }
-        finally {
-            closeConnection();
-        }
     }
 
     /**
@@ -61,10 +58,7 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        finally {
-            closeConnection();
-            return assetTypeList;
-        }
+        return assetTypeList;
     }
 
     @Override
@@ -79,10 +73,7 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        finally {
-            closeConnection();
-            return name;
-        }
+        return name;
     }
 
 

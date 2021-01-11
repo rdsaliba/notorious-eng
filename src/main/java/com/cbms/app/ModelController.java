@@ -81,6 +81,9 @@ public class ModelController {
             assetDaoImpl.addRULEstimation(estimation, asset, trainedModel);
         }
 
+        assetDaoImpl.closeConnection();
+        modelDAOImpl.closeConnection();
+
         return !assetsToUpdate.isEmpty();
     }
 
@@ -100,6 +103,10 @@ public class ModelController {
             Double estimation = estimateRUL(asset, trainedModel.getModelClassifier());
             assetDaoImpl.addRULEstimation(estimation, asset, trainedModel);
         }
+
+        assetDaoImpl.closeConnection();
+        modelDAOImpl.closeConnection();
+
         return asset != null;
     }
 
@@ -129,6 +136,9 @@ public class ModelController {
             }
             modelDAOImpl.setModelsToTrain(trainedModelsToRetrain);
         }
+
+        assetDaoImpl.closeConnection();
+        modelDAOImpl.closeConnection();
     }
 
     /**

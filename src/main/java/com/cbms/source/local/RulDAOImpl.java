@@ -34,7 +34,6 @@ public class RulDAOImpl extends DAO implements RulDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            closeConnection();
             return estimate;
         }
     }

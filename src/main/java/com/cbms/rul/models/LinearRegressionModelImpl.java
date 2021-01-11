@@ -11,7 +11,6 @@ package com.cbms.rul.models;
 
 import weka.classifiers.Classifier;
 import weka.classifiers.functions.LinearRegression;
-import weka.classifiers.functions.SMOreg;
 import weka.core.Instance;
 import weka.core.Instances;
 
@@ -27,8 +26,8 @@ public class LinearRegressionModelImpl implements ModelStrategy {
     public Classifier trainModel(Instances firstTrain) {
         firstTrain.setClassIndex(firstTrain.numAttributes() - 1);
         Instances trainDataset = removeInstances(firstTrain);
-        SMOreg lr = new SMOreg();
-        //LinearRegression lr = new LinearRegression();
+        //SMOreg lr = new SMOreg();
+        LinearRegression lr = new LinearRegression();
         try {
             lr.buildClassifier(firstTrain);
         } catch (Exception e) {

@@ -59,10 +59,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         catch (SQLException e){
             e.printStackTrace();
         }
-        finally {
-            closeConnection();
-            return assets;
-        }
+        return assets;
     }
 
     /**
@@ -80,16 +77,13 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
             ps.setInt(1, assetID);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                asset =  createAssetFromQueryResult(rs);
+                return createAssetFromQueryResult(rs);
             }
         }
         catch (SQLException e){
             e.printStackTrace();
         }
-        finally {
-            closeConnection();
-            return asset;
-        }
+        return asset;
     }
 
     /**
@@ -110,9 +104,6 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         catch (SQLException e) {
             e.printStackTrace();
         }
-        finally {
-            closeConnection();
-        }
         try {
             PreparedStatement ps = getConnection().prepareStatement(DELETE_ASSET);
             ps.setString(1 ," asset_model_calculation ");
@@ -122,9 +113,6 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         catch (SQLException e) {
             e.printStackTrace();
         }
-        finally {
-            closeConnection();
-        }
         try {
             PreparedStatement ps = getConnection().prepareStatement(DELETE_ASSET);
             ps.setString(1 ," asset ");
@@ -133,9 +121,6 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         }
         catch (SQLException e) {
             e.printStackTrace();
-        }
-        finally {
-            closeConnection();
         }
     }
 
@@ -159,10 +144,8 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         catch (SQLException e){
             e.printStackTrace();
         }
-        finally {
-            closeConnection();
-            return attributeNames;
-        }
+
+        return attributeNames;
     }
 
     /**
@@ -188,10 +171,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         catch (SQLException e){
             e.printStackTrace();
         }
-        finally {
-            closeConnection();
-            return assets;
-        }
+        return assets;
     }
 
     /**
@@ -214,7 +194,6 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
             e.printStackTrace();
         }
         finally {
-            closeConnection();
             return name;
         }
     }
@@ -237,10 +216,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         catch (SQLException e){
             e.printStackTrace();
         }
-        finally {
-            closeConnection();
-            return assets;
-        }
+        return assets;
     }
 
     /**
@@ -263,9 +239,6 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         } catch (SQLException e){
             e.printStackTrace();
         }
-        finally {
-            closeConnection();
-        }
 
         if (!Main.isRealTime())
             resetAssetUpdate(asset.getId());
@@ -287,9 +260,6 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
             ps.executeQuery();
         } catch (SQLException e){
             e.printStackTrace();
-        }
-        finally {
-            closeConnection();
         }
     }
 
@@ -357,51 +327,40 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
                 newAttribute.addMeasurement(attributesQuery.getInt("time"), attributesQuery.getDouble("value"));
 
             }
+            return newAssetInfo;
         }
         catch (SQLException e){
             e.printStackTrace();
         }
-        finally {
-            closeConnection();
-            return newAssetInfo;
-        }
+        return null;
     }
 
     private Boolean isAssetArchived (int assetID){
-        Boolean result = null;
         try {
             PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_FROM_ASSET_ID);
             ps.setInt(1, assetID);
             ResultSet queryResult = ps.executeQuery();
             if (queryResult.next())
-                result = queryResult.getBoolean("archived");
+                return queryResult.getBoolean("archived");
 
         } catch (SQLException e){
             e.printStackTrace();
         }
-        finally {
-            closeConnection();
-            return result;
-        }
+        return null;
     }
 
     private int lastAssetMeasurementTime (int assetID){
-        int result = -1;
         try {
             PreparedStatement ps = getConnection().prepareStatement(GET_LATEST_MEASUREMENT_TIME_FROM_ASSED_ID);
             ps.setInt(1, assetID);
             ResultSet queryResult = ps.executeQuery();
             if (queryResult.next())
-                result = queryResult.getInt("time");
-
+                return queryResult.getInt("time");
 
         } catch (SQLException e){
             e.printStackTrace();
         }
-        finally {
-            closeConnection();
-            return result;
-        }
+        return -1;
     }
 
     private ResultSet nonParamQuery(String query){
@@ -414,7 +373,6 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
             e.printStackTrace();
         }
         finally {
-            closeConnection();
             return rs;
         }
 
