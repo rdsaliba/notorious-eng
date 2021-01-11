@@ -6,6 +6,7 @@ import com.cbms.app.item.Measurement;
 import com.cbms.rul.assessment.AssessmentController;
 import com.cbms.source.local.AssetDAOImpl;
 import com.cbms.source.local.AssetTypeDAOImpl;
+import com.cbms.source.local.ModelDAOImpl;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -19,6 +20,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -34,30 +36,35 @@ public class SystemInfoController implements Initializable {
     @FXML
     private Text systemName;
     @FXML
-    private Text systemType;
-    @FXML
-    private Text serialNumber;
-    @FXML
-    private Text manufacturer;
-    @FXML
-    private Text systemLocation;
-    @FXML
-    private Text linearRUL;
-    @FXML
-    private Text lstmRUL;
+    private Text systemNameOutput;
     @FXML
     private FlowPane sensorFlowPane;
+    @FXML
+    private Text systemTypeOutput;
+    @FXML
+    private Text serialNumberOutput;
+    @FXML
+    private Text manufacturerOutput;
+    @FXML
+    private Text locationOutput;
+    @FXML
+    private Text siteOutput;
+    @FXML
+    private Text modelOutput;
+    @FXML
+    private Text rulOutput;
+    @FXML
+    private Text categoryOutput;
+    @FXML
+    private Text descriptionOutput;
 
     private Asset system;
     private AssetDAOImpl assetDAOImpl;
     private AssetTypeDAOImpl assetTypeDAOImpl;
+    private ModelDAOImpl modelDAO;
     private UIUtilities uiUtilities;
 
     // UI String constants
-    private final String MANUFACTURER = "";
-    private final String LOCATION = "Location: ";
-    private final String LINEAR_RUL = "Linear RUL: ";
-    private final String DESCRIPTION = "Description: ";
     private final String CYCLE = "Cycle";
     private final String SENSOR_VALUES = "Sensor Values";
     private final String ALERT_TITLE = "Confirmation Dialog";
@@ -77,6 +84,7 @@ public class SystemInfoController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         assetDAOImpl = new AssetDAOImpl();
         assetTypeDAOImpl = new AssetTypeDAOImpl();
+        modelDAO = new ModelDAOImpl();
         uiUtilities = new UIUtilities();
         attachEvents();
     }
@@ -91,13 +99,18 @@ public class SystemInfoController implements Initializable {
      */
     void initData(Asset system) {
         this.system = system;
-        systemName.setText(system.getName() + " " + assetTypeDAOImpl.getNameFromID(system.getAssetTypeID()) + " - " + system.getSerialNo());
-        systemType.setText(system.getAssetTypeID());
-        serialNumber.setText(system.getSerialNo());
-        manufacturer.setText(MANUFACTURER);
-        systemLocation.setText(LOCATION);
-        linearRUL.setText(LINEAR_RUL + new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(system.getId())));
-        lstmRUL.setText(DESCRIPTION);
+        String systemTypeName = assetTypeDAOImpl.getNameFromID(system.getAssetTypeID());
+        systemName.setText(systemTypeName + " - " + system.getSerialNo());
+        systemNameOutput.setText(system.getName());
+        systemTypeOutput.setText(systemTypeName);
+        serialNumberOutput.setText(system.getSerialNo());
+        manufacturerOutput.setText(system.getManufacturer());
+        locationOutput.setText(system.getLocation());
+        siteOutput.setText(system.getSite());
+        modelOutput.setText(modelDAO.getModelNameFromModelID(modelDAO.getModelsByAssetTypeID(system.getAssetTypeID()).getModelID()));
+        categoryOutput.setText(system.getCategory());
+        rulOutput.setText(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(system.getId())));
+        descriptionOutput.setText(system.getDescription());
         constructSensorPanes();
     }
 
