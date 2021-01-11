@@ -88,6 +88,29 @@ public class ModelController {
     }
 
     /**
+     * This function check an asset for updated status
+     * and if the asset needs to be updated, it will recalculate the RUL using the corresponding model
+     *
+     * @param assetID
+     * @return
+     */
+    public boolean checkAsset(int assetID) {
+        //check for assets that need a new calculation
+        Asset asset = assetDaoImpl.getAssetToUpdate(assetID);
+
+        if(asset != null) {
+            TrainedModel trainedModel = modelDAOImpl.getModelsByAssetTypeID(asset.getAssetTypeID());
+            Double estimation = estimateRUL(asset, trainedModel.getModelClassifier());
+            assetDaoImpl.addRULEstimation(estimation, asset, trainedModel);
+        }
+
+        assetDaoImpl.closeConnection();
+        modelDAOImpl.closeConnection();
+
+        return asset != null;
+    }
+
+    /**
      *  This function checks all models for a retrain tag
      *  the retrain tag is only actif if new archived assets are added
      *  if it needs retraining it will retrain using the corresponding
