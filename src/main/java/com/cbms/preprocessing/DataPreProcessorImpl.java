@@ -26,7 +26,7 @@ import static com.cbms.AppConstants.SYSOUT_DEBUG;
 import static com.cbms.AppConstants.SYSTEM_NAME;
 
 public class DataPreProcessorImpl implements DataPreProcessor {
-    private final Instances originalDataset;
+    private Instances originalDataset;
     private Instances reducedDataset;
     private Instances minimallyReducedDataset;
     private final ArrayList<Integer> removedIndex;
@@ -176,7 +176,7 @@ public class DataPreProcessorImpl implements DataPreProcessor {
      *
      * @author Khaled
      * */
-    public Instances addRULCol(Instances newData) throws Exception {
+    public static Instances addRULCol(Instances newData) throws Exception {
         Instance lastRow = newData.lastInstance();
         Add filter = new Add();
         filter.setAttributeIndex("last");
@@ -197,7 +197,7 @@ public class DataPreProcessorImpl implements DataPreProcessor {
      *
      * @author Paul Micu
      * */
-    public Instances removeAttributes(Instances trainDataset, Instances testDataset) throws Exception {
+    public static Instances removeAttributes(Instances trainDataset, Instances testDataset) throws Exception {
         ArrayList<Integer> indexes = new ArrayList<>();
         for (int i = 0; i < testDataset.numAttributes(); i++) {
             if (!setContains(trainDataset, testDataset.attribute(i))) {
@@ -215,7 +215,7 @@ public class DataPreProcessorImpl implements DataPreProcessor {
         return Filter.useFilter(testDataset, remove);
     }
 
-    private boolean setContains(Instances dataset, Attribute att) {
+    private static boolean setContains(Instances dataset, Attribute att) {
         for (int i = 0; i < dataset.numAttributes(); i++) {
             if (att.name().equals(dataset.attribute(i).name())) {
                 return true;
