@@ -23,7 +23,6 @@ public class Main extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("/Systems.fxml"));
         Scene sample = new Scene(root);
         primaryStage.setTitle("CBMS");
-        primaryStage.initStyle(StageStyle.UNDECORATED);
         primaryStage.setScene(sample);
         primaryStage.show();
         primaryStage.setOnCloseRequest(e -> {

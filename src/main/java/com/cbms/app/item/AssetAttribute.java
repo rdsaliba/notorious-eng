@@ -14,12 +14,10 @@ public class AssetAttribute {
     private int id;
     private String name;
     private final ArrayList<Measurement> measurements;
-    private int latestTime;
 
     public AssetAttribute() {measurements = new ArrayList<>();}
 
     public void addMeasurement(int time, double value) {
-        latestTime = time;
         Measurement mNew = new Measurement(time, value);
         measurements.add(mNew);
     }
@@ -52,10 +50,6 @@ public class AssetAttribute {
     public void setName(String name) {
         this.name = name;
     }
-
-    public int getLatestTime() { return latestTime; }
-
-    public void setLatestTime(int latestTime) { this.latestTime = latestTime; }
 
     @Override
     public String toString() {

@@ -118,16 +118,24 @@ public class SystemInfoController implements Initializable {
             sensorChart.setTitle(SENSOR_VALUES);
             XYChart.Series series = new XYChart.Series();
             ArrayList<Measurement> measurements = sensor.getMeasurements();
+            int lastCycle = sensor.getMeasurements().size() - 1;
+            double lowestMeasurement = getLowestMeasurement(sensor.getMeasurements());
+            double highestMeasurement = getHighestMeasurement(sensor.getMeasurements());
+            setAxisBounds(sensorChart, lowestMeasurement - (lowestMeasurement * 0.002),
+                    highestMeasurement + (highestMeasurement * 0.002), false);
 
-            int latestTime = sensor.getLatestTime();
-            setAxisBounds(sensorChart, latestTime - 4 , latestTime, true);
-            setAxisBounds(sensorChart, getLowestMeasurement(sensor.getMeasurements()),
-                    getHighestMeasurement(sensor.getMeasurements()), false);
-            series.getData().add(new XYChart.Data(latestTime - 4, measurements.get(latestTime - 5)));
-            series.getData().add(new XYChart.Data(latestTime - 3, measurements.get(latestTime - 4)));
-            series.getData().add(new XYChart.Data(latestTime - 2, measurements.get(latestTime - 3)));
-            series.getData().add(new XYChart.Data(latestTime - 1, measurements.get(latestTime - 2)));
-            series.getData().add(new XYChart.Data(latestTime, measurements.get(latestTime-1)));
+            if(lastCycle >= 4) {
+                setAxisBounds(sensorChart, lastCycle - 3, lastCycle + 1, true);
+                for(int i = 4; i >= 0; i--) {
+                    series.getData().add(new XYChart.Data(lastCycle + 1 - i, measurements.get(lastCycle - i).getValue()));
+                }
+            }
+            else {
+                setAxisBounds(sensorChart, 0, lastCycle, true);
+                for(int i = lastCycle; i >= 0; i--) {
+                    series.getData().add(new XYChart.Data(i, measurements.get(i).getValue()));
+                }
+            }
             sensorChart.getData().add(series);
             sensorChart.setPrefWidth(275.0);
             sensorChart.setPrefHeight(163.0);

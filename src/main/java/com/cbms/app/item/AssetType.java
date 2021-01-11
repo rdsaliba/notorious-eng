@@ -3,8 +3,21 @@ package com.cbms.app.item;
 import java.util.ArrayList;
 
 public class AssetType {
+    private String id;
     private String name;
     private ArrayList<AssetTypeParameter> thresholdList;
+
+    public AssetType() {
+
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public AssetType(String name) {
         this.name = name;
