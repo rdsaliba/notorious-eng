@@ -49,8 +49,7 @@ public class testModel {
     @Test
     public void testLSTMEval() throws Exception
     {
-        String eval = LSTMEval().toSummaryString();
-        assertTrue("Should return evaluation String", LSTMEval().toSummaryString().equals(eval));
+        assertTrue("RMSE should be less than 41", LSTMEval().rootMeanSquaredError() < 41);
     }
 
 
