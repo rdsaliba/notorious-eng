@@ -30,6 +30,10 @@ public class Main extends Application {
                 public void run() {
                     time++;
                     System.out.println(time);
+                    if (time >= 50){
+                        time = 10000;
+                        timer.cancel();
+                    }
                 }
             }, 0, 1000);
         }

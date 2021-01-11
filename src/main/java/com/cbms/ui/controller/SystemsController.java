@@ -5,6 +5,7 @@ import com.cbms.app.item.Asset;
 import com.cbms.rul.assessment.AssessmentController;
 import com.cbms.source.local.AssetTypeDAOImpl;
 import com.cbms.source.local.ModelDAOImpl;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -30,6 +31,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ResourceBundle;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class SystemsController implements Initializable {
     @FXML
@@ -50,6 +54,8 @@ public class SystemsController implements Initializable {
     private ObservableList<Asset> systems;
     private AssetTypeDAOImpl assetTypeDAO;
     private ModelDAOImpl modelDAO;
+
+    private ScheduledExecutorService scheduledExecutorService;
 
     // UI String constants
     private final String LINEAR_RUL = "Linear RUL: ";
@@ -169,6 +175,18 @@ public class SystemsController implements Initializable {
             Text systemType = new Text(assetTypeDAO.getNameFromID(system.getAssetTypeID()));
             Text linearLabel = new Text(LINEAR_RUL);
             Text linearRUL = new Text(String.valueOf(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(system.getId()))));
+
+
+            scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+            scheduledExecutorService.scheduleAtFixedRate(() -> {
+
+                Platform.runLater(() -> {
+                    if(ModelController.getInstance().checkAsset(system.getId())){
+                        linearRUL.setText(String.valueOf(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(system.getId()))));
+                    }
+
+                });
+            }, 0, 15, TimeUnit.SECONDS);
 
             systemName.setId("systemName");
             systemType.setId("systemType");

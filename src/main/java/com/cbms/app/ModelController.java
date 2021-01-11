@@ -18,7 +18,10 @@ import com.cbms.rul.models.ModelsController;
 import com.cbms.source.local.AssetDAOImpl;
 import com.cbms.source.local.ModelDAOImpl;
 import weka.classifiers.Classifier;
-import weka.core.*;
+import weka.core.Attribute;
+import weka.core.DenseInstance;
+import weka.core.FastVector;
+import weka.core.Instances;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -104,8 +107,8 @@ public class ModelController {
             assetDaoImpl.addRULEstimation(estimation, asset, trainedModel);
         }
 
-        assetDaoImpl.closeConnection();
-        modelDAOImpl.closeConnection();
+        //assetDaoImpl.closeConnection();
+     //   modelDAOImpl.closeConnection();
 
         return asset != null;
     }
