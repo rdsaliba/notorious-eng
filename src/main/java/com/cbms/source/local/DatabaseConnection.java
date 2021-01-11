@@ -68,7 +68,7 @@ public class DatabaseConnection {
         try {
             if (this.conn != null)
                 this.conn.close();
-            this.openConnection = null;
+            openConnection = null;
             System.out.println("Connection stopped.");
         } catch (SQLException throwables) {
             throwables.printStackTrace();

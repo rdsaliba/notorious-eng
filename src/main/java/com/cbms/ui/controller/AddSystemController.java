@@ -1,27 +1,32 @@
 package com.cbms.ui.controller;
 
-import javafx.event.EventHandler;
+import com.cbms.source.local.AssetTypeDAOImpl;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.input.MouseEvent;
-import javafx.stage.Stage;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.TextArea;
 
-import java.io.IOException;
 import java.net.URL;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class AddSystemController implements Initializable {
 
     @FXML
-    private Button systemMenuButton;
+    public Button systemMenuBtn;
     @FXML
-    private Button cancelButton;
+    private Button cancelBtn;
+    @FXML
+    private Button saveBtn;
+    @FXML
+    private TextArea systemDescriptionTextArea;
+    @FXML
+    private ChoiceBox<String> systemTypeChoiceBox;
 
+    private static ObservableList<String> assetTypeNamesList;
+    private AssetTypeDAOImpl assetTypeDAOImpl;
     private UIUtilities uiUtilities;
 
     /**
@@ -35,8 +40,11 @@ public class AddSystemController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        assetTypeDAOImpl = new AssetTypeDAOImpl();
         uiUtilities = new UIUtilities();
         attachEvents();
+        initializeFieldValues();
+        systemDescriptionTextArea.setWrapText(true);
     }
 
     /**
@@ -46,18 +54,18 @@ public class AddSystemController implements Initializable {
      */
     public void attachEvents() {
         // Change scenes to Systems.fxml
-        systemMenuButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                uiUtilities.changeScene(mouseEvent, "/Systems");
-            }
-        });
+        systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
         // Change scenes to Systems.fxml
-        cancelButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                uiUtilities.changeScene(mouseEvent, "/Systems");
-            }
-        });
+        cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
     }
+
+    /**
+     * Initializes the default and possible values for all fields that can accept user input. For example,
+     * it establishes the possible dropdown values for the system type selection.
+     */
+    public void initializeFieldValues() {
+        // Establishes the asset types available for selection in the dropdown
+        assetTypeNamesList = FXCollections.observableArrayList(assetTypeDAOImpl.getAssetTypeList());
+        systemTypeChoiceBox.setItems(assetTypeNamesList);
+        }
 }

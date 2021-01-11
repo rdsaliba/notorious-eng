@@ -9,22 +9,22 @@
     -fx-background-color: #2F2958;
 }
 
-#savebtn
+#saveBtn
 {
     -fx-background-color: #48C774;
 }
 
-#cancelButton
+#cancelBtn
 {
     -fx-background-color: #D2D2D2;
 }
 
-#deletebtn
+#deleteBtn
 {
     -fx-background-color: #FB3860;
 }
 
-#addSystemButton
+#addSystemBtn
 {
     -fx-background-color: #48C774;
 }
