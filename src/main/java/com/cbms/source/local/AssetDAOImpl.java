@@ -8,6 +8,7 @@
  */
 package com.cbms.source.local;
 
+import com.cbms.app.Main;
 import com.cbms.app.TrainedModel;
 import com.cbms.app.item.Asset;
 import com.cbms.app.item.AssetAttribute;
@@ -23,12 +24,20 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
     private static final String GET_ASSETS_TO_UPDATE = "SELECT * FROM asset WHERE archived = false AND updated = true";
     private static final String DELETE_ASSET = "DELETE FROM ? WHERE asset_id = ?";
     private static final String GET_ASSET_INFO_FROM_ASSET_ID = "SELECT * FROM attribute_measurements am, attribute att WHERE att.attribute_id=am.attribute_id AND am.asset_id = ?";
+    private static final String GET_ASSET_INFO_FROM_ASSET_ID_REAL_TIME = "SELECT * FROM attribute_measurements am, attribute att WHERE att.attribute_id=am.attribute_id AND am.asset_id = ? and time <= ?;";
     private static final String GET_ATTRIBUTES_NAMES_FROM_ASSET_ID="SELECT DISTINCT att.attribute_name FROM attribute att, attribute_measurements am, asset a WHERE a.asset_id= ? AND am.asset_id = a.asset_id AND att.attribute_id = am.attribute_id order by att.attribute_id";
     private static final String GET_ASSETS_FROM_ASSET_TYPE_ID = "SELECT * FROM asset a WHERE a.archived = true AND a.asset_type_id = ?";
     private static final String GET_ASSET_TYPE_NAME_FROM_ASSET_ID="SELECT at.name FROM asset_type at WHERE at.asset_type_id = ?";
     private static final String GET_ALL_LIVE_ASSETS="SELECT * FROM asset, asset_type WHERE asset.asset_type_id=asset_type.asset_type_id AND archived = false";
     private static final String INSERT_NEW_ASSET_MEASUREMENT="INSERT INTO asset_model_calculation values( ? , ? ,now(), ?)";
     private static final String SET_UPDATED_FALSE="UPDATE asset set updated = 0 where asset_id = ?";
+    private static final String GET_ASSET_FROM_ASSET_ID="select * from asset where asset_id = ?";
+    private static final String GET_LATEST_MEASUREMENT_TIME_FROM_ASSED_ID ="SELECT time FROM attribute_measurements am, attribute att WHERE att.attribute_id=am.attribute_id AND am.asset_id = ? order by time desc limit 1";
+    private static final String RESET_ASSETS_FOR_LIVE ="UPDATE asset set updated = true where archived = false;";
+
+    public void resetAssetForLive() {
+        nonParamQuery(RESET_ASSETS_FOR_LIVE);
+    }
 
     /**
      * This will return an arraylist of assets that have the updated tag set to true
@@ -205,7 +214,12 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         } catch (SQLException e){
             e.printStackTrace();
         }
-        resetAssetUpdate(asset.getId());
+
+        if (!Main.isRealTime())
+            resetAssetUpdate(asset.getId());
+        else if(lastAssetMeasurementTime(asset.getId())+5 < Main.getTime())
+            resetAssetUpdate(asset.getId());
+
     }
 
     /**
@@ -255,10 +269,20 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
      */
     private AssetInfo createAssetInfo(int assetID){
         AssetInfo newAssetInfo = new AssetInfo();
-
+        PreparedStatement ps = null;
         try {
-            PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_INFO_FROM_ASSET_ID);
+            // for real time demo
+            if (Main.isRealTime() && !isAssetArchived(assetID))
+                ps = getConnection().prepareStatement(GET_ASSET_INFO_FROM_ASSET_ID_REAL_TIME);
+            else
+                ps = getConnection().prepareStatement(GET_ASSET_INFO_FROM_ASSET_ID);
+
             ps.setInt(1,assetID);
+
+            // for real time demo
+            if (Main.isRealTime() && !isAssetArchived(assetID))
+                ps.setInt(2,Main.getTime());
+
             ResultSet attributesQuery = ps.executeQuery();
             int previousAttributeID = 1;
             String previousAttributeName = "";
@@ -284,6 +308,36 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private Boolean isAssetArchived (int assetID){
+        try {
+            PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_FROM_ASSET_ID);
+            ps.setInt(1, assetID);
+            ps.executeQuery();
+            ResultSet queryResult = ps.executeQuery();
+            if (queryResult.next())
+                return queryResult.getBoolean("archived");
+
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private int lastAssetMeasurementTime (int assetID){
+        try {
+            PreparedStatement ps = getConnection().prepareStatement(GET_LATEST_MEASUREMENT_TIME_FROM_ASSED_ID);
+            ps.setInt(1, assetID);
+            ps.executeQuery();
+            ResultSet queryResult = ps.executeQuery();
+            if (queryResult.next())
+                return queryResult.getInt("time");
+
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return -1;
     }
 
     private ResultSet nonParamQuery(String query){
