@@ -37,7 +37,9 @@ public class AttributeDAOImpl extends DAO implements AttributeDAO {
         catch (SQLException e){
             e.printStackTrace();
         }
-
-        return measurements;
+        finally {
+            closeConnection();
+            return measurements;
+        }
     }
 }

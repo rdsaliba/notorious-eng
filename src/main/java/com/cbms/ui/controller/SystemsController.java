@@ -137,7 +137,10 @@ public class SystemsController implements Initializable {
      * @author Jeff
      */
     public void generateThumbnails() {
+        int i = 0;
         for (Asset system: systems) {
+            if (i==10)
+                return;
             Pane pane = new Pane();
 
             //When clicked on a system, open SystemInfo.FXML for that system.
@@ -190,6 +193,7 @@ public class SystemsController implements Initializable {
             pane.getChildren().add(linearRUL);
 
             boxes.add(pane);
+            i++;
         }
 
         systemsThumbPane.getChildren().addAll(boxes);
@@ -258,5 +262,6 @@ public class SystemsController implements Initializable {
         AnchorPane.setRightAnchor(table, 0.0);
         AnchorPane.setLeftAnchor(table, 0.0);
         systemsListPane.getChildren().addAll(table);
+
     }
 }
