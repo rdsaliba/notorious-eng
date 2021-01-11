@@ -12,12 +12,10 @@ import com.cbms.app.TrainedModel;
 import com.cbms.app.item.Asset;
 import com.cbms.app.item.AssetAttribute;
 import com.cbms.app.item.AssetInfo;
-import com.cbms.app.item.AssetType;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 
 public class AssetDAOImpl extends DAO implements AssetDAO {
@@ -28,7 +26,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
     private static final String GET_ATTRIBUTES_NAMES_FROM_ASSET_ID="SELECT DISTINCT att.attribute_name FROM attribute att, attribute_measurements am, asset a WHERE a.asset_id= ? AND am.asset_id = a.asset_id AND att.attribute_id = am.attribute_id order by att.attribute_id";
     private static final String GET_ASSETS_FROM_ASSET_TYPE_ID = "SELECT a.asset_id, a.asset_type_id, a.sn, a.location,a.description FROM asset a WHERE a.archived = true AND a.asset_type_id = ?";
     private static final String GET_ASSET_TYPE_NAME_FROM_ASSET_ID="SELECT at.name FROM asset_type at WHERE at.asset_type_id = ?";
-    private static final String GET_ALL_LIVE_ASSETS="SELECT * FROM asset, asset_type WHERE Asset.asset_type_id=asset_type.asset_type_id AND archived = false";
+    private static final String GET_ALL_LIVE_ASSETS="SELECT * FROM asset, asset_type WHERE asset.asset_type_id=asset_type.asset_type_id AND archived = false";
     private static final String INSERT_NEW_ASSET_MEASUREMENT="INSERT INTO asset_model_calculation values( ? , ? ,now(), ?)";
     private static final String SET_UPDATED_FALSE="UPDATE asset set updated = 0 where asset_id = ?";
 

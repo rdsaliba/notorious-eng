@@ -18,9 +18,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
+
 import java.net.URL;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Optional;
+import java.util.ResourceBundle;
 
 public class SystemInfoController implements Initializable {
     @FXML
@@ -209,13 +212,20 @@ public class SystemInfoController implements Initializable {
     }
 
     /**
-     * Returns the lowest sensor measurement from a map.
+     * Returns the lowest sensor measurement from an arrayList of measurements objects.
      *
      * @param measurements
      * @return
      */
-    double getLowestMeasurement(Map<Integer, Double> measurements) {
-        return minValueInMap(measurements);
+    double getLowestMeasurement( ArrayList<Measurement> measurements) {
+        double minValue = 0.0;
+        if (!measurements.isEmpty()){
+            minValue = measurements.get(0).getValue();
+            for (Measurement m : measurements)
+                if (minValue > m.getValue())
+                    minValue = m.getValue();
+        }
+        return minValue;
     }
 
     /**
@@ -224,34 +234,14 @@ public class SystemInfoController implements Initializable {
      * @param measurements
      * @return
      */
-    double getHighestMeasurement(Map<Integer, Double> measurements) {
-        return maxValueInMap(measurements);
-    }
-
-    /**
-     * Returns the minimum value in a map.
-     * @param map
-     * @param <K>
-     * @param <V>
-     * @return
-     */
-    public <K, V extends Comparable<V>> V minValueInMap(Map<K, V> map) {
-        Map.Entry<K, V> maxEntry = Collections.min(map.entrySet(), (Map.Entry<K, V> e1, Map.Entry<K, V> e2) -> e1.getValue()
-                .compareTo(e2.getValue()));
-        return maxEntry.getValue();
-    }
-
-    /**
-     * Returns the maximum value in a map.
-     *
-     * @param map
-     * @param <K>
-     * @param <V>
-     * @return
-     */
-    public <K, V extends Comparable<V>> V maxValueInMap(Map<K, V> map) {
-        Map.Entry<K, V> maxEntry = Collections.max(map.entrySet(), (Map.Entry<K, V> e1, Map.Entry<K, V> e2) -> e1.getValue()
-                .compareTo(e2.getValue()));
-        return maxEntry.getValue();
+    double getHighestMeasurement(ArrayList<Measurement> measurements) {
+        double maxValue = 0.0;
+        if (!measurements.isEmpty()){
+            maxValue = measurements.get(0).getValue();
+            for (Measurement m : measurements)
+                if (maxValue < m.getValue())
+                    maxValue = m.getValue();
+        }
+        return maxValue;
     }
 }
