@@ -166,7 +166,7 @@ public class SystemsController implements Initializable {
 
             pane.getStyleClass().add("systemPane");
             Text systemName = new Text(system.getSerialNo());
-            Text systemType = new Text(system.getAssetTypeID());
+            Text systemType = new Text(assetTypeDAO.getNameFromID(system.getAssetTypeID()));
             Text linearLabel = new Text(LINEAR_RUL);
             Text linearRUL = new Text(String.valueOf(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(system.getId()))));
 
