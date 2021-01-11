@@ -20,7 +20,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class ModelDAOImpl extends DAO implements ModelDAO {
-    private static final String UPDATE_SERIALIZE_OBJECT = "UPDATE trained_model SET retrain = true, serialized_model  = ? WHERE model_id = ? AND asset_type_id = ?";
+    private static final String UPDATE_SERIALIZE_OBJECT = "UPDATE trained_model SET retrain = false, serialized_model  = ? WHERE model_id = ? AND asset_type_id = ?";
     private static final String GET_SERIALIZE_OBJECT = "SELECT * FROM trained_model WHERE retrain = true";
     private static final String GET_MODEL_NAME_FROM_ID = "SELECT name from model where model_id = ?";
     private static final String GET_MODEL_FROM_ASSET_TYPE = "SELECT * FROM trained_model WHERE asset_type_id = ?";
@@ -52,7 +52,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
      * Given an arraylist of trained models this function will write the new Classifier object
      * to the corresponding trained model entry after an model training phase
      *
-     * @param ArrayList<TrainedModel> represents a list of trainedmodels
+     * @param tms<TrainedModel> represents a list of trainedmodels
      * @author Paul
      */
     @Override
@@ -85,7 +85,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
             PreparedStatement ps = getConnection().prepareStatement(GET_SERIALIZE_OBJECT);
             ResultSet queryResult = ps.executeQuery();
             while (queryResult.next()){
-                tms.add(createTrainedModelFromResultSet(queryResult));
+                tms.add(createTrainedModelFromResultSet(queryResult, false));
             }
         }
         catch (SQLException e){
@@ -112,7 +112,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
             ps.setString(1,assetTypeID);
             ResultSet queryResult = ps.executeQuery();
             while (queryResult.next()){
-                tm = createTrainedModelFromResultSet(queryResult);
+                tm = createTrainedModelFromResultSet(queryResult, true);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -127,13 +127,17 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
      * @param rs represents the result from a trained model query
      * @author Paul
      */
-    private TrainedModel createTrainedModelFromResultSet(ResultSet rs) throws SQLException {
+    private TrainedModel createTrainedModelFromResultSet(ResultSet rs, Boolean withModel) throws SQLException {
         TrainedModel tm = new TrainedModel();
         tm.setModelID(rs.getInt("model_id"));
         tm.setAssetTypeID(rs.getInt("asset_type_id"));
         tm.setRetrain(rs.getBoolean("retrain"));
+        ByteArrayInputStream bais = null;
+        ObjectInputStream ois = null;
         try {
-            tm.setModelClassifier((Classifier) new ObjectInputStream(new ByteArrayInputStream(rs.getBytes("serialized_model"))).readObject());
+            if(withModel){
+                tm.setModelClassifier((Classifier)new ObjectInputStream(new ByteArrayInputStream(rs.getBytes("serialized_model"))).readObject());
+            }
         } catch (IOException e) {
             e.printStackTrace();
             return null;

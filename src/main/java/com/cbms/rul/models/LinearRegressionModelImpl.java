@@ -46,8 +46,9 @@ public class LinearRegressionModelImpl implements ModelStrategy {
      *
      * @author Talal
      */
-    private Instances removeInstances(Instances trainDataset) {
-        for (int i = 0; i < trainDataset.numInstances(); i++) {
+
+    public static Instances removeInstances (Instances trainDataset) {
+        for (int i = 0; i < trainDataset.numInstances() ; i++) {
             Instance inst = trainDataset.instance(i);
             if (inst.value(inst.classAttribute()) > 150) {
                 trainDataset.delete(i);
