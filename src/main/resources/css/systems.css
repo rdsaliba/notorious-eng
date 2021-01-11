@@ -74,9 +74,14 @@
     -fx-size: 40;
 }
 
+.table-view .column-header .label {
+    -fx-alignment: CENTER-LEFT;
+}
+
 .table-view .column-header .filter {
     -fx-background-color: #FBFBFC;
 }
+
 
 .table-row-cell {
     -fx-cell-size: 35px;

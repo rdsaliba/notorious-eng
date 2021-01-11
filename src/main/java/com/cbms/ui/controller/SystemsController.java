@@ -3,7 +3,10 @@ package com.cbms.ui.controller;
 import com.cbms.app.ModelController;
 import com.cbms.app.item.Asset;
 import com.cbms.rul.assessment.AssessmentController;
+import com.cbms.source.local.AssetTypeDAOImpl;
+import com.cbms.source.local.ModelDAOImpl;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
@@ -22,6 +25,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+
 import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -44,6 +48,8 @@ public class SystemsController implements Initializable {
     private final ObservableList<Pane> boxes = FXCollections.observableArrayList();
     private UIUtilities uiUtilities;
     private ObservableList<Asset> systems;
+    private AssetTypeDAOImpl assetTypeDAO;
+    private ModelDAOImpl modelDAO;
 
     // UI String constants
     private final String LINEAR_RUL = "Linear RUL: ";
@@ -53,9 +59,14 @@ public class SystemsController implements Initializable {
     private final String RUL_COL = "RUL";
     private final String LOCATION_COL = "Location";
     private final String RECOMMENDATION_COL = "Recommendation";
+    private final String MANUFACTURER_COL = "Manufacturer";
+    private final String SITE_COL = "Site";
+    private final String CATEGORY_COL = "Category";
+    private final String DESCRIPTION_COL = "Description";
 
     public SystemsController() {
-
+        assetTypeDAO = new AssetTypeDAOImpl();
+        modelDAO = new ModelDAOImpl();
     }
 
     /**
@@ -202,31 +213,46 @@ public class SystemsController implements Initializable {
             return row;
         });
 
-        TableColumn systemTypeCol = new TableColumn(TYPE_COL);
-        systemTypeCol.setCellValueFactory(
-                new PropertyValueFactory<Asset, String>("assetTypeName"));
+        TableColumn<Asset, String>  systemTypeCol = new TableColumn(TYPE_COL);
+        systemTypeCol.setCellValueFactory( cellData -> new SimpleStringProperty(
+                assetTypeDAO.getNameFromID(cellData.getValue().getAssetTypeID())));
+
 
         TableColumn serialNoCol = new TableColumn(SERIAL_NO_COL);
         serialNoCol.setCellValueFactory(
                 new PropertyValueFactory<Asset, String>("serialNo"));
 
-        // TableColumn modelCol = new TableColumn(MODEL_COL);
-        // modelCol.setCellValueFactory();
+        TableColumn<Asset, String>  modelCol = new TableColumn(MODEL_COL);
+        modelCol.setCellValueFactory( cellData -> new SimpleStringProperty(
+                modelDAO.getModelNameFromModelID(modelDAO.getModelsByAssetTypeID(cellData.getValue().getAssetTypeID()).getModelID())));
 
-        TableColumn<Asset, Double> linearRULCol = new TableColumn<>(RUL_COL);
-        linearRULCol.setCellValueFactory(cellData -> new SimpleDoubleProperty(
+        TableColumn<Asset, Double> modelRULCol = new TableColumn<>(RUL_COL);
+        modelRULCol.setCellValueFactory(cellData -> new SimpleDoubleProperty(
                 Double.parseDouble(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(cellData.getValue().getId())))).asObject());
 
         TableColumn locationCol = new TableColumn(LOCATION_COL);
         locationCol.setCellValueFactory(
                 new PropertyValueFactory<Asset, String>("location"));
 
-        TableColumn recommendationCol = new TableColumn(RECOMMENDATION_COL);
-        recommendationCol.setCellValueFactory(
-                new PropertyValueFactory<Asset, String>("recommendation"));
+        TableColumn manufacturerCol = new TableColumn(MANUFACTURER_COL);
+        manufacturerCol.setCellValueFactory(
+                new PropertyValueFactory<Asset, String>("manufacturer"));
+
+        TableColumn categoryCol = new TableColumn(CATEGORY_COL);
+        categoryCol.setCellValueFactory(
+                new PropertyValueFactory<Asset, String>("category"));
+
+        TableColumn siteCol = new TableColumn(SITE_COL);
+        siteCol.setCellValueFactory(
+                new PropertyValueFactory<Asset, String>("site"));
+
+        TableColumn descriptionCol = new TableColumn(DESCRIPTION_COL);
+        descriptionCol.setCellValueFactory(
+                new PropertyValueFactory<Asset, String>("description"));
 
         table.setItems(systems);
-        table.getColumns().addAll(systemTypeCol, serialNoCol, linearRULCol, locationCol);
+        table.setId("listTable");
+        table.getColumns().addAll(systemTypeCol, serialNoCol,modelCol, modelRULCol, locationCol,siteCol,categoryCol,manufacturerCol,descriptionCol);
         AnchorPane.setBottomAnchor(table, 0.0);
         AnchorPane.setTopAnchor(table, 5.0);
         AnchorPane.setRightAnchor(table, 0.0);

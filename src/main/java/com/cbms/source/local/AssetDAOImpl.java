@@ -238,6 +238,9 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         newAsset.setAssetTypeID(assetsQuery.getString("asset_type_id"));
         newAsset.setDescription(assetsQuery.getString("description"));
         newAsset.setLocation(assetsQuery.getString("location"));
+        newAsset.setCategory(assetsQuery.getString("category"));
+        newAsset.setManufacturer(assetsQuery.getString("manufacturer"));
+        newAsset.setSite(assetsQuery.getString("site"));
         newAsset.setSerialNo(assetsQuery.getString("sn"));
         newAsset.setAssetInfo(createAssetInfo(newAsset.getId()));
         return newAsset;

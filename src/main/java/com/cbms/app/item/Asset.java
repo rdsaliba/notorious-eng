@@ -15,30 +15,13 @@ public class Asset extends Item {
     private String location;
     private String description;
     private String recommendation;
+    private String manufacturer;
+    private String category;
+    private String site;
     private AssetInfo assetInfo;
 
     public Asset() {
 
-    }
-
-
-    public Asset(String serialNo, String name, String assetTypeID, String location, String description, String recommendation) {
-        this.assetTypeID = assetTypeID;
-        this.name = name;
-        this.serialNo = serialNo;
-        this.location = location;
-        this.description = description;
-        this.recommendation = recommendation;
-    }
-
-    public Asset(String serialNo, String name, String assetTypeID, String location, String description, String recommendation, AssetInfo assetInfo) {
-        this.assetTypeID = assetTypeID;
-        this.name = name;
-        this.serialNo = serialNo;
-        this.location = location;
-        this.description = description;
-        this.assetInfo = assetInfo;
-        this.recommendation = recommendation;
     }
 
     public String getSerialNo() {
@@ -88,6 +71,30 @@ public class Asset extends Item {
     public String getRecommendation() { return recommendation; }
 
     public void setRecommendation(String recommendation) { this.recommendation = recommendation; }
+
+    public String getManufacturer() {
+        return manufacturer;
+    }
+
+    public void setManufacturer(String manufacturer) {
+        this.manufacturer = manufacturer;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getSite() {
+        return site;
+    }
+
+    public void setSite(String site) {
+        this.site = site;
+    }
 
     @Override
     public String toString() {
