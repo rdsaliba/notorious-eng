@@ -38,10 +38,10 @@ public class DataPrePreprocessorController {
     }
 
     public Instances addRULCol(Instances toADD) throws Exception {
-        return dataPreProcessorImpl.addRULCol(toADD);
+        return DataPreProcessorImpl.addRULCol(toADD);
     }
 
     public Instances removeAttributes(Instances trainDataset, Instances testDataset) throws Exception {
-        return dataPreProcessorImpl.removeAttributes(trainDataset,testDataset);
+        return DataPreProcessorImpl.removeAttributes(trainDataset,testDataset);
     }
 }
