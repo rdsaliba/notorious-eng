@@ -145,6 +145,6 @@ public class AddSystemController implements Initializable {
     }
 
     public void saveAsset(Asset newAsset) {
-        //call assetDAOImpl method.
+        assetDAOImpl.insertAsset(newAsset);
     }
 }

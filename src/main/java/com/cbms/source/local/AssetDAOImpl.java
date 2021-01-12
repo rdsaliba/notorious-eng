@@ -34,6 +34,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
     private static final String GET_ASSET_FROM_ASSET_ID="select * from asset where asset_id = ?";
     private static final String GET_LATEST_MEASUREMENT_TIME_FROM_ASSED_ID ="SELECT time FROM attribute_measurements am, attribute att WHERE att.attribute_id=am.attribute_id AND am.asset_id = ? order by time desc limit 1";
     private static final String RESET_ASSETS_FOR_LIVE ="UPDATE asset set updated = true where archived = false;";
+    private static final String INSERT_ASSET = "INSERT INTO asset (name, asset_type_id, description, sn, manufacturer, category, site, location, unit_nb) values(?,?,?,?,?,?,?,?,?)";
 
     public void resetAssetForLive() {
         nonParamQuery(RESET_ASSETS_FOR_LIVE);
@@ -220,6 +221,25 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         else if(lastAssetMeasurementTime(asset.getId())+5 < Main.getTime())
             resetAssetUpdate(asset.getId());
 
+    }
+
+    @Override
+    public void insertAsset(Asset asset) {
+        try {
+            PreparedStatement ps = getConnection().prepareStatement(INSERT_ASSET);
+            ps.setString(1, asset.getName());
+            ps.setInt(2, Integer.parseInt(asset.getAssetTypeID()));
+            ps.setString(3, asset.getDescription());
+            ps.setString(4, asset.getSerialNo());
+            ps.setString(5, asset.getManufacturer());
+            ps.setString(6, asset.getCategory());
+            ps.setString(7, asset.getSite());
+            ps.setString(8, asset.getLocation());
+            ps.setInt(9, Integer.parseInt(asset.getSerialNo()));
+            ps.executeQuery();
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
     /**
