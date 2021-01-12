@@ -1,35 +1,36 @@
-.button
-{
+.button {
     -fx-background-color: #0C072E;
     color: #F0F0F0;
 }
 
-.button:hover
-{
+.button:hover {
     -fx-background-color: #2F2958;
 }
 
-#saveBtn
-{
+#saveBtn {
     -fx-background-color: #48C774;
 }
 
-#cancelBtn
-{
+#editBtn {
+    -fx-background-color: #48C774;
+}
+
+#cancelBtn {
     -fx-background-color: #D2D2D2;
 }
 
-#deleteBtn
-{
+#deleteBtn {
     -fx-background-color: #FB3860;
 }
 
-#addSystemBtn
-{
+#addSystemBtn {
     -fx-background-color: #48C774;
 }
 
-#addThresholdBtn
-{
+#addTypeBtn {
+    -fx-background-color: #48C774;
+}
+
+#addThresholdBtn {
     -fx-background-color: #48C774;
 }
