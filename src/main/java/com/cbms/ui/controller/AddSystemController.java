@@ -9,10 +9,7 @@ import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.util.StringConverter;
 
@@ -44,14 +41,13 @@ public class AddSystemController implements Initializable {
     @FXML
     private TextField locationInput;
 
-
-
-
     private static ObservableList<AssetType> assetTypeNamesList;
     private AssetDAOImpl assetDAOImpl;
     private AssetTypeDAOImpl assetTypeDAOImpl;
     private UIUtilities uiUtilities;
     private AssetType selectedAssetType;
+    private final String SAVE_DIALOG = "Save Dialog";
+    private final String SAVE_HEADER = "Asset has been saved to the database";
 
     /**
      * Initialize runs before the scene is displayed.
@@ -86,6 +82,7 @@ public class AddSystemController implements Initializable {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 saveAsset(assembleAsset());
+                saveDialog(mouseEvent);
             }
         });
         // Change scenes to Systems.fxml
@@ -117,6 +114,11 @@ public class AddSystemController implements Initializable {
         });
     }
 
+    /**
+     * Assembles all the TextField data and create an Asset object.
+     *
+     * @return
+     */
     public Asset assembleAsset() {
         Asset newAsset = new Asset();
         newAsset.setName(systemNameInput.getText());
@@ -144,7 +146,28 @@ public class AddSystemController implements Initializable {
         return assetTypeNames;
     }
 
+    /**
+     * Sends the new asset to be inserted in the database
+     *
+     * @param newAsset
+     */
     public void saveAsset(Asset newAsset) {
         assetDAOImpl.insertAsset(newAsset);
+    }
+
+    /**
+     * Creates a dialog to
+     *
+     * @param mouseEvent
+     */
+    void saveDialog(MouseEvent mouseEvent) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(SAVE_DIALOG);
+        alert.setHeaderText(SAVE_HEADER);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK){
+            uiUtilities.changeScene(mouseEvent, "/Systems");
+        }
     }
 }

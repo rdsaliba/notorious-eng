@@ -223,6 +223,11 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
 
     }
 
+    /**
+     * Inserts an asset in the database.
+     *
+     * @param asset
+     */
     @Override
     public void insertAsset(Asset asset) {
         try {
