@@ -48,13 +48,17 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
      * names
      */
     @Override
-    public ArrayList<String> getAssetTypeList() {
-        ArrayList<String> assetTypeList = new ArrayList<>();
+    public ArrayList<AssetType> getAssetTypeList() {
+        ArrayList<AssetType> assetTypeList = new ArrayList<>();
         try {
             PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_TYPES);
             ResultSet rs = ps.executeQuery();
-            while (rs.next())
-                assetTypeList.add(rs.getString("name"));
+            while (rs.next()) {
+                AssetType newAssetType = new AssetType();
+                newAssetType.setName(rs.getString("name"));
+                newAssetType.setId(rs.getString("asset_type_id"));
+                assetTypeList.add(newAssetType);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
