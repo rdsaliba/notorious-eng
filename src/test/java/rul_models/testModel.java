@@ -1,22 +1,57 @@
 package rul_models;
-import rul_models.RootMeanSquaredError;
+
+import com.cbms.rul.models.LSTMModelImpl;
+import com.cbms.rul.models.ModelStrategy;
+import org.junit.Test;
 import weka.classifiers.Classifier;
+import weka.classifiers.Evaluation;
 import weka.classifiers.functions.LinearRegression;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.core.converters.ConverterUtils.DataSource;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.cbms.AppConstants.SYSTEM_NAME;
-
+import static org.junit.Assert.assertTrue;
 
 public class testModel {
     public testModel() {
     }
+
+    public Evaluation LSTMEval() throws Exception
+    {
+        DataSource testSrc = new DataSource("Dataset/Converted/test1Shortened.arff");
+        Instances testSet = testSrc.getDataSet();
+
+        DataSource trainSrc = new DataSource("Dataset/Converted/train_FD001_withRUL.arff");
+        Instances trainSet = trainSrc.getDataSet();
+
+        testSet.setClassIndex(testSet.numAttributes() - 1);
+        trainSet.setClassIndex(trainSet.numAttributes() - 1);
+
+        ModelStrategy model = new LSTMModelImpl();
+        Classifier classifier = model.trainModel(trainSet);
+
+        //FileReader realRUL = new FileReader("Dataset/Real RUL/RUL_FD001.txt");
+
+        Evaluation lstmEval = new Evaluation(trainSet);
+        lstmEval.evaluateModel(classifier, testSet);
+        System.out.println(lstmEval.toSummaryString());
+        return lstmEval;
+    }
+
+    @Test
+    public void testLSTMEval() throws Exception
+    {
+        assertTrue("RMSE should be less than 41", LSTMEval().rootMeanSquaredError() < 41);
+    }
+
 
     /**
      This function evaluates the performance of an Artificial intelligence model.
