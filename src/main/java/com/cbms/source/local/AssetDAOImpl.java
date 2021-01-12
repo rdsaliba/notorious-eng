@@ -22,6 +22,7 @@ import java.util.ArrayList;
 public class AssetDAOImpl extends DAO implements AssetDAO {
 
     private static final String GET_ASSETS_TO_UPDATE = "SELECT * FROM asset WHERE archived = false AND updated = true";
+    private static final String GET_ASSET_TO_UPDATE = "SELECT * FROM asset WHERE archived = false AND updated = true AND asset_id = ?";
     private static final String DELETE_ASSET = "DELETE FROM ? WHERE asset_id = ?";
     private static final String GET_ASSET_INFO_FROM_ASSET_ID = "SELECT * FROM attribute_measurements am, attribute att WHERE att.attribute_id=am.attribute_id AND am.asset_id = ?";
     private static final String GET_ASSET_INFO_FROM_ASSET_ID_REAL_TIME = "SELECT * FROM attribute_measurements am, attribute att WHERE att.attribute_id=am.attribute_id AND am.asset_id = ? and time <= ?;";
@@ -59,6 +60,30 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
             e.printStackTrace();
         }
         return assets;
+    }
+
+    /**
+     * This will return an asset that has the updated tag set to true
+     * it will be used to identify if it needs an updated RUL measurement.
+     *
+     * @author Jeff
+     */
+    @Override
+    public Asset getAssetToUpdate(int assetID) {
+        Asset asset = null;
+
+        try{
+            PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_TO_UPDATE);
+            ps.setInt(1, assetID);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return createAssetFromQueryResult(rs);
+            }
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+        return asset;
     }
 
     /**
@@ -314,7 +339,6 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         try {
             PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_FROM_ASSET_ID);
             ps.setInt(1, assetID);
-            ps.executeQuery();
             ResultSet queryResult = ps.executeQuery();
             if (queryResult.next())
                 return queryResult.getBoolean("archived");
@@ -329,7 +353,6 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         try {
             PreparedStatement ps = getConnection().prepareStatement(GET_LATEST_MEASUREMENT_TIME_FROM_ASSED_ID);
             ps.setInt(1, assetID);
-            ps.executeQuery();
             ResultSet queryResult = ps.executeQuery();
             if (queryResult.next())
                 return queryResult.getInt("time");

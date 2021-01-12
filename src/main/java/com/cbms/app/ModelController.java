@@ -18,7 +18,10 @@ import com.cbms.rul.models.ModelsController;
 import com.cbms.source.local.AssetDAOImpl;
 import com.cbms.source.local.ModelDAOImpl;
 import weka.classifiers.Classifier;
-import weka.core.*;
+import weka.core.Attribute;
+import weka.core.DenseInstance;
+import weka.core.FastVector;
+import weka.core.Instances;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -85,6 +88,29 @@ public class ModelController {
         modelDAOImpl.closeConnection();
 
         return !assetsToUpdate.isEmpty();
+    }
+
+    /**
+     * This function check an asset for updated status
+     * and if the asset needs to be updated, it will recalculate the RUL using the corresponding model
+     *
+     * @param assetID
+     * @return
+     */
+    public boolean checkAsset(int assetID) {
+        //check for assets that need a new calculation
+        Asset asset = assetDaoImpl.getAssetToUpdate(assetID);
+
+        if(asset != null) {
+            TrainedModel trainedModel = modelDAOImpl.getModelsByAssetTypeID(asset.getAssetTypeID());
+            Double estimation = estimateRUL(asset, trainedModel.getModelClassifier());
+            assetDaoImpl.addRULEstimation(estimation, asset, trainedModel);
+        }
+
+        //assetDaoImpl.closeConnection();
+     //   modelDAOImpl.closeConnection();
+
+        return asset != null;
     }
 
     /**
