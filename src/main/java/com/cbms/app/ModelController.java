@@ -74,7 +74,7 @@ public class ModelController {
      *
      * @author Paul
      */
-    private boolean checkAssets() {
+    public boolean checkAssets() {
         //check for assets that need a new calculation
         ArrayList<Asset> assetsToUpdate = assetDaoImpl.getAssetsToUpdate();
 

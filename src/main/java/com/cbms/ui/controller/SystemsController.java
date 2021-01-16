@@ -5,6 +5,9 @@ import com.cbms.app.item.Asset;
 import com.cbms.rul.assessment.AssessmentController;
 import com.cbms.source.local.AssetTypeDAOImpl;
 import com.cbms.source.local.ModelDAOImpl;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -26,14 +29,14 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ResourceBundle;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class SystemsController implements Initializable {
     @FXML
@@ -55,8 +58,6 @@ public class SystemsController implements Initializable {
     private AssetTypeDAOImpl assetTypeDAO;
     private ModelDAOImpl modelDAO;
 
-    private ScheduledExecutorService scheduledExecutorService;
-
     // UI String constants
     private final String LINEAR_RUL = "Linear RUL: ";
     private final String TYPE_COL = "Type";
@@ -73,6 +74,21 @@ public class SystemsController implements Initializable {
     public SystemsController() {
         assetTypeDAO = new AssetTypeDAOImpl();
         modelDAO = new ModelDAOImpl();
+
+        try {
+            systems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                System.out.println("checkAssets");
+                ModelController.getInstance().checkAssets();
+            }
+        }, 0, 15000);
     }
 
     /**
@@ -88,11 +104,6 @@ public class SystemsController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         uiUtilities = new UIUtilities();
 
-        try {
-            systems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         attachEvents();
         generateThumbnails();
@@ -176,17 +187,13 @@ public class SystemsController implements Initializable {
             Text linearLabel = new Text(LINEAR_RUL);
             Text linearRUL = new Text(String.valueOf(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(system.getId()))));
 
+            Timeline timeline =
+                    new Timeline(new KeyFrame(Duration.millis(5000), e -> linearRUL.setText(String.valueOf(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(system.getId()))))));
 
-            scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-            scheduledExecutorService.scheduleAtFixedRate(() -> {
+            timeline.setCycleCount(Animation.INDEFINITE); // loop forever
+            timeline.play();
 
-                Platform.runLater(() -> {
-                    if(ModelController.getInstance().checkAsset(system.getId())){
-                        linearRUL.setText(String.valueOf(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(system.getId()))));
-                    }
 
-                });
-            }, 0, 15, TimeUnit.SECONDS);
 
             systemName.setId("systemName");
             systemType.setId("systemType");
