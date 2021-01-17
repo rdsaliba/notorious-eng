@@ -43,7 +43,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/Systems.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/SystemTypeList.fxml"));
         Scene sample = new Scene(root);
         primaryStage.setTitle("CBMS");
        // primaryStage.initStyle(StageStyle.UNDECORATED);

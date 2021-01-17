@@ -35,10 +35,32 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
     private static final String GET_ASSET_FROM_ASSET_ID="select * from asset where asset_id = ?";
     private static final String GET_LATEST_MEASUREMENT_TIME_FROM_ASSED_ID ="SELECT time FROM attribute_measurements am, attribute att WHERE att.attribute_id=am.attribute_id AND am.asset_id = ? order by time desc limit 1";
     private static final String RESET_ASSETS_FOR_LIVE ="UPDATE asset set updated = true where archived = false;";
+    private static final String GET_ASSET_TYPE_ID_COUNT = "SELECT asset_type_id, COUNT(*) as 'count' FROM asset GROUP BY asset_type_id";
 
     public void resetAssetForLive() {
         nonParamQuery(RESET_ASSETS_FOR_LIVE);
     }
+
+
+
+    /**
+     * This will return an arraylist of the count for all the asset type ids from the
+     * asset table
+     * @author Shirwa
+     */
+    public ArrayList<Integer> getAssetTypeIdCount() {
+        ArrayList<Integer> assets = new ArrayList<>();
+        try {
+            PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_TYPE_ID_COUNT);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next())
+                assets.add(rs.getInt("count"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return assets;
+    }
+
 
     /**
      * This will return an arraylist of assets that have the updated tag set to true
