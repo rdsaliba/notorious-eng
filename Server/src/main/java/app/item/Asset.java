@@ -7,12 +7,7 @@
  */
 package app.item;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import local.RulDAOImpl;
-
-public class Asset extends Item implements ObservableValue {
+public class Asset extends Item {
 
     private String serialNo;
     private String name;
@@ -111,31 +106,5 @@ public class Asset extends Item implements ObservableValue {
                 ", recommendation='" + recommendation + '\'' +
                 ", assetInfo=" + assetInfo +
                 '}';
-    }
-
-    @Override
-    public void addListener(ChangeListener changeListener) {
-
-    }
-
-    @Override
-    public void removeListener(ChangeListener changeListener) {
-
-    }
-
-    @Override
-    public Object getValue() {
-        RulDAOImpl rulDAO = new RulDAOImpl();
-        return rulDAO.getLatestRUL(getId());
-    }
-
-    @Override
-    public void addListener(InvalidationListener invalidationListener) {
-
-    }
-
-    @Override
-    public void removeListener(InvalidationListener invalidationListener) {
-
     }
 }
