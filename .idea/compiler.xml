@@ -6,9 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="JavaFXUserInterface" />
+        <module name="RealTimeDemo" />
+        <module name="Server" />
         <module name="notorious-eng" />
         <module name="Capstone" />
-        <module name="cbms" />
       </profile>
     </annotationProcessing>
   </component>
