@@ -28,4 +28,6 @@ public interface AssetDAO {
     ArrayList<Asset> getAllLiveAssets();
 
     void addRULEstimation(Double estimation, Asset asset, TrainedModel model);
+
+    void insertAsset(Asset asset);
 }

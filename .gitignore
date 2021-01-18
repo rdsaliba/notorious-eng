@@ -33,3 +33,5 @@ cbms.iml
 .DS_Store
 /.idea/aws.xml
 
+.idea/encodings.xml
+.idea/jarRepositories.xml
