@@ -202,8 +202,8 @@ public class AddSystemController implements Initializable {
      * @return
      */
     boolean isAssetEmpty(Asset asset) {
-        if(asset.getName() == "" || asset.getAssetTypeID() == "" || asset.getDescription() == "" ||
-                asset.getSerialNo() == "" || asset.getManufacturer() == "" || asset.getCategory() == "" || asset.getSite() == "" || asset.getLocation() == "")
+        if(asset.getName().equals("") || asset.getAssetTypeID().equals("") || asset.getDescription().equals("") ||
+                asset.getSerialNo().equals("") || asset.getManufacturer().equals("") || asset.getCategory().equals("") || asset.getSite().equals("") || asset.getLocation().equals(""))
             return true;
         else
             return false;

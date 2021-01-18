@@ -231,7 +231,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
             ps.setString(6, asset.getCategory());
             ps.setString(7, asset.getSite());
             ps.setString(8, asset.getLocation());
-            ps.setInt(9, Integer.parseInt(asset.getSerialNo()));
+            ps.setString(9, asset.getSerialNo());
             ps.executeQuery();
         } catch (SQLException e){
             e.printStackTrace();
