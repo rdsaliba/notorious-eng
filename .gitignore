@@ -21,6 +21,9 @@
 
 .idea/libraries/*
 target/*
+Server/target/*
+RealTimeDemo/target/*
+JavaFXUserInterface/target/*
 .idea/compiler.xml
 .idea/misc.xml
 .idea/sonarIssues.xml
@@ -29,3 +32,4 @@ cbms.iml
 
 .DS_Store
 /.idea/aws.xml
+
