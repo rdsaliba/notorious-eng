@@ -88,7 +88,7 @@ public class AddSystemController implements Initializable {
                     saveDialog(mouseEvent);
                 }
                 else {
-
+                    errorDialog(mouseEvent);
                 }
             }
         });
