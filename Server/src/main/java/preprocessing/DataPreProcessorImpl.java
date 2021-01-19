@@ -98,12 +98,6 @@ public class DataPreProcessorImpl implements DataPreProcessor {
         CfsSubsetEval eval = new CfsSubsetEval(); // the evaluator chosen is the CfsSubsetEval
         BestFirst search = new BestFirst(); // the search method used is BestFirst
 
-        //GreedyStepwise search = new GreedyStepwise();
-        /* Could also use GreedyStepWise search along with this evaluator.
-            Difference between using GreedyStepwise and BestFirst searches: BestFirst removes one extra sensor
-            (Sensor 6, std dev of 0.001)
-         */
-
         filter.setEvaluator(eval); // set the filter evaluator and search method
         filter.setSearch(search);
 
@@ -130,8 +124,6 @@ public class DataPreProcessorImpl implements DataPreProcessor {
             if (stats.stdDev < 0.001)        //want to remove only the attributes that are 0 or very close to 0
                 removedIndex.add(i);         //add the index to the list
         }
-
-
 
         //Remove filter to remove the attributes
         Remove remove = new Remove();
@@ -215,7 +207,5 @@ public class DataPreProcessorImpl implements DataPreProcessor {
         remove.setInputFormat(originalDataset);
         return remove;
     }
-
-
 
 }

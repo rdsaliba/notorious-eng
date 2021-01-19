@@ -262,7 +262,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
 
     /**
      * Given an asset id, this function will create an assetInfo object containing
-     * all the corresponding assetinfo of the asset identified by the assetID
+     * all the corresponding asset info of the asset identified by the assetID
      *
      * @param assetID represents asset's id
      * @author Paul

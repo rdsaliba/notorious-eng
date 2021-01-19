@@ -20,7 +20,6 @@ import rul.models.ModelsController;
 import weka.classifiers.Classifier;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
-import weka.core.FastVector;
 import weka.core.Instances;
 
 import java.util.*;
@@ -56,7 +55,6 @@ public class ModelController {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                String checkStart = "ModelController - initialize - checkAsset - start";
                 System.out.println("ModelController - initialize - checkAsset - start");
                 checkAssets();
                 System.out.println("ModelController - initialize - checkAsset - end");
@@ -170,7 +168,7 @@ public class ModelController {
      */
     public Double estimateRUL(Asset asset, Classifier classifier) {
         AssessmentController assessmentController = new AssessmentController();
-        Double estimate = -10000000.0;
+        double estimate = -10000000.0;
         Instances toTest = createInstancesFromAssets(new ArrayList<>(Collections.singletonList(asset)));
         try {
             DataPrePreprocessorController dppc = DataPrePreprocessorController.getInstance();
@@ -180,7 +178,6 @@ public class ModelController {
             e.printStackTrace();
         }
         return estimate;
-
     }
 
     /**

@@ -49,8 +49,8 @@ public class SystemsController implements Initializable {
     private final ObservableList<Pane> boxes = FXCollections.observableArrayList();
     private UIUtilities uiUtilities;
     private ObservableList<Asset> systems;
-    private AssetTypeDAOImpl assetTypeDAO;
-    private ModelDAOImpl modelDAO;
+    private final AssetTypeDAOImpl assetTypeDAO;
+    private final ModelDAOImpl modelDAO;
 
     private final String RECOMMENDATION_COL = "Recommendation";
 
@@ -188,7 +188,7 @@ public class SystemsController implements Initializable {
      * @author Jeff
      */
     public void generateList() {
-        TableView table = new TableView();
+        TableView<Asset> table = new TableView<>();
 
         // When TableRow is clicked, send data to SystemInfo scene.
         table.setRowFactory(tv -> {
@@ -198,18 +198,18 @@ public class SystemsController implements Initializable {
         });
 
         String TYPE_COL = "Type";
-        TableColumn<Asset, String>  systemTypeCol = new TableColumn(TYPE_COL);
+        TableColumn<Asset, String>  systemTypeCol = new TableColumn<>(TYPE_COL);
         systemTypeCol.setCellValueFactory( cellData -> new SimpleStringProperty(
                 assetTypeDAO.getNameFromID(cellData.getValue().getAssetTypeID())));
 
 
         String SERIAL_NO_COL = "Serial No.";
-        TableColumn serialNoCol = new TableColumn(SERIAL_NO_COL);
+        TableColumn<Asset, String> serialNoCol = new TableColumn<>(SERIAL_NO_COL);
         serialNoCol.setCellValueFactory(
-                new PropertyValueFactory<Asset, String>("serialNo"));
+                new PropertyValueFactory<>("serialNo"));
 
         String MODEL_COL = "Model";
-        TableColumn<Asset, String>  modelCol = new TableColumn(MODEL_COL);
+        TableColumn<Asset, String>  modelCol = new TableColumn<>(MODEL_COL);
         modelCol.setCellValueFactory( cellData -> new SimpleStringProperty(
                 modelDAO.getModelNameFromModelID(modelDAO.getModelsByAssetTypeID(cellData.getValue().getAssetTypeID()).getModelID())));
 
@@ -219,29 +219,29 @@ public class SystemsController implements Initializable {
                 Double.parseDouble(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(cellData.getValue().getId())))).asObject());
 
         String LOCATION_COL = "Location";
-        TableColumn locationCol = new TableColumn(LOCATION_COL);
+        TableColumn<Asset, String> locationCol = new TableColumn<>(LOCATION_COL);
         locationCol.setCellValueFactory(
-                new PropertyValueFactory<Asset, String>("location"));
+                new PropertyValueFactory<>("location"));
 
         String MANUFACTURER_COL = "Manufacturer";
-        TableColumn manufacturerCol = new TableColumn(MANUFACTURER_COL);
+        TableColumn<Asset, String> manufacturerCol = new TableColumn<>(MANUFACTURER_COL);
         manufacturerCol.setCellValueFactory(
-                new PropertyValueFactory<Asset, String>("manufacturer"));
+                new PropertyValueFactory<>("manufacturer"));
 
         String CATEGORY_COL = "Category";
-        TableColumn categoryCol = new TableColumn(CATEGORY_COL);
+        TableColumn<Asset, String> categoryCol = new TableColumn<>(CATEGORY_COL);
         categoryCol.setCellValueFactory(
-                new PropertyValueFactory<Asset, String>("category"));
+                new PropertyValueFactory<>("category"));
 
         String SITE_COL = "Site";
-        TableColumn siteCol = new TableColumn(SITE_COL);
+        TableColumn<Asset, String> siteCol = new TableColumn<>(SITE_COL);
         siteCol.setCellValueFactory(
-                new PropertyValueFactory<Asset, String>("site"));
+                new PropertyValueFactory<>("site"));
 
         String DESCRIPTION_COL = "Description";
-        TableColumn descriptionCol = new TableColumn(DESCRIPTION_COL);
+        TableColumn<Asset, String> descriptionCol = new TableColumn<>(DESCRIPTION_COL);
         descriptionCol.setCellValueFactory(
-                new PropertyValueFactory<Asset, String>("description"));
+                new PropertyValueFactory<>("description"));
 
         table.setItems(systems);
         table.setId("listTable");

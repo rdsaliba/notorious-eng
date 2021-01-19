@@ -137,16 +137,16 @@ public class SystemInfoController implements Initializable {
                     new LineChart<>(xAxis, yAxis);
             String SENSOR_VALUES = "Sensor Values";
             sensorChart.setTitle(SENSOR_VALUES);
-            XYChart.Series series = new XYChart.Series();
+            XYChart.Series<String, String> series = new XYChart.Series<>();
             sensorChart.setAnimated(false);
 
             Timeline timeline = new Timeline(new KeyFrame(Duration.millis(1000), e -> {
                 ArrayList<Measurement> measurements = attributeDAOImpl.getLastXMeasurementsByAssetIDAndAttributeID(Integer.toString(system.getId()), Integer.toString(sensor.getId()), 5);
                 if(!sensorChart.getXAxis().isValueOnAxis(Integer.toString(measurements.get(0).getTime())))
-                    series.getData().add(new XYChart.Data(Integer.toString(measurements.get(0).getTime()), Double.toString(measurements.get(0).getValue())));
+                    series.getData().add(new XYChart.Data<>(Integer.toString(measurements.get(0).getTime()), Double.toString(measurements.get(0).getValue())));
                 else if (series.getData().size() != measurements.size()) {
                     for(int i = measurements.size() - 1; i >= 0; i--) {
-                        series.getData().add(new XYChart.Data(Integer.toString(measurements.get(i).getTime()), Double.toString(measurements.get(i).getValue())));
+                        series.getData().add(new XYChart.Data<>(Integer.toString(measurements.get(i).getTime()), Double.toString(measurements.get(i).getValue())));
                     }
                 }
                 if (series.getData().size() > 5)
