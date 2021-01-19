@@ -76,7 +76,7 @@ public class SystemsController implements Initializable {
         modelDAO = new ModelDAOImpl();
 
         try {
-            systems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets().subList(0,10));
+            systems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -97,7 +97,7 @@ public class SystemsController implements Initializable {
         uiUtilities = new UIUtilities();
 
         attachEvents();
-        generateThumbnails("default");
+        generateThumbnails();
 
     }
 
@@ -111,7 +111,7 @@ public class SystemsController implements Initializable {
             @Override
             public void handle(Event event) {
                 systemsThumbPane.getChildren().clear();
-                generateThumbnails("default");
+                generateThumbnails();
             }
         });
 
@@ -154,19 +154,23 @@ public class SystemsController implements Initializable {
                     case "Ascending RUL":
                         if (thumbnailTab.isSelected()) {
                             systemsThumbPane.getChildren().clear();
-                            generateThumbnails("Ascending RUL");
+                            systems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssetsDes());
+                            Collections.reverse(systems);
+                            generateThumbnails();
                         }
                         break;
                     case "Descending RUL":
                         if (thumbnailTab.isSelected()) {
                             systemsThumbPane.getChildren().clear();
-                            generateThumbnails("Descending RUL");
+                            systems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssetsDes());
+                            generateThumbnails();
                         }
                         break;
                     default:
                         if (thumbnailTab.isSelected()) {
                             systemsThumbPane.getChildren().clear();
-                            generateThumbnails("Default");
+                            systems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
+                            generateThumbnails();
                         }
                         break;
                 }
@@ -180,12 +184,10 @@ public class SystemsController implements Initializable {
      *
      * @author Jeff
      */
-    public void generateThumbnails(String sortSelected) {
+    public void generateThumbnails() {
         ObservableList<Pane> boxes = FXCollections.observableArrayList();
-        //Based on the sort selected by the user, the appropriate list of Asset in the appropriate order is returned.
-        ObservableList<Asset> sortedSystems = sortSystems(sortSelected);
 
-        for (Asset system: sortedSystems) {
+        for (Asset system: systems) {
 
             Pane pane = new Pane();
 
@@ -321,32 +323,4 @@ public class SystemsController implements Initializable {
 
     }
 
-    public ObservableList<Asset> sortSystems(String selectedSort) {
-        //Copying the systems Assets list into another ObservableList so as to not impact the original one.
-        ObservableList<Asset> sortedSystems = FXCollections.observableArrayList(systems);
-        ObservableList<Asset> descending = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets("Descending RUL").subList(0,10));
-        switch (selectedSort) {
-            case "Ascending RUL":
-                try {
-                    sortedSystems = descending;
-                    Collections.reverse(sortedSystems);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                break;
-            case "Descending RUL":
-                try {
-                    sortedSystems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets("Descending RUL").subList(0,10));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                break;
-            default:
-                sortedSystems = FXCollections.observableArrayList(systems);
-                break;
-        }
-
-        return sortedSystems;
-    }
 }

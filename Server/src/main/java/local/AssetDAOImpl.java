@@ -27,7 +27,6 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
     private static final String GET_ASSETS_FROM_ASSET_TYPE_ID = "SELECT * FROM asset a WHERE a.archived = true AND a.asset_type_id = ?";
     private static final String GET_ASSET_TYPE_NAME_FROM_ASSET_ID="SELECT at.name FROM asset_type at WHERE at.asset_type_id = ?";
     private static final String GET_ALL_LIVE_ASSETS="SELECT * FROM asset, asset_type WHERE asset.asset_type_id=asset_type.asset_type_id AND archived = false";
-//    private static final String GET_ALL_LIVE_ASSETS_ASCENDING="SELECT DISTINCT asset.*,asset_type.* FROM asset, asset_type, asset_model_calculation WHERE asset.asset_type_id=asset_type.asset_type_id AND asset.asset_id=asset_model_calculation.asset_id AND archived = false ORDER BY Cast(asset_model_calculation.value as DECIMAL(8,2)) ASC";
     private static final String GET_ALL_LIVE_ASSETS_DESCENDING="SELECT DISTINCT asset.*,asset_type.* FROM asset, asset_type, asset_model_calculation WHERE asset.asset_type_id=asset_type.asset_type_id AND asset.asset_id=asset_model_calculation.asset_id AND archived = false ORDER BY Cast(asset_model_calculation.value as DECIMAL(8,2)) DESC";
     private static final String INSERT_NEW_ASSET_MEASUREMENT="INSERT INTO asset_model_calculation values( ? , ? ,now(), ?)";
     private static final String SET_UPDATED_FALSE="UPDATE asset set updated = 0 where asset_id = ?";
@@ -193,17 +192,9 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
     }
 
 
-    public ArrayList<Asset> getAllLiveAssets(String sort) {
+    public ArrayList<Asset> getAllLiveAssetsDes() {
         ArrayList<Asset> assets = new ArrayList<>();
-        ResultSet rs;
-        switch (sort){
-            case "Descending RUL":
-                rs = nonParamQuery(GET_ALL_LIVE_ASSETS_DESCENDING);
-                break;
-            default:
-                rs = nonParamQuery(GET_ALL_LIVE_ASSETS);
-                break;
-        }
+        ResultSet rs= nonParamQuery(GET_ALL_LIVE_ASSETS_DESCENDING);
 
         try{
             while (rs.next()) {

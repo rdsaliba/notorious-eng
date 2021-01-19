@@ -77,8 +77,8 @@ public class ModelController {
         return assetDaoImpl.getAllLiveAssets();
     }
 
-    public ArrayList<Asset> getAllLiveAssets(String sort) {
-        return assetDaoImpl.getAllLiveAssets(sort);
+    public ArrayList<Asset> getAllLiveAssetsDes() {
+        return assetDaoImpl.getAllLiveAssetsDes();
     }
 
 
