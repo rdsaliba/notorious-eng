@@ -33,6 +33,7 @@ import javafx.beans.value.ChangeListener;
 import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.util.Collections;
 import java.util.ResourceBundle;
 
 public class SystemsController implements Initializable {
@@ -75,7 +76,7 @@ public class SystemsController implements Initializable {
         modelDAO = new ModelDAOImpl();
 
         try {
-            systems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets().subList(0,50));
+            systems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets().subList(0,10));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -323,10 +324,12 @@ public class SystemsController implements Initializable {
     public ObservableList<Asset> sortSystems(String selectedSort) {
         //Copying the systems Assets list into another ObservableList so as to not impact the original one.
         ObservableList<Asset> sortedSystems = FXCollections.observableArrayList(systems);
+        ObservableList<Asset> descending = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets("Descending RUL").subList(0,10));
         switch (selectedSort) {
             case "Ascending RUL":
                 try {
-                    sortedSystems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets("Ascending RUL").subList(0,15));
+                    sortedSystems = descending;
+                    Collections.reverse(sortedSystems);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -334,7 +337,7 @@ public class SystemsController implements Initializable {
                 break;
             case "Descending RUL":
                 try {
-                    sortedSystems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets("Descending RUL").subList(0,15));
+                    sortedSystems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets("Descending RUL").subList(0,10));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
