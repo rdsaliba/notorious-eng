@@ -13,7 +13,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="712.0" prefWidth="1026.0" stylesheets="@css/systems.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cbms.ui.controller.SystemTypeController">
     <children>
-        <VBox layoutY="169.0" prefHeight="543.0" prefWidth="74.0" style="-fx-background-color: #0C072E;" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="169.0">
+        <VBox layoutY="114.0" prefHeight="543.0" prefWidth="74.0" style="-fx-background-color: #0C072E;" AnchorPane.bottomAnchor="55.0" AnchorPane.topAnchor="114.0">
             <children>
                 <Button fx:id="systemMenuBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0" prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css" text="Systems" textAlignment="CENTER" textFill="#f0f0f0">
                     <font>
@@ -27,6 +27,18 @@
                         </ImageView>
                     </graphic>
                 </Button>
+            <Button fx:id="systemListBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0" prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css" text="System List" textAlignment="CENTER" textFill="#f0f0f0">
+               <font>
+                  <Font name="Segoe UI Bold" size="11.0" />
+               </font>
+               <graphic>
+                  <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@imgs/outline_list_white_18dp.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
                 <Button fx:id="exitMenuBtn" contentDisplay="TOP" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="74.0" prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css" text="Exit" textAlignment="CENTER" textFill="#f0f0f0" translateY="375.0">
                     <font>
                         <Font name="Segoe UI Bold" size="14.0" />
@@ -41,7 +53,7 @@
                 </Button>
             </children>
         </VBox>
-        <VBox prefHeight="169.0" prefWidth="74.0" style="-fx-background-color: #0C072E;" AnchorPane.topAnchor="0.0" />
+        <VBox prefHeight="114.0" prefWidth="74.0" style="-fx-background-color: #0C072E;" AnchorPane.topAnchor="0.0" />
         <AnchorPane layoutX="74.0" maxHeight="42.0" prefHeight="42.0" prefWidth="952.0" AnchorPane.leftAnchor="74.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
                 <Text fill="#0c072e" layoutX="14.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="System Types">
@@ -61,12 +73,17 @@
         </AnchorPane>
         <AnchorPane layoutX="74.0" layoutY="42.0" prefHeight="42.0" prefWidth="952.0" style="-fx-border-style: hidden hidden solid hidden; -fx-border-color: F0F0F0;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="74.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="39.0">
             <children>
-                <AnchorPane fx:id="systemTypesListPane" minHeight="0.0" minWidth="0.0" prefHeight="417.0" prefWidth="554.0">
+                <AnchorPane fx:id="systemTypesListPane" minHeight="0.0" minWidth="0.0" prefHeight="409.0" prefWidth="576.0">
                <children>
-                  <TableView fx:id="tableView" layoutX="14.0" layoutY="14.0" prefHeight="326.0" prefWidth="332.0">
+                  <TableView fx:id="tableView" layoutX="9.0" layoutY="5.0">
                     <columns>
                       <TableColumn fx:id="columnName" prefWidth="121.5999755859375" text="Name" />
-                      <TableColumn fx:id="columnAssociatedAssets" prefWidth="117.59999084472656" text="# Associated Assets" />
+                      <TableColumn fx:id="columnAssociatedAssets" prefWidth="122.4000244140625" text="# Associated Assets" />
+                        <TableColumn fx:id="columnFailed" prefWidth="52.79998779296875" text="Failed" />
+                        <TableColumn fx:id="columnWarning" prefWidth="70.39996337890625" text="Warning" />
+                        <TableColumn fx:id="columnCaution" prefWidth="66.39996337890625" text="Caution" />
+                        <TableColumn fx:id="columnAdvisory" prefWidth="67.19992065429688" text="Advisory" />
+                        <TableColumn fx:id="columnOk" prefWidth="55.20001220703125" text="OK" />
                     </columns>
                   </TableView>
                </children></AnchorPane>
