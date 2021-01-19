@@ -1,5 +1,6 @@
 package com.cbms.app;
 
+import app.ModelController;
 import javafx.geometry.VerticalDirection;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
@@ -31,7 +32,7 @@ public class TextFXBase extends ApplicationTest {
     public void setUp () throws Exception {
         ModelController modelController = ModelController.getInstance();
         modelController.initializer();
-        ApplicationTest.launch(Main.class);
+//        ApplicationTest.launch(Main.class);
     }
 
     @Override
