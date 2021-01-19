@@ -219,7 +219,7 @@ public class SystemInfoController implements Initializable {
         alert.setContentText(ALERT_CONTENT);
 
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK){
+        if (result.isPresent() && result.get() == ButtonType.OK) {
             deleteAsset();
             uiUtilities.changeScene(mouseEvent, "/Systems");
         }

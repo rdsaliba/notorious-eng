@@ -23,7 +23,6 @@ import weka.core.DenseInstance;
 import weka.core.FastVector;
 import weka.core.Instances;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Timer;
@@ -99,7 +98,7 @@ public class ModelController {
 
     public TrainedModel getModelForAssetType(ArrayList<TrainedModel> trainedModels,String assetTypeID){
         for (TrainedModel tm : trainedModels){
-            if (tm.getAssetTypeID() == Integer.valueOf(assetTypeID))
+            if (tm.getAssetTypeID() == Integer.parseInt(assetTypeID))
                 return tm;
         }
         trainedModels.add(modelDAOImpl.getModelsByAssetTypeID(assetTypeID));
@@ -108,7 +107,7 @@ public class ModelController {
 
     /**
      *  This function checks all models for a retrain tag
-     *  the retrain tag is only actif if new archived assets are added
+     *  the retrain tag is only active if new archived assets are added
      *  if it needs retraining it will retrain using the corresponding
      *  asset and model info
      *
@@ -124,8 +123,6 @@ public class ModelController {
             for (TrainedModel trainedModel : trainedModelsToRetrain) {
                 try {
                     trainModel(trainedModel);
-                } catch (SQLException e) {
-                    e.printStackTrace();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -177,16 +174,16 @@ public class ModelController {
         AssessmentController assessmentController = new AssessmentController();
         Double estimate = -10000000.0;
         Instances toTest = createInstancesFromAssets(new ArrayList<Asset>(Arrays.asList(asset)));
-       //toTest = DataPrePreprocessorController.getInstance().removeAttributes(reducedInstancesSets.get(classifierID),toTest);
+        //toTest = DataPrePreprocessorController.getInstance().removeAttributes(reducedInstancesSets.get(classifierID),toTest);
         try {
             DataPrePreprocessorController dppc = DataPrePreprocessorController.getInstance();
             toTest = dppc.addRULCol(toTest);
             estimate = assessmentController.estimateRUL(toTest, classifier);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            return estimate;
         }
+        return estimate;
+
     }
 
     /**

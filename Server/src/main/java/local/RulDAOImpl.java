@@ -25,16 +25,15 @@ public class RulDAOImpl extends DAO implements RulDAO {
     @Override
     public double getLatestRUL(int assetID) {
         double estimate = -100000;
-        try {
-            PreparedStatement ps = getConnection().prepareStatement(GET_LATEST_RUL_FROM_ASSET_ID);
+        ResultSet rs;
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_LATEST_RUL_FROM_ASSET_ID)) {
             ps.setInt(1, assetID);
-            ResultSet rs = ps.executeQuery();
+            rs = ps.executeQuery();
             if (rs.next())
                 estimate = rs.getDouble("value");
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            return estimate;
         }
+        return estimate;
     }
 }
