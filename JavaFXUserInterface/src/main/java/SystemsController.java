@@ -5,6 +5,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -29,10 +30,10 @@ import local.AssetTypeDAOImpl;
 import local.ModelDAOImpl;
 import rul.assessment.AssessmentController;
 
-import javafx.beans.value.ChangeListener;
 import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.util.Collections;
 import java.util.ResourceBundle;
 
 public class SystemsController implements Initializable {
@@ -69,13 +70,14 @@ public class SystemsController implements Initializable {
     private final String SITE_COL = "Site";
     private final String CATEGORY_COL = "Category";
     private final String DESCRIPTION_COL = "Description";
+    private final Boolean SORT = true;
 
     public SystemsController() {
         assetTypeDAO = new AssetTypeDAOImpl();
         modelDAO = new ModelDAOImpl();
 
         try {
-            systems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets().subList(0,50));
+            systems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -183,9 +185,13 @@ public class SystemsController implements Initializable {
         ObservableList<Pane> boxes = FXCollections.observableArrayList();
         //Based on the sort selected by the user, the appropriate list of Asset in the appropriate order is returned.
         ObservableList<Asset> sortedSystems = sortSystems(sortSelected);
+        System.out.println("");
+        System.out.println("Start");
+        for (Asset system : sortedSystems) {
+            System.out.println(AssessmentController.getLatestEstimate(system.getId()));
+        }
 
-        for (Asset system: sortedSystems) {
-
+        for (Asset system : sortedSystems) {
             Pane pane = new Pane();
 
             //When clicked on a system, open SystemInfo.FXML for that system.
@@ -323,10 +329,13 @@ public class SystemsController implements Initializable {
     public ObservableList<Asset> sortSystems(String selectedSort) {
         //Copying the systems Assets list into another ObservableList so as to not impact the original one.
         ObservableList<Asset> sortedSystems = FXCollections.observableArrayList(systems);
+        //ObservableList<Asset> descendingSystems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets(SORT).subList(0,100));
         switch (selectedSort) {
             case "Ascending RUL":
                 try {
-                    sortedSystems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets("Ascending RUL").subList(0,15));
+//                    sortedSystems = descendingSystems;
+//                    Collections.reverse(sortedSystems);
+                    sort(sortedSystems);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -334,7 +343,9 @@ public class SystemsController implements Initializable {
                 break;
             case "Descending RUL":
                 try {
-                    sortedSystems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets("Descending RUL").subList(0,15));
+//                    sortedSystems = descendingSystems;
+                    sort(sortedSystems);
+                    Collections.reverse(sortedSystems);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -345,5 +356,51 @@ public class SystemsController implements Initializable {
         }
 
         return sortedSystems;
+    }
+
+    /**
+     * This function lets you sort an ObservableList of type Asset using the quicksort method.
+     *
+     * @param list An Observable list of type Asset
+     * @author Najim
+     */
+    public void sort(ObservableList<Asset> list) {
+        quickSort(list, 0, list.size() - 1);
+    }
+//AssessmentController.getLatestEstimate(system.getId())
+
+    /**
+     * This function sorts a list of Assets based on their RUL using the quicksort method.
+     *
+     * @param list An Observable list of type Asset
+     * @param from Pivot used for the sort. The beginning index of the list.
+     * @param to   The last index of the list
+     * @author Najim
+     */
+    public void quickSort(ObservableList<Asset> list, int from, int to) {
+        if (from < to) {
+            int pivot = from;
+            int left = from + 1;
+            int right = to;
+//            double pivotValue = list.get(pivot).getAssetInfo().getRULMeasurement();
+            double pivotValue = AssessmentController.getLatestEstimate(list.get(pivot).getId());
+            while (left <= right) {
+                // left <= to -> limit protection
+                while (left <= to && pivotValue >= AssessmentController.getLatestEstimate(list.get(left).getId())) {
+                    left++;
+                }
+                // right > from -> limit protection
+                while (right > from && pivotValue < AssessmentController.getLatestEstimate(list.get(right).getId())) {
+                    right--;
+                }
+                if (left < right) {
+                    Collections.swap(list, left, right);
+                }
+            }
+            //Using the Collections class to swap elements in the list
+            Collections.swap(list, pivot, left - 1);
+            quickSort(list, from, right - 1);
+            quickSort(list, right + 1, to);
+        }
     }
 }
