@@ -69,6 +69,14 @@
                                             </FlowPane>
                                         </content>
                                     </ScrollPane>
+                                    <ChoiceBox fx:id="sortSystem" layoutX="125.0" layoutY="11.0" prefHeight="27.0"
+                                               prefWidth="98.0" stylesheets="@css/style.css"
+                                               AnchorPane.leftAnchor="83.0"/>
+                                    <Label layoutX="15.0" layoutY="15.0" text="Sort by" AnchorPane.leftAnchor="15.0">
+                                        <font>
+                                            <Font size="15.0"/>
+                                        </font>
+                                    </Label>
                                 </AnchorPane>
                             </content>
                         </Tab>

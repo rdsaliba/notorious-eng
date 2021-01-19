@@ -5,6 +5,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
@@ -28,6 +29,7 @@ import local.AssetTypeDAOImpl;
 import local.ModelDAOImpl;
 import rul.assessment.AssessmentController;
 
+import javafx.beans.value.ChangeListener;
 import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -46,6 +48,8 @@ public class SystemsController implements Initializable {
     private Tab thumbnailTab;
     @FXML
     private Tab listTab;
+    @FXML
+    private ChoiceBox<String> sortSystem;
 
     private final ObservableList<Pane> boxes = FXCollections.observableArrayList();
     private UIUtilities uiUtilities;
@@ -71,7 +75,7 @@ public class SystemsController implements Initializable {
         modelDAO = new ModelDAOImpl();
 
         try {
-            systems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
+            systems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets().subList(0,50));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -92,7 +96,7 @@ public class SystemsController implements Initializable {
         uiUtilities = new UIUtilities();
 
         attachEvents();
-        generateThumbnails();
+        generateThumbnails("default");
 
     }
 
@@ -106,7 +110,7 @@ public class SystemsController implements Initializable {
             @Override
             public void handle(Event event) {
                 systemsThumbPane.getChildren().clear();
-                generateThumbnails();
+                generateThumbnails("default");
             }
         });
 
@@ -134,6 +138,40 @@ public class SystemsController implements Initializable {
             }
         });
 
+        //Adding items to the choiceBox (drop down list)
+        sortSystem.getItems().add("Default");
+        sortSystem.getItems().add("Ascending RUL");
+        sortSystem.getItems().add("Descending RUL");
+        //Default Value
+        sortSystem.setValue("Default");
+        //Listener on the sort ChoiceBox. Depending on the sort selected, all systems panes are cleared and generated again
+        //with the appropriate sort applied.
+        sortSystem.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
+                switch (newValue) {
+                    case "Ascending RUL":
+                        if (thumbnailTab.isSelected()) {
+                            systemsThumbPane.getChildren().clear();
+                            generateThumbnails("Ascending RUL");
+                        }
+                        break;
+                    case "Descending RUL":
+                        if (thumbnailTab.isSelected()) {
+                            systemsThumbPane.getChildren().clear();
+                            generateThumbnails("Descending RUL");
+                        }
+                        break;
+                    default:
+                        if (thumbnailTab.isSelected()) {
+                            systemsThumbPane.getChildren().clear();
+                            generateThumbnails("Default");
+                        }
+                        break;
+                }
+            }
+        });
+
     }
 
     /**
@@ -141,8 +179,13 @@ public class SystemsController implements Initializable {
      *
      * @author Jeff
      */
-    public void generateThumbnails() {
-        for (Asset system: systems) {
+    public void generateThumbnails(String sortSelected) {
+        ObservableList<Pane> boxes = FXCollections.observableArrayList();
+        //Based on the sort selected by the user, the appropriate list of Asset in the appropriate order is returned.
+        ObservableList<Asset> sortedSystems = sortSystems(sortSelected);
+
+        for (Asset system: sortedSystems) {
+
             Pane pane = new Pane();
 
             //When clicked on a system, open SystemInfo.FXML for that system.
@@ -275,5 +318,32 @@ public class SystemsController implements Initializable {
         AnchorPane.setLeftAnchor(table, 0.0);
         systemsListPane.getChildren().addAll(table);
 
+    }
+
+    public ObservableList<Asset> sortSystems(String selectedSort) {
+        //Copying the systems Assets list into another ObservableList so as to not impact the original one.
+        ObservableList<Asset> sortedSystems = FXCollections.observableArrayList(systems);
+        switch (selectedSort) {
+            case "Ascending RUL":
+                try {
+                    sortedSystems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets("Ascending RUL").subList(0,15));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                break;
+            case "Descending RUL":
+                try {
+                    sortedSystems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets("Descending RUL").subList(0,15));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+            default:
+                sortedSystems = FXCollections.observableArrayList(systems);
+                break;
+        }
+
+        return sortedSystems;
     }
 }

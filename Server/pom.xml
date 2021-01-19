@@ -66,11 +66,16 @@
             <version>0.9.10</version>
         </dependency>
         <dependency>
-            <groupId>nz.ac.waikato.cms.weka</groupId>
-            <artifactId>wekaDeeplearning4j</artifactId>
-            <version>1.7.0</version>
-            <scope>compile</scope>
+            <groupId>org.capstone.notorious</groupId>
+            <artifactId>Server</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.capstone.notorious</groupId>
+            <artifactId>cbms</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
     </dependencies>
 
     <properties>
