@@ -34,6 +34,8 @@ public class SystemInfoController implements Initializable {
     @FXML
     private Button systemMenuBtn;
     @FXML
+    private Button systemTypeMenuBtn;
+    @FXML
     private Button deleteBtn;
     @FXML
     private Text systemName;
@@ -188,6 +190,13 @@ public class SystemInfoController implements Initializable {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 uiUtilities.changeScene(mouseEvent, "/Systems");
+            }
+        });
+        //Attach link to systemTypeMenuBtn to go to SystemTypeList.fxml
+        systemTypeMenuBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                uiUtilities.changeScene(mouseEvent, "/SystemTypeList");
             }
         });
         deleteBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {

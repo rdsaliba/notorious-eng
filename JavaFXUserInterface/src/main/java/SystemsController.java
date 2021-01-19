@@ -37,6 +37,8 @@ public class SystemsController implements Initializable {
     @FXML
     private Button systemMenuBtn;
     @FXML
+    private Button systemTypeMenuBtn;
+    @FXML
     private Button addSystemBtn;
     @FXML
     private FlowPane systemsThumbPane;
@@ -71,7 +73,7 @@ public class SystemsController implements Initializable {
         modelDAO = new ModelDAOImpl();
 
         try {
-            systems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
+            systems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets().subList(0, 50));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -123,6 +125,14 @@ public class SystemsController implements Initializable {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 uiUtilities.changeScene(mouseEvent, "/Systems");
+            }
+        });
+
+        //Attach link to systemTypeMenuBtn to go to SystemTypeList.fxml
+        systemTypeMenuBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                uiUtilities.changeScene(mouseEvent, "/SystemTypeList");
             }
         });
 
