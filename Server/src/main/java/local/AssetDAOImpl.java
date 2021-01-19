@@ -27,7 +27,8 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
     private static final String GET_ASSETS_FROM_ASSET_TYPE_ID = "SELECT * FROM asset a WHERE a.archived = true AND a.asset_type_id = ?";
     private static final String GET_ASSET_TYPE_NAME_FROM_ASSET_ID="SELECT at.name FROM asset_type at WHERE at.asset_type_id = ?";
     private static final String GET_ALL_LIVE_ASSETS="SELECT * FROM asset, asset_type WHERE asset.asset_type_id=asset_type.asset_type_id AND archived = false";
-    //private static final String GET_ALL_LIVE_ASSETS_DESCENDING="SELECT DISTINCT asset.*,asset_type.* FROM asset, asset_type, asset_model_calculation WHERE asset.asset_type_id=asset_type.asset_type_id AND asset.asset_id=asset_model_calculation.asset_id AND archived = false ORDER BY asset_model_calculation.value DESC";
+    private static final String GET_ALL_LIVE_ASSETS_ASCENDING="SELECT DISTINCT asset.*,asset_type.* FROM asset, asset_type, asset_model_calculation WHERE asset.asset_type_id=asset_type.asset_type_id AND asset.asset_id=asset_model_calculation.asset_id AND archived = false ORDER BY asset_model_calculation.value+0 ASC";
+    private static final String GET_ALL_LIVE_ASSETS_DESCENDING="SELECT DISTINCT asset.*,asset_type.* FROM asset, asset_type, asset_model_calculation WHERE asset.asset_type_id=asset_type.asset_type_id AND asset.asset_id=asset_model_calculation.asset_id AND archived = false ORDER BY asset_model_calculation.value+0 DESC";
     private static final String INSERT_NEW_ASSET_MEASUREMENT="INSERT INTO asset_model_calculation values( ? , ? ,now(), ?)";
     private static final String SET_UPDATED_FALSE="UPDATE asset set updated = 0 where asset_id = ?";
     private static final String SET_UPDATED_TRUE = "UPDATE asset set updated = 1 where asset_id = ?";
@@ -180,45 +181,53 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         ArrayList<Asset> assets = new ArrayList<>();
         ResultSet rs = nonParamQuery(GET_ALL_LIVE_ASSETS);
 
-        try {
+        try{
             while (rs.next()) {
                 assets.add(createAssetFromQueryResult(rs));
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e){
             e.printStackTrace();
         }
         return assets;
     }
 
-//    /**
-//     * This will return a sorted arraylist of all assets that are not archived
-//     *
-//     * @author Najim
-//     */
-//    @Override
-//    public ArrayList<Asset> getAllLiveAssetsSorted() {
-//        ArrayList<Asset> assets = new ArrayList<>();
-//        ResultSet rs = nonParamQuery(GET_ALL_LIVE_ASSETS_DESCENDING);
-//
-//        try{
-//            while (rs.next()) {
-//                assets.add(createAssetFromQueryResult(rs));
-//            }
-//        }
-//        catch (SQLException e){
-//            e.printStackTrace();
-//        }
-//        return assets;
-//
-//    }
+
+    public ArrayList<Asset> getAllLiveAssets(String sort) {
+        ArrayList<Asset> assets = new ArrayList<>();
+        ResultSet rs;
+        switch (sort){
+            case "Ascending RUL":
+                rs = nonParamQuery(GET_ALL_LIVE_ASSETS_ASCENDING);
+                break;
+            case "Descending RUL":
+                rs = nonParamQuery(GET_ALL_LIVE_ASSETS_DESCENDING);
+                break;
+            default:
+                rs = nonParamQuery(GET_ALL_LIVE_ASSETS);
+                break;
+
+        }
+
+        try{
+            while (rs.next()) {
+                assets.add(createAssetFromQueryResult(rs));
+            }
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+        return assets;
+
+    }
 
     /**
      * given an rul estimation, an asset and a trained model, this function will add
      * a new measurement for that asset and model
      *
      * @param estimation represents the RUL estimation
-     * @param asset      represents the asset object
-     * @param model      represents the trained model object
+     * @param asset represents the asset object
+     * @param model represents the trained model object
      * @author Paul
      */
     @Override

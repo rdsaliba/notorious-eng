@@ -67,16 +67,18 @@ public class ModelController {
         }, 0, 5000);
     }
 
+
     /**
      *  This function will return an arraylist of all live assets
      *
      * @author Paul
      */
     public ArrayList<Asset> getAllLiveAssets() {
-//        if(sort){
-//            return assetDaoImpl.getAllLiveAssetsSorted();
-//        }
         return assetDaoImpl.getAllLiveAssets();
+    }
+
+    public ArrayList<Asset> getAllLiveAssets(String sort) {
+        return assetDaoImpl.getAllLiveAssets(sort);
     }
 
 
