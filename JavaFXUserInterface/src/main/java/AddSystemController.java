@@ -40,7 +40,6 @@ public class AddSystemController implements Initializable {
     @FXML
     private TextField locationInput;
 
-    private static ObservableList<AssetType> assetTypeNamesList;
     private AssetDAOImpl assetDAOImpl;
     private AssetTypeDAOImpl assetTypeDAOImpl;
     private UIUtilities uiUtilities;
@@ -54,8 +53,8 @@ public class AddSystemController implements Initializable {
      * Initialize runs before the scene is displayed.
      * It initializes elements and data in the scene.
      *
-     * @param url
-     * @param resourceBundle
+     * @param url url to be used
+     * @param resourceBundle resource bundle to be used
      *
      * @author Jeff
      */
@@ -79,17 +78,14 @@ public class AddSystemController implements Initializable {
             if(newval != null)
                 selectedAssetType = newval;
         });
-        saveBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                Asset newAsset = assembleAsset();
-                if(!isAssetEmpty(newAsset)) {
-                    saveAsset(newAsset);
-                    saveDialog(mouseEvent);
-                }
-                else {
-                    errorDialog(mouseEvent);
-                }
+        saveBtn.setOnMouseClicked(mouseEvent -> {
+            Asset newAsset = assembleAsset();
+            if(!isAssetEmpty(newAsset)) {
+                saveAsset(newAsset);
+                saveDialog(mouseEvent);
+            }
+            else {
+                errorDialog(mouseEvent);
             }
         });
         // Change scenes to Systems.fxml
@@ -98,20 +94,18 @@ public class AddSystemController implements Initializable {
         cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
     }
 
-    /**
-     * Initializes the default and possible values for all fields that can accept user input. For example,
-     * it establishes the possible dropdown values for the system type selection.
-     */
+
     /**
      * Initializes the default and possible values for all fields that can accept user input. For example,
      * it establishes the possible dropdown values for the system type selection.
      */
     public void initializeFieldValues() {
         // Establishes the asset types available for selection in the dropdown
+        ObservableList<AssetType> assetTypeNamesList;
         assetTypeNamesList = FXCollections.observableArrayList(assetTypeDAOImpl.getAssetTypeList());
         systemTypeChoiceBox.setItems(assetTypeNamesList);
         systemTypeChoiceBox.setValue(systemTypeChoiceBox.getItems().get(0));
-        systemTypeChoiceBox.setConverter(new StringConverter<AssetType>() {
+        systemTypeChoiceBox.setConverter(new StringConverter<>() {
             @Override
             public String toString(AssetType assetType) {
                 return assetType.getName();
@@ -128,7 +122,7 @@ public class AddSystemController implements Initializable {
     /**
      * Assembles all the TextField data and create an Asset object.
      *
-     * @return
+     * @return a new asset object created
      */
     public Asset assembleAsset() {
         Asset newAsset = new Asset();
@@ -144,23 +138,9 @@ public class AddSystemController implements Initializable {
     }
 
     /**
-     * Creates an ObservableList of asset type names.
-     *
-     * @param assetTypeList
-     * @return
-     */
-    public ObservableList<String> getAssetTypeNameList(ObservableList<AssetType> assetTypeList) {
-        ObservableList<String> assetTypeNames = FXCollections.observableArrayList();
-        for (AssetType assetType:assetTypeList) {
-            assetTypeNames.add(assetType.getName());
-        }
-        return assetTypeNames;
-    }
-
-    /**
      * Sends the new asset to be inserted in the database
      *
-     * @param newAsset
+     * @param newAsset is an asset object to be added in the database
      */
     public void saveAsset(Asset newAsset) {
         assetDAOImpl.insertAsset(newAsset);
@@ -169,7 +149,7 @@ public class AddSystemController implements Initializable {
     /**
      * Creates a dialog to alert the user that an asset was saved to the database
      *
-     * @param mouseEvent
+     * @param mouseEvent is the event that triggers the dialog
      */
     void saveDialog(MouseEvent mouseEvent) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -177,15 +157,15 @@ public class AddSystemController implements Initializable {
         alert.setHeaderText(SAVE_HEADER);
 
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK){
+        if (result.isPresent() && result.get() == ButtonType.OK){
             uiUtilities.changeScene(mouseEvent, "/Systems");
         }
     }
 
     /**
-     * Creates a dialog to
+     * Creates a dialog to inform the user that there was an error in the user input
      *
-     * @param mouseEvent
+     * @param mouseEvent is the event that triggers the dialog
      */
     void errorDialog(MouseEvent mouseEvent) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -198,14 +178,11 @@ public class AddSystemController implements Initializable {
     /**
      *  Checks to see if values of the asset are filled.
      *
-     * @param asset
-     * @return
+     * @param asset os an asset object
+     * @return whether or not the asset object passed is empty (no info or attributes) or not
      */
     boolean isAssetEmpty(Asset asset) {
-        if(asset.getName().equals("") || asset.getAssetTypeID().equals("") || asset.getDescription().equals("") ||
-                asset.getSerialNo().equals("") || asset.getManufacturer().equals("") || asset.getCategory().equals("") || asset.getSite().equals("") || asset.getLocation().equals(""))
-            return true;
-        else
-            return false;
+        return asset.getName().equals("") || asset.getAssetTypeID().equals("") || asset.getDescription().equals("") ||
+                asset.getSerialNo().equals("") || asset.getManufacturer().equals("") || asset.getCategory().equals("") || asset.getSite().equals("") || asset.getLocation().equals("");
     }
 }

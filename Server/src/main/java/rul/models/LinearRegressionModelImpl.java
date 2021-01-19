@@ -25,7 +25,7 @@ public class LinearRegressionModelImpl implements ModelStrategy {
     @Override
     public Classifier trainModel(Instances firstTrain) {
         firstTrain.setClassIndex(firstTrain.numAttributes() - 1);
-        Instances trainDataset = removeInstances(firstTrain);
+        removeInstances(firstTrain);
         //SMOreg lr = new SMOreg();
         LinearRegression lr = new LinearRegression();
         try {

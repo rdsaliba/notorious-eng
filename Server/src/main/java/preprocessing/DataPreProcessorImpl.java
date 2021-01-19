@@ -28,7 +28,7 @@ public class DataPreProcessorImpl implements DataPreProcessor {
     private Instances minimallyReducedDataset;
     private final ArrayList<Integer> removedIndex;
 
-    public DataPreProcessorImpl(Instances originalDataset) throws Exception {
+    public DataPreProcessorImpl(Instances originalDataset) {
         this.originalDataset = originalDataset;
         this.reducedDataset = originalDataset;
         this.minimallyReducedDataset = originalDataset;

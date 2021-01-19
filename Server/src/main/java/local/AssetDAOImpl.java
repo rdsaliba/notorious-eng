@@ -65,23 +65,17 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
     @Override
     public void deleteAssetByID(int assetID) {
         try (PreparedStatement ps = getConnection().prepareStatement(DELETE_ASSET)) {
-            ps.setString(1, " attribute_measurements ");
-            ps.setInt(2, assetID);
-            ps.executeQuery();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try (PreparedStatement ps = getConnection().prepareStatement(DELETE_ASSET)) {
-            ps.setString(1, " asset_model_calculation ");
-            ps.setInt(2, assetID);
-            ps.executeQuery();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try (PreparedStatement ps = getConnection().prepareStatement(DELETE_ASSET)) {
-            ps.setString(1, " asset ");
-            ps.setInt(2, assetID);
-            ps.executeQuery();
+            for (int i = 0; i < 3; i++) {
+                if (i == 0) {
+                    ps.setString(1, " attribute_measurements ");
+                } else if (i == 1) {
+                    ps.setString(1, " asset_model_calculation ");
+                } else {
+                    ps.setString(1, " asset ");
+                }
+                ps.setInt(2, assetID);
+                ps.executeQuery();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -275,8 +269,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
      */
     private AssetInfo createAssetInfo(int assetID){
         AssetInfo newAssetInfo = new AssetInfo();
-        PreparedStatement ps;
-        try (PreparedStatement preparedStatement = ps = getConnection().prepareStatement(GET_ASSET_INFO_FROM_ASSET_ID)) {
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_INFO_FROM_ASSET_ID)) {
             ps.setInt(1,assetID);
             try (ResultSet attributesQuery = ps.executeQuery()) {
                 int previousAttributeID = 1;

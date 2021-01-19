@@ -34,8 +34,8 @@ public class RULEstimate {
         this.timestamp = timestamp;
     }
 
-    public void setValue(double Value) {
-        this.value = Value;
+    public void setValue(double value) {
+        this.value = value;
     }
 
     @Override

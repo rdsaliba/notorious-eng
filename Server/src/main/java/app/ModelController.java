@@ -23,10 +23,7 @@ import weka.core.DenseInstance;
 import weka.core.FastVector;
 import weka.core.Instances;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 public class ModelController {
     private static ModelController instance = null;
@@ -59,6 +56,7 @@ public class ModelController {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
+                String checkStart = "ModelController - initialize - checkAsset - start";
                 System.out.println("ModelController - initialize - checkAsset - start");
                 checkAssets();
                 System.out.println("ModelController - initialize - checkAsset - end");
@@ -173,8 +171,7 @@ public class ModelController {
     public Double estimateRUL(Asset asset, Classifier classifier) {
         AssessmentController assessmentController = new AssessmentController();
         Double estimate = -10000000.0;
-        Instances toTest = createInstancesFromAssets(new ArrayList<Asset>(Arrays.asList(asset)));
-        //toTest = DataPrePreprocessorController.getInstance().removeAttributes(reducedInstancesSets.get(classifierID),toTest);
+        Instances toTest = createInstancesFromAssets(new ArrayList<>(Collections.singletonList(asset)));
         try {
             DataPrePreprocessorController dppc = DataPrePreprocessorController.getInstance();
             toTest = dppc.addRULCol(toTest);
@@ -193,19 +190,19 @@ public class ModelController {
      * @author Paul
      */
     public Instances createInstancesFromAssets(ArrayList<Asset> assets) {
-        FastVector attributesVector;
+        ArrayList<Attribute> attributesVector;
         Instances data;
         double[] values;
         ArrayList<String> attributeNames = assetDaoImpl.getAttributesNameFromAssetID(assets.get(0).getId());
         String assetTypeName = assetDaoImpl.getAssetTypeNameFromID(assets.get(0).getAssetTypeID());
 
         // 1. set up attributes
-        attributesVector = new FastVector();
+        attributesVector = new ArrayList<>();
         // - numeric
-        attributesVector.addElement(new Attribute("Asset_id"));
-        attributesVector.addElement(new Attribute("Time_Cycle"));
+        attributesVector.add(new Attribute("Asset_id"));
+        attributesVector.add(new Attribute("Time_Cycle"));
         for (String attributeName : attributeNames) {
-            attributesVector.addElement(new Attribute(attributeName));
+            attributesVector.add(new Attribute(attributeName));
         }
         // 2. create Instances object
         data = new Instances(assetTypeName, attributesVector, 0);
