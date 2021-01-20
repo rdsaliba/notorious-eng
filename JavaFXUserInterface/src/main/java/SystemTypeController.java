@@ -71,7 +71,14 @@ public class SystemTypeController implements Initializable {
             //For loop to define columns
             double fail_value = 0,warning_value=0,caution_value=0,advisory_value=0,ok_value=0;
 
-
+            /*
+            * Each boundary type corresponds to the given number
+            * 0 - Failed
+            * 1 - Warning
+            * 2 - Caution
+            * 3 - Advisory
+            * 4 - Ok
+            * */
             fail_value = assetTypeDOA.getAssetTypeBoundary(i+ 1, 0);
             warning_value = assetTypeDOA.getAssetTypeBoundary(i + 1, 1);
             caution_value = assetTypeDOA.getAssetTypeBoundary(i + 1, 2);
