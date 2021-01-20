@@ -51,7 +51,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
      * Given an arraylist of trained models this function will write the new Classifier object
      * to the corresponding trained model entry after an model training phase
      *
-     * @param tms<TrainedModel> represents a list of trainedmodels
+     * @param tms<TrainedModel> represents a list of trained models
      * @author Paul
      */
     @Override

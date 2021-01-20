@@ -298,32 +298,6 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         return null;
     }
 
-    private Boolean isAssetArchived (int assetID){
-        ResultSet queryResult;
-        try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_FROM_ASSET_ID)) {
-            ps.setInt(1, assetID);
-            queryResult = ps.executeQuery();
-            if (queryResult.next())
-                return queryResult.getBoolean("archived");
-        } catch (SQLException e){
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    private int lastAssetMeasurementTime (int assetID){
-        ResultSet queryResult;
-        try (PreparedStatement ps = getConnection().prepareStatement(GET_LATEST_MEASUREMENT_TIME_FROM_ASSET_ID)) {
-            ps.setInt(1, assetID);
-            queryResult = ps.executeQuery();
-            if (queryResult.next())
-                return queryResult.getInt("time");
-        } catch (SQLException e){
-            e.printStackTrace();
-        }
-        return -1;
-    }
-
     private ResultSet nonParamQuery(String query){
         ResultSet rs = null;
         try (PreparedStatement ps = getConnection().prepareStatement(query)) {
