@@ -8,7 +8,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -55,21 +54,10 @@ public class SystemsController implements Initializable {
     private final ObservableList<Pane> boxes = FXCollections.observableArrayList();
     private UIUtilities uiUtilities;
     private ObservableList<Asset> systems;
-    private AssetTypeDAOImpl assetTypeDAO;
-    private ModelDAOImpl modelDAO;
+    private final AssetTypeDAOImpl assetTypeDAO;
+    private final ModelDAOImpl modelDAO;
 
-    // UI String constants
-    private final String LINEAR_RUL = "Linear RUL: ";
-    private final String TYPE_COL = "Type";
-    private final String SERIAL_NO_COL = "Serial No.";
-    private final String MODEL_COL = "Model";
-    private final String RUL_COL = "RUL";
-    private final String LOCATION_COL = "Location";
     private final String RECOMMENDATION_COL = "Recommendation";
-    private final String MANUFACTURER_COL = "Manufacturer";
-    private final String SITE_COL = "Site";
-    private final String CATEGORY_COL = "Category";
-    private final String DESCRIPTION_COL = "Description";
 
     public SystemsController() {
         assetTypeDAO = new AssetTypeDAOImpl();
@@ -87,8 +75,8 @@ public class SystemsController implements Initializable {
      * Initialize runs before the scene is displayed.
      * It initializes elements and data in the scene.
      *
-     * @param url
-     * @param resourceBundle
+     * @param url url to be used
+     * @param resourceBundle resourceBundle to be used
      *
      * @author Jeff
      */
@@ -107,37 +95,21 @@ public class SystemsController implements Initializable {
      * @author Jeff
      */
     public void attachEvents() {
-        thumbnailTab.setOnSelectionChanged(new EventHandler<Event>() {
-            @Override
-            public void handle(Event event) {
-                systemsThumbPane.getChildren().clear();
-                generateThumbnails();
-            }
+        thumbnailTab.setOnSelectionChanged(event -> {
+            systemsThumbPane.getChildren().clear();
+            generateThumbnails();
         });
 
-        listTab.setOnSelectionChanged(new EventHandler<Event>() {
-            @Override
-            public void handle(Event event) {
-                systemsListPane.getChildren().clear();
-                generateList();
-            }
+        listTab.setOnSelectionChanged(event -> {
+            systemsListPane.getChildren().clear();
+            generateList();
         });
 
         //Attach link to systemMenuButton to go to Systems.fxml
-        systemMenuBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                uiUtilities.changeScene(mouseEvent, "/Systems");
-            }
-        });
+        systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
 
         //Attach link to addSystemButton to go to AddSystem.fxml
-        addSystemBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                uiUtilities.changeScene(mouseEvent, "/AddSystem");
-            }
-        });
+        addSystemBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/AddSystem"));
 
         //Adding items to the choiceBox (drop down list)
         sortSystem.getItems().add("Default");
@@ -192,12 +164,10 @@ public class SystemsController implements Initializable {
             Pane pane = new Pane();
 
             //When clicked on a system, open SystemInfo.FXML for that system.
-            pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            pane.setOnMouseClicked(new EventHandler<>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
-                    Stage primaryStage = (Stage) pane.getScene().getWindow();
                     try {
-
                         FXMLLoader loader = new FXMLLoader();
                         loader.setLocation(getClass().getResource("/SystemInfo.fxml"));
                         Parent systemsParent = loader.load();
@@ -218,13 +188,13 @@ public class SystemsController implements Initializable {
             pane.getStyleClass().add("systemPane");
             Text systemName = new Text(system.getSerialNo());
             Text systemType = new Text(assetTypeDAO.getNameFromID(system.getAssetTypeID()));
+            // UI String constants
+            String LINEAR_RUL = "Linear RUL: ";
             Text linearLabel = new Text(LINEAR_RUL);
             Text linearRUL = new Text(String.valueOf(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(system.getId()))));
 
             Timeline timeline =
-                    new Timeline(new KeyFrame(Duration.millis(1000), e -> {
-                        linearRUL.setText(String.valueOf(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(system.getId()))));
-                    }));
+                    new Timeline(new KeyFrame(Duration.millis(1000), e -> linearRUL.setText(String.valueOf(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(system.getId()))))));
 
             timeline.setCycleCount(Animation.INDEFINITE); // loop forever
             timeline.play();
@@ -264,53 +234,60 @@ public class SystemsController implements Initializable {
      * @author Jeff
      */
     public void generateList() {
-        TableView table = new TableView();
+        TableView<Asset> table = new TableView<>();
 
         // When TableRow is clicked, send data to SystemInfo scene.
         table.setRowFactory(tv -> {
             TableRow<Asset> row = new TableRow<>();
-            row.setOnMouseClicked(event -> {
-                uiUtilities.changeScene(event, row, "/SystemInfo", row.getItem());
-            });
+            row.setOnMouseClicked(event -> uiUtilities.changeScene(event, row, "/SystemInfo", row.getItem()));
             return row;
         });
 
-        TableColumn<Asset, String>  systemTypeCol = new TableColumn(TYPE_COL);
+        String TYPE_COL = "Type";
+        TableColumn<Asset, String>  systemTypeCol = new TableColumn<>(TYPE_COL);
         systemTypeCol.setCellValueFactory( cellData -> new SimpleStringProperty(
                 assetTypeDAO.getNameFromID(cellData.getValue().getAssetTypeID())));
 
 
-        TableColumn serialNoCol = new TableColumn(SERIAL_NO_COL);
+        String SERIAL_NO_COL = "Serial No.";
+        TableColumn<Asset, String> serialNoCol = new TableColumn<>(SERIAL_NO_COL);
         serialNoCol.setCellValueFactory(
-                new PropertyValueFactory<Asset, String>("serialNo"));
+                new PropertyValueFactory<>("serialNo"));
 
-        TableColumn<Asset, String>  modelCol = new TableColumn(MODEL_COL);
+        String MODEL_COL = "Model";
+        TableColumn<Asset, String>  modelCol = new TableColumn<>(MODEL_COL);
         modelCol.setCellValueFactory( cellData -> new SimpleStringProperty(
                 modelDAO.getModelNameFromModelID(modelDAO.getModelsByAssetTypeID(cellData.getValue().getAssetTypeID()).getModelID())));
 
+        String RUL_COL = "RUL";
         TableColumn<Asset, Double> modelRULCol = new TableColumn<>(RUL_COL);
         modelRULCol.setCellValueFactory(cellData -> new SimpleDoubleProperty(
                 Double.parseDouble(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(cellData.getValue().getId())))).asObject());
 
-        TableColumn locationCol = new TableColumn(LOCATION_COL);
+        String LOCATION_COL = "Location";
+        TableColumn<Asset, String> locationCol = new TableColumn<>(LOCATION_COL);
         locationCol.setCellValueFactory(
-                new PropertyValueFactory<Asset, String>("location"));
+                new PropertyValueFactory<>("location"));
 
-        TableColumn manufacturerCol = new TableColumn(MANUFACTURER_COL);
+        String MANUFACTURER_COL = "Manufacturer";
+        TableColumn<Asset, String> manufacturerCol = new TableColumn<>(MANUFACTURER_COL);
         manufacturerCol.setCellValueFactory(
-                new PropertyValueFactory<Asset, String>("manufacturer"));
+                new PropertyValueFactory<>("manufacturer"));
 
-        TableColumn categoryCol = new TableColumn(CATEGORY_COL);
+        String CATEGORY_COL = "Category";
+        TableColumn<Asset, String> categoryCol = new TableColumn<>(CATEGORY_COL);
         categoryCol.setCellValueFactory(
-                new PropertyValueFactory<Asset, String>("category"));
+                new PropertyValueFactory<>("category"));
 
-        TableColumn siteCol = new TableColumn(SITE_COL);
+        String SITE_COL = "Site";
+        TableColumn<Asset, String> siteCol = new TableColumn<>(SITE_COL);
         siteCol.setCellValueFactory(
-                new PropertyValueFactory<Asset, String>("site"));
+                new PropertyValueFactory<>("site"));
 
-        TableColumn descriptionCol = new TableColumn(DESCRIPTION_COL);
+        String DESCRIPTION_COL = "Description";
+        TableColumn<Asset, String> descriptionCol = new TableColumn<>(DESCRIPTION_COL);
         descriptionCol.setCellValueFactory(
-                new PropertyValueFactory<Asset, String>("description"));
+                new PropertyValueFactory<>("description"));
 
         table.setItems(systems);
         table.setId("listTable");

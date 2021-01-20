@@ -65,12 +65,6 @@ public class LSTMModelImpl implements ModelStrategy
             lstmLayer1.setActivationFunction(new ActivationRReLU());
             lstmLayer1.setGateActivationFn(new ActivationRReLU());
 
-            // TODO: Add more layers (makes it slower doing so now)
-//            LSTM lstmLayer2  = new LSTM();
-//            lstmLayer2.setNOut(64);
-//            lstmLayer2.setActivationFunction(new ActivationReLU());
-//            lstmLayer2.setGateActivationFn(new ActivationSigmoid());
-
             //Configure output layer
             OutputLayer outLayer = new OutputLayer();           //Last layer must always be the last layer
             outLayer.setLossFn(new LossMSE());                  //Loss function is Mean Square Error

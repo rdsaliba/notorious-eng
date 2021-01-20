@@ -15,8 +15,6 @@ import java.util.ArrayList;
 public interface AssetDAO {
     ArrayList<Asset> getAssetsToUpdate();
 
-    //Asset getAssetToUpdate(int assetID);
-
     void deleteAssetByID(int assetID);
 
     ArrayList<Asset> getAssetsFromAssetTypeID(int assetTypeID);

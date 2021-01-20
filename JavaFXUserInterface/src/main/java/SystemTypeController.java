@@ -33,9 +33,6 @@ public class SystemTypeController implements Initializable {
     @FXML
     private Button addTypeBtn;
 
-    private UIUtilities uiUtilities;
-    private ArrayList<AssetTypeParameter> assetTypeParameters;
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 

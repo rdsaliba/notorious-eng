@@ -8,7 +8,6 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.capstone.notorious</groupId>
     <artifactId>Server</artifactId>
     <packaging>jar</packaging>
     <version>1.0-SNAPSHOT</version>
@@ -19,7 +18,7 @@
     <repositories>
         <repository>
             <id>local-maven-repo</id>
-            <url>file:///${pom.basedir}\local-maven-repo</url>
+            <url>file:///${project.basedir}\local-maven-repo</url>
         </repository>
     </repositories>
 
@@ -64,12 +63,6 @@
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
             <version>0.9.10</version>
-        </dependency>
-        <dependency>
-            <groupId>nz.ac.waikato.cms.weka</groupId>
-            <artifactId>wekaDeeplearning4j</artifactId>
-            <version>1.7.0</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 

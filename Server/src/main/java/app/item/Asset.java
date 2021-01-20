@@ -20,10 +20,6 @@ public class Asset extends Item {
     private String site;
     private AssetInfo assetInfo;
 
-    public Asset() {
-
-    }
-
     public String getSerialNo() {
         return serialNo;
     }

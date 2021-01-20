@@ -33,11 +33,4 @@ public class AssetInfo {
         return assetAttributes;
     }
 
-    public int getLastRecorderTimeCycle() {
-        if(assetAttributes.size() > 0)
-            return assetAttributes.get(0).getMeasurements().size();
-        else
-            return 0;
-    }
-
 }

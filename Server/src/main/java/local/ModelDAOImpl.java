@@ -35,38 +35,37 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     @Override
     public String getModelNameFromModelID(int modelID) {
         String name = null;
-        try {
-            PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_NAME_FROM_ID);
+        ResultSet rs;
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_NAME_FROM_ID)) {
             ps.setInt(1, modelID);
-            ResultSet rs = ps.executeQuery();
+            rs = ps.executeQuery();
             if (rs.next())
                 name= rs.getString("name");
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            return name;
         }
+        return name;
     }
 
     /**
      * Given an arraylist of trained models this function will write the new Classifier object
      * to the corresponding trained model entry after an model training phase
      *
-     * @param tms<TrainedModel> represents a list of trainedmodels
+     * @param tms<TrainedModel> represents a list of trained models
      * @author Paul
      */
     @Override
     public void setModelsToTrain(ArrayList<TrainedModel> tms) {
         try {
             for (TrainedModel tm : tms) {
-                PreparedStatement ps = getConnection().prepareStatement(UPDATE_SERIALIZE_OBJECT);
-                ps.setObject(1, tm.getModelClassifier());
-                ps.setInt(2, tm.getModelID());
-                ps.setInt(3, tm.getAssetTypeID());
-                ps.executeUpdate();
+                try (PreparedStatement ps = getConnection().prepareStatement(UPDATE_SERIALIZE_OBJECT)) {
+                    ps.setObject(1, tm.getModelClassifier());
+                    ps.setInt(2, tm.getModelID());
+                    ps.setInt(3, tm.getAssetTypeID());
+                    ps.executeUpdate();
+                }
             }
-        }
-        catch (SQLException e){
+        } catch (SQLException e){
             e.printStackTrace();
         }
     }
@@ -81,19 +80,16 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     public ArrayList<TrainedModel> getModelsToTrain() {
 
         ArrayList<TrainedModel> tms = new ArrayList<>();
-        try {
-            PreparedStatement ps = getConnection().prepareStatement(GET_SERIALIZE_OBJECT);
-            ResultSet queryResult = ps.executeQuery();
+        ResultSet queryResult;
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_SERIALIZE_OBJECT)) {
+            queryResult = ps.executeQuery();
             while (queryResult.next()){
                 tms.add(createTrainedModelFromResultSet(queryResult, false));
             }
-        }
-        catch (SQLException e){
+        } catch (SQLException e){
             e.printStackTrace();
-        } finally {
-            return tms;
         }
-
+        return tms;
     }
 
     /**
@@ -107,18 +103,17 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     @Override
     public TrainedModel getModelsByAssetTypeID(String assetTypeID) {
         TrainedModel tm = null;
-        try {
-            PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_FROM_ASSET_TYPE);
-            ps.setString(1,assetTypeID);
-            ResultSet queryResult = ps.executeQuery();
+        ResultSet queryResult;
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_FROM_ASSET_TYPE)) {
+            ps.setString(1, assetTypeID);
+            queryResult = ps.executeQuery();
             while (queryResult.next()){
                 tm = createTrainedModelFromResultSet(queryResult, true);
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            return tm;
         }
+        return tm;
     }
 
     /**
@@ -136,10 +131,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
             if(withModel){
                 tm.setModelClassifier((Classifier)new ObjectInputStream(new ByteArrayInputStream(rs.getBytes("serialized_model"))).readObject());
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
             return null;
         }
