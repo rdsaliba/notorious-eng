@@ -297,7 +297,7 @@ public class SystemInfoController implements Initializable {
         }
         table.getColumns().addAll(tableColumns);
 
-        ObservableList<ObservableList<String>> cvsData = FXCollections.observableArrayList();
+        ObservableList<ObservableList<String>> dataPerColumn = FXCollections.observableArrayList();
 
         int outcounter = 0;
         for(ArrayList<Measurement> dataList : data) {
@@ -305,17 +305,17 @@ public class SystemInfoController implements Initializable {
             for(Measurement measurement: dataList) {
                 if(outcounter < dataList.size()) {
                     ObservableList<String> list = FXCollections.observableArrayList();
-                    cvsData.add(list);
-                    cvsData.get(outcounter).add(String.valueOf(measurement.getValue()));
+                    dataPerColumn.add(list);
+                    dataPerColumn.get(outcounter).add(String.valueOf(measurement.getValue()));
                     outcounter++;
                 } else {
-                    cvsData.get(counter).add(String.valueOf(measurement.getValue()));
+                    dataPerColumn.get(counter).add(String.valueOf(measurement.getValue()));
                     counter++;
                 }
             }
         }
 
-        table.setItems(cvsData);
+        table.setItems(dataPerColumn);
 
         table.setId("RawDataTable");
         AnchorPane.setBottomAnchor(table, 0.0);
