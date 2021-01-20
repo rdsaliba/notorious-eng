@@ -1,21 +1,15 @@
-import app.item.AssetTypeParameter;
-package com.cbms.ui.controller;
 
-import com.cbms.SystemList;
-import com.cbms.app.item.AssetTypeParameter;
-import com.cbms.source.local.AssetDAOImpl;
-import com.cbms.source.local.AssetTypeDAOImpl;
+import app.item.AssetType;
+import app.item.AssetTypeParameter;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import org.nd4j.shade.jackson.databind.deser.impl.PropertyValue;
+import local.AssetTypeDAOImpl;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -69,7 +63,8 @@ public class SystemTypeController implements Initializable {
         ObservableList<SystemList> systemlist = FXCollections.observableArrayList();
 
         AssetTypeDAOImpl assetTypeDOA = new AssetTypeDAOImpl();
-        ArrayList<String> systemlistname = assetTypeDOA.getAssetTypeList();
+
+        ArrayList<AssetType> systemlistname = assetTypeDOA.getAssetTypeList();
         ArrayList<Integer> systemlistcount = assetTypeDOA.getAssetTypeIdCount();
 
         for(int i=0;i<systemlistname.size();i++){
@@ -83,7 +78,7 @@ public class SystemTypeController implements Initializable {
             advisory_value = assetTypeDOA.getAssetTypeBoundary(i + 1, 3);
             ok_value = assetTypeDOA.getAssetTypeBoundary(i + 1, 4);
 
-            systemlist.add(new SystemList(systemlistname.get(i),systemlistcount.get(i),ok_value,advisory_value,caution_value,warning_value,fail_value));
+            systemlist.add(new SystemList(systemlistname.get(i).getName(),systemlistcount.get(i),ok_value,advisory_value,caution_value,warning_value,fail_value));
         }
 
         return systemlist;

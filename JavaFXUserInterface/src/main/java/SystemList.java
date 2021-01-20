@@ -1,6 +1,3 @@
-package com.cbms;
-
-
 import javafx.beans.property.SimpleStringProperty;
 
 public class SystemList {
