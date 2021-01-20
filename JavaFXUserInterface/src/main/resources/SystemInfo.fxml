@@ -72,7 +72,7 @@
                            <children>
                                 <AnchorPane fx:id="systemInfoPane" layoutX="6.0" maxHeight="258.0" prefHeight="258.0" prefWidth="928.0" style="-fx-background-color: FFFFFF;" AnchorPane.bottomAnchor="383.0" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="18.0" AnchorPane.topAnchor="0.0">
                                     <children>
-                                        <Text fx:id="systemType" fill="#0c072e" layoutX="14.0" layoutY="85.0" strokeType="OUTSIDE" strokeWidth="0.0" text="System Type:" />
+                                        <Text fx:id="systemTypeLabel" fill="#0c072e" layoutX="14.0" layoutY="85.0" strokeType="OUTSIDE" strokeWidth="0.0" text="System Type:" />
                                         <Text fx:id="serialNumber" fill="#0c072e" layoutX="14.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Serial Number:" />
                                         <Text fx:id="manufacturer" fill="#0c072e" layoutX="394.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Manufacturer:" />
                                         <Text fx:id="systemLocation" fill="#0c072e" layoutX="14.0" layoutY="113.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Location:" />
