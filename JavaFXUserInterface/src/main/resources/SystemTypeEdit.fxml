@@ -180,6 +180,7 @@
                                         </font>
                                     </Text>
                                     <TextArea fx:id="systemTypeDesc" layoutX="220.0" layoutY="341.0" prefHeight="63.0"
+                                              wrapText="true"
                                               prefWidth="350.0"/>
                                     <Line endX="852.0" layoutX="100.0" layoutY="47.0" startX="-100.0"
                                           stroke="#00000086"/>

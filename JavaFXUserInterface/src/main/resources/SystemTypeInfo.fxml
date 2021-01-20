@@ -109,8 +109,8 @@
                                                 <Font name="Segoe UI Bold" size="12.0"/>
                                             </font>
                                         </Button>
-                                        <ImageView fx:id="systemTypeImageView" fitHeight="37.0" fitWidth="37.0"
-                                                   layoutX="15.0" layoutY="5.0" cache="true" pickOnBounds="true"
+                                        <ImageView fx:id="systemTypeImageView" cache="true" fitHeight="37.0"
+                                                   fitWidth="37.0" layoutX="15.0" layoutY="5.0" pickOnBounds="true"
                                                    preserveRatio="true">
                                         </ImageView>
                                         <Text fill="#0c072e" layoutX="82.0" layoutY="30.0" strokeType="OUTSIDE"
@@ -182,7 +182,7 @@
                                             </font>
                                         </Text>
                                         <TextArea fx:id="systemTypeDesc" layoutX="220.0" layoutY="341.0"
-                                                  prefHeight="63.0" prefWidth="350.0"/>
+                                                  prefHeight="63.0" prefWidth="350.0" wrapText="true"/>
                                         <Line endX="852.0" layoutX="100.0" layoutY="47.0" startX="-100.0"
                                               stroke="#00000086"/>
                                         <!--            <Text fill="#0c072e" layoutX="405.0" layoutY="193.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Value">-->
