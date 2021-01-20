@@ -4,6 +4,12 @@ import app.item.Measurement;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -17,6 +23,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
+import javafx.util.Callback;
 import javafx.util.Duration;
 import local.AssetDAOImpl;
 import local.AssetTypeDAOImpl;
@@ -27,6 +34,7 @@ import rul.assessment.AssessmentController;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -268,54 +276,48 @@ public class SystemInfoController implements Initializable {
     }
 
     public void generateRawDataTable() {
-        TableView table = new TableView();
+        TableView<ObservableList<String>> table = new TableView();
+        table.getItems().clear();
 
-        // When TableRow is clicked, send data to SystemInfo scene.
-        table.setRowFactory(tv -> {
-            TableRow<Asset> row = new TableRow<>();
-            row.setOnMouseClicked(event -> {
-                uiUtilities.changeScene(event, row, "/SystemInfo", row.getItem());
+        ObservableList<AssetAttribute> attributes = FXCollections.observableArrayList(system.getAssetInfo().getAssetAttributes());
+
+        int columnIndex = 0;
+        TableColumn [] tableColumns = new TableColumn[attributes.size()];
+        ArrayList<ArrayList<Measurement>> data = new ArrayList();
+        for(AssetAttribute attribute : attributes) {
+            data.add(attribute.getMeasurements());
+            tableColumns[columnIndex] = new TableColumn(attribute.getName());
+            int finalColumnIndex = columnIndex;
+            tableColumns[columnIndex].setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ObservableList,String>,ObservableValue<String>>(){
+                public ObservableValue<String> call(TableColumn.CellDataFeatures<ObservableList, String> param) {
+                    return new SimpleStringProperty(param.getValue().get(finalColumnIndex).toString());
+                }
             });
-            return row;
-        });
+            columnIndex++;
+        }
+        table.getColumns().addAll(tableColumns);
 
-        TableColumn cycle = new TableColumn(CYCLE_COL);
+        ObservableList<ObservableList<String>> cvsData = FXCollections.observableArrayList();
 
-        TableColumn op1 = new TableColumn(OP1_COL);
-        TableColumn op2 = new TableColumn(OP2_COL);
-        TableColumn op3 = new TableColumn(OP3_COL);
+        int outcounter = 0;
+        for(ArrayList<Measurement> dataList : data) {
+            int counter = 0;
+            for(Measurement measurement: dataList) {
+                if(outcounter < dataList.size()) {
+                    ObservableList<String> list = FXCollections.observableArrayList();
+                    cvsData.add(list);
+                    cvsData.get(outcounter).add(String.valueOf(measurement.getValue()));
+                    outcounter++;
+                } else {
+                    cvsData.get(counter).add(String.valueOf(measurement.getValue()));
+                    counter++;
+                }
+            }
+        }
 
-        TableColumn s1 = new TableColumn(S1_COL);
-        TableColumn s2 = new TableColumn(S2_COL);
-        TableColumn s3 = new TableColumn(S3_COL);
-        TableColumn s4 = new TableColumn(S4_COL);
-        TableColumn s5 = new TableColumn(S5_COL);
-        TableColumn s6 = new TableColumn(S6_COL);
-        TableColumn s7 = new TableColumn(S7_COL);
-        TableColumn s8 = new TableColumn(S8_COL);
-        TableColumn s9 = new TableColumn(S9_COL);
-        TableColumn s10 = new TableColumn(S10_COL);
-        TableColumn s11 = new TableColumn(S11_COL);
-        TableColumn s12 = new TableColumn(S12_COL);
-        TableColumn s13 = new TableColumn(S13_COL);
-        TableColumn s14 = new TableColumn(S14_COL);
-        TableColumn s15 = new TableColumn(S15_COL);
-        TableColumn s16 = new TableColumn(S16_COL);
-        TableColumn s17 = new TableColumn(S17_COL);
-        TableColumn s18 = new TableColumn(S18_COL);
-        TableColumn s19 = new TableColumn(S19_COL);
-        TableColumn s20 = new TableColumn(S20_COL);
-        TableColumn s21 = new TableColumn(S21_COL);
-        TableColumn s22 = new TableColumn(S22_COL);
-        TableColumn s23 = new TableColumn(S23_COL);
-        TableColumn s24 = new TableColumn(S24_COL);
-        TableColumn s25 = new TableColumn(S25_COL);
-        TableColumn s26 = new TableColumn(S26_COL);
-
+        table.setItems(cvsData);
 
         table.setId("RawDataTable");
-        table.getColumns().addAll(cycle, op1, op2, op3, s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,
-                s11, s12, s13, s14, s15, s16, s17, s18, s19, s20, s21, s22, s23, s24, s25, s26);
         AnchorPane.setBottomAnchor(table, 0.0);
         AnchorPane.setTopAnchor(table, 5.0);
         AnchorPane.setRightAnchor(table, 0.0);
