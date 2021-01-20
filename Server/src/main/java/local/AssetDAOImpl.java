@@ -34,9 +34,6 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
     private static final String GET_LATEST_MEASUREMENT_TIME_FROM_ASSET_ID ="SELECT time FROM attribute_measurements am, attribute att WHERE att.attribute_id=am.attribute_id AND am.asset_id = ? order by time desc limit 1";
     private static final String INSERT_ASSET = "INSERT INTO asset (name, asset_type_id, description, sn, manufacturer, category, site, location, unit_nb) values(?,?,?,?,?,?,?,?,?)";
 
-
-
-
     /**
      * This will return an arraylist of assets that have the updated tag set to true
      * it will be used to identify which asset need new RUL measurements

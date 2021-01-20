@@ -27,7 +27,7 @@
                         </ImageView>
                     </graphic>
                 </Button>
-            <Button fx:id="systemListBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0" prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css" text="System Type" textAlignment="CENTER" textFill="#f0f0f0">
+            <Button fx:id="systemTypeMenuBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0" prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css" text="System Type" textAlignment="CENTER" textFill="#f0f0f0">
                <font>
                   <Font name="Segoe UI Bold" size="10.0" />
                </font>
@@ -73,7 +73,7 @@
         </AnchorPane>
         <AnchorPane layoutX="74.0" layoutY="42.0" prefHeight="42.0" prefWidth="952.0" style="-fx-border-style: hidden hidden solid hidden; -fx-border-color: F0F0F0;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="74.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="39.0">
             <children>
-                <AnchorPane fx:id="systemTypesListPane" minHeight="0.0" minWidth="0.0" prefHeight="665.0" prefWidth="606.0">
+                <AnchorPane fx:id="systemTypesListPane" layoutX="27.0" layoutY="3.0" minHeight="0.0" minWidth="0.0" prefHeight="665.0" prefWidth="606.0">
                <children>
                   <TableView fx:id="tableView" layoutX="9.0" layoutY="5.0" prefHeight="665.6" prefWidth="606.4" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <columns>

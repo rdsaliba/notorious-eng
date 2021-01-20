@@ -1,16 +1,16 @@
 import javafx.beans.property.SimpleStringProperty;
 
-public class SystemList {
+public class SystemTypeList {
     private SimpleStringProperty name;
     private int associated_assets;
     private double value_ok,value_caution,value_advisory,value_warning,value_failed;
 
-    public SystemList(String name, int associated_assets) {
+    public SystemTypeList(String name, int associated_assets) {
         this.name = new SimpleStringProperty(name);
         this.associated_assets = associated_assets;
     }
 
-    public SystemList(String name, int associated_assets, double value_ok, double value_caution, double value_advisory, double value_warning, double value_failed) {
+    public SystemTypeList(String name, int associated_assets, double value_ok, double value_caution, double value_advisory, double value_warning, double value_failed) {
         this.name = new SimpleStringProperty(name);
         this.associated_assets = associated_assets;
         this.value_ok = value_ok;

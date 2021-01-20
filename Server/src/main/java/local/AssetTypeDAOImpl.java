@@ -24,9 +24,10 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
      */
     public ArrayList<Integer> getAssetTypeIdCount() {
         ArrayList<Integer> assets = new ArrayList<>();
-        try {
-            PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_TYPE_ID_COUNT);
-            ResultSet rs = ps.executeQuery();
+
+        ResultSet rs;
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_TYPE_ID_COUNT)) {
+            rs = ps.executeQuery();
             while (rs.next())
                 assets.add(rs.getInt("count"));
         } catch (SQLException e) {
@@ -37,11 +38,11 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
 
     public double getAssetTypeBoundary(int asset_type_id, int boundary_type){
         double boundary = 0.0;
-        try {
-            PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_TYPE_BOUNDARY);
+        ResultSet rs;
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_TYPE_BOUNDARY)) {
             ps.setInt(1, boundary_type);
             ps.setInt(2, asset_type_id);
-            ResultSet rs = ps.executeQuery();
+            rs = ps.executeQuery();
             if (rs.next())
                 boundary = rs.getDouble("boundary");
         } catch (SQLException e) {
