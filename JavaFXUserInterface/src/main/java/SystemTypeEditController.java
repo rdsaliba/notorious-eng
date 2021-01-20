@@ -2,6 +2,9 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 
 import java.net.URL;
@@ -17,6 +20,10 @@ public class SystemTypeEditController implements Initializable {
     private Button infoSaveBtn;
     @FXML
     private Button infoCancelBtn;
+    @FXML
+    private TextField systemTypeName;
+    @FXML
+    private ImageView systemTypeImageView;
 
     private UIUtilities uiUtilities;
 
@@ -24,6 +31,7 @@ public class SystemTypeEditController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         uiUtilities = new UIUtilities();
         attachEvents();
+        setImage();
     }
 
     /**
@@ -70,5 +78,18 @@ public class SystemTypeEditController implements Initializable {
 //            @Override
 //            public void handle(MouseEvent mouseEvent) {}
 //        });
+    }
+
+    /**
+     * Changes the Image depending on the System Type.
+     *
+     * @author Najim
+     */
+    public void setImage() {
+        if (systemTypeName.getText().equals("Engine")) {
+            systemTypeImageView.setImage(new Image("imgs/system_type_engine.png"));
+        } else {
+            systemTypeImageView.setImage(new Image("imgs/system_type_engine.png"));
+        }
     }
 }

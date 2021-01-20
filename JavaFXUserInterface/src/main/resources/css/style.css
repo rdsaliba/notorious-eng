@@ -7,7 +7,7 @@
     -fx-background-color: #2F2958;
 }
 
-#saveBtn, #infoSaveBtn {
+#saveBtn, #infoSaveBtn, #modelSaveBtn {
     -fx-background-color: #48C774;
 }
 
@@ -15,7 +15,7 @@
     -fx-background-color: #48C774;
 }
 
-#cancelBtn, #infoCancelBtn {
+#cancelBtn, #infoCancelBtn, #modelCancelBtn {
     -fx-background-color: #D2D2D2;
 }
 

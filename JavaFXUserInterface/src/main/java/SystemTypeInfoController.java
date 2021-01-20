@@ -4,6 +4,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 
@@ -28,6 +30,8 @@ public class SystemTypeInfoController implements Initializable {
     private AnchorPane systemTypeInformation;
     @FXML
     private TextField systemTypeName;
+    @FXML
+    private ImageView systemTypeImageView;
 
     private UIUtilities uiUtilities;
 
@@ -35,6 +39,7 @@ public class SystemTypeInfoController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         uiUtilities = new UIUtilities();
         attachEvents();
+        setImage();
     }
 
     /**
@@ -75,6 +80,7 @@ public class SystemTypeInfoController implements Initializable {
                 uiUtilities.changeScene(mouseEvent, "/SystemTypeEdit");
             }
         });
+
 //        //Attach function to deleteBtn to delete an asset type
 //        infoDeleteBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
 //            @Override
@@ -85,5 +91,18 @@ public class SystemTypeInfoController implements Initializable {
 //            @Override
 //            public void handle(MouseEvent mouseEvent) {}
 //        });
+    }
+
+    /**
+     * Changes the Image depending on the System Type.
+     *
+     * @author Najim
+     */
+    public void setImage() {
+        if (systemTypeName.getText().equals("Engine")) {
+            systemTypeImageView.setImage(new Image("imgs/system_type_engine.png"));
+        } else {
+            systemTypeImageView.setImage(new Image("imgs/system_type_engine.png"));
+        }
     }
 }
