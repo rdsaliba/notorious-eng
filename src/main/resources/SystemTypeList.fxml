@@ -27,9 +27,9 @@
                         </ImageView>
                     </graphic>
                 </Button>
-            <Button fx:id="systemListBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0" prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css" text="System List" textAlignment="CENTER" textFill="#f0f0f0">
+            <Button fx:id="systemListBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0" prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css" text="System Type" textAlignment="CENTER" textFill="#f0f0f0">
                <font>
-                  <Font name="Segoe UI Bold" size="11.0" />
+                  <Font name="Segoe UI Bold" size="10.0" />
                </font>
                <graphic>
                   <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
@@ -73,9 +73,9 @@
         </AnchorPane>
         <AnchorPane layoutX="74.0" layoutY="42.0" prefHeight="42.0" prefWidth="952.0" style="-fx-border-style: hidden hidden solid hidden; -fx-border-color: F0F0F0;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="74.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="39.0">
             <children>
-                <AnchorPane fx:id="systemTypesListPane" minHeight="0.0" minWidth="0.0" prefHeight="409.0" prefWidth="576.0">
+                <AnchorPane fx:id="systemTypesListPane" minHeight="0.0" minWidth="0.0" prefHeight="665.0" prefWidth="606.0">
                <children>
-                  <TableView fx:id="tableView" layoutX="9.0" layoutY="5.0">
+                  <TableView fx:id="tableView" layoutX="9.0" layoutY="5.0" prefHeight="665.6" prefWidth="606.4" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <columns>
                       <TableColumn fx:id="columnName" prefWidth="121.5999755859375" text="Name" />
                       <TableColumn fx:id="columnAssociatedAssets" prefWidth="122.4000244140625" text="# Associated Assets" />

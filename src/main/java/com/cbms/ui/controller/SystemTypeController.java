@@ -69,12 +69,20 @@ public class SystemTypeController implements Initializable {
 
         AssetTypeDAOImpl assetTypeDOA = new AssetTypeDAOImpl();
         ArrayList<String> systemlistname = assetTypeDOA.getAssetTypeList();
-
-        AssetDAOImpl assetDAO = new AssetDAOImpl();
-        ArrayList<Integer> systemlistcount = assetDAO.getAssetTypeIdCount();
+        ArrayList<Integer> systemlistcount = assetTypeDOA.getAssetTypeIdCount();
 
         for(int i=0;i<systemlistname.size();i++){
-            systemlist.add(new SystemList(systemlistname.get(i),systemlistcount.get(i),i,i,i,i,i));
+            //For loop to define columns
+            double fail_value = 0,warning_value=0,caution_value=0,advisory_value=0,ok_value=0;
+
+
+            fail_value = assetTypeDOA.getAssetTypeBoundary(i+ 1, 0);
+            warning_value = assetTypeDOA.getAssetTypeBoundary(i + 1, 1);
+            caution_value = assetTypeDOA.getAssetTypeBoundary(i + 1, 2);
+            advisory_value = assetTypeDOA.getAssetTypeBoundary(i + 1, 3);
+            ok_value = assetTypeDOA.getAssetTypeBoundary(i + 1, 4);
+
+            systemlist.add(new SystemList(systemlistname.get(i),systemlistcount.get(i),ok_value,advisory_value,caution_value,warning_value,fail_value));
         }
 
         return systemlist;
