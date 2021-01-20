@@ -5,6 +5,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
@@ -28,9 +29,11 @@ import local.AssetTypeDAOImpl;
 import local.ModelDAOImpl;
 import rul.assessment.AssessmentController;
 
+import javafx.beans.value.ChangeListener;
 import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.util.Collections;
 import java.util.ResourceBundle;
 
 public class SystemsController implements Initializable {
@@ -46,6 +49,8 @@ public class SystemsController implements Initializable {
     private Tab thumbnailTab;
     @FXML
     private Tab listTab;
+    @FXML
+    private ChoiceBox<String> sortSystem;
 
     private final ObservableList<Pane> boxes = FXCollections.observableArrayList();
     private UIUtilities uiUtilities;
@@ -134,6 +139,44 @@ public class SystemsController implements Initializable {
             }
         });
 
+        //Adding items to the choiceBox (drop down list)
+        sortSystem.getItems().add("Default");
+        sortSystem.getItems().add("Ascending RUL");
+        sortSystem.getItems().add("Descending RUL");
+        //Default Value
+        sortSystem.setValue("Default");
+        //Listener on the sort ChoiceBox. Depending on the sort selected, all systems panes are cleared and generated again
+        //with the appropriate sort applied.
+        sortSystem.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
+                switch (newValue) {
+                    case "Ascending RUL":
+                        if (thumbnailTab.isSelected()) {
+                            systemsThumbPane.getChildren().clear();
+                            systems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssetsDes());
+                            Collections.reverse(systems);
+                            generateThumbnails();
+                        }
+                        break;
+                    case "Descending RUL":
+                        if (thumbnailTab.isSelected()) {
+                            systemsThumbPane.getChildren().clear();
+                            systems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssetsDes());
+                            generateThumbnails();
+                        }
+                        break;
+                    default:
+                        if (thumbnailTab.isSelected()) {
+                            systemsThumbPane.getChildren().clear();
+                            systems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
+                            generateThumbnails();
+                        }
+                        break;
+                }
+            }
+        });
+
     }
 
     /**
@@ -142,7 +185,10 @@ public class SystemsController implements Initializable {
      * @author Jeff
      */
     public void generateThumbnails() {
+        ObservableList<Pane> boxes = FXCollections.observableArrayList();
+
         for (Asset system: systems) {
+
             Pane pane = new Pane();
 
             //When clicked on a system, open SystemInfo.FXML for that system.
@@ -276,4 +322,5 @@ public class SystemsController implements Initializable {
         systemsListPane.getChildren().addAll(table);
 
     }
+
 }

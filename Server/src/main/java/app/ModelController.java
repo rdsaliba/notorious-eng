@@ -77,6 +77,11 @@ public class ModelController {
         return assetDaoImpl.getAllLiveAssets();
     }
 
+    public ArrayList<Asset> getAllLiveAssetsDes() {
+        return assetDaoImpl.getAllLiveAssetsDes();
+    }
+
+
     /**
      *  this function checks all Assets for updated status
      *  and if the asset needs to be updated, it will recalculate the RUL using the corresponding model
