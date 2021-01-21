@@ -18,6 +18,7 @@ import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
@@ -39,36 +40,6 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class SystemInfoController implements Initializable {
-    private static final String S1_COL = "s1";
-    private static final String S2_COL = "s2";
-    private static final String S3_COL = "s3";
-    private static final String S4_COL = "s4";
-    private static final String S5_COL = "s5";
-    private static final String S6_COL = "s6";
-    private static final String S7_COL = "s7";
-    private static final String S8_COL = "s8";
-    private static final String S9_COL = "s9";
-    private static final String S10_COL = "s10";
-    private static final String S11_COL = "s11";
-    private static final String S12_COL = "s12";
-    private static final String S13_COL = "s13";
-    private static final String S14_COL = "s14";
-    private static final String S15_COL = "s15";
-    private static final String S16_COL = "s16";
-    private static final String S17_COL = "s17";
-    private static final String S18_COL = "s18";
-    private static final String S19_COL = "s19";
-    private static final String S20_COL = "s20";
-    private static final String S21_COL = "s21";
-    private static final String S22_COL = "s22";
-    private static final String S23_COL = "s23";
-    private static final String S24_COL = "s24";
-    private static final String S25_COL = "s25";
-    private static final String S26_COL = "s26";
-    private final String CYCLE_COL = "Cycle";
-    private final String OP1_COL = "OP1";
-    private final String OP2_COL = "OP2";
-    private final String OP3_COL = "OP3";
 
     @FXML
     private Button systemMenuBtn;
@@ -281,18 +252,19 @@ public class SystemInfoController implements Initializable {
 
         ObservableList<AssetAttribute> attributes = FXCollections.observableArrayList(system.getAssetInfo().getAssetAttributes());
 
-        int columnIndex = 0;
-        TableColumn [] tableColumns = new TableColumn[attributes.size()];
+        int columnIndex = 1;
+        TableColumn [] tableColumns = new TableColumn[attributes.size()+1];
+
         ArrayList<ArrayList<Measurement>> data = new ArrayList();
-        for(AssetAttribute attribute : attributes) {
+
+        tableColumns[0] = new TableColumn("Cycle");
+        data.add(attributes.get(0).getMeasurements());
+        setCellValue(0, tableColumns[0]);
+
+        for (AssetAttribute attribute : attributes) {
             data.add(attribute.getMeasurements());
             tableColumns[columnIndex] = new TableColumn(attribute.getName());
-            int finalColumnIndex = columnIndex;
-            tableColumns[columnIndex].setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ObservableList,String>,ObservableValue<String>>(){
-                public ObservableValue<String> call(TableColumn.CellDataFeatures<ObservableList, String> param) {
-                    return new SimpleStringProperty(param.getValue().get(finalColumnIndex).toString());
-                }
-            });
+            setCellValue(columnIndex, tableColumns[columnIndex]);
             columnIndex++;
         }
         table.getColumns().addAll(tableColumns);
@@ -300,13 +272,13 @@ public class SystemInfoController implements Initializable {
         ObservableList<ObservableList<String>> dataPerColumn = FXCollections.observableArrayList();
 
         int outcounter = 0;
-        for(ArrayList<Measurement> dataList : data) {
+        for (ArrayList<Measurement> dataList : data) {
             int counter = 0;
-            for(Measurement measurement: dataList) {
-                if(outcounter < dataList.size()) {
+            for (Measurement measurement: dataList) {
+                if (outcounter < dataList.size()) {
                     ObservableList<String> list = FXCollections.observableArrayList();
                     dataPerColumn.add(list);
-                    dataPerColumn.get(outcounter).add(String.valueOf(measurement.getValue()));
+                    dataPerColumn.get(outcounter).add(String.valueOf(measurement.getTime()));
                     outcounter++;
                 } else {
                     dataPerColumn.get(counter).add(String.valueOf(measurement.getValue()));
@@ -324,5 +296,13 @@ public class SystemInfoController implements Initializable {
         AnchorPane.setLeftAnchor(table, 0.0);
         rawDataListPane.getChildren().addAll(table);
 
+    }
+
+    public void setCellValue(int index, TableColumn tableColumn) {
+        tableColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ObservableList, String>, ObservableValue<String>>() {
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<ObservableList, String> param) {
+                return new SimpleStringProperty(param.getValue().get(index).toString());
+            }
+        });
     }
 }
