@@ -5,6 +5,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -28,7 +29,6 @@ import local.AssetTypeDAOImpl;
 import local.ModelDAOImpl;
 import rul.assessment.AssessmentController;
 
-import javafx.beans.value.ChangeListener;
 import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -66,7 +66,7 @@ public class SystemsController implements Initializable {
         modelDAO = new ModelDAOImpl();
 
         try {
-            systems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets().subList(0, 50));
+            systems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
         } catch (Exception e) {
             e.printStackTrace();
         }
