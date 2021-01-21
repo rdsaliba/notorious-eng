@@ -31,6 +31,7 @@ public class SystemTypeController implements Initializable {
     @FXML private Button exitMenuBtn;
     @FXML private Button addTypeBtn;
 
+    private UIUtilities uiUtilities;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
