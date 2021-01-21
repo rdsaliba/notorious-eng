@@ -5,6 +5,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -28,7 +29,6 @@ import local.AssetTypeDAOImpl;
 import local.ModelDAOImpl;
 import rul.assessment.AssessmentController;
 
-import javafx.beans.value.ChangeListener;
 import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -38,6 +38,8 @@ import java.util.ResourceBundle;
 public class SystemsController implements Initializable {
     @FXML
     private Button systemMenuBtn;
+    @FXML
+    private Button systemTypeMenuBtn;
     @FXML
     private Button addSystemBtn;
     @FXML
@@ -108,6 +110,9 @@ public class SystemsController implements Initializable {
         //Attach link to systemMenuButton to go to Systems.fxml
         systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
 
+        //Attach link to systemTypeMenuBtn to go to SystemTypeList.fxml
+        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/SystemTypeList"));
+      
         //Attach link to addSystemButton to go to AddSystem.fxml
         addSystemBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/AddSystem"));
 
@@ -148,7 +153,6 @@ public class SystemsController implements Initializable {
                 }
             }
         });
-
     }
 
     /**

@@ -7,19 +7,19 @@
     -fx-background-color: #2F2958;
 }
 
-#saveBtn {
+#saveBtn, #infoSaveBtn, #modelSaveBtn {
     -fx-background-color: #48C774;
 }
 
-#editBtn {
+#editBtn, #infoEditBtn, #modelEditBtn {
     -fx-background-color: #48C774;
 }
 
-#cancelBtn {
+#cancelBtn, #infoCancelBtn, #modelCancelBtn {
     -fx-background-color: #D2D2D2;
 }
 
-#deleteBtn {
+#deleteBtn, #infoDeleteBtn, #modelDeleteBtn {
     -fx-background-color: #FB3860;
 }
 

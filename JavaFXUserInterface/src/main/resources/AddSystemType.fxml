@@ -2,31 +2,50 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="712.0" prefWidth="1026.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="AddSystemTypeController">
     <VBox layoutY="169.0" prefHeight="543.0" prefWidth="74.0" style="-fx-background-color: #0C072E;" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="169.0">
         <children>
-            <Button fx:id="systemMenuBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0" prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css" text="Systems" textAlignment="CENTER" textFill="#f0f0f0">
+            <Button fx:id="systemMenuBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0"
+                    prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css" text="Systems"
+                    textAlignment="CENTER" textFill="#f0f0f0">
                 <font>
-                    <Font name="Segoe UI Bold" size="14.0" />
-                </font>
-                <graphic>
-                    <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                        <Image url="@imgs/outline_dvr_white_18dp.png" />
-                    </ImageView>
-                </graphic>
-            </Button>
-            <Button fx:id="exitMenuBtn" contentDisplay="TOP" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="74.0" prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css" text="Exit" textAlignment="CENTER" textFill="#f0f0f0" translateY="375.0">
-                <font>
-                    <Font name="Segoe UI Bold" size="14.0" />
+                    <Font name="Segoe UI Bold" size="14.0"/>
                 </font>
                 <graphic>
                     <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                         <image>
-                            <Image url="@imgs/outline_exit_to_app_white_18dp.png" />
+                            <Image url="@imgs/outline_dvr_white_18dp.png"/>
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button fx:id="systemTypeMenuBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0"
+                    prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css"
+                    text="System&#10;Types" textAlignment="CENTER" textFill="#f0f0f0" translateY="15.0">
+                <font>
+                    <Font name="Segoe UI Bold" size="14.0"/>
+                </font>
+                <graphic>
+                    <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                            <Image url="@imgs/outline_type_white.png"/>
+                        </image>
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button fx:id="exitMenuBtn" contentDisplay="TOP" layoutX="10.0" layoutY="10.0" mnemonicParsing="false"
+                    prefHeight="74.0" prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css"
+                    text="Exit" textAlignment="CENTER" textFill="#f0f0f0" translateY="290.0">
+                <font>
+                    <Font name="Segoe UI Bold" size="14.0"/>
+                </font>
+                <graphic>
+                    <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                            <Image url="@imgs/outline_exit_to_app_white_18dp.png"/>
                         </image>
                     </ImageView>
                 </graphic>
@@ -71,16 +90,17 @@
                     <Font name="Segoe UI Bold" size="14.0" />
                 </font>
             </Text>
-            <TextField fx:id="thresholdValue1" layoutX="453.0" layoutY="175.0" prefHeight="25.0" prefWidth="97.0" />
-            <Button fx:id="addThresholdBtn" layoutX="565.0" layoutY="175.0" mnemonicParsing="false" stylesheets="@css/style.css" text="+" textFill="WHITE">
+            <TextField fx:id="thresholdValue1" layoutX="453.0" layoutY="175.0" prefHeight="25.0" prefWidth="97.0"/>
+            <Button fx:id="addThresholdBtn" layoutX="565.0" layoutY="175.0" mnemonicParsing="false"
+                    stylesheets="@css/style.css" text="+" textFill="WHITE">
                 <font>
-                   <Font name="Segoe UI Bold" size="12.0" />
+                    <Font name="Segoe UI Bold" size="12.0"/>
                 </font>
                 <padding>
-                   <Insets bottom="4.0" left="7.0" right="7.0" top="4.0" />
+                    <Insets bottom="4.0" left="7.0" right="7.0" top="4.0"/>
                 </padding>
-             </Button>
-         </AnchorPane>
+            </Button>
+        </AnchorPane>
         <Button fx:id="saveBtn" layoutX="702.0" layoutY="646.0" mnemonicParsing="false" stylesheets="@css/style.css" text="Save" textFill="WHITE" AnchorPane.bottomAnchor="31.0" AnchorPane.rightAnchor="162.0">
             <font>
                 <Font name="Segoe UI Bold" size="12.0" />
