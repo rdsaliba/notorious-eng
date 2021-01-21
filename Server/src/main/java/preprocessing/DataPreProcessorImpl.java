@@ -28,7 +28,7 @@ public class DataPreProcessorImpl implements DataPreProcessor {
     private Instances minimallyReducedDataset;
     private final ArrayList<Integer> removedIndex;
 
-    public DataPreProcessorImpl(Instances originalDataset) throws Exception {
+    public DataPreProcessorImpl(Instances originalDataset) {
         this.originalDataset = originalDataset;
         this.reducedDataset = originalDataset;
         this.minimallyReducedDataset = originalDataset;
@@ -39,50 +39,72 @@ public class DataPreProcessorImpl implements DataPreProcessor {
      *
      * @author Khaled
      * */
-    private static Instances addRUL(Instances trainingData, double[] maxCycles) {
+    private static Instances addRUL(Instances trainingData, ArrayList<Double> maxCycles) throws Exception {
 
-        int engineNum = 1;
+        Instance firstRow = trainingData.firstInstance();
+        double assetID = firstRow.value(0);
+        //int engineNum = 1;
         Attribute engine = trainingData.attribute("Asset_id");
         Instance row;
 
         int timeCycleIndex = 1;
+        int maxCycleIndex = 0;
 
         for (int i = 0; i < trainingData.numInstances(); i++) {
             row = trainingData.instance(i);
 
-            if (row.value(engine) != engineNum) {
-                engineNum++;
+            if (row.value(engine) != assetID) {
+                assetID++;
                 timeCycleIndex = 1;
+                maxCycleIndex++;
             }
 
-            row.setClassValue((maxCycles[engineNum - 1] - timeCycleIndex++));
+            row.setClassValue((maxCycles.get(maxCycleIndex) - timeCycleIndex++));
+            //System.out.println(row.toString());           //print each instance after adding RUL column
         }
         return trainingData;
     }
 
+
     /**
+     * This method takes in instances and parses the maximum cycle of each engine (assetID) in those instances and
+     * returns it in an ArrayList.
      * @author Khaled
      * */
-    private static double[] getMaxCycles(Instances trainingData, int totalEngines) {
-        Attribute engine = trainingData.attribute("Asset_id");
-        Attribute timeCycle = trainingData.attribute("Time_Cycle");
+    private static ArrayList<Double> getMaxCycles(Instances data) {
+        Attribute engine = data.attribute("Asset_id");
+        Attribute timeCycle = data.attribute("Time_Cycle");
 
-        double engineNum = 1;
-        double[] maxCycles = new double[totalEngines];
+        Instance firstRow = data.firstInstance();
+        Instance lastRow = data.lastInstance();
 
-        for (int i = 0; i < trainingData.numInstances(); i++) {
-            Instance row = trainingData.instance(i);
-            if (row.value(engine) - 1 == engineNum) {
-                Instance prevRow = trainingData.instance(i - 1);
-                maxCycles[(int) engineNum - 1] = prevRow.value(timeCycle);
-                engineNum++;
-            } else if (engineNum == 100) {
-                Instance lastRow = trainingData.lastInstance();
-                maxCycles[(int) engineNum - 1] = lastRow.value(timeCycle);
+        double assetID = firstRow.value(0);
+        double lastAssetID = lastRow.value(0);
+
+        ArrayList<Double> maxCycles = new ArrayList<>();
+
+        for (int i = 0; i < data.numInstances(); i++) {
+            Instance row = data.instance(i);
+
+            if (row.value(engine) - 1 == assetID) {
+                Instance prevRow = data.instance(i - 1);
+                maxCycles.add(prevRow.value(timeCycle));
+                assetID++;
+            }
+
+            else if (assetID == lastAssetID) {
+                Instance last = data.lastInstance();
+                maxCycles.add(last.value(timeCycle));
+                break;
+            }
+
+            else if(row.value(engine) != assetID) {
+                assetID++;
             }
         }
         return maxCycles;
     }
+
 
     /**
      * This method will filter the attributes and remove the ones that do not provide useful information
@@ -97,12 +119,6 @@ public class DataPreProcessorImpl implements DataPreProcessor {
         AttributeSelection filter = new AttributeSelection();  // a filter needs an evaluator and a search method
         CfsSubsetEval eval = new CfsSubsetEval(); // the evaluator chosen is the CfsSubsetEval
         BestFirst search = new BestFirst(); // the search method used is BestFirst
-
-        //GreedyStepwise search = new GreedyStepwise();
-        /* Could also use GreedyStepWise search along with this evaluator.
-            Difference between using GreedyStepwise and BestFirst searches: BestFirst removes one extra sensor
-            (Sensor 6, std dev of 0.001)
-         */
 
         filter.setEvaluator(eval); // set the filter evaluator and search method
         filter.setSearch(search);
@@ -131,8 +147,6 @@ public class DataPreProcessorImpl implements DataPreProcessor {
                 removedIndex.add(i);         //add the index to the list
         }
 
-
-
         //Remove filter to remove the attributes
         Remove remove = new Remove();
         int[] indicesToDelete = removedIndex.stream().mapToInt(i -> i).toArray();   //convert Integer list to int array
@@ -148,7 +162,6 @@ public class DataPreProcessorImpl implements DataPreProcessor {
      * @author Khaled
      * */
     public static Instances addRULCol(Instances newData) throws Exception {
-        Instance lastRow = newData.lastInstance();
         Add filter = new Add();
         filter.setAttributeIndex("last");
         filter.setAttributeName("RUL");
@@ -156,12 +169,11 @@ public class DataPreProcessorImpl implements DataPreProcessor {
         newData = Filter.useFilter(newData, filter);
         newData.setClass(newData.attribute("RUL"));
 
-        int totalEngines = (int) lastRow.value(0);
-        double[] maxCycles = getMaxCycles(newData, totalEngines);
+        //Get max cycle of each engine (highest time cycle - 1)
+        ArrayList<Double> maxCycles = getMaxCycles(newData);
 
         newData = addRUL(newData, maxCycles);
         return newData;
-
     }
 
     /**Given 2 instances Object, it will remove the attributes that are not shared between the two and return the test set
@@ -215,7 +227,5 @@ public class DataPreProcessorImpl implements DataPreProcessor {
         remove.setInputFormat(originalDataset);
         return remove;
     }
-
-
 
 }
