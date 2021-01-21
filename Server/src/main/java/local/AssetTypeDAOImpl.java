@@ -53,7 +53,7 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
 
 
     @Override
-    public void insertAssetType(AssetType assetType) {
+    public int insertAssetType(AssetType assetType) {
         try (PreparedStatement ps = getConnection().prepareStatement(INSERT_ASSET_TYPE,
                 Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, assetType.getName());
@@ -69,6 +69,7 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
                             statement.executeQuery();
                         }
                     }
+                    return generatedKeys.getInt(1);
                 } else {
                     throw new SQLException("Creating threshold failed, no ID obtained.");
                 }
@@ -76,6 +77,7 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return -1;
     }
 
     /**
