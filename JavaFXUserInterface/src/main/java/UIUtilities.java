@@ -77,17 +77,19 @@ public class UIUtilities {
     public void changeScene(MouseEvent mouseEvent, TableRow<SystemTypeList> row, String fxmlFileName, SystemTypeList assetType) {
         Stage primaryStage = (Stage) row.getScene().getWindow();
         try {
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource(fxmlFileName + ".fxml"));
-            Parent systemTypeParent = loader.load();
-            Scene systemTypeInfo = new Scene(systemTypeParent);
+            if (!row.isEmpty()) {
+                FXMLLoader loader = new FXMLLoader();
+                loader.setLocation(getClass().getResource(fxmlFileName + ".fxml"));
+                Parent systemTypeParent = loader.load();
+                Scene systemTypeInfo = new Scene(systemTypeParent);
 
-            Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-            window.setScene(systemTypeInfo);
-            SystemTypeInfoController controller = loader.getController();
-            controller.initData(assetType);
-            controller.setImage(assetType.getName());
-            window.show();
+                Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
+                window.setScene(systemTypeInfo);
+                SystemTypeInfoController controller = loader.getController();
+                controller.initData(assetType);
+                controller.setImage(assetType.getName());
+                window.show();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
