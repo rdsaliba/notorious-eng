@@ -16,7 +16,7 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
     private static final String GET_ASSET_TYPE_NAME_FROM_ID = "SELECT name FROM asset_type where asset_type_id = ?";
     private static final String GET_ASSET_TYPE_BOUNDARY = "SELECT *  FROM asset_type_parameters WHERE parameter_name = ? AND asset_type_id = ?";
     private static final String GET_ASSET_TYPE_ID_COUNT = "SELECT asset_type_id, COUNT(*) as 'count' FROM asset WHERE archived = 0 GROUP BY asset_type_id";
-
+    private static final String DELETE_ASSET_TYPE = "DELETE FROM asset_type where asset_type_id = ?";
     /**
      * This will return an arraylist of the count for all the asset type ids from the
      * asset table
@@ -116,4 +116,12 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
     }
 
 
+    public void deleteAssetTypeByID(String assetTypeID) {
+        try (PreparedStatement ps = getConnection().prepareStatement(DELETE_ASSET_TYPE)) {
+            ps.setString(1,assetTypeID);
+            ps.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
