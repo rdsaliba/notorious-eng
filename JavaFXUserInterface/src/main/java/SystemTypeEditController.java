@@ -6,6 +6,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ResourceBundle;
 
 public class SystemTypeEditController implements Initializable {
@@ -21,15 +22,42 @@ public class SystemTypeEditController implements Initializable {
     @FXML
     private TextField systemTypeName;
     @FXML
+    private TextField thresholdOK;
+    @FXML
+    private TextField thresholdAdvisory;
+    @FXML
+    private TextField thresholdCaution;
+    @FXML
+    private TextField thresholdWarning;
+    @FXML
+    private TextField thresholdFailed;
+    @FXML
     private ImageView systemTypeImageView;
 
     private UIUtilities uiUtilities;
+    private SystemTypeList assetType;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         uiUtilities = new UIUtilities();
         attachEvents();
-        setImage();
+    }
+
+    /**
+     * initData receives the System Type data that was selected from SystemTypeEdit.FXML
+     * Then, uses that data to populate the text fields in the scene.
+     *
+     * @param assetType
+     * @author Najim
+     */
+    void initData(SystemTypeList assetType) {
+        this.assetType = assetType;
+        systemTypeName.setText(assetType.getName());
+        thresholdOK.setText(new DecimalFormat("#.##").format(assetType.getValue_ok()));
+        thresholdAdvisory.setText(new DecimalFormat("#.##").format(assetType.getValue_advisory()));
+        thresholdCaution.setText(new DecimalFormat("#.##").format(assetType.getValue_caution()));
+        thresholdWarning.setText(new DecimalFormat("#.##").format(assetType.getValue_warning()));
+        thresholdFailed.setText(new DecimalFormat("#.##").format(assetType.getValue_failed()));
     }
 
     /**
@@ -42,8 +70,8 @@ public class SystemTypeEditController implements Initializable {
         systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
         //Attach link to systemTypeMenuBtn to go to SystemTypeList.fxml
         systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/SystemTypeList"));
-        //Attach link to infoEditBtn to go to SystemTypeEdit.fxml
-        infoCancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/SystemTypeInfo"));
+        //Attach link to infoCancelBtn to go to SystemTypeInfo.fxml
+        infoCancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/SystemTypeInfo", assetType));
     }
 
     /**
@@ -51,11 +79,11 @@ public class SystemTypeEditController implements Initializable {
      *
      * @author Najim
      */
-    public void setImage() {
-        if (systemTypeName.getText().equals("Engine")) {
+    public void setImage(String typeName) {
+        if (typeName.contains("Engine")) {
             systemTypeImageView.setImage(new Image("imgs/system_type_engine.png"));
         } else {
-            systemTypeImageView.setImage(new Image("imgs/system_type_engine.png"));
+            systemTypeImageView.setImage(new Image("imgs/unknown_system_type.png"));
         }
     }
 }

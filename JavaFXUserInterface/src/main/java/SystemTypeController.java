@@ -1,11 +1,12 @@
-
 import app.item.AssetType;
-import app.item.AssetTypeParameter;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import local.AssetTypeDAOImpl;
 
@@ -45,8 +46,14 @@ public class SystemTypeController implements Initializable {
      *
      * @author Shirwa
      */
-    public void fillSystemTypeTable(){
+    public void fillSystemTypeTable() {
         tableView.setItems(getSystemList());
+        // When TableRow is clicked, send data to SystemTypeInfo scene.
+        tableView.setRowFactory(tv -> {
+            TableRow<SystemTypeList> row = new TableRow<>();
+            row.setOnMouseClicked(event -> uiUtilities.changeScene(event, row, "/SystemTypeInfo", row.getItem()));
+            return row;
+        });
     }
 
     /**
