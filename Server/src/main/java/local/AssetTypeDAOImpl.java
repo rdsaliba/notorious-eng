@@ -14,6 +14,43 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
     private static final String INSERT_ASSET_TYPE_PARAMETERS = "INSERT INTO asset_type_parameters (asset_type_id, parameter_name, boundary) values(?, ?, ?)";
     private static final String GET_ASSET_TYPES = "SELECT * FROM asset_type";
     private static final String GET_ASSET_TYPE_NAME_FROM_ID = "SELECT name FROM asset_type where asset_type_id = ?";
+    private static final String GET_ASSET_TYPE_BOUNDARY = "SELECT *  FROM asset_type_parameters WHERE parameter_name = ? AND asset_type_id = ?";
+    private static final String GET_ASSET_TYPE_ID_COUNT = "SELECT asset_type_id, COUNT(*) as 'count' FROM asset WHERE archived = 0 GROUP BY asset_type_id";
+
+    /**
+     * This will return an arraylist of the count for all the asset type ids from the
+     * asset table
+     * @author Shirwa
+     */
+    public ArrayList<Integer> getAssetTypeIdCount() {
+        ArrayList<Integer> assets = new ArrayList<>();
+
+        ResultSet rs;
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_TYPE_ID_COUNT)) {
+            rs = ps.executeQuery();
+            while (rs.next())
+                assets.add(rs.getInt("count"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return assets;
+    }
+
+    public double getAssetTypeBoundary(int asset_type_id, int boundary_type){
+        double boundary = 0.0;
+        ResultSet rs;
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_TYPE_BOUNDARY)) {
+            ps.setInt(1, boundary_type);
+            ps.setInt(2, asset_type_id);
+            rs = ps.executeQuery();
+            if (rs.next())
+                boundary = rs.getDouble("boundary");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return boundary;
+    }
+
 
     @Override
     public void insertAssetType(AssetType assetType) {
