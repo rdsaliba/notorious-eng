@@ -68,19 +68,12 @@ public class SystemInfoController implements Initializable {
     private ModelDAOImpl modelDAO;
     private UIUtilities uiUtilities;
 
-    // UI String constants
-    private final String CYCLE = "Cycle";
-    private final String SENSOR_VALUES = "Sensor Values";
-    private final String ALERT_TITLE = "Confirmation Dialog";
-    private final String ALERT_HEADER = "Confirmation of system deletion";
-    private final String ALERT_CONTENT = "Are you sure you want to delete this system?";
-
     /**
      * Initialize runs before the scene is displayed.
      * It initializes elements and data in the scene.
      *
-     * @param url
-     * @param resourceBundle
+     * @param url url to be used
+     * @param resourceBundle url to be used
      *
      * @author Jeff
      */
@@ -98,7 +91,7 @@ public class SystemInfoController implements Initializable {
      * initData receives the Engine data that was selected from System.FXML
      * Then, uses that data to populate the text fields in the scene.
      *
-     * @param system
+     * @param system is an asset object that will get initialized
      *
      * @author Jeff
      */
@@ -117,9 +110,7 @@ public class SystemInfoController implements Initializable {
 
         rulOutput.setText(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(system.getId())));
 
-        Timeline timeline =  new Timeline(new KeyFrame(Duration.millis(1000), e -> {
-            rulOutput.setText(String.valueOf(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(system.getId()))));
-        }));
+        Timeline timeline =  new Timeline(new KeyFrame(Duration.millis(1000), e -> rulOutput.setText(String.valueOf(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(system.getId()))))));
 
         timeline.setCycleCount(Animation.INDEFINITE); // loop forever
         timeline.play();
@@ -140,21 +131,24 @@ public class SystemInfoController implements Initializable {
             pane.getStyleClass().add("sensorPane");
             final CategoryAxis xAxis = new CategoryAxis();
             final CategoryAxis yAxis = new CategoryAxis();
+            // UI String constants
+            String CYCLE = "Cycle";
             xAxis.setLabel(CYCLE);
             xAxis.setAnimated(false);
             final LineChart<String, String> sensorChart =
                     new LineChart<>(xAxis, yAxis);
+            String SENSOR_VALUES = "Sensor Values";
             sensorChart.setTitle(SENSOR_VALUES);
-            XYChart.Series series = new XYChart.Series();
+            XYChart.Series<String, String> series = new XYChart.Series<>();
             sensorChart.setAnimated(false);
 
             Timeline timeline = new Timeline(new KeyFrame(Duration.millis(1000), e -> {
                 ArrayList<Measurement> measurements = attributeDAOImpl.getLastXMeasurementsByAssetIDAndAttributeID(Integer.toString(system.getId()), Integer.toString(sensor.getId()), 5);
                 if(!sensorChart.getXAxis().isValueOnAxis(Integer.toString(measurements.get(0).getTime())))
-                    series.getData().add(new XYChart.Data(Integer.toString(measurements.get(0).getTime()), Double.toString(measurements.get(0).getValue())));
+                    series.getData().add(new XYChart.Data<>(Integer.toString(measurements.get(0).getTime()), Double.toString(measurements.get(0).getValue())));
                 else if (series.getData().size() != measurements.size()) {
                     for(int i = measurements.size() - 1; i >= 0; i--) {
-                        series.getData().add(new XYChart.Data(Integer.toString(measurements.get(i).getTime()), Double.toString(measurements.get(i).getValue())));
+                        series.getData().add(new XYChart.Data<>(Integer.toString(measurements.get(i).getTime()), Double.toString(measurements.get(i).getValue())));
                     }
                 }
                 if (series.getData().size() > 5)
@@ -188,12 +182,6 @@ public class SystemInfoController implements Initializable {
         systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
         //Attach link to systemTypeMenuBtn to go to SystemTypeList.fxml
         systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/SystemTypeList"));
-//        deleteBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
-//            @Override
-//            public void handle(MouseEvent mouseEvent) {
-//                deleteDialog(mouseEvent);
-//            }
-//        });
         deleteBtn.setOnMouseClicked(this::deleteDialog);
     }
 
@@ -209,16 +197,19 @@ public class SystemInfoController implements Initializable {
     /**
      * Creates a dialog box that asks user if they want to delete an asset.
      *
-     * @param mouseEvent
+     * @param mouseEvent is an event trigger for this delete dialog
      */
     void deleteDialog(MouseEvent mouseEvent) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        String ALERT_TITLE = "Confirmation Dialog";
         alert.setTitle(ALERT_TITLE);
+        String ALERT_HEADER = "Confirmation of system deletion";
         alert.setHeaderText(ALERT_HEADER);
+        String ALERT_CONTENT = "Are you sure you want to delete this system?";
         alert.setContentText(ALERT_CONTENT);
 
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK){
+        if (result.isPresent() && result.get() == ButtonType.OK) {
             deleteAsset();
             uiUtilities.changeScene(mouseEvent, "/Systems");
         }

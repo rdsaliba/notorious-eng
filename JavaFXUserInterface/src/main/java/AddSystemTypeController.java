@@ -44,8 +44,8 @@ public class AddSystemTypeController implements Initializable {
      * Initialize runs before the scene is displayed.
      * It initializes elements and data in the scene.
      *
-     * @param url
-     * @param resourceBundle
+     * @param url url to be used
+     * @param resourceBundle resource bundle to be used
      *
      * @author Jeff
      */

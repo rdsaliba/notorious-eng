@@ -14,9 +14,6 @@ import weka.core.Instances;
 
 public class HealthAssessment {
 
-    public HealthAssessment() {
-    }
-
     /** When given an test Instances and a Classifier, this method will return an estimated RUL
      * 
      * @author Talal
@@ -25,23 +22,20 @@ public class HealthAssessment {
     {
         Attribute engine = testData.attribute("Asset_id");
 
-        double engineNum = 0;
         double predicted=-1.0;
         for (int i = 0; i < testData.numInstances(); i++)
         {
             if(i+1==testData.numInstances()-1) {
                 Instance one = testData.instance(i+1);
                 double life= lr.classifyInstance(one);
-                double temp = testData.lastInstance().value(engine);
+                testData.lastInstance().value(engine);
                 predicted = life;
                 break;
             }
             Instance row = testData.instance(i);
             Instance nextRow = testData.instance(i+1);
             if(row.value(engine) != nextRow.value(engine)){
-                double life= lr.classifyInstance(row);
-                predicted = life;
-                engineNum++;
+                predicted = lr.classifyInstance(row);
             }
         }
         return predicted;

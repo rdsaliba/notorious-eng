@@ -34,3 +34,26 @@
 #addThresholdBtn {
     -fx-background-color: #48C774;
 }
+
+#sortSystem {
+    -fx-background-color: #48C774;
+    -fx-mark-color: white;
+    -fx-pref-width: 117;
+    -fx-pref-height: 27;
+}
+
+#sortSystem .menu-item:focused {
+    -fx-background-color: #48C774;
+}
+
+#sortSystem .menu-item:focused > .label {
+    -fx-text-fill: white;
+}
+
+#sortSystem > .label {
+    -fx-text-fill: white;
+}
+
+.scroll-pane {
+    -fx-background-color: transparent;
+}

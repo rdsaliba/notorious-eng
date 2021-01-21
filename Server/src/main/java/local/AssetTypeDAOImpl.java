@@ -17,28 +17,26 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
 
     @Override
     public void insertAssetType(AssetType assetType) {
-        try {
-            PreparedStatement ps = getConnection().prepareStatement(INSERT_ASSET_TYPE,
-                    Statement.RETURN_GENERATED_KEYS);
+        try (PreparedStatement ps = getConnection().prepareStatement(INSERT_ASSET_TYPE,
+                Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, assetType.getName());
             ps.executeQuery();
 
             try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
-                    for (AssetTypeParameter assetTypeParameter: assetType.getThresholdList()) {
-                        PreparedStatement statement = getConnection().prepareStatement(INSERT_ASSET_TYPE_PARAMETERS);
-                        statement.setInt(1, Integer.parseInt(String.valueOf(generatedKeys.getLong(1))));
-                        statement.setString(2, assetTypeParameter.getName());
-                        statement.setString(3, String.valueOf(assetTypeParameter.getValue()));
-                        statement.executeQuery();
+                    for (AssetTypeParameter assetTypeParameter : assetType.getThresholdList()) {
+                        try (PreparedStatement statement = getConnection().prepareStatement(INSERT_ASSET_TYPE_PARAMETERS)) {
+                            statement.setInt(1, Integer.parseInt(String.valueOf(generatedKeys.getLong(1))));
+                            statement.setString(2, assetTypeParameter.getName());
+                            statement.setString(3, String.valueOf(assetTypeParameter.getValue()));
+                            statement.executeQuery();
+                        }
                     }
-                }
-                else {
+                } else {
                     throw new SQLException("Creating threshold failed, no ID obtained.");
                 }
             }
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -50,9 +48,9 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
     @Override
     public ArrayList<AssetType> getAssetTypeList() {
         ArrayList<AssetType> assetTypeList = new ArrayList<>();
-        try {
-            PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_TYPES);
-            ResultSet rs = ps.executeQuery();
+        ResultSet rs;
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_TYPES)) {
+            rs = ps.executeQuery();
             while (rs.next()) {
                 AssetType newAssetType = new AssetType();
                 newAssetType.setName(rs.getString("name"));
@@ -68,10 +66,10 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
     @Override
     public String getNameFromID(String id){
         String name = "";
-        try {
-            PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_TYPE_NAME_FROM_ID);
-            ps.setString(1,id);
-            ResultSet rs = ps.executeQuery();
+        ResultSet rs;
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_TYPE_NAME_FROM_ID)) {
+            ps.setString(1, id);
+            rs = ps.executeQuery();
             if (rs.next())
                 name = rs.getString("name");
         } catch (SQLException e) {

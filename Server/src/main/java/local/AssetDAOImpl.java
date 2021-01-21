@@ -27,6 +27,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
     private static final String GET_ASSETS_FROM_ASSET_TYPE_ID = "SELECT * FROM asset a WHERE a.archived = true AND a.asset_type_id = ?";
     private static final String GET_ASSET_TYPE_NAME_FROM_ASSET_ID="SELECT at.name FROM asset_type at WHERE at.asset_type_id = ?";
     private static final String GET_ALL_LIVE_ASSETS="SELECT * FROM asset, asset_type WHERE asset.asset_type_id=asset_type.asset_type_id AND archived = false";
+    private static final String GET_ALL_LIVE_ASSETS_DESCENDING="SELECT DISTINCT asset.*,asset_type.* FROM asset, asset_type, asset_model_calculation WHERE asset.asset_type_id=asset_type.asset_type_id AND asset.asset_id=asset_model_calculation.asset_id AND archived = false ORDER BY Cast(asset_model_calculation.value as DECIMAL(8,2)) DESC";
     private static final String INSERT_NEW_ASSET_MEASUREMENT="INSERT INTO asset_model_calculation values( ? , ? ,now(), ?)";
     private static final String SET_UPDATED_FALSE="UPDATE asset set updated = 0 where asset_id = ?";
     private static final String SET_UPDATED_TRUE = "UPDATE asset set updated = 1 where asset_id = ?";
@@ -43,14 +44,11 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
     @Override
     public ArrayList<Asset> getAssetsToUpdate() {
         ArrayList<Asset> assets = new ArrayList<>();
-        ResultSet rs = nonParamQuery(GET_ASSETS_TO_UPDATE);
-
-        try{
+        try (ResultSet rs = nonParamQuery(GET_ASSETS_TO_UPDATE)) {
             while (rs.next()) {
                 assets.add(createAssetFromQueryResult(rs));
             }
-        }
-        catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return assets;
@@ -67,31 +65,19 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
      */
     @Override
     public void deleteAssetByID(int assetID) {
-        try {
-            PreparedStatement ps = getConnection().prepareStatement(DELETE_ASSET);
-            ps.setString(1 ," attribute_measurements ");
-            ps.setInt(2 , assetID);
-            ps.executeQuery();
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try {
-            PreparedStatement ps = getConnection().prepareStatement(DELETE_ASSET);
-            ps.setString(1 ," asset_model_calculation ");
-            ps.setInt(2 , assetID);
-            ps.executeQuery();
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try {
-            PreparedStatement ps = getConnection().prepareStatement(DELETE_ASSET);
-            ps.setString(1 ," asset ");
-            ps.setInt(2 , assetID);
-            ps.executeQuery();
-        }
-        catch (SQLException e) {
+        try (PreparedStatement ps = getConnection().prepareStatement(DELETE_ASSET)) {
+            for (int i = 0; i < 3; i++) {
+                if (i == 0) {
+                    ps.setString(1, " attribute_measurements ");
+                } else if (i == 1) {
+                    ps.setString(1, " asset_model_calculation ");
+                } else {
+                    ps.setString(1, " asset ");
+                }
+                ps.setInt(2, assetID);
+                ps.executeQuery();
+            }
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -106,14 +92,13 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
     @Override
     public ArrayList<String> getAttributesNameFromAssetID(int assetID) {
         ArrayList<String> attributeNames = new ArrayList<>();
-        try {
-            PreparedStatement ps = getConnection().prepareStatement(GET_ATTRIBUTES_NAMES_FROM_ASSET_ID);
-            ps.setInt(1,assetID);
-            ResultSet queryResult =  ps.executeQuery();
+        ResultSet queryResult;
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_ATTRIBUTES_NAMES_FROM_ASSET_ID)) {
+            ps.setInt(1, assetID);
+            queryResult = ps.executeQuery();
             while (queryResult.next())
                 attributeNames.add(queryResult.getString("attribute_name"));
-        }
-        catch (SQLException e){
+        } catch (SQLException e){
             e.printStackTrace();
         }
 
@@ -131,16 +116,14 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
     @Override
     public ArrayList<Asset> getAssetsFromAssetTypeID(int assetTypeID) {
         ArrayList<Asset> assets = new ArrayList<>();
-
-        try{
-            PreparedStatement ps = getConnection().prepareStatement(GET_ASSETS_FROM_ASSET_TYPE_ID);
-            ps.setInt(1,assetTypeID);
-            ResultSet rs = ps.executeQuery();
+        ResultSet rs;
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSETS_FROM_ASSET_TYPE_ID)) {
+            ps.setInt(1, assetTypeID);
+            rs = ps.executeQuery();
             while (rs.next()) {
                 assets.add(createAssetFromQueryResult(rs));
             }
-        }
-        catch (SQLException e){
+        } catch (SQLException e){
             e.printStackTrace();
         }
         return assets;
@@ -155,18 +138,17 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
     @Override
     public String getAssetTypeNameFromID(String assetTypeID) {
         String name = "null";
-        try {
-            PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_TYPE_NAME_FROM_ASSET_ID);
+        ResultSet queryResult;
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_TYPE_NAME_FROM_ASSET_ID)) {
             ps.setString(1, assetTypeID);
-            ResultSet queryResult = ps.executeQuery();
+            queryResult = ps.executeQuery();
+
             if (queryResult.next())
                 name = queryResult.getString("name");
-
         } catch (SQLException e){
             e.printStackTrace();
         }
         return name;
-
     }
 
     /**
@@ -177,7 +159,20 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
     @Override
     public ArrayList<Asset> getAllLiveAssets() {
         ArrayList<Asset> assets = new ArrayList<>();
-        ResultSet rs = nonParamQuery(GET_ALL_LIVE_ASSETS);
+        try (ResultSet rs = nonParamQuery(GET_ALL_LIVE_ASSETS)) {
+            while (rs.next()) {
+                assets.add(createAssetFromQueryResult(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return assets;
+    }
+
+
+    public ArrayList<Asset> getAllLiveAssetsDes() {
+        ArrayList<Asset> assets = new ArrayList<>();
+        ResultSet rs= nonParamQuery(GET_ALL_LIVE_ASSETS_DESCENDING);
 
         try{
             while (rs.next()) {
@@ -188,6 +183,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
             e.printStackTrace();
         }
         return assets;
+
     }
 
     /**
@@ -201,8 +197,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
      */
     @Override
     public void addRULEstimation(Double estimation, Asset asset, TrainedModel model) {
-        try {
-            PreparedStatement ps = getConnection().prepareStatement(INSERT_NEW_ASSET_MEASUREMENT);
+        try (PreparedStatement ps = getConnection().prepareStatement(INSERT_NEW_ASSET_MEASUREMENT)) {
             ps.setInt(1, asset.getId());
             ps.setInt(2, model.getModelID());
             ps.setDouble(3, estimation);
@@ -210,19 +205,17 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         } catch (SQLException e){
             e.printStackTrace();
         }
-
         resetAssetUpdate(asset.getId());
     }
 
     /**
      * Inserts an asset in the database.
      *
-     * @param asset
+     * @param asset is an asset that is added by the user
      */
     @Override
     public void insertAsset(Asset asset) {
-        try {
-            PreparedStatement ps = getConnection().prepareStatement(INSERT_ASSET);
+        try (PreparedStatement ps = getConnection().prepareStatement(INSERT_ASSET)) {
             ps.setString(1, asset.getName());
             ps.setInt(2, Integer.parseInt(asset.getAssetTypeID()));
             ps.setString(3, asset.getDescription());
@@ -255,8 +248,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
     }
 
     public void setAssetUpdate(int assetID){
-        try {
-            PreparedStatement ps = getConnection().prepareStatement(SET_UPDATED_TRUE);
+        try (PreparedStatement ps = getConnection().prepareStatement(SET_UPDATED_TRUE)) {
             ps.setInt(1, assetID);
             ps.executeQuery();
         } catch (SQLException e){
@@ -288,86 +280,50 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
 
     /**
      * Given an asset id, this function will create an assetInfo object containing
-     * all the corresponding assetinfo of the asset identified by the assetID
+     * all the corresponding asset info of the asset identified by the assetID
      *
      * @param assetID represents asset's id
      * @author Paul
      */
     private AssetInfo createAssetInfo(int assetID){
         AssetInfo newAssetInfo = new AssetInfo();
-        PreparedStatement ps;
-        try {
-            ps = getConnection().prepareStatement(GET_ASSET_INFO_FROM_ASSET_ID);
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_INFO_FROM_ASSET_ID)) {
             ps.setInt(1,assetID);
+            try (ResultSet attributesQuery = ps.executeQuery()) {
+                int previousAttributeID = 1;
+                String previousAttributeName = "";
+                AssetAttribute newAttribute = new AssetAttribute();
+                while (attributesQuery.next()) {
+                    int attributeID = attributesQuery.getInt("attribute_id");
+                    if (previousAttributeID != attributeID || attributesQuery.isLast()) {
+                        if (attributesQuery.isLast())
+                            newAttribute.addMeasurement(attributesQuery.getInt("time"), attributesQuery.getDouble("value"));
+                        newAttribute.setId(previousAttributeID);
+                        newAttribute.setName(previousAttributeName);
+                        previousAttributeID = attributeID;
+                        newAssetInfo.addAttribute(newAttribute);
+                        newAttribute = new AssetAttribute();
+                    }
+                    previousAttributeName = attributesQuery.getString("attribute_name");
+                    newAttribute.addMeasurement(attributesQuery.getInt("time"), attributesQuery.getDouble("value"));
 
-            ResultSet attributesQuery = ps.executeQuery();
-            int previousAttributeID = 1;
-            String previousAttributeName = "";
-            AssetAttribute newAttribute = new AssetAttribute();
-            while (attributesQuery.next()) {
-                int attributeID = attributesQuery.getInt("attribute_id");
-                if (previousAttributeID != attributeID || attributesQuery.isLast()) {
-                    if (attributesQuery.isLast())
-                        newAttribute.addMeasurement(attributesQuery.getInt("time"), attributesQuery.getDouble("value"));
-                    newAttribute.setId(previousAttributeID);
-                    newAttribute.setName(previousAttributeName);
-                    previousAttributeID = attributeID;
-                    newAssetInfo.addAttribute(newAttribute);
-                    newAttribute = new AssetAttribute();
                 }
-                previousAttributeName = attributesQuery.getString("attribute_name");
-                newAttribute.addMeasurement(attributesQuery.getInt("time"), attributesQuery.getDouble("value"));
-
             }
             return newAssetInfo;
-        }
-        catch (SQLException e){
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    private Boolean isAssetArchived (int assetID){
-        try {
-            PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_FROM_ASSET_ID);
-            ps.setInt(1, assetID);
-            ResultSet queryResult = ps.executeQuery();
-            if (queryResult.next())
-                return queryResult.getBoolean("archived");
-
         } catch (SQLException e){
             e.printStackTrace();
         }
         return null;
-    }
-
-    private int lastAssetMeasurementTime (int assetID){
-        try {
-            PreparedStatement ps = getConnection().prepareStatement(GET_LATEST_MEASUREMENT_TIME_FROM_ASSET_ID);
-            ps.setInt(1, assetID);
-            ResultSet queryResult = ps.executeQuery();
-            if (queryResult.next())
-                return queryResult.getInt("time");
-
-        } catch (SQLException e){
-            e.printStackTrace();
-        }
-        return -1;
     }
 
     private ResultSet nonParamQuery(String query){
         ResultSet rs = null;
-        try {
-            PreparedStatement ps = getConnection().prepareStatement(query);
+        try (PreparedStatement ps = getConnection().prepareStatement(query)) {
             rs = ps.executeQuery();
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-        finally {
-            return rs;
-        }
-
+        return rs;
     }
 
 }

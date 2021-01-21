@@ -20,14 +20,9 @@ import rul.models.ModelsController;
 import weka.classifiers.Classifier;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
-import weka.core.FastVector;
 import weka.core.Instances;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 public class ModelController {
     private static ModelController instance = null;
@@ -77,6 +72,11 @@ public class ModelController {
         return assetDaoImpl.getAllLiveAssets();
     }
 
+    public ArrayList<Asset> getAllLiveAssetsDes() {
+        return assetDaoImpl.getAllLiveAssetsDes();
+    }
+
+
     /**
      *  this function checks all Assets for updated status
      *  and if the asset needs to be updated, it will recalculate the RUL using the corresponding model
@@ -99,7 +99,7 @@ public class ModelController {
 
     public TrainedModel getModelForAssetType(ArrayList<TrainedModel> trainedModels,String assetTypeID){
         for (TrainedModel tm : trainedModels){
-            if (tm.getAssetTypeID() == Integer.valueOf(assetTypeID))
+            if (tm.getAssetTypeID() == Integer.parseInt(assetTypeID))
                 return tm;
         }
         trainedModels.add(modelDAOImpl.getModelsByAssetTypeID(assetTypeID));
@@ -108,7 +108,7 @@ public class ModelController {
 
     /**
      *  This function checks all models for a retrain tag
-     *  the retrain tag is only actif if new archived assets are added
+     *  the retrain tag is only active if new archived assets are added
      *  if it needs retraining it will retrain using the corresponding
      *  asset and model info
      *
@@ -124,8 +124,6 @@ public class ModelController {
             for (TrainedModel trainedModel : trainedModelsToRetrain) {
                 try {
                     trainModel(trainedModel);
-                } catch (SQLException e) {
-                    e.printStackTrace();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -175,18 +173,16 @@ public class ModelController {
      */
     public Double estimateRUL(Asset asset, Classifier classifier) {
         AssessmentController assessmentController = new AssessmentController();
-        Double estimate = -10000000.0;
-        Instances toTest = createInstancesFromAssets(new ArrayList<Asset>(Arrays.asList(asset)));
-       //toTest = DataPrePreprocessorController.getInstance().removeAttributes(reducedInstancesSets.get(classifierID),toTest);
+        double estimate = -10000000.0;
+        Instances toTest = createInstancesFromAssets(new ArrayList<>(Collections.singletonList(asset)));
         try {
             DataPrePreprocessorController dppc = DataPrePreprocessorController.getInstance();
             toTest = dppc.addRULCol(toTest);
             estimate = assessmentController.estimateRUL(toTest, classifier);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            return estimate;
         }
+        return estimate;
     }
 
     /**
@@ -196,19 +192,19 @@ public class ModelController {
      * @author Paul
      */
     public Instances createInstancesFromAssets(ArrayList<Asset> assets) {
-        FastVector attributesVector;
+        ArrayList<Attribute> attributesVector;
         Instances data;
         double[] values;
         ArrayList<String> attributeNames = assetDaoImpl.getAttributesNameFromAssetID(assets.get(0).getId());
         String assetTypeName = assetDaoImpl.getAssetTypeNameFromID(assets.get(0).getAssetTypeID());
 
         // 1. set up attributes
-        attributesVector = new FastVector();
+        attributesVector = new ArrayList<>();
         // - numeric
-        attributesVector.addElement(new Attribute("Asset_id"));
-        attributesVector.addElement(new Attribute("Time_Cycle"));
+        attributesVector.add(new Attribute("Asset_id"));
+        attributesVector.add(new Attribute("Time_Cycle"));
         for (String attributeName : attributeNames) {
-            attributesVector.addElement(new Attribute(attributeName));
+            attributesVector.add(new Attribute(attributeName));
         }
         // 2. create Instances object
         data = new Instances(assetTypeName, attributesVector, 0);
