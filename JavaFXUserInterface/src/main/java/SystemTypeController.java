@@ -1,11 +1,9 @@
 import app.item.AssetTypeParameter;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 
 import java.net.URL;
@@ -45,27 +43,10 @@ public class SystemTypeController implements Initializable {
      */
     public void attachEvents() {
         //Attach link to systemMenuButton to go to Systems.fxml
-        systemMenuBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                uiUtilities.changeScene(mouseEvent, "/Systems");
-            }
-        });
-
+        systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
         //Attach link to systemTypeMenuBtn to go to SystemTypeList.fxml
-        systemTypeMenuBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                uiUtilities.changeScene(mouseEvent, "/SystemTypeList");
-            }
-        });
-
+        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/SystemTypeList"));
         //Attach link to addTypeBtn to go to AddSystemType.fxml
-        addTypeBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                uiUtilities.changeScene(mouseEvent, "/AddSystemType");
-            }
-        });
+        addTypeBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/AddSystemType"));
     }
 }

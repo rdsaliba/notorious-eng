@@ -1,12 +1,10 @@
 import app.item.AssetType;
 import app.item.AssetTypeParameter;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.StrokeType;
@@ -68,38 +66,13 @@ public class AddSystemTypeController implements Initializable {
      */
     public void attachEvents() {
         // Change scenes to Systems.fxml
-        systemMenuBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                uiUtilities.changeScene(mouseEvent, "/Systems");
-            }
-        });
+        systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
         //Attach link to systemTypeMenuBtn to go to SystemTypeList.fxml
-        systemTypeMenuBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                uiUtilities.changeScene(mouseEvent, "/SystemTypeList");
-            }
-        });
+        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/SystemTypeList"));
         // Change scenes to Systems.fxml
-        cancelBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                uiUtilities.changeScene(mouseEvent, "/Systems");
-            }
-        });
-        addThresholdBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                addThresholdForm();
-            }
-        });
-        saveBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                saveAssetType(assembleSystemType());
-            }
-        });
+        cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
+        addThresholdBtn.setOnMouseClicked(mouseEvent -> addThresholdForm());
+        saveBtn.setOnMouseClicked(mouseEvent -> saveAssetType(assembleSystemType()));
     }
 
     public void addThresholdForm() {

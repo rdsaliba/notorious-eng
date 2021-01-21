@@ -111,7 +111,6 @@ public class SystemsController implements Initializable {
                 generateThumbnails();
             }
         });
-
         listTab.setOnSelectionChanged(new EventHandler<Event>() {
             @Override
             public void handle(Event event) {
@@ -121,28 +120,13 @@ public class SystemsController implements Initializable {
         });
 
         //Attach link to systemMenuButton to go to Systems.fxml
-        systemMenuBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                uiUtilities.changeScene(mouseEvent, "/Systems");
-            }
-        });
+        systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
 
         //Attach link to systemTypeMenuBtn to go to SystemTypeList.fxml
-        systemTypeMenuBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                uiUtilities.changeScene(mouseEvent, "/SystemTypeList");
-            }
-        });
+        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/SystemTypeList"));
 
         //Attach link to addSystemButton to go to AddSystem.fxml
-        addSystemBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                uiUtilities.changeScene(mouseEvent, "/AddSystem");
-            }
-        });
+        addSystemBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/AddSystem"));
 
     }
 

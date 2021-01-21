@@ -117,7 +117,7 @@
                                             <Font name="Segoe UI Bold" size="16.0"/>
                                         </font>
                                     </Text>
-                                    <TextField fx:id="systemTypeName" layoutX="220.0" layoutY="61.0" prefHeight="25.0"
+                                    <TextField fx:id="systemTypeName" layoutX="250.0" layoutY="60.0" prefHeight="25.0"
                                                prefWidth="350.0"/>
                                     <Text fill="#0c072e" layoutX="82.0" layoutY="79.0" strokeType="OUTSIDE"
                                           strokeWidth="0.0" text="System Type Name">
@@ -125,63 +125,54 @@
                                             <Font name="Segoe UI Bold" size="14.0"/>
                                         </font>
                                     </Text>
-                                    <TextField fx:id="thresholdOK" layoutX="220.0" layoutY="101.0" prefHeight="25.0"
-                                               prefWidth="350.0"/>
-                                    <Text fill="#0c072e" layoutX="82.0" layoutY="119.0" strokeType="OUTSIDE"
-                                          strokeWidth="0.0" text="Threshold: OK">
-                                        <font>
-                                            <Font name="Segoe UI Bold" size="14.0"/>
-                                        </font>
-                                    </Text>
-                                    <TextField fx:id="thresholdAdvisory" layoutX="220.0" layoutY="141.0"
-                                               prefHeight="25.0" prefWidth="350.0"/>
-                                    <Text fill="#0c072e" layoutX="82.0" layoutY="159.0" strokeType="OUTSIDE"
-                                          strokeWidth="0.0" text="Threshold: Advisory">
-                                        <font>
-                                            <Font name="Segoe UI Bold" size="14.0"/>
-                                        </font>
-                                    </Text>
-                                    <TextField fx:id="thresholdCaution" layoutX="220.0" layoutY="181.0"
-                                               prefHeight="25.0" prefWidth="350.0"/>
-                                    <Text fill="#0c072e" layoutX="82.0" layoutY="199.0" strokeType="OUTSIDE"
-                                          strokeWidth="0.0" text="Threshold: Caution">
-                                        <font>
-                                            <Font name="Segoe UI Bold" size="14.0"/>
-                                        </font>
-                                    </Text>
-                                    <TextField fx:id="thresholdWarning" layoutX="220.0" layoutY="221.0"
-                                               prefHeight="25.0" prefWidth="350.0"/>
-                                    <Text fill="#0c072e" layoutX="82.0" layoutY="239.0" strokeType="OUTSIDE"
-                                          strokeWidth="0.0" text="Threshold: Warning">
-                                        <font>
-                                            <Font name="Segoe UI Bold" size="14.0"/>
-                                        </font>
-                                    </Text>
-                                    <TextField fx:id="thresholdFailed" layoutX="220.0" layoutY="261.0" prefHeight="25.0"
-                                               prefWidth="350.0"/>
-                                    <Text fill="#0c072e" layoutX="82.0" layoutY="279.0" strokeType="OUTSIDE"
-                                          strokeWidth="0.0" text="Threshold: Failed">
-                                        <font>
-                                            <Font name="Segoe UI Bold" size="14.0"/>
-                                        </font>
-                                    </Text>
-                                    <TextField fx:id="model" layoutX="220.0" layoutY="301.0" prefHeight="25.0"
-                                               prefWidth="350.0"/>
-                                    <Text fill="#0c072e" layoutX="82.0" layoutY="319.0" strokeType="OUTSIDE"
-                                          strokeWidth="0.0" text="Model">
-                                        <font>
-                                            <Font name="Segoe UI Bold" size="14.0"/>
-                                        </font>
-                                    </Text>
-                                    <Text fill="#0c072e" layoutX="46.0" layoutY="359.0" strokeType="OUTSIDE"
+                                    <Text fill="#0c072e" layoutX="82.0" layoutY="136.0" strokeType="OUTSIDE"
                                           strokeWidth="0.0" text="System Type Description">
                                         <font>
                                             <Font name="Segoe UI Bold" size="14.0"/>
                                         </font>
                                     </Text>
-                                    <TextArea fx:id="systemTypeDesc" layoutX="220.0" layoutY="341.0" prefHeight="63.0"
-                                              wrapText="true"
-                                              prefWidth="350.0"/>
+                                    <TextArea fx:id="systemTypeDesc" layoutX="250.0" layoutY="99.0" prefHeight="63.0"
+                                              prefWidth="350.0" wrapText="true"/>
+                                    <TextField fx:id="thresholdOK" layoutX="250.0" layoutY="172.0" prefHeight="25.0"
+                                               prefWidth="350.0"/>
+                                    <Text fill="#0c072e" layoutX="82.0" layoutY="191.0" strokeType="OUTSIDE"
+                                          strokeWidth="0.0" text="Threshold: OK">
+                                        <font>
+                                            <Font name="Segoe UI Bold" size="14.0"/>
+                                        </font>
+                                    </Text>
+                                    <TextField fx:id="thresholdAdvisory" layoutX="250.0" layoutY="212.0"
+                                               prefHeight="25.0" prefWidth="350.0"/>
+                                    <Text fill="#0c072e" layoutX="82.0" layoutY="231.0" strokeType="OUTSIDE"
+                                          strokeWidth="0.0" text="Threshold: Advisory">
+                                        <font>
+                                            <Font name="Segoe UI Bold" size="14.0"/>
+                                        </font>
+                                    </Text>
+                                    <TextField fx:id="thresholdCaution" layoutX="250.0" layoutY="252.0"
+                                               prefHeight="25.0" prefWidth="350.0"/>
+                                    <Text fill="#0c072e" layoutX="82.0" layoutY="271.0" strokeType="OUTSIDE"
+                                          strokeWidth="0.0" text="Threshold: Caution">
+                                        <font>
+                                            <Font name="Segoe UI Bold" size="14.0"/>
+                                        </font>
+                                    </Text>
+                                    <TextField fx:id="thresholdWarning" layoutX="250.0" layoutY="292.0"
+                                               prefHeight="25.0" prefWidth="350.0"/>
+                                    <Text fill="#0c072e" layoutX="82.0" layoutY="311.0" strokeType="OUTSIDE"
+                                          strokeWidth="0.0" text="Threshold: Warning">
+                                        <font>
+                                            <Font name="Segoe UI Bold" size="14.0"/>
+                                        </font>
+                                    </Text>
+                                    <TextField fx:id="thresholdFailed" layoutX="250.0" layoutY="332.0" prefHeight="25.0"
+                                               prefWidth="350.0"/>
+                                    <Text fill="#0c072e" layoutX="82.0" layoutY="351.0" strokeType="OUTSIDE"
+                                          strokeWidth="0.0" text="Threshold: Failed">
+                                        <font>
+                                            <Font name="Segoe UI Bold" size="14.0"/>
+                                        </font>
+                                    </Text>
                                     <Line endX="852.0" layoutX="100.0" layoutY="47.0" startX="-100.0"
                                           stroke="#00000086"/>
                                     <!--            <Text fill="#0c072e" layoutX="405.0" layoutY="193.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Value">-->
