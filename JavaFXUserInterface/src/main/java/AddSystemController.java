@@ -20,6 +20,8 @@ public class AddSystemController implements Initializable {
     @FXML
     public Button systemMenuBtn;
     @FXML
+    private Button systemTypeMenuBtn;
+    @FXML
     private Button cancelBtn;
     @FXML
     private Button saveBtn;
@@ -78,6 +80,7 @@ public class AddSystemController implements Initializable {
             if(newval != null)
                 selectedAssetType = newval;
         });
+
         saveBtn.setOnMouseClicked(mouseEvent -> {
             Asset newAsset = assembleAsset();
             if(!isAssetEmpty(newAsset)) {
@@ -90,6 +93,8 @@ public class AddSystemController implements Initializable {
         });
         // Change scenes to Systems.fxml
         systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
+        //Attach link to systemTypeMenuBtn to go to SystemTypeList.fxml
+        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/SystemTypeList"));
         // Change scenes to Systems.fxml
         cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
     }

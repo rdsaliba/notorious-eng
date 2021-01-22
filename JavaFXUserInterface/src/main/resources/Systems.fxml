@@ -2,8 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="712.0" prefWidth="1026.0" stylesheets="@css/systems.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="SystemsController">
@@ -12,27 +11,44 @@
             <children>
                 <Button fx:id="systemMenuBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0" prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css" text="Systems" textAlignment="CENTER" textFill="#f0f0f0">
                     <font>
-                        <Font name="Segoe UI Bold" size="14.0" />
+                        <Font name="Segoe UI Bold" size="14.0"/>
                     </font>
                     <graphic>
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@imgs/outline_dvr_white_18dp.png" />
+                                <Image url="@imgs/outline_dvr_white_18dp.png"/>
                             </image>
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button fx:id="exitMenuBtn" contentDisplay="TOP" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="74.0" prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css" text="Exit" textAlignment="CENTER" textFill="#f0f0f0" translateY="375.0">
-                   <font>
-                      <Font name="Segoe UI Bold" size="14.0" />
-                   </font>
-                   <graphic>
-                      <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                         <image>
-                            <Image url="@imgs/outline_exit_to_app_white_18dp.png" />
-                         </image>
-                      </ImageView>
-                   </graphic>
+                <Button fx:id="systemTypeMenuBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0"
+                        prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css"
+                        text="System&#10;Types" textAlignment="CENTER" textFill="#f0f0f0" translateY="15.0">
+                    <font>
+                        <Font name="Segoe UI Bold" size="14.0"/>
+                    </font>
+                    <graphic>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@imgs/outline_type_white.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button fx:id="exitMenuBtn" contentDisplay="TOP" layoutX="10.0" layoutY="10.0" mnemonicParsing="false"
+                        prefHeight="74.0" prefWidth="74.0" style="-fx-background-radius: 0;"
+                        stylesheets="@css/style.css" text="Exit" textAlignment="CENTER" textFill="#f0f0f0"
+                        translateY="290.0">
+                    <font>
+                        <Font name="Segoe UI Bold" size="14.0"/>
+                    </font>
+                    <graphic>
+                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@imgs/outline_exit_to_app_white_18dp.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
                 </Button>
             </children>
         </VBox>
