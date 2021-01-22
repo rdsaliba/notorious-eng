@@ -8,15 +8,6 @@ public class AssetType {
     private ArrayList<AssetTypeParameter> thresholdList;
 
     public AssetType() {
-
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public AssetType(String name) {
@@ -27,6 +18,14 @@ public class AssetType {
     public AssetType(String name, ArrayList<AssetTypeParameter> thresholdList) {
         this.name = name;
         this.thresholdList = thresholdList;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -43,10 +42,6 @@ public class AssetType {
 
     public void setThresholdList(ArrayList<AssetTypeParameter> thresholdList) {
         this.thresholdList = thresholdList;
-    }
-
-    public void addThresholdValue(AssetTypeParameter parameter) {
-        thresholdList.add(parameter);
     }
 
     @Override

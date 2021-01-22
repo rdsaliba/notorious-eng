@@ -24,7 +24,6 @@ public class AssetAttributeTest {
         assertTrue("empty measurements list", assetAttribute.getMeasurements().isEmpty());
         assetAttribute.addMeasurement(1, 0.5);
         assertEquals("one element in the measurement map", 1, assetAttribute.getMeasurements().size());
-
     }
 
     @Test
@@ -35,8 +34,8 @@ public class AssetAttributeTest {
     @Test
     public void getOneMeasurement() {
         assetAttribute.addMeasurement(1, 0.5);
-        assetAttribute.addMeasurement(2, 234.423);
-        assertTrue("Asserting specific measurement is returned ", assetAttribute.getMeasurements(1) == 0.5);
+        assertEquals("Asserting specific measurement is returned ", 0.5, assetAttribute.getMeasurements(1), 0.0);
+        assertNull("Trying to get the measurement at a time that isn't valid should return null", assetAttribute.getMeasurements(10));
     }
 
     @Test
@@ -52,12 +51,20 @@ public class AssetAttributeTest {
 
     @Test
     public void getName() {
-        assertNull("Default name value should be nulled", assetAttribute.getName());
+        assertNull("Default name value should be null", assetAttribute.getName());
     }
 
     @Test
     public void setName() {
         assetAttribute.setName("foo");
         assertEquals("New name should be foo", "foo", assetAttribute.getName());
+    }
+
+    @Test
+    public void assetAttributeToString() {
+        assertEquals("AssetAttribute{id=0, name='null', measurements=[]}", assetAttribute.toString());
+        assetAttribute.setId(7);
+        assetAttribute.setName("assetAttribute");
+        assertEquals("AssetAttribute{id=7, name='assetAttribute', measurements=[]}", assetAttribute.toString());
     }
 }

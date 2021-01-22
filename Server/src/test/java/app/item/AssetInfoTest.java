@@ -1,17 +1,25 @@
 package app.item;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
+
+import java.util.ArrayList;
 
 import static org.junit.Assert.*;
 
 public class AssetInfoTest {
     private static AssetInfo assetInfo;
 
-    @BeforeClass
-    public static void setUp() {
+    @Before
+    public void setUp() {
         assetInfo = new AssetInfo();
         assetInfo.addAttribute(new AssetAttribute());
+    }
+
+    @Test
+    public void defaultConst(){
+        AssetInfo temp = new AssetInfo();
+        assertNotNull("A new asset info object should have been created",temp);
     }
 
     @Test
@@ -26,25 +34,15 @@ public class AssetInfoTest {
         assertFalse(assetInfo.getAssetAttributes().isEmpty());
     }
 
-//    @Test
-//    public void getLastRecorderTimeCycle() {
-//        assetInfo.getAssetAttributes().get(0).addMeasurement(1, 1.0);
-//        assetInfo.getAssetAttributes().get(0).addMeasurement(2, 1.0);
-//        assetInfo.getAssetAttributes().get(0).addMeasurement(3, 1.0);
-//        assertEquals("there should be 3 measurements", 3, assetInfo.getLastRecorderTimeCycle());
-//    }
-
-//    @Test
-//    public void addRULMeasurement() {
-//        assertTrue("No current measurements", assetInfo.getAllEstimates().isEmpty());
-//        assetInfo.addRULMeasurement(123.0);
-//        assertEquals("one measurement after the add", 1, assetInfo.getAllEstimates().size());
-//    }
-//
-//    @Test
-//    public void getRULMeasurement() {
-//        assetInfo.addRULMeasurement(111.0);
-//        assertTrue("getting the lastest rul measurement should return 111", assetInfo.getRULMeasurement() == 111.0);
-//
-//    }
+    @Test
+    public void setAssetAttributes() {
+        AssetInfo temp = new AssetInfo();
+        assertEquals("There should be no asset attribute at start", 0, temp.getAssetAttributes().size());
+        assertEquals("[]", temp.getAssetAttributes().toString());
+        ArrayList<AssetAttribute> aAttributesList = new ArrayList<>();
+        aAttributesList.add(new AssetAttribute());
+        temp.setAssetAttributes(aAttributesList);
+        assertEquals("There should be one asset attribute after setting", 1, temp.getAssetAttributes().size());
+        assertEquals("[AssetAttribute{id=0, name='null', measurements=[]}]", temp.getAssetAttributes().toString());
+    }
 }
