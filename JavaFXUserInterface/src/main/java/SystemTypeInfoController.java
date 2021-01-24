@@ -1,13 +1,18 @@
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import local.AssetTypeDAOImpl;
 
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class SystemTypeInfoController implements Initializable {
@@ -70,7 +75,7 @@ public class SystemTypeInfoController implements Initializable {
     /**
      * Attaches events to elements in the scene.
      *
-     * @author Najim
+     * @author Najim, Paul
      */
     public void attachEvents() {
         // Change scenes to Systems.fxml
@@ -79,6 +84,8 @@ public class SystemTypeInfoController implements Initializable {
         systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/SystemTypeList"));
         //Attach link to infoEditBtn to go to SystemTypeEdit.fxml
         infoEditBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/SystemTypeEdit", assetType));
+        //Attach the asset type delete function
+        infoDeleteBtn.setOnMouseClicked(this::deleteDialog);
     }
 
     /**
@@ -92,5 +99,39 @@ public class SystemTypeInfoController implements Initializable {
         } else {
             systemTypeImageView.setImage(new Image("imgs/unknown_system_type.png"));
         }
+    }
+
+
+    /**
+     * Creates a dialog box that asks user if they want to delete an assetType.
+     *
+     * @param mouseEvent is an event trigger for this delete dialog
+     * @author Paul
+     */
+    private void deleteDialog(MouseEvent mouseEvent) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        String ALERT_TITLE = "Confirmation Dialog";
+        alert.setTitle(ALERT_TITLE);
+        String ALERT_HEADER = "Confirmation of system type deletion";
+        alert.setHeaderText(ALERT_HEADER);
+        String ALERT_CONTENT = "Are you sure you want to delete this system type? \n " +
+                "this will delete all the assets of this type";
+        alert.setContentText(ALERT_CONTENT);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            deleteAssetType();
+            uiUtilities.changeScene(mouseEvent, "/SystemTypeList");
+        }
+    }
+
+    /**
+     * Send the asset ID to the Database class in order for it to be deleted.
+     *
+     * @author Paul
+     */
+    private void deleteAssetType() {
+        AssetTypeDAOImpl assetTypeDAO = new AssetTypeDAOImpl();
+        assetTypeDAO.deleteAssetTypeByID(assetType.getId());
     }
 }

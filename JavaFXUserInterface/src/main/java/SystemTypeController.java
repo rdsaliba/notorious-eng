@@ -87,7 +87,7 @@ public class SystemTypeController implements Initializable {
             advisory_value = assetTypeDOA.getAssetTypeBoundary(i + 1, 3);
             ok_value = assetTypeDOA.getAssetTypeBoundary(i + 1, 4);
 
-            systemtypelist.add(new SystemTypeList(systemtypelistname.get(i).getName(),systemtypelistcount.get(i),ok_value,advisory_value,caution_value,warning_value,fail_value));
+            systemtypelist.add(new SystemTypeList(systemtypelistname.get(i).getId(),systemtypelistname.get(i).getName(),systemtypelistcount.get(i),ok_value,advisory_value,caution_value,warning_value,fail_value));
         }
 
         return systemtypelist;

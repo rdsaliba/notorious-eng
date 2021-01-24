@@ -1,7 +1,7 @@
 import javafx.beans.property.SimpleStringProperty;
 
 public class SystemTypeList {
-    private SimpleStringProperty name;
+    private SimpleStringProperty name, id;
     private int associated_assets;
     private double value_ok,value_caution,value_advisory,value_warning,value_failed;
 
@@ -10,7 +10,8 @@ public class SystemTypeList {
         this.associated_assets = associated_assets;
     }
 
-    public SystemTypeList(String name, int associated_assets, double value_ok, double value_caution, double value_advisory, double value_warning, double value_failed) {
+    public SystemTypeList(String id,String name, int associated_assets, double value_ok, double value_caution, double value_advisory, double value_warning, double value_failed) {
+        this.id = new SimpleStringProperty(id);
         this.name = new SimpleStringProperty(name);
         this.associated_assets = associated_assets;
         this.value_ok = value_ok;
@@ -66,6 +67,18 @@ public class SystemTypeList {
 
     public SimpleStringProperty nameProperty() {
         return name;
+    }
+
+    public String getId() {
+        return id.get();
+    }
+
+    public SimpleStringProperty idProperty() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id.set(id);
     }
 
     public void setName(String name) {

@@ -16,7 +16,7 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
     private static final String GET_ASSET_TYPE_NAME_FROM_ID = "SELECT name FROM asset_type where asset_type_id = ?";
     private static final String GET_ASSET_TYPE_BOUNDARY = "SELECT *  FROM asset_type_parameters WHERE parameter_name = ? AND asset_type_id = ?";
     private static final String GET_ASSET_TYPE_ID_COUNT = "SELECT asset_type_id, COUNT(*) as 'count' FROM asset WHERE archived = 0 GROUP BY asset_type_id";
-
+    private static final String DELETE_ASSET_TYPE = "DELETE FROM asset_type where asset_type_id = ?";
     /**
      * This will return an arraylist of the count for all the asset type ids from the
      * asset table
@@ -53,7 +53,7 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
 
 
     @Override
-    public void insertAssetType(AssetType assetType) {
+    public int insertAssetType(AssetType assetType) {
         try (PreparedStatement ps = getConnection().prepareStatement(INSERT_ASSET_TYPE,
                 Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, assetType.getName());
@@ -69,6 +69,7 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
                             statement.executeQuery();
                         }
                     }
+                    return generatedKeys.getInt(1);
                 } else {
                     throw new SQLException("Creating threshold failed, no ID obtained.");
                 }
@@ -76,6 +77,7 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return -1;
     }
 
     /**
@@ -116,4 +118,12 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
     }
 
 
+    public void deleteAssetTypeByID(String assetTypeID) {
+        try (PreparedStatement ps = getConnection().prepareStatement(DELETE_ASSET_TYPE)) {
+            ps.setString(1,assetTypeID);
+            ps.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
