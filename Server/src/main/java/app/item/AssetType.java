@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class AssetType {
     private String id;
     private String name;
+    private String description;
     private ArrayList<AssetTypeParameter> thresholdList;
 
     public AssetType() {
@@ -47,6 +48,14 @@ public class AssetType {
 
     public void addThresholdValue(AssetTypeParameter parameter) {
         thresholdList.add(parameter);
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override
