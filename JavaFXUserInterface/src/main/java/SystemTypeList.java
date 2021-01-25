@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class SystemTypeList {
     private AssetType assetType;
     private int liveAssets, archivedAssets;
-    private String valueOk, valueCaution, valueAdvisory, valueWarning, valueFailed ;
+    private String valueOk, valueCaution, valueAdvisory, valueWarning, valueFailed , id ;
 
     public SystemTypeList(String name, int liveAssets) {
         this.assetType = new AssetType(name);
@@ -97,6 +97,10 @@ public class SystemTypeList {
 
     public void setValueFailed(String valueFailed) {
         this.valueFailed = valueFailed;
+    }
+
+    public String getId() {
+        return assetType.getId();
     }
 
     public String getName() {

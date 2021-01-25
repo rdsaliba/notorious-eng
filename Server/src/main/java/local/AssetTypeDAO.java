@@ -10,7 +10,7 @@ public interface AssetTypeDAO {
 
     String getAssetTypeBoundary(String asset_type_id, String boundary_type);
 
-    void insertAssetType(AssetType assetType);
+    int insertAssetType(AssetType assetType);
 
     ArrayList<AssetType> getAssetTypeList();
 
@@ -18,4 +18,5 @@ public interface AssetTypeDAO {
 
     void updateAssetType(AssetType assetType);
 
+    void deleteAssetTypeByID(String assetTypeID);
 }
