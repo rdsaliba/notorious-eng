@@ -84,6 +84,7 @@ public class ModelController {
      * @author Paul
      */
     public boolean checkAssets() {
+        AssessmentController assessmentController = new AssessmentController();
         //check for assets that need a new calculation
         ArrayList<Asset> assetsToUpdate = assetDaoImpl.getAssetsToUpdate();
         ArrayList<TrainedModel> trainedModels = new ArrayList<>();
@@ -92,6 +93,8 @@ public class ModelController {
         for (Asset asset : assetsToUpdate) {
             trainedModel= getModelForAssetType(trainedModels,asset.getAssetTypeID());
             estimation= estimateRUL(asset, trainedModel.getModelClassifier());
+            asset.setRecommendation(assessmentController.getRecommendation(estimation, asset.getAssetTypeID()));
+            assetDaoImpl.updateRecommendation(asset.getId(), asset.getRecommendation());
             assetDaoImpl.addRULEstimation(estimation, asset, trainedModel);
         }
         return !assetsToUpdate.isEmpty();

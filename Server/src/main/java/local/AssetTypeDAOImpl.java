@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
     private static final String INSERT_ASSET_TYPE = "INSERT INTO asset_type (name) values( ? )";
@@ -15,6 +16,7 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
     private static final String GET_ASSET_TYPES = "SELECT * FROM asset_type";
     private static final String GET_ASSET_TYPE_NAME_FROM_ID = "SELECT name FROM asset_type where asset_type_id = ?";
     private static final String GET_ASSET_TYPE_BOUNDARY = "SELECT *  FROM asset_type_parameters WHERE parameter_name = ? AND asset_type_id = ?";
+    private static final String GET_ASSET_TYPE_BOUNDARIES = "SELECT *  FROM asset_type_parameters WHERE asset_type_id = ?";
     private static final String GET_ASSET_TYPE_ID_COUNT = "SELECT asset_type_id, COUNT(*) as 'count' FROM asset WHERE archived = 0 GROUP BY asset_type_id";
 
     /**
@@ -49,6 +51,20 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
             e.printStackTrace();
         }
         return boundary;
+    }
+
+    public HashMap getAssetTypeBoundaries(String asset_type_id) {
+        HashMap<String, Double> boundaries = new HashMap<>();
+        ResultSet rs;
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_TYPE_BOUNDARIES)) {
+            ps.setString(1, asset_type_id);
+            rs = ps.executeQuery();
+            while (rs.next())
+                boundaries.put(rs.getString("parameter_name"), rs.getDouble("boundary"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return boundaries;
     }
 
 
