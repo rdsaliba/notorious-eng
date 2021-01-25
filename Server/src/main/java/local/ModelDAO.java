@@ -9,6 +9,8 @@ package local;
 
 import app.TrainedModel;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public interface ModelDAO {
@@ -19,4 +21,6 @@ public interface ModelDAO {
     TrainedModel getModelsByAssetTypeID(String assetTypeID);
 
     String getModelNameFromModelID(int modelID);
+
+    TrainedModel createTrainedModelFromResultSet(ResultSet rs, Boolean withModel) throws SQLException;
 }

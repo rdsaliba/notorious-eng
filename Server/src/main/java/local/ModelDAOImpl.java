@@ -122,7 +122,8 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
      * @param rs represents the result from a trained model query
      * @author Paul
      */
-    private TrainedModel createTrainedModelFromResultSet(ResultSet rs, Boolean withModel) throws SQLException {
+    @Override
+    public TrainedModel createTrainedModelFromResultSet(ResultSet rs, Boolean withModel) throws SQLException {
         TrainedModel tm = new TrainedModel();
         tm.setModelID(rs.getInt("model_id"));
         tm.setAssetTypeID(rs.getInt("asset_type_id"));
