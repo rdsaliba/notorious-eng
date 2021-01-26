@@ -20,41 +20,36 @@
             <children>
                 <Button fx:id="systemMenuBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0" prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css" text="Systems" textAlignment="CENTER" textFill="#f0f0f0">
                     <font>
-                        <Font name="Segoe UI Bold" size="14.0"/>
+                        <Font name="Segoe UI Bold" size="14.0" />
                     </font>
                     <graphic>
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@imgs/outline_dvr_white_18dp.png"/>
+                                <Image url="@imgs/outline_dvr_white_18dp.png" />
                             </image>
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button fx:id="systemTypeMenuBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0"
-                        prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css"
-                        text="System&#10;Types" textAlignment="CENTER" textFill="#f0f0f0" translateY="15.0">
+                <Button fx:id="systemTypeMenuBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0" prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css" text="System&#10;Types" textAlignment="CENTER" textFill="#f0f0f0" translateY="15.0">
                     <font>
-                        <Font name="Segoe UI Bold" size="14.0"/>
+                        <Font name="Segoe UI Bold" size="14.0" />
                     </font>
                     <graphic>
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@imgs/outline_type_white.png"/>
+                                <Image url="@imgs/outline_type_white.png" />
                             </image>
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button fx:id="exitMenuBtn" contentDisplay="TOP" layoutX="10.0" layoutY="10.0" mnemonicParsing="false"
-                        prefHeight="74.0" prefWidth="74.0" style="-fx-background-radius: 0;"
-                        stylesheets="@css/style.css" text="Exit" textAlignment="CENTER" textFill="#f0f0f0"
-                        translateY="290.0">
+                <Button fx:id="exitMenuBtn" contentDisplay="TOP" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="74.0" prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css" text="Exit" textAlignment="CENTER" textFill="#f0f0f0" translateY="290.0">
                     <font>
-                        <Font name="Segoe UI Bold" size="14.0"/>
+                        <Font name="Segoe UI Bold" size="14.0" />
                     </font>
                     <graphic>
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@imgs/outline_exit_to_app_white_18dp.png"/>
+                                <Image url="@imgs/outline_exit_to_app_white_18dp.png" />
                             </image>
                         </ImageView>
                     </graphic>
@@ -109,6 +104,8 @@
                                                 <Text fx:id="categoryOutput" fill="#0c072e" layoutX="533.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
                                                 <Text fx:id="systemNameLabel" fill="#0c072e" layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="System Name:" />
                                                 <Text fx:id="systemNameOutput" fill="#0c072e" layoutX="159.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
+                                                <Text fill="#0c072e" layoutX="13.0" layoutY="227.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Recommendation:" />
+                                                <Text fx:id="recommendationOutput" fill="#0c072e" layoutX="159.0" layoutY="227.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
                                             </children>
                                         </AnchorPane>
                                         <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" layoutX="-7.0" layoutY="252.0" prefHeight="400.0" prefWidth="962.0" vbarPolicy="NEVER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-7.0" AnchorPane.rightAnchor="-3.0" AnchorPane.topAnchor="252.0">
