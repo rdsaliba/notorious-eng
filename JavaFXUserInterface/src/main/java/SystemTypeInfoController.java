@@ -1,3 +1,4 @@
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -101,40 +102,40 @@ public class SystemTypeInfoController implements Initializable {
         });
 
         systemTypeName.textProperty().addListener((obs, oldText, newText) -> {
-            if( handleTextChange(newText,originalAssetType.getName()))
+            if( handleTextChange(obs, newText,originalAssetType.getName()))
                 assetType.getAssetType().setName(newText);
         });
         systemTypeDesc.textProperty().addListener((obs, oldText, newText) -> {
-            if( handleTextChange(newText,originalAssetType.getDescription()))
+            if( handleTextChange(obs, newText,originalAssetType.getDescription()))
                 assetType.getAssetType().setDescription(newText);
         });
 
         thresholdOK.textProperty().addListener((obs, oldText, newText) -> {
-            if(handleTextChange(newText, originalAssetType.getValueOk()))
+            if(handleTextChange(obs, newText, originalAssetType.getValueOk()))
                 assetType.setValueOk(newText);
         });
         thresholdOK.setTextFormatter( new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat,c)));
 
         thresholdAdvisory.textProperty().addListener((obs, oldText, newText) -> {
-            if(handleTextChange(newText, originalAssetType.getValueAdvisory()))
+            if(handleTextChange(obs, newText, originalAssetType.getValueAdvisory()))
                 assetType.setValueAdvisory(newText);
         });
         thresholdAdvisory.setTextFormatter( new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat,c)));
 
         thresholdCaution.textProperty().addListener((obs, oldText, newText) -> {
-            if(handleTextChange(newText, originalAssetType.getValueCaution()))
+            if(handleTextChange(obs, newText, originalAssetType.getValueCaution()))
                 assetType.setValueCaution(newText);
         });
         thresholdCaution.setTextFormatter( new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat,c)));
 
         thresholdWarning.textProperty().addListener((obs, oldText, newText) -> {
-            if(handleTextChange(newText, originalAssetType.getValueWarning()))
+            if(handleTextChange(obs, newText, originalAssetType.getValueWarning()))
                 assetType.setValueWarning(newText);
         });
         thresholdWarning.setTextFormatter( new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat,c)));
 
         thresholdFailed.textProperty().addListener((obs, oldText, newText) -> {
-            if(handleTextChange(newText, originalAssetType.getValueFailed()))
+            if(handleTextChange(obs, newText, originalAssetType.getValueFailed()))
                 assetType.setValueFailed(newText);
         });
         thresholdFailed.setTextFormatter( new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat,c)));
@@ -146,16 +147,21 @@ public class SystemTypeInfoController implements Initializable {
      *
      * @author  Paul
      */
-    private boolean handleTextChange(String newText, String field) {
-        if (field.equals(originalAssetType.getName()) || field.equals(originalAssetType.getDescription()) && newText.equals(field))
-        {
-            infoSaveBtn.setDisable(true);
-            infoSaveBtn.getStyleClass().clear();
-            infoSaveBtn.getStyleClass().add("infoSaveFalse");
-            return false;
+    private boolean handleTextChange(ObservableValue<? extends String> obs, String newText, String field) {
+        if ((field).equals(originalAssetType.getName()) || field.equals(originalAssetType.getDescription())) {
+            if (!newText.isEmpty() && !newText.equals(field)) {
+                infoSaveBtn.setDisable(false);
+                infoSaveBtn.getStyleClass().clear();
+                infoSaveBtn.getStyleClass().add("infoSaveTrue");
+                return true;
+            } else {
+                infoSaveBtn.setDisable(true);
+                infoSaveBtn.getStyleClass().clear();
+                infoSaveBtn.getStyleClass().add("infoSaveFalse");
+                return false;
+            }
         }
-        else if (!newText.isEmpty() && !field.equals("-") && Double.parseDouble(newText) == Double.parseDouble(field))
-        {
+        else if (!newText.isEmpty() && !field.equals("-") && Double.parseDouble(newText) == Double.parseDouble(field)) {
             infoSaveBtn.setDisable(true);
             infoSaveBtn.getStyleClass().clear();
             infoSaveBtn.getStyleClass().add("infoSaveFalse");

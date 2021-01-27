@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class SystemTypeList {
     private AssetType assetType;
     private int liveAssets, archivedAssets;
-    private String valueOk, valueCaution, valueAdvisory, valueWarning, valueFailed , id ;
+    private String valueOk, valueCaution, valueAdvisory, valueWarning, valueFailed;
 
     public SystemTypeList(String name, int liveAssets) {
         this.assetType = new AssetType(name);
@@ -14,14 +14,14 @@ public class SystemTypeList {
     }
 
     public SystemTypeList(SystemTypeList copy) {
-        this.assetType = copy.assetType;
-        this.liveAssets = copy.liveAssets;
-        this.archivedAssets = copy.archivedAssets;
-        this.valueOk = copy.valueOk;
-        this.valueCaution = copy.valueCaution;
-        this.valueAdvisory = copy.valueAdvisory;
-        this.valueWarning = copy.valueWarning;
-        this.valueFailed = copy.valueFailed;
+        this.assetType = new AssetType(copy.getAssetType());
+        this.liveAssets = copy.getLiveAssets();
+        this.archivedAssets = copy.getArchivedAssets();
+        this.valueOk = copy.getValueOk();
+        this.valueCaution = copy.getValueCaution();
+        this.valueAdvisory = copy.getValueAdvisory();
+        this.valueWarning = copy.getValueWarning();
+        this.valueFailed = copy.getValueFailed();
     }
 
     public SystemTypeList(AssetType assetType, int liveAssets, int archivedAssets, String valueOk, String valueCaution, String valueAdvisory, String valueWarning, String valueFailed) {

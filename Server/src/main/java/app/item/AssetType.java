@@ -12,6 +12,13 @@ public class AssetType {
 
     }
 
+    public AssetType(AssetType assetType) {
+        this.id = assetType.getId();
+        this.name = assetType.getName();
+        this.description = assetType.getDescription();
+        this.thresholdList = assetType.getThresholdList();
+    }
+
     public String getId() {
         return id;
     }

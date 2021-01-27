@@ -66,7 +66,7 @@ public class SystemTypeController implements Initializable {
      * and it would crash the system if there was an asset type with no assets associated to it
      * so this methode was rewrote
      *
-     * @autor Paul
+     * @author Paul
      */
     private ObservableList<SystemTypeList> getSystemList() {
         ObservableList<SystemTypeList> systemtypelist = FXCollections.observableArrayList();
@@ -99,14 +99,7 @@ public class SystemTypeController implements Initializable {
      */
     public void attachEvents() {
         //set up the columns in the table
-        columnName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        columnLiveAssets.setCellValueFactory(new PropertyValueFactory<>("liveAssets"));
-        columnArchivedAssets.setCellValueFactory(new PropertyValueFactory<>("archivedAssets"));
-        columnOk.setCellValueFactory(new PropertyValueFactory<>("valueOk"));
-        columnAdvisory.setCellValueFactory(new PropertyValueFactory<>("valueAdvisory"));
-        columnCaution.setCellValueFactory(new PropertyValueFactory<>("valueCaution"));
-        columnWarning.setCellValueFactory(new PropertyValueFactory<>("valueWarning"));
-        columnFailed.setCellValueFactory(new PropertyValueFactory<>("valueFailed"));
+       attachColumnEvents();
 
         //Attach link to systemMenuButton to go to Systems.fxml
         systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
@@ -118,5 +111,19 @@ public class SystemTypeController implements Initializable {
         addTypeBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/AddSystemType"));
     }
 
-
+    /**
+     * add the column events so they get filled with the correct information
+     *
+     * @author Paul
+     */
+    public void attachColumnEvents(){
+        columnName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        columnLiveAssets.setCellValueFactory(new PropertyValueFactory<>("liveAssets"));
+        columnArchivedAssets.setCellValueFactory(new PropertyValueFactory<>("archivedAssets"));
+        columnOk.setCellValueFactory(new PropertyValueFactory<>("valueOk"));
+        columnAdvisory.setCellValueFactory(new PropertyValueFactory<>("valueAdvisory"));
+        columnCaution.setCellValueFactory(new PropertyValueFactory<>("valueCaution"));
+        columnWarning.setCellValueFactory(new PropertyValueFactory<>("valueWarning"));
+        columnFailed.setCellValueFactory(new PropertyValueFactory<>("valueFailed"));
+    }
 }
