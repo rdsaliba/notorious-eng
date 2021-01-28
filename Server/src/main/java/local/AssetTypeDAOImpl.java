@@ -3,51 +3,58 @@ package local;
 import app.item.AssetType;
 import app.item.AssetTypeParameter;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 
 public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
-    private static final String INSERT_ASSET_TYPE = "INSERT INTO asset_type (name) values( ? )";
+    private static final String INSERT_ASSET_TYPE = "INSERT INTO asset_type (name, description) values( ?,? )";
     private static final String INSERT_ASSET_TYPE_PARAMETERS = "INSERT INTO asset_type_parameters (asset_type_id, parameter_name, boundary) values(?, ?, ?)";
     private static final String GET_ASSET_TYPES = "SELECT * FROM asset_type";
     private static final String GET_ASSET_TYPE_NAME_FROM_ID = "SELECT name FROM asset_type where asset_type_id = ?";
     private static final String GET_ASSET_TYPE_BOUNDARY = "SELECT *  FROM asset_type_parameters WHERE parameter_name = ? AND asset_type_id = ?";
-    private static final String GET_ASSET_TYPE_ID_COUNT = "SELECT asset_type_id, COUNT(*) as 'count' FROM asset WHERE archived = 0 GROUP BY asset_type_id";
     private static final String DELETE_ASSET_TYPE = "DELETE FROM asset_type where asset_type_id = ?";
+    private static final String GET_ASSET_TYPE_ID_COUNT = "SELECT COUNT(*) as 'count' FROM asset WHERE archived = ? and asset_type_id =?";
+    private static final String UPDATE_ASSET_TYPE = "UPDATE asset_type set name =?, description = ? where asset_type_id = ?";
+    private static final String UPDATE_ASSET_TYPE_PARAMETER = "UPDATE asset_type_parameters set boundary = ? where asset_type_id = ? and parameter_name =?";
+
     /**
      * This will return an arraylist of the count for all the asset type ids from the
      * asset table
-     * @author Shirwa
+     * edit: returns the count for a single asset type
+     * @author Shirwa, Paul
      */
-    public ArrayList<Integer> getAssetTypeIdCount() {
-        ArrayList<Integer> assets = new ArrayList<>();
+    @Override
+    public int getAssetTypeIdCount(String assetTypeID, boolean isLive) {
 
         ResultSet rs;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_TYPE_ID_COUNT)) {
-            rs = ps.executeQuery();
-            while (rs.next())
-                assets.add(rs.getInt("count"));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return assets;
-    }
-
-    public double getAssetTypeBoundary(int asset_type_id, int boundary_type){
-        double boundary = 0.0;
-        ResultSet rs;
-        try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_TYPE_BOUNDARY)) {
-            ps.setInt(1, boundary_type);
-            ps.setInt(2, asset_type_id);
+            ps.setBoolean(1, !isLive);
+            ps.setString(2, assetTypeID);
             rs = ps.executeQuery();
             if (rs.next())
-                boundary = rs.getDouble("boundary");
+                return (rs.getInt("count"));
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return 0;
+    }
+
+    @Override
+    public String getAssetTypeBoundary(String asset_type_id, String boundary_type){
+        String boundary = "null";
+        ResultSet rs;
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_TYPE_BOUNDARY)) {
+            ps.setString(1, boundary_type);
+            ps.setString(2, asset_type_id);
+            rs = ps.executeQuery();
+            if (rs.next()){
+                boundary = rs.getString("boundary");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        if (boundary == null || boundary.equals("null"))
+            boundary= "-";
         return boundary;
     }
 
@@ -57,6 +64,7 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
         try (PreparedStatement ps = getConnection().prepareStatement(INSERT_ASSET_TYPE,
                 Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, assetType.getName());
+            ps.setString(2, assetType.getDescription());
             ps.executeQuery();
 
             try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
@@ -93,6 +101,7 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
             while (rs.next()) {
                 AssetType newAssetType = new AssetType();
                 newAssetType.setName(rs.getString("name"));
+                newAssetType.setDescription(rs.getString("description"));
                 newAssetType.setId(rs.getString("asset_type_id"));
                 assetTypeList.add(newAssetType);
             }
@@ -118,6 +127,30 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
     }
 
 
+    @Override
+    public void updateAssetType(AssetType assetType) {
+        try (PreparedStatement ps = getConnection().prepareStatement(UPDATE_ASSET_TYPE)) {
+            ps.setString(1, assetType.getName());
+            ps.setString(2, assetType.getDescription());
+            ps.setString(3, assetType.getId());
+            ps.executeQuery();
+            try (PreparedStatement ps2 = getConnection().prepareStatement(UPDATE_ASSET_TYPE_PARAMETER)) {
+                for (AssetTypeParameter assetTypeParameter: assetType.getThresholdList()){
+                    if (assetTypeParameter.getValue() == null)
+                        ps2.setNull(1, Types.DOUBLE);
+                    else
+                        ps2.setDouble(1, assetTypeParameter.getValue());
+                    ps2.setString(2,assetType.getId());
+                    ps2.setString(3,assetTypeParameter.getName());
+                    ps2.addBatch();
+                }
+                ps2.executeBatch();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    @Override
     public void deleteAssetTypeByID(String assetTypeID) {
         try (PreparedStatement ps = getConnection().prepareStatement(DELETE_ASSET_TYPE)) {
             ps.setString(1,assetTypeID);

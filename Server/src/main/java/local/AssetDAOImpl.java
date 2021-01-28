@@ -170,6 +170,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
     }
 
 
+    @Override
     public ArrayList<Asset> getAllLiveAssetsDes() {
         ArrayList<Asset> assets = new ArrayList<>();
         ResultSet rs= nonParamQuery(GET_ALL_LIVE_ASSETS_DESCENDING);
@@ -237,7 +238,8 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
      * @param assetID represents the asset's ID
      * @author Paul
      */
-    private void resetAssetUpdate(int assetID){
+    @Override
+    public void resetAssetUpdate(int assetID){
         try {
             PreparedStatement ps = getConnection().prepareStatement(SET_UPDATED_FALSE);
             ps.setInt(1, assetID);
@@ -247,6 +249,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         }
     }
 
+    @Override
     public void setAssetUpdate(int assetID){
         try (PreparedStatement ps = getConnection().prepareStatement(SET_UPDATED_TRUE)) {
             ps.setInt(1, assetID);
@@ -263,7 +266,8 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
      * @param assetsQuery represents the result set of asset query
      * @author Paul
      */
-    private Asset createAssetFromQueryResult(ResultSet assetsQuery) throws SQLException {
+    @Override
+    public Asset createAssetFromQueryResult(ResultSet assetsQuery) throws SQLException {
         Asset newAsset = new Asset();
         newAsset.setId(assetsQuery.getInt("asset_id"));
         newAsset.setName(assetsQuery.getString("name"));
@@ -285,7 +289,8 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
      * @param assetID represents asset's id
      * @author Paul
      */
-    private AssetInfo createAssetInfo(int assetID){
+    @Override
+    public AssetInfo createAssetInfo(int assetID){
         AssetInfo newAssetInfo = new AssetInfo();
         try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_INFO_FROM_ASSET_ID)) {
             ps.setInt(1,assetID);
@@ -316,14 +321,6 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         return null;
     }
 
-    private ResultSet nonParamQuery(String query){
-        ResultSet rs = null;
-        try (PreparedStatement ps = getConnection().prepareStatement(query)) {
-            rs = ps.executeQuery();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return rs;
-    }
+
 
 }

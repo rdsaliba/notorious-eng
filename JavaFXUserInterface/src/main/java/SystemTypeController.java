@@ -19,7 +19,8 @@ public class SystemTypeController implements Initializable {
     //Configure the table and columns
     @FXML private TableView<SystemTypeList> tableView;
     @FXML private TableColumn<SystemTypeList,String> columnName;
-    @FXML private TableColumn<SystemTypeList,Integer> columnAssociatedAssets;
+    @FXML private TableColumn<SystemTypeList,Integer> columnLiveAssets;
+    @FXML private TableColumn<SystemTypeList,Integer> columnArchivedAssets;
     @FXML private TableColumn<SystemTypeList,Double> columnOk;
     @FXML private TableColumn<SystemTypeList,Double> columnAdvisory;
     @FXML private TableColumn<SystemTypeList,Double> columnCaution;
@@ -29,7 +30,6 @@ public class SystemTypeController implements Initializable {
     //Configure buttons
     @FXML private Button systemMenuBtn;
     @FXML private Button systemTypeMenuBtn;
-    @FXML private Button exitMenuBtn;
     @FXML private Button addTypeBtn;
 
     private UIUtilities uiUtilities;
@@ -54,42 +54,40 @@ public class SystemTypeController implements Initializable {
             row.setOnMouseClicked(event -> uiUtilities.changeScene(event, row, "/SystemTypeInfo", row.getItem()));
             return row;
         });
+        UIUtilities.autoResizeColumns(tableView);
     }
 
     /**
      * This method will return an ObservableList of SystemList objects
      *
      * @author Shirwa
+     *
+     * edit: There was an issue where the getAssetTypeIdCount() would not match in size to the assetTypeList()
+     * and it would crash the system if there was an asset type with no assets associated to it
+     * so this methode was rewrote
+     *
+     * @author Paul
      */
     private ObservableList<SystemTypeList> getSystemList() {
         ObservableList<SystemTypeList> systemtypelist = FXCollections.observableArrayList();
 
         AssetTypeDAOImpl assetTypeDOA = new AssetTypeDAOImpl();
 
-        ArrayList<AssetType> systemtypelistname = assetTypeDOA.getAssetTypeList();
-        ArrayList<Integer> systemtypelistcount = assetTypeDOA.getAssetTypeIdCount();
+        ArrayList<AssetType> assetTypeList = assetTypeDOA.getAssetTypeList();
 
-        for(int i=0;i<systemtypelistname.size();i++){
-            //For loop to define columns
-            double fail_value = 0,warning_value=0,caution_value=0,advisory_value=0,ok_value=0;
+        for (AssetType assetType: assetTypeList){
+            systemtypelist.add(new SystemTypeList(
+                    assetType,
+                    assetTypeDOA.getAssetTypeIdCount(assetType.getId(),true),
+                    assetTypeDOA.getAssetTypeIdCount(assetType.getId(),false),
+                    assetTypeDOA.getAssetTypeBoundary(assetType.getId(), TextConstants.OK_THRESHOLD),
+                    assetTypeDOA.getAssetTypeBoundary(assetType.getId(), TextConstants.CAUTION_THRESHOLD),
+                    assetTypeDOA.getAssetTypeBoundary(assetType.getId(), TextConstants.ADVISORY_THRESHOLD),
+                    assetTypeDOA.getAssetTypeBoundary(assetType.getId(), TextConstants.WARNING_THRESHOLD),
+                    assetTypeDOA.getAssetTypeBoundary(assetType.getId(), TextConstants.FAILED_THRESHOLD)
 
-            /*
-            * Each boundary type corresponds to the given number
-            * 0 - Failed
-            * 1 - Warning
-            * 2 - Caution
-            * 3 - Advisory
-            * 4 - Ok
-            * */
-            fail_value = assetTypeDOA.getAssetTypeBoundary(i+ 1, 0);
-            warning_value = assetTypeDOA.getAssetTypeBoundary(i + 1, 1);
-            caution_value = assetTypeDOA.getAssetTypeBoundary(i + 1, 2);
-            advisory_value = assetTypeDOA.getAssetTypeBoundary(i + 1, 3);
-            ok_value = assetTypeDOA.getAssetTypeBoundary(i + 1, 4);
-
-            systemtypelist.add(new SystemTypeList(systemtypelistname.get(i).getId(),systemtypelistname.get(i).getName(),systemtypelistcount.get(i),ok_value,advisory_value,caution_value,warning_value,fail_value));
+            ));
         }
-
         return systemtypelist;
     }
 
@@ -101,13 +99,7 @@ public class SystemTypeController implements Initializable {
      */
     public void attachEvents() {
         //set up the columns in the table
-        columnName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        columnAssociatedAssets.setCellValueFactory(new PropertyValueFactory<>("associated_assets"));
-        columnOk.setCellValueFactory(new PropertyValueFactory<>("value_ok"));
-        columnAdvisory.setCellValueFactory(new PropertyValueFactory<>("value_advisory"));
-        columnCaution.setCellValueFactory(new PropertyValueFactory<>("value_caution"));
-        columnWarning.setCellValueFactory(new PropertyValueFactory<>("value_warning"));
-        columnFailed.setCellValueFactory(new PropertyValueFactory<>("value_failed"));
+       attachColumnEvents();
 
         //Attach link to systemMenuButton to go to Systems.fxml
         systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
@@ -117,5 +109,21 @@ public class SystemTypeController implements Initializable {
 
         //Attach link to addTypeBtn to go to AddSystemType.fxml
         addTypeBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/AddSystemType"));
+    }
+
+    /**
+     * add the column events so they get filled with the correct information
+     *
+     * @author Paul
+     */
+    public void attachColumnEvents(){
+        columnName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        columnLiveAssets.setCellValueFactory(new PropertyValueFactory<>("liveAssets"));
+        columnArchivedAssets.setCellValueFactory(new PropertyValueFactory<>("archivedAssets"));
+        columnOk.setCellValueFactory(new PropertyValueFactory<>("valueOk"));
+        columnAdvisory.setCellValueFactory(new PropertyValueFactory<>("valueAdvisory"));
+        columnCaution.setCellValueFactory(new PropertyValueFactory<>("valueCaution"));
+        columnWarning.setCellValueFactory(new PropertyValueFactory<>("valueWarning"));
+        columnFailed.setCellValueFactory(new PropertyValueFactory<>("valueFailed"));
     }
 }
