@@ -65,6 +65,8 @@ public class SystemInfoController implements Initializable {
     @FXML
     private Text rulOutput;
     @FXML
+    private Text recommendationOutput;
+    @FXML
     private Text categoryOutput;
     @FXML
     private Text descriptionOutput;
@@ -121,6 +123,7 @@ public class SystemInfoController implements Initializable {
         categoryOutput.setText(system.getCategory());
 
         rulOutput.setText(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(system.getId())));
+        recommendationOutput.setText(system.getRecommendation());
 
         Timeline timeline =  new Timeline(new KeyFrame(Duration.millis(1000), e -> rulOutput.setText(String.valueOf(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(system.getId()))))));
 

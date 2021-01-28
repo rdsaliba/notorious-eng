@@ -5,6 +5,7 @@ import app.item.AssetTypeParameter;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
     private static final String INSERT_ASSET_TYPE = "INSERT INTO asset_type (name, description) values( ?,? )";
@@ -12,8 +13,9 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
     private static final String GET_ASSET_TYPES = "SELECT * FROM asset_type";
     private static final String GET_ASSET_TYPE_NAME_FROM_ID = "SELECT name FROM asset_type where asset_type_id = ?";
     private static final String GET_ASSET_TYPE_BOUNDARY = "SELECT *  FROM asset_type_parameters WHERE parameter_name = ? AND asset_type_id = ?";
+    private static final String GET_ASSET_TYPE_BOUNDARIES = "SELECT *  FROM asset_type_parameters WHERE asset_type_id = ?";
+    private static final String GET_ASSET_TYPE_ID_COUNT = "SELECT asset_type_id, COUNT(*) as 'count' FROM asset WHERE archived = 0 GROUP BY asset_type_id";
     private static final String DELETE_ASSET_TYPE = "DELETE FROM asset_type where asset_type_id = ?";
-    private static final String GET_ASSET_TYPE_ID_COUNT = "SELECT COUNT(*) as 'count' FROM asset WHERE archived = ? and asset_type_id =?";
     private static final String UPDATE_ASSET_TYPE = "UPDATE asset_type set name =?, description = ? where asset_type_id = ?";
     private static final String UPDATE_ASSET_TYPE_PARAMETER = "UPDATE asset_type_parameters set boundary = ? where asset_type_id = ? and parameter_name =?";
 
@@ -56,6 +58,27 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
         if (boundary == null || boundary.equals("null"))
             boundary= "-";
         return boundary;
+    }
+
+    /**
+     * Gets the boundary values for an Asset Type.
+     *
+     * @param asset_type_id
+     * @return
+     */
+    @Override
+    public HashMap<String, Double> getAssetTypeBoundaries(String asset_type_id) {
+        HashMap<String, Double> boundaries = new HashMap<>();
+        ResultSet rs;
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_TYPE_BOUNDARIES)) {
+            ps.setString(1, asset_type_id);
+            rs = ps.executeQuery();
+            while (rs.next())
+                boundaries.put(rs.getString("parameter_name"), rs.getDouble("boundary"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return boundaries;
     }
 
 
