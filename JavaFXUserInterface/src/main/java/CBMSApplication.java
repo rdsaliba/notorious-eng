@@ -6,16 +6,19 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class CBMSApplication extends Application{
+    private Scene scene;
+
     public static void main(String[] args) {
         launch(args);
     }
 
+
         @Override
         public void start(Stage primaryStage) throws Exception {
             Parent root = FXMLLoader.load(getClass().getResource("/Systems.fxml"));
-            Scene sample = new Scene(root);
+            scene = new Scene(root);
             primaryStage.setTitle("CBMS");
-            primaryStage.setScene(sample);
+            primaryStage.setScene(scene);
             primaryStage.show();
             primaryStage.setOnCloseRequest(e -> {
                 try {
