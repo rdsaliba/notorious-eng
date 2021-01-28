@@ -2,14 +2,11 @@ import app.item.AssetType;
 import app.item.AssetTypeParameter;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.StrokeType;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import local.AssetTypeDAOImpl;
 
 import java.net.URL;
@@ -25,18 +22,25 @@ public class AddSystemTypeController implements Initializable {
     @FXML
     private Button cancelBtn;
     @FXML
-    private Button addThresholdBtn;
-    @FXML
     private AnchorPane systemTypeInformation;
     @FXML
     private Button saveBtn;
     @FXML
     private TextField systemTypeName;
+    @FXML
+    private TextArea systemTypeDescription;
+    @FXML
+    private TextField thresholdOKValue;
+    @FXML
+    private TextField thresholdAdvisoryValue;
+    @FXML
+    private TextField thresholdCautionValue;
+    @FXML
+    private TextField thresholdWarningValue;
+    @FXML
+    private TextField thresholdFailedValue;
 
-    private int thresholdCount = 1;
-    private double spacing = 40.0;
     private UIUtilities uiUtilities;
-    private ArrayList<TextField> thresholdValues;
     private AssetTypeDAOImpl db;
     private ArrayList<AssetTypeParameter> assetTypeParameters;
 
@@ -51,18 +55,16 @@ public class AddSystemTypeController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        thresholdValues = new ArrayList<>();
         uiUtilities = new UIUtilities();
         db = new AssetTypeDAOImpl();
         assetTypeParameters = new ArrayList<>();
-        assetTypeParameters.add(new AssetTypeParameter());
         attachEvents();
     }
 
     /**
      * Attaches events to elements in the scene.
      *
-     * @author Jeff
+     * @author Jeff , Paul
      */
     public void attachEvents() {
         // Change scenes to Systems.fxml
@@ -70,64 +72,62 @@ public class AddSystemTypeController implements Initializable {
         //Attach link to systemTypeMenuBtn to go to SystemTypeList.fxml
         systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/SystemTypeList"));
         // Change scenes to Systems.fxml
-        cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
-        addThresholdBtn.setOnMouseClicked(mouseEvent -> addThresholdForm());
-        saveBtn.setOnMouseClicked(mouseEvent -> saveAssetType(assembleSystemType()));
+        cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/SystemTypeList"));
+        saveBtn.setOnMouseClicked(mouseEvent -> {
+            if (saveAssetType(assembleSystemType()))
+                uiUtilities.changeScene(mouseEvent, "/SystemTypeList");
+        });
+
+
+        thresholdOKValue.setTextFormatter( new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat,c)));
+        thresholdAdvisoryValue.setTextFormatter( new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat,c)));
+        thresholdCautionValue.setTextFormatter( new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat,c)));
+        thresholdWarningValue.setTextFormatter( new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat,c)));
+        thresholdFailedValue.setTextFormatter( new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat,c)));
     }
 
-    public void addThresholdForm() {
-        Text thresholdNameLabel = new Text("Threshold Name");
-        thresholdNameLabel.setFill(Paint.valueOf("#0c072e"));
-        thresholdNameLabel.setLayoutX(79.0);
-        thresholdNameLabel.setLayoutY(193.0 + (spacing * thresholdCount));
-        thresholdNameLabel.setStrokeType(StrokeType.OUTSIDE);
-        thresholdNameLabel.setFont(Font.font("Segoe UI Bold", 14));
 
-        TextField thresholdName = new TextField();
-        thresholdName.setLayoutX(200.0);
-        thresholdName.setLayoutY(175.0 + (spacing * thresholdCount));
-        thresholdName.setPrefHeight(25.0);
-        thresholdName.setPrefWidth(190);
-
-        Text thresholdValueLabel = new Text("Value");
-        thresholdValueLabel.setFill(Paint.valueOf("#0c072e"));
-        thresholdValueLabel.setLayoutX(405.0);
-        thresholdValueLabel.setLayoutY(193.0 + (spacing * thresholdCount));
-        thresholdValueLabel.setStrokeType(StrokeType.OUTSIDE);
-        thresholdValueLabel.setFont(Font.font("Segoe UI Bold", 14));
-
-        TextField thresholdValue = new TextField();
-        thresholdValue.setLayoutX(453.0);
-        thresholdValue.setLayoutY(175.0 + (spacing * thresholdCount));
-        thresholdValue.setPrefHeight(25.0);
-        thresholdValue.setPrefWidth(97.0);
-
-        thresholdCount++;
-        thresholdName.setId("thresholdName" + thresholdCount);
-        thresholdValue.setId(("thresholdValue" + thresholdCount));
-
-        systemTypeInformation.getChildren().addAll(thresholdNameLabel, thresholdName, thresholdValueLabel, thresholdValue);
-        assetTypeParameters.add(new AssetTypeParameter());
-    }
-
+    /**
+     *  Create an asset type object from the user's input
+     *
+     * @author Jeff , Paul
+     */
     public AssetType assembleSystemType() {
-        AssetType assetType = new AssetType(systemTypeName.getText());
-        for (Node node : systemTypeInformation.getChildren()) {
-            if (node instanceof TextField) {
-                if(node.getId().contains("thresholdName")) {
-                    assetTypeParameters.get(thresholdCount - 1).setName(((TextField) node).getText());
-                }
-                else if(node.getId().contains("thresholdValue")) {
-                    assetTypeParameters.get(thresholdCount - 1).setValue(Double.parseDouble(((TextField) node).getText()));
-                    thresholdCount--;
-                }
-            }
+        if (systemTypeName.getText().length()>0 && systemTypeDescription.getText().length()>0){
+            AssetType assetType = new AssetType(systemTypeName.getText());
+            assetType.setDescription(systemTypeDescription.getText());
+
+            Double okValue = thresholdOKValue.getText().isEmpty() ? null : Double.parseDouble(thresholdOKValue.getText());
+            assetTypeParameters.add(new AssetTypeParameter(TextConstants.OK_THRESHOLD,okValue));
+
+            Double advisoryValue = thresholdAdvisoryValue.getText().isEmpty() ? null : Double.parseDouble(thresholdAdvisoryValue.getText());
+            assetTypeParameters.add(new AssetTypeParameter(TextConstants.ADVISORY_THRESHOLD,advisoryValue));
+
+            Double cautionValue = thresholdCautionValue.getText().isEmpty() ? null : Double.parseDouble(thresholdCautionValue.getText());
+            assetTypeParameters.add(new AssetTypeParameter(TextConstants.CAUTION_THRESHOLD,cautionValue));
+
+            Double warningValue = thresholdWarningValue.getText().isEmpty() ? null : Double.parseDouble(thresholdWarningValue.getText());
+            assetTypeParameters.add(new AssetTypeParameter(TextConstants.WARNING_THRESHOLD,warningValue));
+
+            Double failedValue = thresholdFailedValue.getText().isEmpty() ? null : Double.parseDouble(thresholdFailedValue.getText());
+            assetTypeParameters.add(new AssetTypeParameter(TextConstants.FAILED_THRESHOLD,failedValue));
+
+            assetType.setThresholdList(assetTypeParameters);
+            return assetType;
         }
-        assetType.setThresholdList(assetTypeParameters);
-        return assetType;
+        return null;
     }
 
-    public void saveAssetType(AssetType assetType) {
-        db.insertAssetType(assetType);
+    /**
+     * save the asset type to the database
+     *
+     * @author Jeff , Paul
+     */
+    public boolean saveAssetType(AssetType assetType) {
+        if (assetType != null){
+            db.insertAssetType(assetType);
+            return true;
+        }
+        return false;
     }
 }
