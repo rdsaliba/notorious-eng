@@ -131,7 +131,7 @@
             </Text>
             <TextField layoutX="184.0" layoutY="88.0" prefHeight="40.0" prefWidth="350.0"/>
         </AnchorPane>
-        <Button id="saveBtn" layoutX="702.0" layoutY="653.0" mnemonicParsing="false" stylesheets="@css/style.css"
+        <Button fx:id="saveBtn" layoutX="702.0" layoutY="653.0" mnemonicParsing="false" stylesheets="@css/style.css"
                 text="Save" textFill="WHITE" AnchorPane.bottomAnchor="23.799999999999955"
                 AnchorPane.rightAnchor="162.60000000000002">
             <font>
