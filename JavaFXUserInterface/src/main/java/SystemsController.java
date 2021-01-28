@@ -27,7 +27,6 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import local.AssetTypeDAOImpl;
 import local.ModelDAOImpl;
-import org.nd4j.shade.jackson.databind.annotation.JsonAppend;
 import rul.assessment.AssessmentController;
 
 import java.io.IOException;

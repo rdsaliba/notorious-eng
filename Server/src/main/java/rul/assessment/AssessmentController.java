@@ -7,7 +7,6 @@
  */
 package rul.assessment;
 
-import app.item.Asset;
 import local.RulDAOImpl;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
@@ -33,6 +32,4 @@ public class AssessmentController {
     public String getRecommendation(Double rulEstimation, String assetTypeID) {
         return recommendationAssessment.getRecommendation(rulEstimation, assetTypeID);
     }
-
-
 }

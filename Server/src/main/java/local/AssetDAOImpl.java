@@ -232,9 +232,15 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         }
     }
 
+    /**
+     * Updates the recommendation column for an Asset.
+     *
+     * @param assetID
+     * @param recommendation
+     */
+    @Override
     public void updateRecommendation(int assetID, String recommendation) {
-        try {
-            PreparedStatement ps = getConnection().prepareStatement(UPDATE_RECOMMENDATION);
+        try (PreparedStatement ps = getConnection().prepareStatement(UPDATE_RECOMMENDATION)) {
             ps.setString(1, recommendation);
             ps.setInt(2, assetID);
             ps.executeQuery();

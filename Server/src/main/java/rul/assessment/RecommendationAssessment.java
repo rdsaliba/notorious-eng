@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 public class RecommendationAssessment {
 
-    private AssetTypeDAOImpl assetTypeDAO;
+    private final AssetTypeDAOImpl assetTypeDAO;
 
     public RecommendationAssessment() {
         assetTypeDAO = new AssetTypeDAOImpl();
@@ -17,7 +17,7 @@ public class RecommendationAssessment {
         return calculateBoundaries(rulEstimation, boundaries);
     }
 
-    private HashMap getAssetTypeBoundaries(String assetTypeID) {
+    private HashMap<String, Double> getAssetTypeBoundaries(String assetTypeID) {
         return assetTypeDAO.getAssetTypeBoundaries(assetTypeID);
     }
 
