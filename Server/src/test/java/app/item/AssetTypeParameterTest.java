@@ -13,7 +13,7 @@ public class AssetTypeParameterTest {
     @Before
     public void setup() {
         assetTypeParameterA = new AssetTypeParameter();
-        assetTypeParameterB = new AssetTypeParameter("aTypeParamTest", 15);
+        assetTypeParameterB = new AssetTypeParameter("aTypeParamTest", 15.0);
     }
 
     @After
@@ -35,13 +35,13 @@ public class AssetTypeParameterTest {
 
     @Test
     public void getValue() {
-        assertEquals("aTypeParamA", 0, assetTypeParameterA.getValue(),1);
-        assertEquals("aTypeParamB", 15, assetTypeParameterB.getValue(),1);
+        assertNull("aTypeParamA", assetTypeParameterA.getValue());
+        assertEquals("aTypeParamB", 15.0, assetTypeParameterB.getValue(),1);
     }
 
     @Test
     public void constWithAllParams() {
-        AssetTypeParameter temp = new AssetTypeParameter("aTypeParamTest", 10);
+        AssetTypeParameter temp = new AssetTypeParameter("aTypeParamTest", 10.0);
         assertNotNull("A new asset type parameter should have created", temp);
         assertEquals("New asset type parameter name", "aTypeParamTest", temp.getName());
         assertEquals("New asset type parameter value", 10, temp.getValue(),1);
@@ -55,13 +55,13 @@ public class AssetTypeParameterTest {
 
     @Test
     public void setValue() {
-        assetTypeParameterA.setValue(20);
+        assetTypeParameterA.setValue(20.0);
         assertEquals("aTypeParamA", 20, assetTypeParameterA.getValue(),1);
     }
 
     @Test
     public void aTypeParamToString() {
-        assertEquals("AssetTypeParameter{name='null', value=0.0}", assetTypeParameterA.toString());
+        assertEquals("AssetTypeParameter{name='null', value=null}", assetTypeParameterA.toString());
         assertEquals("AssetTypeParameter{name='aTypeParamTest', value=15.0}", assetTypeParameterB.toString());
     }
 }
