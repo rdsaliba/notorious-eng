@@ -8,10 +8,10 @@
  */
 package local;
 
-import app.TrainedModel;
 import app.item.Asset;
 import app.item.AssetAttribute;
 import app.item.AssetInfo;
+import app.item.TrainedModel;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

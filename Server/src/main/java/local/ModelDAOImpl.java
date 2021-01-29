@@ -8,7 +8,7 @@
  */
 package local;
 
-import app.TrainedModel;
+import app.item.TrainedModel;
 import weka.classifiers.Classifier;
 
 import java.io.ByteArrayInputStream;

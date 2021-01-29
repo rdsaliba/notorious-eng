@@ -5,7 +5,7 @@
   @version 1.0
   @last_edit 12/27/2020
  */
-package app;
+package app.item;
 
 
 import weka.classifiers.Classifier;

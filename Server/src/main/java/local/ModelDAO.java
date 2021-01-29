@@ -7,7 +7,7 @@
  */
 package local;
 
-import app.TrainedModel;
+import app.item.TrainedModel;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
