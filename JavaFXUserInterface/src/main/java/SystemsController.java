@@ -193,9 +193,12 @@ public class SystemsController implements Initializable {
             Text systemName = new Text(system.getSerialNo());
             Text systemType = new Text(assetTypeDAO.getNameFromID(system.getAssetTypeID()));
             // UI String constants
+            String RECOMMENDATION = "Recommendation: ";
             String LINEAR_RUL = "Linear RUL: ";
             Text linearLabel = new Text(LINEAR_RUL);
             Text linearRUL = new Text(String.valueOf(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(system.getId()))));
+            Text recommendationLabel = new Text(RECOMMENDATION);
+            Text recommendation = new Text(system.getRecommendation());
 
             Timeline timeline =
                     new Timeline(new KeyFrame(Duration.millis(1000), e -> linearRUL.setText(String.valueOf(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(system.getId()))))));
@@ -209,11 +212,17 @@ public class SystemsController implements Initializable {
             systemType.setId("systemType");
             linearLabel.setId("linearLabel");
             linearRUL.setId("linearRUL");
+            recommendationLabel.setId("recommendationLabel");
+            recommendation.setId("recommendation");
 
             systemName.setLayoutX(14.0);
             systemName.setLayoutY(28.0);
             systemType.setLayoutX(14.0);
             systemType.setLayoutY(60.0);
+            recommendationLabel.setLayoutX(14.0);
+            recommendationLabel.setLayoutY(100.0);
+            recommendation.setLayoutX(230.0);
+            recommendation.setLayoutY(100.0);
             linearLabel.setLayoutX(14.0);
             linearLabel.setLayoutY(121.0);
             linearRUL.setLayoutX(230.0);
@@ -223,6 +232,8 @@ public class SystemsController implements Initializable {
             pane.getChildren().add(systemType);
             pane.getChildren().add(linearLabel);
             pane.getChildren().add(linearRUL);
+            pane.getChildren().add(recommendationLabel);
+            pane.getChildren().add(recommendation);
 
             boxes.add(pane);
         }
@@ -268,6 +279,11 @@ public class SystemsController implements Initializable {
         modelRULCol.setCellValueFactory(cellData -> new SimpleDoubleProperty(
                 Double.parseDouble(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(cellData.getValue().getId())))).asObject());
 
+        String RECOMMENDATION_COL = "Recommendation";
+        TableColumn<Asset, String> recommendationCol = new TableColumn<>(RECOMMENDATION_COL);
+        recommendationCol.setCellValueFactory(
+                new PropertyValueFactory<>("recommendation"));
+
         String LOCATION_COL = "Location";
         TableColumn<Asset, String> locationCol = new TableColumn<>(LOCATION_COL);
         locationCol.setCellValueFactory(
@@ -295,7 +311,7 @@ public class SystemsController implements Initializable {
 
         table.setItems(systems);
         table.setId("listTable");
-        table.getColumns().addAll(systemTypeCol, serialNoCol,modelCol, modelRULCol, locationCol,siteCol,categoryCol,manufacturerCol,descriptionCol);
+        table.getColumns().addAll(systemTypeCol, serialNoCol,modelCol, modelRULCol, recommendationCol, locationCol,siteCol,categoryCol,manufacturerCol,descriptionCol);
         AnchorPane.setBottomAnchor(table, 0.0);
         AnchorPane.setTopAnchor(table, 5.0);
         AnchorPane.setRightAnchor(table, 0.0);

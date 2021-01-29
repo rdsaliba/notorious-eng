@@ -79,7 +79,7 @@
                     <Font name="Segoe UI Bold" size="14.0" />
                 </font>
             </Text>
-            <TextField layoutX="180.0" layoutY="46.0" prefHeight="40.0" prefWidth="350.0"/>
+            <TextField fx:id="systemNameInput" layoutX="180.0" layoutY="46.0" prefHeight="40.0" prefWidth="350.0"/>
             <Text fill="#0c072e" layoutX="69.0" layoutY="123.0" strokeType="OUTSIDE" strokeWidth="0.0" text="System Type">
                 <font>
                     <Font name="Segoe UI Bold" size="14.0" />
@@ -97,19 +97,19 @@
                     <Font name="Segoe UI Bold" size="14.0" />
                 </font>
             </Text>
-            <TextField layoutX="180.0" layoutY="263.0" prefHeight="40.0" prefWidth="350.0"/>
+            <TextField fx:id="serialNumberInput" layoutX="180.0" layoutY="263.0" prefHeight="40.0" prefWidth="350.0"/>
             <Text fill="#0c072e" layoutX="65.0" layoutY="340.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Manufacturer">
                 <font>
                     <Font name="Segoe UI Bold" size="14.0" />
                 </font>
             </Text>
-            <TextField layoutX="180.0" layoutY="315.0" prefHeight="40.0" prefWidth="350.0"/>
+            <TextField fx:id="manufacturerInput" layoutX="180.0" layoutY="315.0" prefHeight="40.0" prefWidth="350.0"/>
             <Text fill="#0c072e" layoutX="88.0" layoutY="392.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Category" AnchorPane.leftAnchor="88.0">
                 <font>
                     <Font name="Segoe UI Bold" size="14.0" />
                 </font>
             </Text>
-            <TextField layoutX="180.0" layoutY="367.0" prefHeight="40.0" prefWidth="350.0"
+            <TextField fx:id="categoryInput" layoutX="180.0" layoutY="367.0" prefHeight="40.0" prefWidth="350.0"
                        AnchorPane.leftAnchor="177.0"/>
         </AnchorPane>
         <AnchorPane layoutX="42.0" layoutY="496.0" prefHeight="148.0" prefWidth="867.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #F0F0F0;" AnchorPane.bottomAnchor="68.0" AnchorPane.leftAnchor="42.0" AnchorPane.rightAnchor="42.0" AnchorPane.topAnchor="496.0">
@@ -123,13 +123,13 @@
                     <Font name="Segoe UI Bold" size="14.0" />
                 </font>
             </Text>
-            <TextField layoutX="184.0" layoutY="36.0" prefHeight="40.0" prefWidth="350.0"/>
+            <TextField fx:id="siteInput" layoutX="184.0" layoutY="36.0" prefHeight="40.0" prefWidth="350.0"/>
             <Text fill="#0c072e" layoutX="98.0" layoutY="106.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Location">
                 <font>
                     <Font name="Segoe UI Bold" size="14.0" />
                 </font>
             </Text>
-            <TextField layoutX="184.0" layoutY="88.0" prefHeight="40.0" prefWidth="350.0"/>
+            <TextField fx:id="locationInput" layoutX="184.0" layoutY="88.0" prefHeight="40.0" prefWidth="350.0"/>
         </AnchorPane>
         <Button fx:id="saveBtn" layoutX="702.0" layoutY="653.0" mnemonicParsing="false" stylesheets="@css/style.css"
                 text="Save" textFill="WHITE" AnchorPane.bottomAnchor="23.799999999999955"

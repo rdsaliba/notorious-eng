@@ -13,9 +13,11 @@ import weka.core.Instances;
 
 public class AssessmentController {
     private final HealthAssessment healthAssessment;
+    private final RecommendationAssessment recommendationAssessment;
 
     public AssessmentController() {
         healthAssessment = new HealthAssessment();
+        recommendationAssessment = new RecommendationAssessment();
     }
 
     public static double getLatestEstimate(int assetID) {
@@ -27,5 +29,7 @@ public class AssessmentController {
         return healthAssessment.predictRUL(testData, classifier);
     }
 
-
+    public String getRecommendation(Double rulEstimation, String assetTypeID) {
+        return recommendationAssessment.getRecommendation(rulEstimation, assetTypeID);
+    }
 }

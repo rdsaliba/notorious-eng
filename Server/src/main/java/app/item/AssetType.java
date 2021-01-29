@@ -5,9 +5,26 @@ import java.util.ArrayList;
 public class AssetType {
     private String id;
     private String name;
+    private String description;
     private ArrayList<AssetTypeParameter> thresholdList;
 
     public AssetType() {
+
+    }
+
+    public AssetType(AssetType assetType) {
+        this.id = assetType.getId();
+        this.name = assetType.getName();
+        this.description = assetType.getDescription();
+        this.thresholdList = assetType.getThresholdList();
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public AssetType(String name) {
@@ -18,14 +35,6 @@ public class AssetType {
     public AssetType(String name, ArrayList<AssetTypeParameter> thresholdList) {
         this.name = name;
         this.thresholdList = thresholdList;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -42,6 +51,18 @@ public class AssetType {
 
     public void setThresholdList(ArrayList<AssetTypeParameter> thresholdList) {
         this.thresholdList = thresholdList;
+    }
+
+    public void addThresholdValue(AssetTypeParameter parameter) {
+        thresholdList.add(parameter);
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override

@@ -2,12 +2,12 @@ package app.item;
 
 public class AssetTypeParameter {
     private String name;
-    private double value;
+    private Double value;
 
     public AssetTypeParameter() {
     }
 
-    public AssetTypeParameter(String name, double value) {
+    public AssetTypeParameter(String name, Double value) {
         this.name = name;
         this.value = value;
     }
@@ -16,7 +16,7 @@ public class AssetTypeParameter {
         return name;
     }
 
-    public double getValue() {
+    public Double getValue() {
         return value;
     }
 
@@ -24,7 +24,7 @@ public class AssetTypeParameter {
         this.name = name;
     }
 
-    public void setValue(double value) {
+    public void setValue(Double value) {
         this.value = value;
     }
 

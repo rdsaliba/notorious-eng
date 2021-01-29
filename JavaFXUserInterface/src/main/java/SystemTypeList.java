@@ -1,82 +1,152 @@
-import javafx.beans.property.SimpleStringProperty;
+import app.item.AssetType;
+import app.item.AssetTypeParameter;
+
+import java.util.ArrayList;
 
 public class SystemTypeList {
-    private SimpleStringProperty name;
-    private int associated_assets;
-    private double value_ok,value_caution,value_advisory,value_warning,value_failed;
+    private AssetType assetType;
+    private int liveAssets, archivedAssets;
+    private String valueOk, valueCaution, valueAdvisory, valueWarning, valueFailed;
 
-    public SystemTypeList(String name, int associated_assets) {
-        this.name = new SimpleStringProperty(name);
-        this.associated_assets = associated_assets;
+    public SystemTypeList(String name, int liveAssets) {
+        this.assetType = new AssetType(name);
+        this.liveAssets = liveAssets;
     }
 
-    public SystemTypeList(String name, int associated_assets, double value_ok, double value_caution, double value_advisory, double value_warning, double value_failed) {
-        this.name = new SimpleStringProperty(name);
-        this.associated_assets = associated_assets;
-        this.value_ok = value_ok;
-        this.value_caution = value_caution;
-        this.value_advisory = value_advisory;
-        this.value_warning = value_warning;
-        this.value_failed = value_failed;
+    public SystemTypeList(SystemTypeList copy) {
+        this.assetType = new AssetType(copy.getAssetType());
+        this.liveAssets = copy.getLiveAssets();
+        this.archivedAssets = copy.getArchivedAssets();
+        this.valueOk = copy.getValueOk();
+        this.valueCaution = copy.getValueCaution();
+        this.valueAdvisory = copy.getValueAdvisory();
+        this.valueWarning = copy.getValueWarning();
+        this.valueFailed = copy.getValueFailed();
     }
 
-    public double getValue_ok() {
-        return value_ok;
+    public SystemTypeList(AssetType assetType, int liveAssets, int archivedAssets, String valueOk, String valueCaution, String valueAdvisory, String valueWarning, String valueFailed) {
+        this.assetType = assetType;
+        this.liveAssets = liveAssets;
+        this.archivedAssets = archivedAssets;
+        this.valueOk = valueOk;
+        this.valueCaution = valueCaution;
+        this.valueAdvisory = valueAdvisory;
+        this.valueWarning = valueWarning;
+        this.valueFailed = valueFailed;
     }
 
-    public void setValue_ok(double value_ok) {
-        this.value_ok = value_ok;
+    public AssetType getAssetType() {
+        return assetType;
     }
 
-    public double getValue_caution() {
-        return value_caution;
+    public void setAssetType(AssetType assetType) {
+        this.assetType = assetType;
     }
 
-    public void setValue_caution(double value_caution) {
-        this.value_caution = value_caution;
+    public int getLiveAssets() {
+        return liveAssets;
     }
 
-    public double getValue_advisory() {
-        return value_advisory;
+    public void setLiveAssets(int liveAssets) {
+        this.liveAssets = liveAssets;
     }
 
-    public void setValue_advisory(double value_advisory) {
-        this.value_advisory = value_advisory;
+    public int getArchivedAssets() {
+        return archivedAssets;
     }
 
-    public double getValue_warning() {
-        return value_warning;
+    public void setArchivedAssets(int archivedAssets) {
+        this.archivedAssets = archivedAssets;
     }
 
-    public void setValue_warning(double value_warning) {
-        this.value_warning = value_warning;
+    public String getValueOk() {
+        return valueOk;
     }
 
-    public double getValue_failed() {
-        return value_failed;
+    public void setValueOk(String valueOk) {
+        this.valueOk = valueOk;
     }
 
-    public void setValue_failed(double value_failed) {
-        this.value_failed = value_failed;
+    public String getValueCaution() {
+        return valueCaution;
+    }
+
+    public void setValueCaution(String valueCaution) {
+        this.valueCaution = valueCaution;
+    }
+
+    public String getValueAdvisory() {
+        return valueAdvisory;
+    }
+
+    public void setValueAdvisory(String valueAdvisory) {
+        this.valueAdvisory = valueAdvisory;
+    }
+
+    public String getValueWarning() {
+        return valueWarning;
+    }
+
+    public void setValueWarning(String valueWarning) {
+        this.valueWarning = valueWarning;
+    }
+
+    public String getValueFailed() {
+        return valueFailed;
+    }
+
+    public void setValueFailed(String valueFailed) {
+        this.valueFailed = valueFailed;
+    }
+
+    public String getId() {
+        return assetType.getId();
     }
 
     public String getName() {
-        return name.get();
+        return assetType.getName();
     }
-
-    public SimpleStringProperty nameProperty() {
-        return name;
+    public String getDescription() {
+        return assetType.getDescription();
     }
 
     public void setName(String name) {
-        this.name.set(name);
+        this.assetType.setName(name);
     }
 
-    public int getAssociated_assets() {
-        return associated_assets;
-    }
+    public AssetType toAssetType(){
+        AssetType newAssetType = new AssetType();
+        ArrayList<AssetTypeParameter> newAssetTypeParameter = new ArrayList<>();
+        newAssetType.setId(assetType.getId());
+        newAssetType.setName(assetType.getName());
+        newAssetType.setDescription(assetType.getDescription());
 
-    public void setAssociated_assets(int associated_assets) {
-        this.associated_assets = associated_assets;
+        if (this.valueOk.isEmpty())
+            newAssetTypeParameter.add( new AssetTypeParameter(TextConstants.OK_THRESHOLD,null));
+        else if (!this.valueOk.equals("-"))
+            newAssetTypeParameter.add( new AssetTypeParameter(TextConstants.OK_THRESHOLD,Double.parseDouble(this.valueOk)));
+
+        if (this.valueAdvisory.isEmpty())
+            newAssetTypeParameter.add( new AssetTypeParameter(TextConstants.ADVISORY_THRESHOLD,null));
+        else if (!this.valueAdvisory.equals("-"))
+            newAssetTypeParameter.add( new AssetTypeParameter(TextConstants.ADVISORY_THRESHOLD,Double.parseDouble(this.valueAdvisory)));
+
+        if (this.valueCaution.isEmpty())
+            newAssetTypeParameter.add( new AssetTypeParameter(TextConstants.CAUTION_THRESHOLD,null));
+        else if (!this.valueCaution.equals("-"))
+            newAssetTypeParameter.add( new AssetTypeParameter(TextConstants.CAUTION_THRESHOLD,Double.parseDouble(this.valueCaution)));
+
+        if (this.valueWarning.isEmpty())
+            newAssetTypeParameter.add( new AssetTypeParameter(TextConstants.WARNING_THRESHOLD,null));
+        else if (!this.valueWarning.equals("-"))
+            newAssetTypeParameter.add( new AssetTypeParameter(TextConstants.WARNING_THRESHOLD,Double.parseDouble(this.valueWarning)));
+
+        if (this.valueFailed.isEmpty())
+            newAssetTypeParameter.add( new AssetTypeParameter(TextConstants.FAILED_THRESHOLD,null));
+        else if (!this.valueFailed.equals("-"))
+            newAssetTypeParameter.add( new AssetTypeParameter(TextConstants.FAILED_THRESHOLD,Double.parseDouble(this.valueFailed)));
+
+        newAssetType.setThresholdList(newAssetTypeParameter);
+        return newAssetType;
     }
 }

@@ -9,6 +9,9 @@
 package local;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class DAO {
     DatabaseConnection databaseConnection;
@@ -19,5 +22,15 @@ public class DAO {
 
     public Connection getConnection() {
         return DatabaseConnection.getConnection();
+    }
+
+    public ResultSet nonParamQuery(String query){
+        ResultSet rs = null;
+        try (PreparedStatement ps = getConnection().prepareStatement(query)) {
+            rs = ps.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return rs;
     }
 }

@@ -18,7 +18,7 @@
     -fx-fill: '#0c072e';
 }
 
-#systemType, #linearLabel, #linearRUL, #linearRUL, #lstmLabel, #lstmRUL
+#systemType, #linearLabel, #linearRUL, #linearRUL, #lstmLabel, #lstmRUL, #recommendation, #recommendationLabel
 {
     -fx-font-family: 'Segoe UI';
     -fx-font-size: 16px;
@@ -33,7 +33,7 @@
     -fx-font-family: 'Segoe UI';
     -fx-font-size: 16px;
     -fx-padding: 0 40px 0 40px;
-    -fx-border-width: 2px;
+    -fx-border-width: 3px;
     -fx-border-color: transparent transparent transparent transparent;
 }
 

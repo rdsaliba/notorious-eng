@@ -31,10 +31,8 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
     private static final String INSERT_NEW_ASSET_MEASUREMENT="INSERT INTO asset_model_calculation values( ? , ? ,now(), ?)";
     private static final String SET_UPDATED_FALSE="UPDATE asset set updated = 0 where asset_id = ?";
     private static final String SET_UPDATED_TRUE = "UPDATE asset set updated = 1 where asset_id = ?";
-    private static final String GET_ASSET_FROM_ASSET_ID="select * from asset where asset_id = ?";
-    private static final String GET_LATEST_MEASUREMENT_TIME_FROM_ASSET_ID ="SELECT time FROM attribute_measurements am, attribute att WHERE att.attribute_id=am.attribute_id AND am.asset_id = ? order by time desc limit 1";
     private static final String INSERT_ASSET = "INSERT INTO asset (name, asset_type_id, description, sn, manufacturer, category, site, location, unit_nb) values(?,?,?,?,?,?,?,?,?)";
-
+    private static final String UPDATE_RECOMMENDATION = "UPDATE asset set recommendation = ? WHERE asset_id = ?";
     /**
      * This will return an arraylist of assets that have the updated tag set to true
      * it will be used to identify which asset need new RUL measurements
@@ -92,12 +90,12 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
     @Override
     public ArrayList<String> getAttributesNameFromAssetID(int assetID) {
         ArrayList<String> attributeNames = new ArrayList<>();
-        ResultSet queryResult;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_ATTRIBUTES_NAMES_FROM_ASSET_ID)) {
             ps.setInt(1, assetID);
-            queryResult = ps.executeQuery();
-            while (queryResult.next())
-                attributeNames.add(queryResult.getString("attribute_name"));
+            try (ResultSet queryResult = ps.executeQuery()) {
+                while (queryResult.next())
+                    attributeNames.add(queryResult.getString("attribute_name"));
+            }
         } catch (SQLException e){
             e.printStackTrace();
         }
@@ -116,12 +114,12 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
     @Override
     public ArrayList<Asset> getAssetsFromAssetTypeID(int assetTypeID) {
         ArrayList<Asset> assets = new ArrayList<>();
-        ResultSet rs;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSETS_FROM_ASSET_TYPE_ID)) {
             ps.setInt(1, assetTypeID);
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                assets.add(createAssetFromQueryResult(rs));
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    assets.add(createAssetFromQueryResult(rs));
+                }
             }
         } catch (SQLException e){
             e.printStackTrace();
@@ -138,13 +136,12 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
     @Override
     public String getAssetTypeNameFromID(String assetTypeID) {
         String name = "null";
-        ResultSet queryResult;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_TYPE_NAME_FROM_ASSET_ID)) {
             ps.setString(1, assetTypeID);
-            queryResult = ps.executeQuery();
-
-            if (queryResult.next())
-                name = queryResult.getString("name");
+            try (ResultSet queryResult = ps.executeQuery()) {
+                if (queryResult.next())
+                    name = queryResult.getString("name");
+            }
         } catch (SQLException e){
             e.printStackTrace();
         }
@@ -170,6 +167,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
     }
 
 
+    @Override
     public ArrayList<Asset> getAllLiveAssetsDes() {
         ArrayList<Asset> assets = new ArrayList<>();
         ResultSet rs= nonParamQuery(GET_ALL_LIVE_ASSETS_DESCENDING);
@@ -232,14 +230,31 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
     }
 
     /**
+     * Updates the recommendation column for an Asset.
+     *
+     * @param assetID is the ID of the asset being passed for assessing the recommendation
+     * @param recommendation is the recommendation label
+     */
+    @Override
+    public void updateRecommendation(int assetID, String recommendation) {
+        try (PreparedStatement ps = getConnection().prepareStatement(UPDATE_RECOMMENDATION)) {
+            ps.setString(1, recommendation);
+            ps.setInt(2, assetID);
+            ps.executeQuery();
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * Given an asset id, this function will set the updated status of that asset to false;
      *
      * @param assetID represents the asset's ID
      * @author Paul
      */
-    private void resetAssetUpdate(int assetID){
-        try {
-            PreparedStatement ps = getConnection().prepareStatement(SET_UPDATED_FALSE);
+    @Override
+    public void resetAssetUpdate(int assetID){
+        try (PreparedStatement ps = getConnection().prepareStatement(SET_UPDATED_FALSE)) {
             ps.setInt(1, assetID);
             ps.executeQuery();
         } catch (SQLException e){
@@ -247,6 +262,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         }
     }
 
+    @Override
     public void setAssetUpdate(int assetID){
         try (PreparedStatement ps = getConnection().prepareStatement(SET_UPDATED_TRUE)) {
             ps.setInt(1, assetID);
@@ -263,7 +279,8 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
      * @param assetsQuery represents the result set of asset query
      * @author Paul
      */
-    private Asset createAssetFromQueryResult(ResultSet assetsQuery) throws SQLException {
+    @Override
+    public Asset createAssetFromQueryResult(ResultSet assetsQuery) throws SQLException {
         Asset newAsset = new Asset();
         newAsset.setId(assetsQuery.getInt("asset_id"));
         newAsset.setName(assetsQuery.getString("name"));
@@ -274,6 +291,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         newAsset.setManufacturer(assetsQuery.getString("manufacturer"));
         newAsset.setSite(assetsQuery.getString("site"));
         newAsset.setSerialNo(assetsQuery.getString("sn"));
+        newAsset.setRecommendation(assetsQuery.getString("recommendation"));
         newAsset.setAssetInfo(createAssetInfo(newAsset.getId()));
         return newAsset;
     }
@@ -285,7 +303,8 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
      * @param assetID represents asset's id
      * @author Paul
      */
-    private AssetInfo createAssetInfo(int assetID){
+    @Override
+    public AssetInfo createAssetInfo(int assetID){
         AssetInfo newAssetInfo = new AssetInfo();
         try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_INFO_FROM_ASSET_ID)) {
             ps.setInt(1,assetID);
@@ -316,14 +335,6 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         return null;
     }
 
-    private ResultSet nonParamQuery(String query){
-        ResultSet rs = null;
-        try (PreparedStatement ps = getConnection().prepareStatement(query)) {
-            rs = ps.executeQuery();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return rs;
-    }
+
 
 }

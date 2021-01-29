@@ -1,51 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="712.0" prefWidth="1026.0" stylesheets="@css/systeminfo.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="SystemInfoController">
     <children>
         <VBox layoutY="169.0" prefHeight="543.0" prefWidth="74.0" style="-fx-background-color: #0C072E;" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="169.0">
             <children>
                 <Button fx:id="systemMenuBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0" prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css" text="Systems" textAlignment="CENTER" textFill="#f0f0f0">
                     <font>
-                        <Font name="Segoe UI Bold" size="14.0"/>
+                        <Font name="Segoe UI Bold" size="14.0" />
                     </font>
                     <graphic>
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@imgs/outline_dvr_white_18dp.png"/>
+                                <Image url="@imgs/outline_dvr_white_18dp.png" />
                             </image>
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button fx:id="systemTypeMenuBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0"
-                        prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css"
-                        text="System&#10;Types" textAlignment="CENTER" textFill="#f0f0f0" translateY="15.0">
+                <Button fx:id="systemTypeMenuBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0" prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css" text="System&#10;Types" textAlignment="CENTER" textFill="#f0f0f0" translateY="15.0">
                     <font>
-                        <Font name="Segoe UI Bold" size="14.0"/>
+                        <Font name="Segoe UI Bold" size="14.0" />
                     </font>
                     <graphic>
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@imgs/outline_type_white.png"/>
+                                <Image url="@imgs/outline_type_white.png" />
                             </image>
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button fx:id="exitMenuBtn" contentDisplay="TOP" layoutX="10.0" layoutY="10.0" mnemonicParsing="false"
-                        prefHeight="74.0" prefWidth="74.0" style="-fx-background-radius: 0;"
-                        stylesheets="@css/style.css" text="Exit" textAlignment="CENTER" textFill="#f0f0f0"
-                        translateY="290.0">
+                <Button fx:id="exitMenuBtn" contentDisplay="TOP" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="74.0" prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css" text="Exit" textAlignment="CENTER" textFill="#f0f0f0" translateY="290.0">
                     <font>
-                        <Font name="Segoe UI Bold" size="14.0"/>
+                        <Font name="Segoe UI Bold" size="14.0" />
                     </font>
                     <graphic>
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@imgs/outline_exit_to_app_white_18dp.png"/>
+                                <Image url="@imgs/outline_exit_to_app_white_18dp.png" />
                             </image>
                         </ImageView>
                     </graphic>
@@ -70,131 +74,60 @@
                 </Button>
             </children>
         </AnchorPane>
-        <AnchorPane fx:id="systemInfoPane" layoutX="84.0" layoutY="62.0" maxHeight="215.0" prefHeight="215.0" prefWidth="928.0" style="-fx-background-color: FFFFFF;" AnchorPane.leftAnchor="84.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="62.0">
+        <AnchorPane layoutX="74.0" layoutY="42.0" prefHeight="42.0" prefWidth="952.0" AnchorPane.bottomAnchor="631.0" AnchorPane.leftAnchor="74.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="39.0">
             <children>
-                <Text fx:id="systemType" fill="#0c072e" layoutX="14.0" layoutY="85.0" strokeType="OUTSIDE" strokeWidth="0.0" text="System Type:">
-                    <font>
-                        <Font name="Segoe UI Bold" size="16.0" />
-                    </font>
-                </Text>
-                <Text fx:id="serialNumber" fill="#0c072e" layoutX="14.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Serial Number:">
-                    <font>
-                        <Font name="Segoe UI Bold" size="16.0" />
-                    </font>
-                </Text>
-                <Text fx:id="manufacturer" fill="#0c072e" layoutX="394.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Manufacturer:">
-                    <font>
-                        <Font name="Segoe UI Bold" size="16.0" />
-                    </font>
-                </Text>
-                <Text fx:id="systemLocation" fill="#0c072e" layoutX="14.0" layoutY="113.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Location:">
-                    <font>
-                        <Font name="Segoe UI Bold" size="16.0" />
-                    </font>
-                </Text>
-                <Text fill="#0c072e" layoutX="14.0" layoutY="141.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Site:">
-                    <font>
-                        <Font name="Segoe UI Bold" size="16.0"/>
-                    </font>
-                </Text>
-                <Text fx:id="description" fill="#0c072e" layoutX="394.0" layoutY="83.0" strokeType="OUTSIDE"
-                      strokeWidth="0.0" text="Description:">
-                    <font>
-                        <Font name="Segoe UI Bold" size="16.0"/>
-                    </font>
-                </Text>
-                <Text fx:id="systemTypeOutput" fill="#0c072e" layoutX="159.0" layoutY="84.0" strokeType="OUTSIDE"
-                      strokeWidth="0.0" text="T">
-                    <font>
-                        <Font name="Segoe UI" size="16.0"/>
-                    </font>
-                </Text>
-                <Text fx:id="serialNumberOutput" fill="#0c072e" layoutX="159.0" layoutY="55.0" strokeType="OUTSIDE"
-                      strokeWidth="0.0" text="T">
-                    <font>
-                        <Font name="Segoe UI" size="16.0"/>
-                    </font>
-                </Text>
-                <Text fx:id="manufacturerOutput" fill="#0c072e" layoutX="533.0" layoutY="26.0" strokeType="OUTSIDE"
-                      strokeWidth="0.0" text="T">
-                    <font>
-                        <Font name="Segoe UI" size="16.0"/>
-                    </font>
-                </Text>
-                <Text fx:id="locationOutput" fill="#0c072e" layoutX="159.0" layoutY="113.0" strokeType="OUTSIDE"
-                      strokeWidth="0.0" text="T">
-                    <font>
-                        <Font name="Segoe UI" size="16.0"/>
-                    </font>
-                </Text>
-                <Text fx:id="siteOutput" fill="#0c072e" layoutX="159.0" layoutY="140.0" strokeType="OUTSIDE"
-                      strokeWidth="0.0" text="T">
-                    <font>
-                        <Font name="Segoe UI" size="16.0"/>
-                    </font>
-                </Text>
-                <Text fx:id="descriptionOutput" fill="#0c072e" layoutX="533.0" layoutY="84.0" strokeType="OUTSIDE"
-                      strokeWidth="0.0" text="T" wrappingWidth="380.3828125">
-                    <font>
-                        <Font name="Segoe UI" size="16.0"/>
-                    </font>
-                </Text>
-                <Text fill="#0c072e" layoutX="14.0" layoutY="170.0" strokeType="OUTSIDE" strokeWidth="0.0"
-                      text="Model:">
-                    <font>
-                        <Font name="Segoe UI Bold" size="16.0"/>
-                    </font>
-                </Text>
-                <Text fill="#0c072e" layoutX="14.0" layoutY="199.0" strokeType="OUTSIDE" strokeWidth="0.0" text="RUL:">
-                    <font>
-                        <Font name="Segoe UI Bold" size="16.0"/>
-                    </font>
-                </Text>
-                <Text fx:id="modelOutput" fill="#0c072e" layoutX="159.0" layoutY="170.0" strokeType="OUTSIDE"
-                      strokeWidth="0.0" text="T">
-                    <font>
-                        <Font name="Segoe UI" size="16.0"/>
-                    </font>
-                </Text>
-                <Text fx:id="rulOutput" fill="#0c072e" layoutX="159.0" layoutY="199.0" strokeType="OUTSIDE"
-                      strokeWidth="0.0" text="T">
-                    <font>
-                        <Font name="Segoe UI" size="16.0"/>
-                    </font>
-                </Text>
-                <Text fill="#0c072e" layoutX="394.0" layoutY="54.0" strokeType="OUTSIDE" strokeWidth="0.0"
-                      text="Category:">
-                    <font>
-                        <Font name="Segoe UI Bold" size="16.0"/>
-                    </font>
-                </Text>
-                <Text fx:id="categoryOutput" fill="#0c072e" layoutX="533.0" layoutY="55.0" strokeType="OUTSIDE"
-                      strokeWidth="0.0" text="T">
-                    <font>
-                        <Font name="Segoe UI" size="16.0"/>
-                    </font>
-                </Text>
-                <Text fx:id="systemNameLabel" fill="#0c072e" layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE"
-                      strokeWidth="0.0" text="System Name:">
-                    <font>
-                        <Font name="Segoe UI Bold" size="16.0"/>
-                    </font>
-                </Text>
-                <Text fx:id="systemNameOutput" fill="#0c072e" layoutX="159.0" layoutY="26.0" strokeType="OUTSIDE"
-                      strokeWidth="0.0" text="T">
-                    <font>
-                        <Font name="Segoe UI" size="16.0"/>
-                    </font>
-                </Text>
-            </children></AnchorPane>
-        <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" layoutX="74.0" layoutY="288.0" prefHeight="424.0" prefWidth="962.0" vbarPolicy="NEVER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="74.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="288.0">
-            <content>
-                <FlowPane fx:id="sensorFlowPane" hgap="10.0" prefHeight="723.0" prefWidth="937.0" style="-fx-padding: 10;" vgap="10.0">
-                    <children>
-
-                    </children>
-                </FlowPane>
-            </content>
-        </ScrollPane>
+                <TabPane prefHeight="674.0" prefWidth="952.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="-632.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <tabs>
+                        <Tab text="INFORMATION">
+                            <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="382.0" prefWidth="945.0">
+                                    <children>
+                                        <AnchorPane fx:id="systemInfoPane" layoutX="6.0" maxHeight="258.0" prefHeight="258.0" prefWidth="928.0" style="-fx-background-color: FFFFFF;" AnchorPane.bottomAnchor="383.0" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="18.0" AnchorPane.topAnchor="0.0">
+                                            <children>
+                                                <Text fx:id="systemTypeLabel" fill="#0c072e" layoutX="14.0" layoutY="85.0" strokeType="OUTSIDE" strokeWidth="0.0" text="System Type:" />
+                                                <Text fx:id="serialNumber" fill="#0c072e" layoutX="14.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Serial Number:" />
+                                                <Text fx:id="manufacturer" fill="#0c072e" layoutX="394.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Manufacturer:" />
+                                                <Text fx:id="systemLocation" fill="#0c072e" layoutX="14.0" layoutY="113.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Location:" />
+                                                <Text fill="#0c072e" layoutX="14.0" layoutY="141.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Site:" />
+                                                <Text fx:id="description" fill="#0c072e" layoutX="394.0" layoutY="83.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Description:" />
+                                                <Text fx:id="systemTypeOutput" fill="#0c072e" layoutX="159.0" layoutY="84.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
+                                                <Text fx:id="serialNumberOutput" fill="#0c072e" layoutX="159.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
+                                                <Text fx:id="manufacturerOutput" fill="#0c072e" layoutX="533.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
+                                                <Text fx:id="locationOutput" fill="#0c072e" layoutX="159.0" layoutY="113.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
+                                                <Text fx:id="siteOutput" fill="#0c072e" layoutX="159.0" layoutY="140.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
+                                                <Text fx:id="descriptionOutput" fill="#0c072e" layoutX="533.0" layoutY="84.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" wrappingWidth="380.3828125" />
+                                                <Text fill="#0c072e" layoutX="14.0" layoutY="170.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Model:" />
+                                                <Text fill="#0c072e" layoutX="14.0" layoutY="199.0" strokeType="OUTSIDE" strokeWidth="0.0" text="RUL:" />
+                                                <Text fx:id="modelOutput" fill="#0c072e" layoutX="159.0" layoutY="170.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
+                                                <Text fx:id="rulOutput" fill="#0c072e" layoutX="159.0" layoutY="199.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
+                                                <Text fill="#0c072e" layoutX="394.0" layoutY="54.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Category:" />
+                                                <Text fx:id="categoryOutput" fill="#0c072e" layoutX="533.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
+                                                <Text fx:id="systemNameLabel" fill="#0c072e" layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="System Name:" />
+                                                <Text fx:id="systemNameOutput" fill="#0c072e" layoutX="159.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
+                                                <Text fill="#0c072e" layoutX="13.0" layoutY="227.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Recommendation:" />
+                                                <Text fx:id="recommendationOutput" fill="#0c072e" layoutX="159.0" layoutY="227.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
+                                            </children>
+                                        </AnchorPane>
+                                        <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" layoutX="-7.0" layoutY="252.0" prefHeight="400.0" prefWidth="962.0" vbarPolicy="NEVER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-7.0" AnchorPane.rightAnchor="-3.0" AnchorPane.topAnchor="252.0">
+                                            <content>
+                                                <FlowPane fx:id="sensorFlowPane" hgap="10.0" prefHeight="400.0" prefWidth="954.0" style="-fx-padding: 10;" vgap="10.0" />
+                                            </content>
+                                        </ScrollPane>
+                                    </children></AnchorPane>
+                            </content>
+                        </Tab>
+                        <Tab fx:id="rawDataTab" text="RAW DATA">
+                            <content>
+                                <AnchorPane fx:id="rawDataListPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                            </content>
+                        </Tab>
+                    </tabs>
+                </TabPane>
+            </children>
+        </AnchorPane>
     </children>
+    <stylesheets>
+        <URL value="@css/systeminfo.css" />
+        <URL value="@css/systems.css" />
+    </stylesheets>
 </AnchorPane>
