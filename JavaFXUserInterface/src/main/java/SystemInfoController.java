@@ -237,83 +237,48 @@ public class SystemInfoController implements Initializable {
     }
 
     public void generateRawDataTable() {
-
         TableView<ObservableList<String>> table = new TableView();
         table.getItems().clear();
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(3000), e -> {
+            ObservableList<AssetAttribute> attributes = FXCollections.observableArrayList(assetDAOImpl.createAssetInfo(system.getId()).getAssetAttributes());
 
-        ObservableList<AssetAttribute> attributes = FXCollections.observableArrayList(system.getAssetInfo().getAssetAttributes());
+            int columnIndex = 1;
+            TableColumn[] tableColumns = new TableColumn[attributes.size() + 1];
 
-        int columnIndex = 1;
-        TableColumn[] tableColumns = new TableColumn[attributes.size() + 1];
+            ArrayList<ArrayList<Measurement>> data = new ArrayList();
 
-        ArrayList<ArrayList<Measurement>> data = new ArrayList();
+            tableColumns[0] = new TableColumn("Cycle");
+            data.add(attributes.get(0).getMeasurements());
+            setCellValue(0, tableColumns[0]);
 
-        tableColumns[0] = new TableColumn("Cycle");
-        data.add(attributes.get(0).getMeasurements());
-        setCellValue(0, tableColumns[0]);
-
-        for (AssetAttribute attribute : attributes) {
-            data.add(attribute.getMeasurements());
-            tableColumns[columnIndex] = new TableColumn(attribute.getName());
-            setCellValue(columnIndex, tableColumns[columnIndex]);
-            columnIndex++;
-        }
-        table.getColumns().addAll(tableColumns);
-
-        ObservableList<ObservableList<String>> dataPerColumn = FXCollections.observableArrayList();
-
-        int outcounter = 0;
-        for (ArrayList<Measurement> dataList : data) {
-            int counter = 0;
-            for (Measurement measurement : dataList) {
-                if (outcounter < dataList.size()) {
-                    ObservableList<String> list = FXCollections.observableArrayList();
-                    dataPerColumn.add(list);
-                    dataPerColumn.get(outcounter).add(String.valueOf(measurement.getTime()));
-                    outcounter++;
-                } else {
-                    dataPerColumn.get(counter).add(String.valueOf(measurement.getValue()));
-                    counter++;
-                }
+            for (AssetAttribute attribute : attributes) {
+                data.add(attribute.getMeasurements());
+                tableColumns[columnIndex] = new TableColumn(attribute.getName());
+                setCellValue(columnIndex, tableColumns[columnIndex]);
+                columnIndex++;
             }
-        }
+            table.getColumns().addAll(tableColumns);
 
-        Collections.reverse(dataPerColumn);
-        table.setItems(dataPerColumn);
+            ObservableList<ObservableList<String>> dataPerColumn = FXCollections.observableArrayList();
 
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(1000), e -> {
-            int sizeDiff = 1;
-            if (!table.getItems().isEmpty()) {
-                ObservableList<String> firstElem = table.getItems().get(0);
-                sizeDiff = Integer.valueOf(firstElem.get(0)) - attributeDAOImpl.getLastXMeasurementsByAssetIDAndAttributeID(String.valueOf(system.getId()),String.valueOf(attributes.get(0).getId()),10000).size();
-            }
-            if (sizeDiff < 0)
-                table.getItems().clear();
-            if (sizeDiff > 0) {
-
-                ArrayList<ArrayList<Measurement>> newData = new ArrayList();
-                int outcounterLoop = 0;
-                for (AssetAttribute attribute : attributes) {
-                    newData.add( attributeDAOImpl.getLastXMeasurementsByAssetIDAndAttributeID(String.valueOf(system.getId()),String.valueOf(attribute.getId()),sizeDiff));
-                }
-                for (ArrayList<Measurement> dataList : newData) {
-                    int counter = 0;
-                    for (Measurement measurement : dataList) {
-                        if (outcounterLoop < dataList.size()) {
-                            ObservableList<String> list = FXCollections.observableArrayList();
-                            dataPerColumn.add(list);
-                            dataPerColumn.get(outcounterLoop).add(String.valueOf(measurement.getTime()));
-                            outcounterLoop++;
-                        } else {
-                            dataPerColumn.get(counter).add(String.valueOf(measurement.getValue()));
-                            counter++;
-                        }
+            int outcounter = 0;
+            for (ArrayList<Measurement> dataList : data) {
+                int counter = 0;
+                for (Measurement measurement : dataList) {
+                    if (outcounter < dataList.size()) {
+                        ObservableList<String> list = FXCollections.observableArrayList();
+                        dataPerColumn.add(list);
+                        dataPerColumn.get(outcounter).add(String.valueOf(measurement.getTime()));
+                        outcounter++;
+                    } else {
+                        dataPerColumn.get(counter).add(String.valueOf(measurement.getValue()));
+                        counter++;
                     }
                 }
-
-                Collections.reverse(dataPerColumn);
-                table.setItems(dataPerColumn);
             }
+            Collections.reverse(dataPerColumn);
+            table.setItems(dataPerColumn);
+
         }));
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
@@ -324,7 +289,6 @@ public class SystemInfoController implements Initializable {
         AnchorPane.setRightAnchor(table, 0.0);
         AnchorPane.setLeftAnchor(table, 0.0);
         rawDataListPane.getChildren().addAll(table);
-
     }
 
     public void setCellValue(int index, TableColumn tableColumn) {
