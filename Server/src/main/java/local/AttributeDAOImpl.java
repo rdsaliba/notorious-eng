@@ -14,14 +14,14 @@ public class AttributeDAOImpl extends DAO implements AttributeDAO {
     @Override
     public ArrayList<Measurement> getLastXMeasurementsByAssetIDAndAttributeID(String assetID, String attributeID, int limiter) {
         ArrayList<Measurement> measurements = new ArrayList<>();
-        ResultSet queryResult;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_LATEST_MEASUREMENTS_FROM_ASSET_AND_ATTRIBUTE_ID)) {
             ps.setString(1, assetID);
             ps.setString(2, attributeID);
             ps.setInt(3, limiter);
-            queryResult = ps.executeQuery();
-            while (queryResult.next())
-                measurements.add(new Measurement(queryResult.getInt("time"),queryResult.getDouble("value")));
+            try (ResultSet queryResult = ps.executeQuery()) {
+                while (queryResult.next())
+                    measurements.add(new Measurement(queryResult.getInt("time"), queryResult.getDouble("value")));
+            }
         } catch (SQLException e){
             e.printStackTrace();
         }

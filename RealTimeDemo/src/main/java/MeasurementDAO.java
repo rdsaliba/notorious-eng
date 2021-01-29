@@ -16,12 +16,12 @@ public class MeasurementDAO extends DAO {
     public AssetInfo getMeasurementsFromID(int assetID, int limit) {
         AssetInfo toReturn = new AssetInfo();
         ArrayList<AssetAttribute> measurements = new ArrayList<>();
-        try {
-            PreparedStatement ps = getConnection().prepareStatement(GET_MEASUREMENTS);
+        ResultSet rs;
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_MEASUREMENTS)) {
             ps.setInt(1, assetID);
             ps.setInt(2, assetID);
             ps.setInt(3, limit);
-            ResultSet rs = ps.executeQuery();
+            rs = ps.executeQuery();
             while (rs.next()) {
                 if (measurements.isEmpty() || measurements.get(measurements.size() - 1).getId() != rs.getInt("attribute_id")) {
                     AssetAttribute assetAttribute = new AssetAttribute();
@@ -40,21 +40,18 @@ public class MeasurementDAO extends DAO {
 
     public void deleteMeasurementsFromID(int assetID, int limit) {
 
-        try {
-            PreparedStatement ps = getConnection().prepareStatement(DELETE_MEASUREMENT);
+        try (PreparedStatement ps = getConnection().prepareStatement(DELETE_MEASUREMENT)) {
             ps.setInt(1, assetID);
             ps.setInt(2, assetID);
             ps.setInt(3, limit);
             ps.executeQuery();
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
     public void insertMeasurement(Asset asset, int time) {
-        try {
-            PreparedStatement ps = getConnection().prepareStatement(INSERT_MEASUREMENT_FOR_ASSET);
+        try (PreparedStatement ps = getConnection().prepareStatement(INSERT_MEASUREMENT_FOR_ASSET)) {
             for (AssetAttribute assetAttribute : asset.getAssetInfo().getAssetAttributes()) {
                 if (time < assetAttribute.getMeasurements().size()) {
                     ps.setInt(1, asset.getId());
@@ -65,11 +62,9 @@ public class MeasurementDAO extends DAO {
                 }
             }
             ps.executeBatch();
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
     }
-
 }

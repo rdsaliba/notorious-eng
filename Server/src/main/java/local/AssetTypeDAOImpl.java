@@ -28,13 +28,13 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
     @Override
     public int getAssetTypeIdCount(String assetTypeID, boolean isLive) {
 
-        ResultSet rs;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_TYPE_ID_COUNT)) {
             ps.setBoolean(1, !isLive);
             ps.setString(2, assetTypeID);
-            rs = ps.executeQuery();
-            if (rs.next())
-                return (rs.getInt("count"));
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next())
+                    return (rs.getInt("count"));
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -44,13 +44,13 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
     @Override
     public String getAssetTypeBoundary(String asset_type_id, String boundary_type){
         String boundary = "null";
-        ResultSet rs;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_TYPE_BOUNDARY)) {
             ps.setString(1, boundary_type);
             ps.setString(2, asset_type_id);
-            rs = ps.executeQuery();
-            if (rs.next()){
-                boundary = rs.getString("boundary");
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    boundary = rs.getString("boundary");
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -63,18 +63,18 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
     /**
      * Gets the boundary values for an Asset Type.
      *
-     * @param asset_type_id
-     * @return
+     * @param asset_type_id is the id of the asset type
+     * @return a map of the different boundary labels and their values
      */
     @Override
     public HashMap<String, Double> getAssetTypeBoundaries(String asset_type_id) {
         HashMap<String, Double> boundaries = new HashMap<>();
-        ResultSet rs;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_TYPE_BOUNDARIES)) {
             ps.setString(1, asset_type_id);
-            rs = ps.executeQuery();
-            while (rs.next())
-                boundaries.put(rs.getString("parameter_name"), rs.getDouble("boundary"));
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next())
+                    boundaries.put(rs.getString("parameter_name"), rs.getDouble("boundary"));
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -118,15 +118,15 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
     @Override
     public ArrayList<AssetType> getAssetTypeList() {
         ArrayList<AssetType> assetTypeList = new ArrayList<>();
-        ResultSet rs;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_TYPES)) {
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                AssetType newAssetType = new AssetType();
-                newAssetType.setName(rs.getString("name"));
-                newAssetType.setDescription(rs.getString("description"));
-                newAssetType.setId(rs.getString("asset_type_id"));
-                assetTypeList.add(newAssetType);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    AssetType newAssetType = new AssetType();
+                    newAssetType.setName(rs.getString("name"));
+                    newAssetType.setDescription(rs.getString("description"));
+                    newAssetType.setId(rs.getString("asset_type_id"));
+                    assetTypeList.add(newAssetType);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -137,12 +137,12 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
     @Override
     public String getNameFromID(String id){
         String name = "";
-        ResultSet rs;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_TYPE_NAME_FROM_ID)) {
             ps.setString(1, id);
-            rs = ps.executeQuery();
-            if (rs.next())
-                name = rs.getString("name");
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next())
+                    name = rs.getString("name");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -35,12 +35,12 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     @Override
     public String getModelNameFromModelID(int modelID) {
         String name = null;
-        ResultSet rs;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_NAME_FROM_ID)) {
             ps.setInt(1, modelID);
-            rs = ps.executeQuery();
-            if (rs.next())
-                name= rs.getString("name");
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next())
+                    name = rs.getString("name");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -80,11 +80,11 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     public ArrayList<TrainedModel> getModelsToTrain() {
 
         ArrayList<TrainedModel> tms = new ArrayList<>();
-        ResultSet queryResult;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_SERIALIZE_OBJECT)) {
-            queryResult = ps.executeQuery();
-            while (queryResult.next()){
-                tms.add(createTrainedModelFromResultSet(queryResult, false));
+            try (ResultSet queryResult = ps.executeQuery()) {
+                while (queryResult.next()) {
+                    tms.add(createTrainedModelFromResultSet(queryResult, false));
+                }
             }
         } catch (SQLException e){
             e.printStackTrace();
@@ -103,12 +103,12 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     @Override
     public TrainedModel getModelsByAssetTypeID(String assetTypeID) {
         TrainedModel tm = null;
-        ResultSet queryResult;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_FROM_ASSET_TYPE)) {
             ps.setString(1, assetTypeID);
-            queryResult = ps.executeQuery();
-            while (queryResult.next()){
-                tm = createTrainedModelFromResultSet(queryResult, true);
+            try (ResultSet queryResult = ps.executeQuery()) {
+                while (queryResult.next()) {
+                    tm = createTrainedModelFromResultSet(queryResult, true);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
