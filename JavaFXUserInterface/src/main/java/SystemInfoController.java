@@ -86,9 +86,8 @@ public class SystemInfoController implements Initializable {
      * Initialize runs before the scene is displayed.
      * It initializes elements and data in the scene.
      *
-     * @param url url to be used
+     * @param url            url to be used
      * @param resourceBundle url to be used
-     *
      * @author Jeff
      */
     @Override
@@ -106,7 +105,6 @@ public class SystemInfoController implements Initializable {
      * Then, uses that data to populate the text fields in the scene.
      *
      * @param system is an asset object that will get initialized
-     *
      * @author Jeff
      */
     void initData(Asset system) {
@@ -125,7 +123,7 @@ public class SystemInfoController implements Initializable {
         rulOutput.setText(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(system.getId())));
         recommendationOutput.setText(system.getRecommendation());
 
-        Timeline timeline =  new Timeline(new KeyFrame(Duration.millis(1000), e -> rulOutput.setText(String.valueOf(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(system.getId()))))));
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(1000), e -> rulOutput.setText(String.valueOf(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(system.getId()))))));
 
         timeline.setCycleCount(Animation.INDEFINITE); // loop forever
         timeline.play();
@@ -141,7 +139,7 @@ public class SystemInfoController implements Initializable {
      * @author Jeff
      */
     public void constructSensorPanes() {
-        for (AssetAttribute sensor: system.getAssetInfo().getAssetAttributes()) {
+        for (AssetAttribute sensor : system.getAssetInfo().getAssetAttributes()) {
             Pane pane = new Pane();
             pane.getStyleClass().add("sensorPane");
             final CategoryAxis xAxis = new CategoryAxis();
@@ -159,10 +157,10 @@ public class SystemInfoController implements Initializable {
 
             Timeline timeline = new Timeline(new KeyFrame(Duration.millis(1000), e -> {
                 ArrayList<Measurement> measurements = attributeDAOImpl.getLastXMeasurementsByAssetIDAndAttributeID(Integer.toString(system.getId()), Integer.toString(sensor.getId()), 5);
-                if(!sensorChart.getXAxis().isValueOnAxis(Integer.toString(measurements.get(0).getTime())))
+                if (!sensorChart.getXAxis().isValueOnAxis(Integer.toString(measurements.get(0).getTime())))
                     series.getData().add(new XYChart.Data<>(Integer.toString(measurements.get(0).getTime()), Double.toString(measurements.get(0).getValue())));
                 else if (series.getData().size() != measurements.size()) {
-                    for(int i = measurements.size() - 1; i >= 0; i--) {
+                    for (int i = measurements.size() - 1; i >= 0; i--) {
                         series.getData().add(new XYChart.Data<>(Integer.toString(measurements.get(i).getTime()), Double.toString(measurements.get(i).getValue())));
                     }
                 }
@@ -239,13 +237,14 @@ public class SystemInfoController implements Initializable {
     }
 
     public void generateRawDataTable() {
+
         TableView<ObservableList<String>> table = new TableView();
         table.getItems().clear();
 
         ObservableList<AssetAttribute> attributes = FXCollections.observableArrayList(system.getAssetInfo().getAssetAttributes());
 
         int columnIndex = 1;
-        TableColumn [] tableColumns = new TableColumn[attributes.size()+1];
+        TableColumn[] tableColumns = new TableColumn[attributes.size() + 1];
 
         ArrayList<ArrayList<Measurement>> data = new ArrayList();
 
@@ -266,7 +265,7 @@ public class SystemInfoController implements Initializable {
         int outcounter = 0;
         for (ArrayList<Measurement> dataList : data) {
             int counter = 0;
-            for (Measurement measurement: dataList) {
+            for (Measurement measurement : dataList) {
                 if (outcounter < dataList.size()) {
                     ObservableList<String> list = FXCollections.observableArrayList();
                     dataPerColumn.add(list);
@@ -281,6 +280,43 @@ public class SystemInfoController implements Initializable {
 
         Collections.reverse(dataPerColumn);
         table.setItems(dataPerColumn);
+
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(1000), e -> {
+            int sizeDiff = 1;
+            if (!table.getItems().isEmpty()) {
+                ObservableList<String> firstElem = table.getItems().get(0);
+                sizeDiff = Integer.valueOf(firstElem.get(0)) - attributeDAOImpl.getLastXMeasurementsByAssetIDAndAttributeID(String.valueOf(system.getId()),String.valueOf(attributes.get(0).getId()),10000).size();
+            }
+            if (sizeDiff < 0)
+                table.getItems().clear();
+            if (sizeDiff > 0) {
+
+                ArrayList<ArrayList<Measurement>> newData = new ArrayList();
+                int outcounterLoop = 0;
+                for (AssetAttribute attribute : attributes) {
+                    newData.add( attributeDAOImpl.getLastXMeasurementsByAssetIDAndAttributeID(String.valueOf(system.getId()),String.valueOf(attribute.getId()),sizeDiff));
+                }
+                for (ArrayList<Measurement> dataList : newData) {
+                    int counter = 0;
+                    for (Measurement measurement : dataList) {
+                        if (outcounterLoop < dataList.size()) {
+                            ObservableList<String> list = FXCollections.observableArrayList();
+                            dataPerColumn.add(list);
+                            dataPerColumn.get(outcounterLoop).add(String.valueOf(measurement.getTime()));
+                            outcounterLoop++;
+                        } else {
+                            dataPerColumn.get(counter).add(String.valueOf(measurement.getValue()));
+                            counter++;
+                        }
+                    }
+                }
+
+                Collections.reverse(dataPerColumn);
+                table.setItems(dataPerColumn);
+            }
+        }));
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play();
 
         table.setId("RawDataTable");
         AnchorPane.setBottomAnchor(table, 0.0);
