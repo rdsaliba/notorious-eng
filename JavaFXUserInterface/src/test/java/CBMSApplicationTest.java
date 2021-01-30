@@ -37,27 +37,6 @@ public class CBMSApplicationTest extends ApplicationTest {
     }
 
     @Test
-    public void hasAddSystemButton() {
-        AnchorPane rootNode = (AnchorPane) scene.getRoot();
-        Button button = from(rootNode).lookup("#addSystemBtn").query();
-        assertEquals("Add System", button.getText());
-    }
-
-    @Test
-    public void hasSystemMenuButton() {
-        AnchorPane rootNode = (AnchorPane) scene.getRoot();
-        Button button = from(rootNode).lookup("#systemMenuBtn").query();
-        assertEquals("Systems", button.getText());
-    }
-
-    @Test
-    public void hasSystemTypeMenuButton() {
-        AnchorPane rootNode = (AnchorPane) scene.getRoot();
-        Button button = from(rootNode).lookup("#systemTypeMenuBtn").query();
-        assertEquals("System Types", button.getText());
-    }
-
-    @Test
     public void testApplicationLaunch() {
         FxAssert.verifyThat(window("CBMS"), WindowMatchers.isShowing());
     }
