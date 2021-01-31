@@ -39,6 +39,6 @@ public class Measurement {
     public String toString() {
         return "Measurement{" +
                 "time=" + time +
-                ", measurement value='" + value + "}";
+                ", measurement value=" + value + "}";
     }
 }

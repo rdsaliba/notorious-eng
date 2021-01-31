@@ -5,7 +5,6 @@ public class AssetTypeParameter {
     private Double value;
 
     public AssetTypeParameter() {
-
     }
 
     public AssetTypeParameter(String name, Double value) {

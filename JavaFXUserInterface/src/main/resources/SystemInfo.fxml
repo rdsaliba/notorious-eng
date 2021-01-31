@@ -78,7 +78,7 @@
             <children>
                 <TabPane prefHeight="674.0" prefWidth="952.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="-632.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <tabs>
-                        <Tab text="INFORMATION">
+                        <Tab fx:id="informationTab" text="INFORMATION">
                             <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="382.0" prefWidth="945.0">
                                     <children>

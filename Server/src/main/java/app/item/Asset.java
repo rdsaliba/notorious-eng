@@ -96,11 +96,15 @@ public class Asset extends Item {
     public String toString() {
         return "Asset{" +
                 "serialNo='" + serialNo + '\'' +
+                ", name='" + name + '\'' +
                 ", assetTypeID='" + assetTypeID + '\'' +
                 ", location='" + location + '\'' +
                 ", description='" + description + '\'' +
                 ", recommendation='" + recommendation + '\'' +
                 ", assetInfo=" + assetInfo +
+                ", manufacturer='" + manufacturer + '\'' +
+                ", category='" + category + '\'' +
+                ", site='" + site + '\'' +
                 '}';
     }
 }

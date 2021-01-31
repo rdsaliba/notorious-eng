@@ -55,7 +55,7 @@
         <VBox prefHeight="169.0" prefWidth="74.0" style="-fx-background-color: #0C072E;" AnchorPane.topAnchor="0.0" />
         <AnchorPane layoutX="74.0" maxHeight="42.0" prefHeight="42.0" prefWidth="952.0" AnchorPane.leftAnchor="74.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
-                <Text fill="#0c072e" layoutX="14.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Systems">
+                <Text fx:id="systemsTitle" fill="#0c072e" layoutX="14.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Systems">
                     <font>
                         <Font name="Segoe UI Bold" size="18.0" />
                     </font>

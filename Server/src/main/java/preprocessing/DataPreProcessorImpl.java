@@ -39,7 +39,7 @@ public class DataPreProcessorImpl implements DataPreProcessor {
      *
      * @author Khaled
      * */
-    private static Instances addRUL(Instances trainingData, ArrayList<Double> maxCycles) throws Exception {
+    private static Instances addRUL(Instances trainingData, ArrayList<Double> maxCycles) {
 
         Instance firstRow = trainingData.firstInstance();
         double assetID = firstRow.value(0);
@@ -126,7 +126,8 @@ public class DataPreProcessorImpl implements DataPreProcessor {
         filter.setInputFormat(originalDataset);
         reducedDataset = Filter.useFilter(originalDataset, filter); // this is what takes the data and applies the filter to reduce it
 
-        reducedDataset = addRULCol(reducedDataset);
+        if (reducedDataset.attribute("RUL") == null)
+            reducedDataset = addRULCol(reducedDataset);
     }
 
     /**
@@ -154,7 +155,8 @@ public class DataPreProcessorImpl implements DataPreProcessor {
 
         remove.setInputFormat(originalDataset);
         minimallyReducedDataset = Filter.useFilter(originalDataset, remove);
-        minimallyReducedDataset = addRULCol(minimallyReducedDataset);
+        if (minimallyReducedDataset.attribute("RUL") == null)
+            minimallyReducedDataset = addRULCol(minimallyReducedDataset);
     }
 
     /**Given an Instance object, this will add an RUL attribute at the end of the other attributes
@@ -172,8 +174,7 @@ public class DataPreProcessorImpl implements DataPreProcessor {
         //Get max cycle of each engine (highest time cycle - 1)
         ArrayList<Double> maxCycles = getMaxCycles(newData);
 
-        newData = addRUL(newData, maxCycles);
-        return newData;
+        return addRUL(newData, maxCycles);
     }
 
     /**Given 2 instances Object, it will remove the attributes that are not shared between the two and return the test set
