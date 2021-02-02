@@ -6,109 +6,27 @@
 
     <groupId>org.capstone.notorious</groupId>
     <artifactId>cbms</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>JavaFXUserInterface</module>
+        <module>RealTimeDemo</module>
+        <module>Server</module>
+    </modules>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-<!--    local maven repo added for Weka's DL4J jar file-->
-    <repositories>
-        <repository>
-            <id>local-maven-repo</id>
-            <url>file:///${project.basedir}/local-maven-repo</url>
-        </repository>
-    </repositories>
 
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/nz.ac.waikato.cms.weka/weka-stable -->
-        <dependency>
-            <groupId>nz.ac.waikato.cms.weka</groupId>
-            <artifactId>weka-stable</artifactId>
-            <version>3.8.4</version>                    <!--updated from 3.6.4-->
-        </dependency>
-
-        <!--Local Jar-->
-        <dependency>
-            <groupId>nz.ac.waikato.cms.weka</groupId>
-            <artifactId>wekaDeeplearning4j</artifactId>
-            <version>1.7.0</version>
-            <scope>system</scope>
-            <systemPath>${pom.basedir}/local-maven-repo/nz/ac/waikato/cms/weka/wekaDeeplearning4j/1.7.0/wekaDeeplearning4j-1.7.0.jar</systemPath>
-        </dependency>
-
-        <!--More dependencies needed for Weka's DL4J plugin below:-->
-        <!-- https://mvnrepository.com/artifact/org.deeplearning4j/deeplearning4j-nn -->
-        <dependency>
-            <groupId>org.deeplearning4j</groupId>
-            <artifactId>deeplearning4j-nn</artifactId>
-            <version>1.0.0-beta7</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-api -->
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>2.11.2</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>2.11.2</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-slf4j-impl -->
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-slf4j-impl</artifactId>
-            <version>2.11.2</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.nd4j</groupId>
-            <artifactId>nd4j-native</artifactId>
-            <version>1.0.0-beta7</version>
-        </dependency>
-
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
             <version>2.6</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-slf4j-impl</artifactId>
-            <version>2.11.2</version>
-            <!--            //<scope>test</scope>-->
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.deeplearning4j/deeplearning4j-parallel-wrapper -->
-        <dependency>
-            <groupId>org.deeplearning4j</groupId>
-            <artifactId>deeplearning4j-parallel-wrapper</artifactId>
-            <version>1.0.0-beta7</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.deeplearning4j/deeplearning4j-zoo -->
-        <dependency>
-            <groupId>org.deeplearning4j</groupId>
-            <artifactId>deeplearning4j-zoo</artifactId>
-            <version>1.0.0-beta7</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.reflections/reflections -->
-        <dependency>
-            <groupId>org.reflections</groupId>
-            <artifactId>reflections</artifactId>
-            <version>0.9.10</version>
-        </dependency>
-        <!--End of DL4J dependencies-->
-
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
@@ -122,32 +40,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-controls</artifactId>
-            <version>12.0.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-fxml</artifactId>
-            <version>12.0.2</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client -->
-        <dependency>
             <groupId>org.mariadb.jdbc</groupId>
             <artifactId>mariadb-java-client</artifactId>
             <version>2.7.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.testfx</groupId>
-            <artifactId>testfx-core</artifactId>
-            <version>4.0.15-alpha</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.testfx</groupId>
-            <artifactId>testfx-junit</artifactId>
-            <version>4.0.15-alpha</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
@@ -161,82 +56,31 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>org.jacoco</groupId>
-                    <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>${jacoco.version}</version>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.19.1</version>
                     <configuration>
-                        <destFile>${basedir}/target/coverage-reports/jacoco-unit.exec</destFile>
-                        <dataFile>${basedir}/target/coverage-reports/jacoco-unit.exec</dataFile>
-                        <output>file</output>
-                        <append>true</append>
-                        <excludes>
-                            <exclude>*MethodAccess</exclude>
-                        </excludes>
+                        <testFailureIgnore>true</testFailureIgnore>
                     </configuration>
-                    <executions>
-                        <execution>
-                            <id>jacoco-initialize</id>
-                            <goals>
-                                <goal>prepare-agent</goal>
-                            </goals>
-                            <phase>test-compile</phase>
-                        </execution>
-                        <execution>
-                            <id>jacoco-site</id>
-                            <phase>verify</phase>
-                            <goals>
-                                <goal>report</goal>
-                            </goals>
-                        </execution>
-                    </executions>
                 </plugin>
+
+                <plugin>
+                    <groupId>org.openclover</groupId>
+                    <artifactId>clover-maven-plugin</artifactId>
+                    <version>4.2.0</version>
+                </plugin>
+
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.8.1</version>
                 </plugin>
 
-                <plugin>
-                    <groupId>org.openjfx</groupId>
-                    <artifactId>javafx-maven-plugin</artifactId>
-                    <version>0.0.4</version>
-                    <configuration>
-                        <mainClass>com.cbms.app.Main</mainClass>
-                    </configuration>
-                </plugin>
 
                 <plugin>
                     <groupId>org.sonarsource.scanner.maven</groupId>
                     <artifactId>sonar-maven-plugin</artifactId>
                     <version>3.7.0.1746</version>
-                </plugin>
-
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.2.0</version>
-                    <configuration>
-                        <archive>
-                            <manifest>
-                                <mainClass>com.cbms.app.Main</mainClass>
-                            </manifest>
-                        </archive>
-                    </configuration>
-                </plugin>
-
-                <plugin>
-                    <groupId>io.fabric8</groupId>
-                    <artifactId>docker-maven-plugin</artifactId>
-                    <version>0.34.1</version>
-                    <executions>
-                        <execution>
-                            <id>docker:build</id>
-                            <phase>package</phase>
-                            <goals>
-                                <goal>build</goal>
-                            </goals>
-                        </execution>
-                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>
