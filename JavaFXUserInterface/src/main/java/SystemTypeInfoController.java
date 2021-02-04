@@ -5,7 +5,6 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import local.AssetTypeDAOImpl;
 
 import java.net.URL;
@@ -14,6 +13,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class SystemTypeInfoController implements Initializable {
+    private final String SYSTEM_TYPE_LIST = "/SystemTypeList";
 
     @FXML
     private Button systemMenuBtn;
@@ -23,12 +23,6 @@ public class SystemTypeInfoController implements Initializable {
     private Button infoSaveBtn;
     @FXML
     private Button infoDeleteBtn;
-    @FXML
-    private Button modelEditBtn;
-    @FXML
-    private Button modelDeleteBtn;
-    @FXML
-    private AnchorPane systemTypeInformation;
     @FXML
     private TextField systemTypeName;
     @FXML
@@ -62,7 +56,7 @@ public class SystemTypeInfoController implements Initializable {
      * initData receives the System Type data that was selected from SystemTypeList.FXML
      * Then, uses that data to populate the text fields in the scene.
      *
-     * @param assetType
+     * @param assetType represents the asset type we want to get info on
      * @author Najim, Paul
      */
     void initData(SystemTypeList assetType) {
@@ -70,11 +64,31 @@ public class SystemTypeInfoController implements Initializable {
         this.originalAssetType = new SystemTypeList(assetType);
         systemTypeName.setText(assetType.getAssetType().getName());
         systemTypeDesc.setText(assetType.getAssetType().getDescription());
-        try { thresholdOK.setText(new DecimalFormat("#.##").format(Double.parseDouble(assetType.getValueOk()))); } catch (NumberFormatException e){ }
-        try { thresholdAdvisory.setText(new DecimalFormat("#.##").format(Double.parseDouble(assetType.getValueAdvisory()))); } catch (NumberFormatException e){ }
-        try { thresholdCaution.setText(new DecimalFormat("#.##").format(Double.parseDouble(assetType.getValueCaution()))); } catch (NumberFormatException e){ }
-        try { thresholdWarning.setText(new DecimalFormat("#.##").format(Double.parseDouble(assetType.getValueWarning()))); } catch (NumberFormatException e){ }
-        try { thresholdFailed.setText(new DecimalFormat("#.##").format(Double.parseDouble(assetType.getValueFailed()))); } catch (NumberFormatException e){ }
+        try {
+            thresholdOK.setText(new DecimalFormat("#.##").format(Double.parseDouble(assetType.getValueOk())));
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        try {
+            thresholdAdvisory.setText(new DecimalFormat("#.##").format(Double.parseDouble(assetType.getValueAdvisory())));
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        try {
+            thresholdCaution.setText(new DecimalFormat("#.##").format(Double.parseDouble(assetType.getValueCaution())));
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        try {
+            thresholdWarning.setText(new DecimalFormat("#.##").format(Double.parseDouble(assetType.getValueWarning())));
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        try {
+            thresholdFailed.setText(new DecimalFormat("#.##").format(Double.parseDouble(assetType.getValueFailed())));
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
 
 
     }
@@ -83,69 +97,68 @@ public class SystemTypeInfoController implements Initializable {
      * Attaches events to elements in the scene.
      *
      * @author Najim
-     *
+     * <p>
      * Edit: added all the text proprety listeners and text formaters for all the fields
-     *
      * @author Paul
      */
     public void attachEvents() {
         // Change scenes to Systems.fxml
         systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
         //Attach link to systemTypeMenuBtn to go to SystemTypeList.fxml
-        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/SystemTypeList"));
+        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, SYSTEM_TYPE_LIST));
         infoDeleteBtn.setOnMouseClicked(this::deleteDialog);
 
         infoSaveBtn.setDisable(true);
         infoSaveBtn.setOnMouseClicked(mouseEvent -> {
             assetTypeDAO.updateAssetType(assetType.toAssetType());
-            uiUtilities.changeScene(mouseEvent, "/SystemTypeList");
+            uiUtilities.changeScene(mouseEvent, SYSTEM_TYPE_LIST);
         });
 
         systemTypeName.textProperty().addListener((obs, oldText, newText) -> {
-            if( handleTextChange(obs, newText,originalAssetType.getName()))
+            if (handleTextChange(obs, newText, originalAssetType.getName()))
                 assetType.getAssetType().setName(newText);
         });
         systemTypeDesc.textProperty().addListener((obs, oldText, newText) -> {
-            if( handleTextChange(obs, newText,originalAssetType.getDescription()))
+            if (handleTextChange(obs, newText, originalAssetType.getDescription()))
                 assetType.getAssetType().setDescription(newText);
         });
 
         thresholdOK.textProperty().addListener((obs, oldText, newText) -> {
-            if(handleTextChange(obs, newText, originalAssetType.getValueOk()))
+            if (handleTextChange(obs, newText, originalAssetType.getValueOk()))
                 assetType.setValueOk(newText);
         });
-        thresholdOK.setTextFormatter( new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat,c)));
+        thresholdOK.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
 
         thresholdAdvisory.textProperty().addListener((obs, oldText, newText) -> {
-            if(handleTextChange(obs, newText, originalAssetType.getValueAdvisory()))
+            if (handleTextChange(obs, newText, originalAssetType.getValueAdvisory()))
                 assetType.setValueAdvisory(newText);
         });
-        thresholdAdvisory.setTextFormatter( new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat,c)));
+        thresholdAdvisory.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
 
         thresholdCaution.textProperty().addListener((obs, oldText, newText) -> {
-            if(handleTextChange(obs, newText, originalAssetType.getValueCaution()))
+            if (handleTextChange(obs, newText, originalAssetType.getValueCaution()))
                 assetType.setValueCaution(newText);
         });
-        thresholdCaution.setTextFormatter( new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat,c)));
+        thresholdCaution.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
 
         thresholdWarning.textProperty().addListener((obs, oldText, newText) -> {
-            if(handleTextChange(obs, newText, originalAssetType.getValueWarning()))
+            if (handleTextChange(obs, newText, originalAssetType.getValueWarning()))
                 assetType.setValueWarning(newText);
         });
-        thresholdWarning.setTextFormatter( new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat,c)));
+        thresholdWarning.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
 
         thresholdFailed.textProperty().addListener((obs, oldText, newText) -> {
-            if(handleTextChange(obs, newText, originalAssetType.getValueFailed()))
+            if (handleTextChange(obs, newText, originalAssetType.getValueFailed()))
                 assetType.setValueFailed(newText);
         });
-        thresholdFailed.setTextFormatter( new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat,c)));
+        thresholdFailed.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
 
     }
 
     /**
-     *  Handle the text change of the user fields to turn on or off the save functionality
+     * Handle the text change of the user fields to turn on or off the save functionality
      *
-     * @author  Paul
+     * @author Paul
      */
     private boolean handleTextChange(ObservableValue<? extends String> obs, String newText, String field) {
         if ((field).equals(originalAssetType.getName()) || field.equals(originalAssetType.getDescription())) {
@@ -160,14 +173,12 @@ public class SystemTypeInfoController implements Initializable {
                 infoSaveBtn.getStyleClass().add("infoSaveFalse");
                 return false;
             }
-        }
-        else if (!newText.isEmpty() && !field.equals("-") && Double.parseDouble(newText) == Double.parseDouble(field)) {
+        } else if (!newText.isEmpty() && !field.equals("-") && Double.parseDouble(newText) == Double.parseDouble(field)) {
             infoSaveBtn.setDisable(true);
             infoSaveBtn.getStyleClass().clear();
             infoSaveBtn.getStyleClass().add("infoSaveFalse");
             return false;
-        }
-        else {
+        } else {
             infoSaveBtn.setDisable(false);
             infoSaveBtn.getStyleClass().clear();
             infoSaveBtn.getStyleClass().add("infoSaveTrue");
@@ -207,7 +218,7 @@ public class SystemTypeInfoController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             deleteAssetType();
-            uiUtilities.changeScene(mouseEvent, "/SystemTypeList");
+            uiUtilities.changeScene(mouseEvent, SYSTEM_TYPE_LIST);
         }
     }
 
@@ -217,7 +228,6 @@ public class SystemTypeInfoController implements Initializable {
      * @author Paul
      */
     private void deleteAssetType() {
-        AssetTypeDAOImpl assetTypeDAO = new AssetTypeDAOImpl();
         assetTypeDAO.deleteAssetTypeByID(assetType.getId());
     }
 }

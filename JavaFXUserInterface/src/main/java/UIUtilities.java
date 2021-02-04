@@ -52,11 +52,11 @@ public class UIUtilities {
      * @author Jeff
      */
     public void changeScene(MouseEvent mouseEvent, TableRow<Asset> row, String fxmlFileName, Asset asset) {
-        Stage primaryStage = (Stage) row.getScene().getWindow();
+        row.getScene().getWindow();
         try {
             if(!row.isEmpty()){
                 FXMLLoader loader = new FXMLLoader();
-                loader.setLocation(getClass().getResource("/SystemInfo.fxml"));
+                loader.setLocation(getClass().getResource(fxmlFileName + ".fxml"));
                 Parent systemsParent = loader.load();
                 Scene systemInfo = new Scene(systemsParent);
 
@@ -82,7 +82,7 @@ public class UIUtilities {
      * @author Najim
      */
     public void changeScene(MouseEvent mouseEvent, TableRow<SystemTypeList> row, String fxmlFileName, SystemTypeList assetType) {
-        Stage primaryStage = (Stage) row.getScene().getWindow();
+        row.getScene().getWindow();
         try {
             if (!row.isEmpty()) {
                 FXMLLoader loader = new FXMLLoader();
@@ -111,7 +111,7 @@ public class UIUtilities {
     public static void autoResizeColumns( TableView<?> table )
     {
         table.setColumnResizePolicy( TableView.UNCONSTRAINED_RESIZE_POLICY);
-        table.getColumns().stream().forEach( (column) ->
+        table.getColumns().forEach( (column) ->
         {
             Text t = new Text( column.getText() );
             double max = t.getLayoutBounds().getWidth();
@@ -120,10 +120,10 @@ public class UIUtilities {
                 if ( column.getCellData( i ) != null )
                 {
                     t = new Text( column.getCellData( i ).toString() );
-                    double calcwidth = t.getLayoutBounds().getWidth();
-                    if ( calcwidth > max )
+                    double calcWidth = t.getLayoutBounds().getWidth();
+                    if ( calcWidth > max )
                     {
-                        max = calcwidth;
+                        max = calcWidth;
                     }
                 }
             }
@@ -132,7 +132,7 @@ public class UIUtilities {
     }
 
     /**
-     * This function validates an input of a change on a textfield to only allow the change if it fits the DecimalFormat
+     * This function validates an input of a change on a text field to only allow the change if it fits the DecimalFormat
      *
      * @author Paul
      */

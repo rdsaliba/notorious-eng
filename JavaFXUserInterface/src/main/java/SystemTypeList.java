@@ -8,9 +8,15 @@ public class SystemTypeList {
     private int liveAssets, archivedAssets;
     private String valueOk, valueCaution, valueAdvisory, valueWarning, valueFailed;
 
-    public SystemTypeList(String name, int liveAssets) {
-        this.assetType = new AssetType(name);
+    public SystemTypeList(AssetType assetType, int liveAssets, int archivedAssets, String valueOk, String valueCaution, String valueAdvisory, String valueWarning, String valueFailed) {
+        this.assetType = assetType;
         this.liveAssets = liveAssets;
+        this.archivedAssets = archivedAssets;
+        this.valueOk = valueOk;
+        this.valueCaution = valueCaution;
+        this.valueAdvisory = valueAdvisory;
+        this.valueWarning = valueWarning;
+        this.valueFailed = valueFailed;
     }
 
     public SystemTypeList(SystemTypeList copy) {
@@ -22,17 +28,6 @@ public class SystemTypeList {
         this.valueAdvisory = copy.getValueAdvisory();
         this.valueWarning = copy.getValueWarning();
         this.valueFailed = copy.getValueFailed();
-    }
-
-    public SystemTypeList(AssetType assetType, int liveAssets, int archivedAssets, String valueOk, String valueCaution, String valueAdvisory, String valueWarning, String valueFailed) {
-        this.assetType = assetType;
-        this.liveAssets = liveAssets;
-        this.archivedAssets = archivedAssets;
-        this.valueOk = valueOk;
-        this.valueCaution = valueCaution;
-        this.valueAdvisory = valueAdvisory;
-        this.valueWarning = valueWarning;
-        this.valueFailed = valueFailed;
     }
 
     public AssetType getAssetType() {
