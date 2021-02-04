@@ -48,6 +48,28 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     }
 
     /**
+     * This function will return an arraylist of all the models that need to be retrained
+     * by looking at the retrain tag. it also deserializes the current model stored in the db
+     *
+     * @author Paul
+     */
+    @Override
+    public ArrayList<TrainedModel> getModelsToTrain() {
+
+        ArrayList<TrainedModel> tms = new ArrayList<>();
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_SERIALIZE_OBJECT)) {
+            try (ResultSet queryResult = ps.executeQuery()) {
+                while (queryResult.next()) {
+                    tms.add(createTrainedModelFromResultSet(queryResult, false));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return tms;
+    }
+
+    /**
      * Given an arraylist of trained models this function will write the new Classifier object
      * to the corresponding trained model entry after an model training phase
      *
@@ -65,31 +87,9 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
                     ps.executeUpdate();
                 }
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * This function will return an arraylist of all the models that need to be retrained
-     * by looking at the retrain tag. it also deserializes the current model stored in the db
-     *
-     * @author Paul
-     */
-    @Override
-    public ArrayList<TrainedModel> getModelsToTrain() {
-
-        ArrayList<TrainedModel> tms = new ArrayList<>();
-        try (PreparedStatement ps = getConnection().prepareStatement(GET_SERIALIZE_OBJECT)) {
-            try (ResultSet queryResult = ps.executeQuery()) {
-                while (queryResult.next()) {
-                    tms.add(createTrainedModelFromResultSet(queryResult, false));
-                }
-            }
-        } catch (SQLException e){
-            e.printStackTrace();
-        }
-        return tms;
     }
 
     /**
@@ -123,14 +123,14 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
      * @author Paul
      */
     @Override
-    public TrainedModel createTrainedModelFromResultSet(ResultSet rs, Boolean withModel) throws SQLException {
+    public TrainedModel createTrainedModelFromResultSet(ResultSet rs, boolean withModel) throws SQLException {
         TrainedModel tm = new TrainedModel();
         tm.setModelID(rs.getInt("model_id"));
         tm.setAssetTypeID(rs.getInt("asset_type_id"));
         tm.setRetrain(rs.getBoolean("retrain"));
         try {
-            if(withModel){
-                tm.setModelClassifier((Classifier)new ObjectInputStream(new ByteArrayInputStream(rs.getBytes("serialized_model"))).readObject());
+            if (withModel) {
+                tm.setModelClassifier((Classifier) new ObjectInputStream(new ByteArrayInputStream(rs.getBytes("serialized_model"))).readObject());
             }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();

@@ -1,3 +1,6 @@
+package Controllers;
+
+import Utilities.UIUtilities;
 import app.ModelController;
 import app.item.Asset;
 import javafx.animation.Animation;
@@ -103,8 +106,8 @@ public class SystemsController implements Initializable {
         //Attach link to systemMenuButton to go to Systems.fxml
         systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
 
-        //Attach link to systemTypeMenuBtn to go to SystemTypeList.fxml
-        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/SystemTypeList"));
+        //Attach link to systemTypeMenuBtn to go to Utilities.SystemTypeList.fxml
+        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Utilities.SystemTypeList"));
 
         //Attach link to addSystemButton to go to AddSystem.fxml
         addSystemBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/AddSystem"));

@@ -1,3 +1,6 @@
+package Controllers;
+
+import Utilities.UIUtilities;
 import app.item.Asset;
 import app.item.AssetType;
 import javafx.collections.FXCollections;
@@ -16,11 +19,11 @@ import java.util.ResourceBundle;
 
 public class AddSystemController implements Initializable {
 
-    private final String SAVE_DIALOG = "Save Dialog";
-    private final String SAVE_HEADER = "Asset has been saved to the database.";
-    private final String ERROR_DIALOG = "Error Dialog";
-    private final String ERROR_HEADER = "Please enter values for all text fields.";
-    private final String SYSTEMS = "/Systems";
+    private static final String SAVE_DIALOG = "Save Dialog";
+    private static final String SAVE_HEADER = "Asset has been saved to the database.";
+    private static final String ERROR_DIALOG = "Error Dialog";
+    private static final String ERROR_HEADER = "Please enter values for all text fields.";
+    private static final String SYSTEMS = "/Systems";
     @FXML
     public Button systemMenuBtn;
     @FXML
@@ -90,8 +93,8 @@ public class AddSystemController implements Initializable {
         });
         // Change scenes to Systems.fxml
         systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, SYSTEMS));
-        //Attach link to systemTypeMenuBtn to go to SystemTypeList.fxml
-        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/SystemTypeList"));
+        //Attach link to systemTypeMenuBtn to go to Utilities.SystemTypeList.fxml
+        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Utilities.SystemTypeList"));
         // Change scenes to Systems.fxml
         cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, SYSTEMS));
     }
@@ -183,7 +186,7 @@ public class AddSystemController implements Initializable {
      * @param asset os an asset object
      * @return whether or not the asset object passed is empty (no info or attributes) or not
      */
-    boolean isAssetEmpty(Asset asset) {
+    public boolean isAssetEmpty(Asset asset) {
         return asset.getName().equals("") || asset.getAssetTypeID().equals("") || asset.getDescription().equals("") ||
                 asset.getSerialNo().equals("") || asset.getManufacturer().equals("") || asset.getCategory().equals("") || asset.getSite().equals("") || asset.getLocation().equals("");
     }

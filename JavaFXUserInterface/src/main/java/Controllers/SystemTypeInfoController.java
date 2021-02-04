@@ -1,3 +1,8 @@
+package Controllers;
+
+import Utilities.SystemTypeList;
+import Utilities.TextConstants;
+import Utilities.UIUtilities;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -13,7 +18,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class SystemTypeInfoController implements Initializable {
-    private final String SYSTEM_TYPE_LIST = "/SystemTypeList";
+    private final String SYSTEM_TYPE_LIST = "/Utilities.SystemTypeList";
 
     @FXML
     private Button systemMenuBtn;
@@ -53,13 +58,13 @@ public class SystemTypeInfoController implements Initializable {
     }
 
     /**
-     * initData receives the System Type data that was selected from SystemTypeList.FXML
+     * initData receives the System Type data that was selected from Utilities.SystemTypeList.FXML
      * Then, uses that data to populate the text fields in the scene.
      *
      * @param assetType represents the asset type we want to get info on
      * @author Najim, Paul
      */
-    void initData(SystemTypeList assetType) {
+    public void initData(SystemTypeList assetType) {
         this.assetType = assetType;
         this.originalAssetType = new SystemTypeList(assetType);
         systemTypeName.setText(assetType.getAssetType().getName());
@@ -104,7 +109,7 @@ public class SystemTypeInfoController implements Initializable {
     public void attachEvents() {
         // Change scenes to Systems.fxml
         systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
-        //Attach link to systemTypeMenuBtn to go to SystemTypeList.fxml
+        //Attach link to systemTypeMenuBtn to go to Utilities.SystemTypeList.fxml
         systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, SYSTEM_TYPE_LIST));
         infoDeleteBtn.setOnMouseClicked(this::deleteDialog);
 

@@ -1,3 +1,7 @@
+package Controllers;
+
+import Utilities.TextConstants;
+import Utilities.UIUtilities;
 import app.item.AssetType;
 import app.item.AssetTypeParameter;
 import javafx.fxml.FXML;
@@ -13,7 +17,7 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class AddSystemTypeController implements Initializable {
-    private final String SYSTEM_TYPE_LIST = "/SystemTypeList";
+    private final String SYSTEM_TYPE_LIST = "/Utilities.SystemTypeList";
 
     @FXML
     private Button systemMenuBtn;
@@ -66,13 +70,13 @@ public class AddSystemTypeController implements Initializable {
     public void attachEvents() {
         // Change scenes to Systems.fxml
         systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, SYSTEM_TYPE_LIST));
-        //Attach link to systemTypeMenuBtn to go to SystemTypeList.fxml
+        //Attach link to systemTypeMenuBtn to go to Utilities.SystemTypeList.fxml
         systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, SYSTEM_TYPE_LIST));
         // Change scenes to Systems.fxml
         cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, SYSTEM_TYPE_LIST));
         saveBtn.setOnMouseClicked(mouseEvent -> {
             if (saveAssetType(assembleSystemType()))
-                uiUtilities.changeScene(mouseEvent, "/SystemTypeList");
+                uiUtilities.changeScene(mouseEvent, "/Utilities.SystemTypeList");
         });
 
 

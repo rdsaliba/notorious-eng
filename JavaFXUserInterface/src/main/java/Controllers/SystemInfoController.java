@@ -1,3 +1,6 @@
+package Controllers;
+
+import Utilities.UIUtilities;
 import app.item.Asset;
 import app.item.AssetAttribute;
 import app.item.Measurement;
@@ -27,10 +30,7 @@ import rul.assessment.AssessmentController;
 
 import java.net.URL;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class SystemInfoController implements Initializable {
 
@@ -103,7 +103,7 @@ public class SystemInfoController implements Initializable {
      * @param system is an asset object that will get initialized
      * @author Jeff
      */
-    void initData(Asset system) {
+    public void initData(Asset system) {
         this.system = system;
         String systemTypeName = assetTypeDAOImpl.getNameFromID(system.getAssetTypeID());
         systemName.setText(systemTypeName + " - " + system.getSerialNo());
@@ -189,8 +189,8 @@ public class SystemInfoController implements Initializable {
      */
     public void attachEvents() {
         systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
-        //Attach link to systemTypeMenuBtn to go to SystemTypeList.fxml
-        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/SystemTypeList"));
+        //Attach link to systemTypeMenuBtn to go to Utilities.SystemTypeList.fxml
+        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Utilities.SystemTypeList"));
         deleteBtn.setOnMouseClicked(this::deleteDialog);
 
         rawDataTab.setOnSelectionChanged(event -> {
@@ -238,7 +238,7 @@ public class SystemInfoController implements Initializable {
             int columnIndex = 1;
             TableColumn<ObservableList<String>, String>[] tableColumns = new TableColumn[attributes.size() + 1];
 
-            ArrayList<ArrayList<Measurement>> data = new ArrayList<>();
+            ArrayList<List<Measurement>> data = new ArrayList<>();
 
             tableColumns[0] = new TableColumn<>("Cycle");
             data.add(attributes.get(0).getMeasurements());
@@ -255,7 +255,7 @@ public class SystemInfoController implements Initializable {
             ObservableList<ObservableList<String>> dataPerColumn = FXCollections.observableArrayList();
 
             int outCounter = 0;
-            for (ArrayList<Measurement> dataList : data) {
+            for (List<Measurement> dataList : data) {
                 int counter = 0;
                 for (Measurement measurement : dataList) {
                     if (outCounter < dataList.size()) {

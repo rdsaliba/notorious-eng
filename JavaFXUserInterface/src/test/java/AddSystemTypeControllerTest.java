@@ -1,10 +1,11 @@
+import Controllers.AddSystemTypeController;
+import Controllers.SystemTypeInfoController;
 import app.item.AssetType;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
@@ -12,7 +13,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.junit.After;
 import org.junit.Test;
-import org.testfx.api.FxAssert;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 

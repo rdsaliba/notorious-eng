@@ -1,3 +1,8 @@
+package Controllers;
+
+import Utilities.SystemTypeList;
+import Utilities.TextConstants;
+import Utilities.UIUtilities;
 import app.item.AssetType;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -115,8 +120,8 @@ public class SystemTypeController implements Initializable {
         //Attach link to systemMenuButton to go to Systems.fxml
         systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
 
-        //Attach link to systemTypeMenuBtn to go to SystemTypeList.fxml
-        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/SystemTypeList"));
+        //Attach link to systemTypeMenuBtn to go to Utilities.SystemTypeList.fxml
+        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Utilities.SystemTypeList"));
 
         //Attach link to addTypeBtn to go to AddSystemType.fxml
         addTypeBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/AddSystemType"));
