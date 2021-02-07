@@ -4,7 +4,6 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
@@ -12,22 +11,22 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.junit.After;
 import org.junit.Test;
-import org.testfx.api.FxAssert;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-public class AddSystemTypeControllerTest extends ApplicationTest {
+public class AddAssetTypeControllerTest extends ApplicationTest {
     private Scene scene;
-    private AddSystemTypeController addSystemTypeController;
+    private AddAssetTypeController addAssetTypeController;
 
     @Override
-    public void start (Stage stage) throws Exception {
-        FXMLLoader fxmlLoader = new FXMLLoader(SystemTypeInfoController.class.getResource("/AddSystemType.fxml"));
+    public void start(Stage stage) throws Exception {
+        FXMLLoader fxmlLoader = new FXMLLoader(AssetTypeInfoController.class.getResource("/AddAssetType.fxml"));
         Parent root = fxmlLoader.load();
         scene = new Scene(root);
-        addSystemTypeController = (AddSystemTypeController) fxmlLoader.getController();
+        addAssetTypeController = (AddAssetTypeController) fxmlLoader.getController();
         stage.setTitle("CBMS");
         stage.setScene(scene);
         stage.show();
@@ -48,36 +47,36 @@ public class AddSystemTypeControllerTest extends ApplicationTest {
     }
 
     @Test
-    public void testSystemsButtonClick() {
-        clickOn("#systemMenuBtn");
-        Node rootNode = lookup("#systemsTitle").query();
-        from(rootNode).lookup((Text t) -> t.getText().startsWith("Systems"));
+    public void testAssetsButtonClick() {
+        clickOn("#assetMenuBtn");
+        Node rootNode = lookup("#assetsTitle").query();
+        from(rootNode).lookup((Text t) -> t.getText().startsWith("Assets"));
     }
 
     @Test
-    public void testSystemTypeButtonClick() {
-        clickOn("#systemTypeMenuBtn");
-        Node rootNode = lookup("#systemTypesTitle").query();
-        from(rootNode).lookup((Text t) -> t.getText().startsWith("System Types"));
+    public void testAssetTypeButtonClick() {
+        clickOn("#assetTypeMenuBtn");
+        Node rootNode = lookup("#assetTypesTitle").query();
+        from(rootNode).lookup((Text t) -> t.getText().startsWith("Asset Types"));
     }
 
     @Test
     public void testCancelButtonClick() {
         clickOn("#cancelBtn");
-        Node rootNode = lookup("#systemTypesTitle").query();
-        from(rootNode).lookup((Text t) -> t.getText().startsWith("System Types"));
+        Node rootNode = lookup("#assetTypesTitle").query();
+        from(rootNode).lookup((Text t) -> t.getText().startsWith("Asset Types"));
     }
 
     @Test
-    public void testAssembleSystemType() {
-        clickOn("#systemTypeName").write("Name");
-        clickOn("#systemTypeDescription").write("Description");
+    public void testAssembleAssetType() {
+        clickOn("#assetTypeName").write("Name");
+        clickOn("#assetTypeDescription").write("Description");
         clickOn("#thresholdOKValue").write("23.0");
         clickOn("#thresholdAdvisoryValue").write("20.0");
         clickOn("#thresholdCautionValue").write("15.0");
         clickOn("#thresholdWarningValue").write("10.0");
         clickOn("#thresholdFailedValue").write("5.0");
-        AssetType assetType = addSystemTypeController.assembleSystemType();
+        AssetType assetType = addAssetTypeController.assembleAssetType();
         assertNotNull(assetType);
     }
 }

@@ -3,17 +3,17 @@ import app.item.AssetTypeParameter;
 
 import java.util.ArrayList;
 
-public class SystemTypeList {
+public class AssetTypeList {
     private AssetType assetType;
     private int liveAssets, archivedAssets;
     private String valueOk, valueCaution, valueAdvisory, valueWarning, valueFailed;
 
-    public SystemTypeList(String name, int liveAssets) {
+    public AssetTypeList(String name, int liveAssets) {
         this.assetType = new AssetType(name);
         this.liveAssets = liveAssets;
     }
 
-    public SystemTypeList(SystemTypeList copy) {
+    public AssetTypeList(AssetTypeList copy) {
         this.assetType = new AssetType(copy.getAssetType());
         this.liveAssets = copy.getLiveAssets();
         this.archivedAssets = copy.getArchivedAssets();
@@ -24,7 +24,7 @@ public class SystemTypeList {
         this.valueFailed = copy.getValueFailed();
     }
 
-    public SystemTypeList(AssetType assetType, int liveAssets, int archivedAssets, String valueOk, String valueCaution, String valueAdvisory, String valueWarning, String valueFailed) {
+    public AssetTypeList(AssetType assetType, int liveAssets, int archivedAssets, String valueOk, String valueCaution, String valueAdvisory, String valueWarning, String valueFailed) {
         this.assetType = assetType;
         this.liveAssets = liveAssets;
         this.archivedAssets = archivedAssets;

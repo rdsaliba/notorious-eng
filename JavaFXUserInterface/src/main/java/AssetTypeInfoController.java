@@ -13,12 +13,12 @@ import java.text.DecimalFormat;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-public class SystemTypeInfoController implements Initializable {
+public class AssetTypeInfoController implements Initializable {
 
     @FXML
-    private Button systemMenuBtn;
+    private Button assetMenuBtn;
     @FXML
-    private Button systemTypeMenuBtn;
+    private Button assetTypeMenuBtn;
     @FXML
     private Button infoSaveBtn;
     @FXML
@@ -28,11 +28,11 @@ public class SystemTypeInfoController implements Initializable {
     @FXML
     private Button modelDeleteBtn;
     @FXML
-    private AnchorPane systemTypeInformation;
+    private AnchorPane assetTypeInformation;
     @FXML
-    private TextField systemTypeName;
+    private TextField assetTypeName;
     @FXML
-    private TextArea systemTypeDesc;
+    private TextArea assetTypeDesc;
     @FXML
     private TextField thresholdOK;
     @FXML
@@ -44,11 +44,11 @@ public class SystemTypeInfoController implements Initializable {
     @FXML
     private TextField thresholdFailed;
     @FXML
-    private ImageView systemTypeImageView;
+    private ImageView assetTypeImageView;
 
     private UIUtilities uiUtilities;
-    private SystemTypeList assetType;
-    private SystemTypeList originalAssetType;
+    private AssetTypeList assetType;
+    private AssetTypeList originalAssetType;
     private AssetTypeDAOImpl assetTypeDAO;
 
     @Override
@@ -59,22 +59,37 @@ public class SystemTypeInfoController implements Initializable {
     }
 
     /**
-     * initData receives the System Type data that was selected from SystemTypeList.FXML
+     * initData receives the Asset Type data that was selected from AssetTypeList.FXML
      * Then, uses that data to populate the text fields in the scene.
      *
      * @param assetType
      * @author Najim, Paul
      */
-    void initData(SystemTypeList assetType) {
+    void initData(AssetTypeList assetType) {
         this.assetType = assetType;
-        this.originalAssetType = new SystemTypeList(assetType);
-        systemTypeName.setText(assetType.getAssetType().getName());
-        systemTypeDesc.setText(assetType.getAssetType().getDescription());
-        try { thresholdOK.setText(new DecimalFormat("#.##").format(Double.parseDouble(assetType.getValueOk()))); } catch (NumberFormatException e){ }
-        try { thresholdAdvisory.setText(new DecimalFormat("#.##").format(Double.parseDouble(assetType.getValueAdvisory()))); } catch (NumberFormatException e){ }
-        try { thresholdCaution.setText(new DecimalFormat("#.##").format(Double.parseDouble(assetType.getValueCaution()))); } catch (NumberFormatException e){ }
-        try { thresholdWarning.setText(new DecimalFormat("#.##").format(Double.parseDouble(assetType.getValueWarning()))); } catch (NumberFormatException e){ }
-        try { thresholdFailed.setText(new DecimalFormat("#.##").format(Double.parseDouble(assetType.getValueFailed()))); } catch (NumberFormatException e){ }
+        this.originalAssetType = new AssetTypeList(assetType);
+        assetTypeName.setText(assetType.getAssetType().getName());
+        assetTypeDesc.setText(assetType.getAssetType().getDescription());
+        try {
+            thresholdOK.setText(new DecimalFormat("#.##").format(Double.parseDouble(assetType.getValueOk())));
+        } catch (NumberFormatException e) {
+        }
+        try {
+            thresholdAdvisory.setText(new DecimalFormat("#.##").format(Double.parseDouble(assetType.getValueAdvisory())));
+        } catch (NumberFormatException e) {
+        }
+        try {
+            thresholdCaution.setText(new DecimalFormat("#.##").format(Double.parseDouble(assetType.getValueCaution())));
+        } catch (NumberFormatException e) {
+        }
+        try {
+            thresholdWarning.setText(new DecimalFormat("#.##").format(Double.parseDouble(assetType.getValueWarning())));
+        } catch (NumberFormatException e) {
+        }
+        try {
+            thresholdFailed.setText(new DecimalFormat("#.##").format(Double.parseDouble(assetType.getValueFailed())));
+        } catch (NumberFormatException e) {
+        }
 
 
     }
@@ -89,24 +104,24 @@ public class SystemTypeInfoController implements Initializable {
      * @author Paul
      */
     public void attachEvents() {
-        // Change scenes to Systems.fxml
-        systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
-        //Attach link to systemTypeMenuBtn to go to SystemTypeList.fxml
-        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/SystemTypeList"));
+        // Change scenes to Assets.fxml
+        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Assets"));
+        //Attach link to assetTypeMenuBtn to go to AssetTypeList.fxml
+        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/AssetTypeList"));
         infoDeleteBtn.setOnMouseClicked(this::deleteDialog);
 
         infoSaveBtn.setDisable(true);
         infoSaveBtn.setOnMouseClicked(mouseEvent -> {
             assetTypeDAO.updateAssetType(assetType.toAssetType());
-            uiUtilities.changeScene(mouseEvent, "/SystemTypeList");
+            uiUtilities.changeScene(mouseEvent, "/AssetTypeList");
         });
 
-        systemTypeName.textProperty().addListener((obs, oldText, newText) -> {
-            if( handleTextChange(obs, newText,originalAssetType.getName()))
+        assetTypeName.textProperty().addListener((obs, oldText, newText) -> {
+            if (handleTextChange(obs, newText, originalAssetType.getName()))
                 assetType.getAssetType().setName(newText);
         });
-        systemTypeDesc.textProperty().addListener((obs, oldText, newText) -> {
-            if( handleTextChange(obs, newText,originalAssetType.getDescription()))
+        assetTypeDesc.textProperty().addListener((obs, oldText, newText) -> {
+            if (handleTextChange(obs, newText, originalAssetType.getDescription()))
                 assetType.getAssetType().setDescription(newText);
         });
 
@@ -176,15 +191,15 @@ public class SystemTypeInfoController implements Initializable {
     }
 
     /**
-     * Changes the Image depending on the System Type.
+     * Changes the Image depending on the Asset Type.
      *
      * @author Najim
      */
     public void setImage(String typeName) {
         if (typeName.contains("Engine")) {
-            systemTypeImageView.setImage(new Image("imgs/system_type_engine.png"));
+            assetTypeImageView.setImage(new Image("imgs/asset_type_engine.png"));
         } else {
-            systemTypeImageView.setImage(new Image("imgs/unknown_system_type.png"));
+            assetTypeImageView.setImage(new Image("imgs/unknown_asset_type.png"));
         }
     }
 
@@ -198,16 +213,16 @@ public class SystemTypeInfoController implements Initializable {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         String ALERT_TITLE = "Confirmation Dialog";
         alert.setTitle(ALERT_TITLE);
-        String ALERT_HEADER = "Confirmation of system type deletion";
+        String ALERT_HEADER = "Confirmation of asset type deletion";
         alert.setHeaderText(ALERT_HEADER);
-        String ALERT_CONTENT = "Are you sure you want to delete this system type? \n " +
+        String ALERT_CONTENT = "Are you sure you want to delete this asset type? \n " +
                 "this will delete all the assets of this type";
         alert.setContentText(ALERT_CONTENT);
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             deleteAssetType();
-            uiUtilities.changeScene(mouseEvent, "/SystemTypeList");
+            uiUtilities.changeScene(mouseEvent, "/AssetTypeList");
         }
     }
 

@@ -17,19 +17,19 @@ import org.testfx.framework.junit.ApplicationTest;
 
 import java.util.ArrayList;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-public class SystemTypeInfoControllerTest extends ApplicationTest {
+public class AssetTypeInfoControllerTest extends ApplicationTest {
 
     private Scene scene;
-    private static SystemTypeInfoController systemTypeInfoController;
+    private static AssetTypeInfoController assetTypeInfoController;
 
     @Override
-    public void start (Stage stage) throws Exception {
-        FXMLLoader fxmlLoader = new FXMLLoader(SystemTypeInfoController.class.getResource("/SystemTypeInfo.fxml"));
+    public void start(Stage stage) throws Exception {
+        FXMLLoader fxmlLoader = new FXMLLoader(AssetTypeInfoController.class.getResource("/AssetTypeInfo.fxml"));
         Parent root = fxmlLoader.load();
         scene = new Scene(root);
-        systemTypeInfoController = (SystemTypeInfoController) fxmlLoader.getController();
+        assetTypeInfoController = (AssetTypeInfoController) fxmlLoader.getController();
 
         AssetType assetType = new AssetType();
         ArrayList<AssetTypeParameter> parameters = new ArrayList<>();
@@ -43,10 +43,10 @@ public class SystemTypeInfoControllerTest extends ApplicationTest {
         assetType.setDescription("This is a description");
         assetType.setName("Asset Type Name");
 
-        SystemTypeList systemTypeList = new SystemTypeList(assetType, 34, 67,
+        AssetTypeList assetTypeList = new AssetTypeList(assetType, 34, 67,
                 "Ok", "Caution", "Advisory", "Warning", "Failed");
 
-        systemTypeInfoController.initData(systemTypeList);
+        assetTypeInfoController.initData(assetTypeList);
 
         stage.setTitle("CBMS");
         stage.setScene(scene);
@@ -68,16 +68,16 @@ public class SystemTypeInfoControllerTest extends ApplicationTest {
     }
 
     @Test
-    public void testSystemsButtonClick() {
-        clickOn("#systemMenuBtn");
-        Node rootNode = lookup("#systemsTitle").query();
-        from(rootNode).lookup((Text t) -> t.getText().startsWith("Systems"));
+    public void testAssetsButtonClick() {
+        clickOn("#assetMenuBtn");
+        Node rootNode = lookup("#assetsTitle").query();
+        from(rootNode).lookup((Text t) -> t.getText().startsWith("Assets"));
     }
 
     @Test
-    public void testSystemTypeButtonClick() {
-        clickOn("#systemTypeMenuBtn");
-        Node rootNode = lookup("#systemTypesTitle").query();
-        from(rootNode).lookup((Text t) -> t.getText().startsWith("System Types"));
+    public void testAssetTypeButtonClick() {
+        clickOn("#assetTypeMenuBtn");
+        Node rootNode = lookup("#assetTypesTitle").query();
+        from(rootNode).lookup((Text t) -> t.getText().startsWith("Asset Types"));
     }
 }

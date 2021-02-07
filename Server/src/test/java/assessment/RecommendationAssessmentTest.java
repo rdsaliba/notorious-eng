@@ -21,7 +21,7 @@ public class RecommendationAssessmentTest {
     @Test
     public void testOkRecommendation() {
         assertEquals("Ok",
-                recommendationAssessment.getRecommendation( assetTypeDAO.getAssetTypeBoundaries(ASSET_TYPE).get("Ok"), ASSET_TYPE));
+                recommendationAssessment.getRecommendation(assetTypeDAO.getAssetTypeThresholds(ASSET_TYPE).get("Ok"), ASSET_TYPE));
     }
 
 }

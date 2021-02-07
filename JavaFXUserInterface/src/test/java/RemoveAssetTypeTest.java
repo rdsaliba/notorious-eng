@@ -5,10 +5,10 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
-public class RemoveSystemTypeTest {
+public class RemoveAssetTypeTest {
 
     @Test
-    public void testRemovingFunctionality(){
+    public void testRemovingFunctionality() {
         String testName = "Testing type";
         AssetTypeDAOImpl assetTypeDAO = new AssetTypeDAOImpl();
         AssetType assetType = new AssetType();

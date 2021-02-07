@@ -12,8 +12,8 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
     private static final String INSERT_ASSET_TYPE_PARAMETERS = "INSERT INTO asset_type_parameters (asset_type_id, parameter_name, boundary) values(?, ?, ?)";
     private static final String GET_ASSET_TYPES = "SELECT * FROM asset_type";
     private static final String GET_ASSET_TYPE_NAME_FROM_ID = "SELECT name FROM asset_type where asset_type_id = ?";
-    private static final String GET_ASSET_TYPE_BOUNDARY = "SELECT *  FROM asset_type_parameters WHERE parameter_name = ? AND asset_type_id = ?";
-    private static final String GET_ASSET_TYPE_BOUNDARIES = "SELECT *  FROM asset_type_parameters WHERE asset_type_id = ?";
+    private static final String GET_ASSET_TYPE_THRESHOLD = "SELECT *  FROM asset_type_parameters WHERE parameter_name = ? AND asset_type_id = ?";
+    private static final String GET_ASSET_TYPE_THRESHOLDS = "SELECT *  FROM asset_type_parameters WHERE asset_type_id = ?";
     private static final String GET_ASSET_TYPE_ID_COUNT = "SELECT asset_type_id, COUNT(*) as 'count' FROM asset WHERE archived = ? AND asset_type_id = ?";
     private static final String DELETE_ASSET_TYPE = "DELETE FROM asset_type where asset_type_id = ?";
     private static final String UPDATE_ASSET_TYPE = "UPDATE asset_type set name =?, description = ? where asset_type_id = ?";
@@ -42,43 +42,43 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
     }
 
     @Override
-    public String getAssetTypeBoundary(String asset_type_id, String boundary_type){
-        String boundary = "null";
-        try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_TYPE_BOUNDARY)) {
-            ps.setString(1, boundary_type);
+    public String getAssetTypeThreshold(String asset_type_id, String threshold_type) {
+        String threshold = "null";
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_TYPE_THRESHOLD)) {
+            ps.setString(1, threshold_type);
             ps.setString(2, asset_type_id);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    boundary = rs.getString("boundary");
+                    threshold = rs.getString("boundary");
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        if (boundary == null || boundary.equals("null"))
-            boundary= "-";
-        return boundary;
+        if (threshold == null || threshold.equals("null"))
+            threshold = "-";
+        return threshold;
     }
 
     /**
-     * Gets the boundary values for an Asset Type.
+     * Gets the threshold values for an Asset Type.
      *
      * @param asset_type_id is the id of the asset type
-     * @return a map of the different boundary labels and their values
+     * @return a map of the different threshold labels and their values
      */
     @Override
-    public HashMap<String, Double> getAssetTypeBoundaries(String asset_type_id) {
-        HashMap<String, Double> boundaries = new HashMap<>();
-        try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_TYPE_BOUNDARIES)) {
+    public HashMap<String, Double> getAssetTypeThresholds(String asset_type_id) {
+        HashMap<String, Double> thresholds = new HashMap<>();
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_TYPE_THRESHOLDS)) {
             ps.setString(1, asset_type_id);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next())
-                    boundaries.put(rs.getString("parameter_name"), rs.getDouble("boundary"));
+                    thresholds.put(rs.getString("parameter_name"), rs.getDouble("boundary"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return boundaries;
+        return thresholds;
     }
 
 

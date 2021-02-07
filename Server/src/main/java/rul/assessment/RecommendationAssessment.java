@@ -2,6 +2,7 @@ package rul.assessment;
 
 
 import local.AssetTypeDAOImpl;
+
 import java.util.HashMap;
 
 public class RecommendationAssessment {
@@ -13,22 +14,22 @@ public class RecommendationAssessment {
     }
 
     public String getRecommendation(Double rulEstimation, String assetTypeID) {
-        HashMap<String, Double> boundaries = getAssetTypeBoundaries(assetTypeID);
-        return calculateBoundaries(rulEstimation, boundaries);
+        HashMap<String, Double> thresholds = getAssetTypeThresholds(assetTypeID);
+        return calculateThresholds(rulEstimation, thresholds);
     }
 
-    private HashMap<String, Double> getAssetTypeBoundaries(String assetTypeID) {
-        return assetTypeDAO.getAssetTypeBoundaries(assetTypeID);
+    private HashMap<String, Double> getAssetTypeThresholds(String assetTypeID) {
+        return assetTypeDAO.getAssetTypeThresholds(assetTypeID);
     }
 
-    private String calculateBoundaries(Double rulEstimation, HashMap<String, Double> boundaries) {
-        if (rulEstimation >= boundaries.get("Ok"))
+    private String calculateThresholds(Double rulEstimation, HashMap<String, Double> thresholds) {
+        if (rulEstimation >= thresholds.get("Ok"))
             return "Ok";
-        else if (rulEstimation >= boundaries.get("Advisory"))
+        else if (rulEstimation >= thresholds.get("Advisory"))
             return "Advisory";
-        else if (rulEstimation >= boundaries.get("Caution"))
+        else if (rulEstimation >= thresholds.get("Caution"))
             return "Caution";
-        else if (rulEstimation >= boundaries.get("Warning"))
+        else if (rulEstimation >= thresholds.get("Warning"))
             return "Warning";
         else
             return "Failed";

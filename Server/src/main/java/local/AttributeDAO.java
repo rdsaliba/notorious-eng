@@ -6,5 +6,5 @@ import java.util.ArrayList;
 
 public interface AttributeDAO {
 
-    ArrayList<Measurement> getLastXMeasurementsByAssetIDAndAttributeID(String assetID,String sensorID, int limiter );
+    ArrayList<Measurement> getLastXMeasurementsByAssetIDAndAttributeID(String assetID, String attributeID, int limiter);
 }

@@ -13,22 +13,22 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class AddSystemTypeController implements Initializable {
+public class AddAssetTypeController implements Initializable {
 
     @FXML
-    private Button systemMenuBtn;
+    private Button assetMenuBtn;
     @FXML
-    private Button systemTypeMenuBtn;
+    private Button assetTypeMenuBtn;
     @FXML
     private Button cancelBtn;
     @FXML
-    private AnchorPane systemTypeInformation;
+    private AnchorPane assetTypeInformation;
     @FXML
     private Button saveBtn;
     @FXML
-    private TextField systemTypeName;
+    private TextField assetTypeName;
     @FXML
-    private TextArea systemTypeDescription;
+    private TextArea assetTypeDescription;
     @FXML
     private TextField thresholdOKValue;
     @FXML
@@ -67,44 +67,44 @@ public class AddSystemTypeController implements Initializable {
      * @author Jeff , Paul
      */
     public void attachEvents() {
-        // Change scenes to Systems.fxml
-        systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
-        //Attach link to systemTypeMenuBtn to go to SystemTypeList.fxml
-        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/SystemTypeList"));
-        // Change scenes to Systems.fxml
-        cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/SystemTypeList"));
+        // Change scenes to Assets.fxml
+        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Assets"));
+        //Attach link to assetTypeMenuBtn to go to AssetTypeList.fxml
+        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/AssetTypeList"));
+        // Change scenes to Assets.fxml
+        cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/AssetTypeList"));
         saveBtn.setOnMouseClicked(mouseEvent -> {
-            if (saveAssetType(assembleSystemType()))
-                uiUtilities.changeScene(mouseEvent, "/SystemTypeList");
+            if (saveAssetType(assembleAssetType()))
+                uiUtilities.changeScene(mouseEvent, "/AssetTypeList");
         });
 
 
-        thresholdOKValue.setTextFormatter( new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat,c)));
-        thresholdAdvisoryValue.setTextFormatter( new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat,c)));
-        thresholdCautionValue.setTextFormatter( new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat,c)));
-        thresholdWarningValue.setTextFormatter( new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat,c)));
+        thresholdOKValue.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
+        thresholdAdvisoryValue.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
+        thresholdCautionValue.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
+        thresholdWarningValue.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
         thresholdFailedValue.setTextFormatter( new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat,c)));
     }
 
 
     /**
-     *  Create an asset type object from the user's input
+     * Create an asset type object from the user's input
      *
      * @author Jeff , Paul
      */
-    public AssetType assembleSystemType() {
-        if (systemTypeName.getText().length()>0 && systemTypeDescription.getText().length()>0){
-            AssetType assetType = new AssetType(systemTypeName.getText());
-            assetType.setDescription(systemTypeDescription.getText());
+    public AssetType assembleAssetType() {
+        if (assetTypeName.getText().length() > 0 && assetTypeDescription.getText().length() > 0) {
+            AssetType assetType = new AssetType(assetTypeName.getText());
+            assetType.setDescription(assetTypeDescription.getText());
 
             Double okValue = thresholdOKValue.getText().isEmpty() ? null : Double.parseDouble(thresholdOKValue.getText());
-            assetTypeParameters.add(new AssetTypeParameter(TextConstants.OK_THRESHOLD,okValue));
+            assetTypeParameters.add(new AssetTypeParameter(TextConstants.OK_THRESHOLD, okValue));
 
             Double advisoryValue = thresholdAdvisoryValue.getText().isEmpty() ? null : Double.parseDouble(thresholdAdvisoryValue.getText());
-            assetTypeParameters.add(new AssetTypeParameter(TextConstants.ADVISORY_THRESHOLD,advisoryValue));
+            assetTypeParameters.add(new AssetTypeParameter(TextConstants.ADVISORY_THRESHOLD, advisoryValue));
 
             Double cautionValue = thresholdCautionValue.getText().isEmpty() ? null : Double.parseDouble(thresholdCautionValue.getText());
-            assetTypeParameters.add(new AssetTypeParameter(TextConstants.CAUTION_THRESHOLD,cautionValue));
+            assetTypeParameters.add(new AssetTypeParameter(TextConstants.CAUTION_THRESHOLD, cautionValue));
 
             Double warningValue = thresholdWarningValue.getText().isEmpty() ? null : Double.parseDouble(thresholdWarningValue.getText());
             assetTypeParameters.add(new AssetTypeParameter(TextConstants.WARNING_THRESHOLD,warningValue));
