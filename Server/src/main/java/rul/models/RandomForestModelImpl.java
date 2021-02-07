@@ -18,6 +18,8 @@ public class RandomForestModelImpl implements ModelStrategy
      * Random Forest classifier.
      * @author Khaled
      */
+
+    @Override
     public Classifier trainModel(Instances dataToTrain)
     {
         RandomForest randomForest = new RandomForest();
