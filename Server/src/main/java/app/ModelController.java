@@ -166,7 +166,7 @@ public class ModelController {
                 return new LSTMModelImpl();
 
 
-            case "RandomCommittee":
+            case "RandomCommittee":                    //To be entered in DB: RandomCommittee
                 return new RandomCommitteeModelImpl();
             default:
                 return null;

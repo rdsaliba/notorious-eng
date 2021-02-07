@@ -31,7 +31,7 @@ public class RandomCommitteeTest {
         trainData.setClassIndex(trainData.numAttributes() - 1);
 
         Classifier randomCommittee = new RandomCommittee();
-        assertEquals("Should Return Random Forest Model", randomCommittee.getClass(), modelsController.trainModel(trainData).getClass());
+        assertEquals("Should Return Random Committee Model", randomCommittee.getClass(), modelsController.trainModel(trainData).getClass());
 
     }
 
