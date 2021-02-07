@@ -14,10 +14,7 @@ import local.AssetDAOImpl;
 import local.ModelDAOImpl;
 import preprocessing.DataPrePreprocessorController;
 import rul.assessment.AssessmentController;
-import rul.models.LSTMModelImpl;
-import rul.models.LinearRegressionModelImpl;
-import rul.models.ModelStrategy;
-import rul.models.ModelsController;
+import rul.models.*;
 import weka.classifiers.Classifier;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
@@ -167,6 +164,8 @@ public class ModelController {
                 return new LinearRegressionModelImpl();
             case "LSTM":
                 return new LSTMModelImpl();
+            case "RandomForest":                            //To be entered in DB: RandomForest
+                return new RandomForestModelImpl();
             default:
                 return null;
         }
