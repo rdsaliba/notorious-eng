@@ -77,12 +77,10 @@ public class SystemTypeController implements Initializable {
     /**
      * This method will return an ObservableList of SystemList objects
      *
-     * @author Shirwa
-     * <p>
+     * @author Shirwa, Paul
      * edit: There was an issue where the getAssetTypeIdCount() would not match in size to the assetTypeList()
      * and it would crash the system if there was an asset type with no assets associated to it
      * so this methode was rewrote
-     * @author Paul
      */
     private ObservableList<SystemTypeList> getSystemList() {
         ObservableList<SystemTypeList> systemtypelist = FXCollections.observableArrayList();

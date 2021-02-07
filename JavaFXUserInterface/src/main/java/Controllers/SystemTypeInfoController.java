@@ -101,10 +101,8 @@ public class SystemTypeInfoController implements Initializable {
     /**
      * Attaches events to elements in the scene.
      *
-     * @author Najim
-     * <p>
+     * @author Najim, Paul
      * Edit: added all the text proprety listeners and text formaters for all the fields
-     * @author Paul
      */
     public void attachEvents() {
         // Change scenes to Systems.fxml
