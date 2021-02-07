@@ -1,3 +1,6 @@
+package Controllers;
+
+import Utilities.UIUtilities;
 import app.ModelController;
 import app.item.Asset;
 import javafx.animation.Animation;
@@ -5,8 +8,6 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -36,6 +37,8 @@ import java.util.Collections;
 import java.util.ResourceBundle;
 
 public class SystemsController implements Initializable {
+    private final AssetTypeDAOImpl assetTypeDAO;
+    private final ModelDAOImpl modelDAO;
     @FXML
     private Button systemMenuBtn;
     @FXML
@@ -52,14 +55,8 @@ public class SystemsController implements Initializable {
     private Tab listTab;
     @FXML
     private ChoiceBox<String> sortSystem;
-
-    private final ObservableList<Pane> boxes = FXCollections.observableArrayList();
     private UIUtilities uiUtilities;
     private ObservableList<Asset> systems;
-    private final AssetTypeDAOImpl assetTypeDAO;
-    private final ModelDAOImpl modelDAO;
-
-    private final String RECOMMENDATION_COL = "Recommendation";
 
     public SystemsController() {
         assetTypeDAO = new AssetTypeDAOImpl();
@@ -77,9 +74,8 @@ public class SystemsController implements Initializable {
      * Initialize runs before the scene is displayed.
      * It initializes elements and data in the scene.
      *
-     * @param url url to be used
+     * @param url            url to be used
      * @param resourceBundle resourceBundle to be used
-     *
      * @author Jeff
      */
     @Override
@@ -110,9 +106,9 @@ public class SystemsController implements Initializable {
         //Attach link to systemMenuButton to go to Systems.fxml
         systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
 
-        //Attach link to systemTypeMenuBtn to go to SystemTypeList.fxml
-        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/SystemTypeList"));
-      
+        //Attach link to systemTypeMenuBtn to go to Utilities.SystemTypeList.fxml
+        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Utilities.SystemTypeList"));
+
         //Attach link to addSystemButton to go to AddSystem.fxml
         addSystemBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/AddSystem"));
 
@@ -124,33 +120,30 @@ public class SystemsController implements Initializable {
         sortSystem.setValue("Default");
         //Listener on the sort ChoiceBox. Depending on the sort selected, all systems panes are cleared and generated again
         //with the appropriate sort applied.
-        sortSystem.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
-                switch (newValue) {
-                    case "Ascending RUL":
-                        if (thumbnailTab.isSelected()) {
-                            systemsThumbPane.getChildren().clear();
-                            systems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssetsDes());
-                            Collections.reverse(systems);
-                            generateThumbnails();
-                        }
-                        break;
-                    case "Descending RUL":
-                        if (thumbnailTab.isSelected()) {
-                            systemsThumbPane.getChildren().clear();
-                            systems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssetsDes());
-                            generateThumbnails();
-                        }
-                        break;
-                    default:
-                        if (thumbnailTab.isSelected()) {
-                            systemsThumbPane.getChildren().clear();
-                            systems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
-                            generateThumbnails();
-                        }
-                        break;
-                }
+        sortSystem.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
+            switch (newValue) {
+                case "Ascending RUL":
+                    if (thumbnailTab.isSelected()) {
+                        systemsThumbPane.getChildren().clear();
+                        systems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssetsDes());
+                        Collections.reverse(systems);
+                        generateThumbnails();
+                    }
+                    break;
+                case "Descending RUL":
+                    if (thumbnailTab.isSelected()) {
+                        systemsThumbPane.getChildren().clear();
+                        systems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssetsDes());
+                        generateThumbnails();
+                    }
+                    break;
+                default:
+                    if (thumbnailTab.isSelected()) {
+                        systemsThumbPane.getChildren().clear();
+                        systems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
+                        generateThumbnails();
+                    }
+                    break;
             }
         });
     }
@@ -163,7 +156,7 @@ public class SystemsController implements Initializable {
     public void generateThumbnails() {
         ObservableList<Pane> boxes = FXCollections.observableArrayList();
 
-        for (Asset system: systems) {
+        for (Asset system : systems) {
 
             Pane pane = new Pane();
 
@@ -205,7 +198,6 @@ public class SystemsController implements Initializable {
 
             timeline.setCycleCount(Animation.INDEFINITE); // loop forever
             timeline.play();
-
 
 
             systemName.setId("systemName");
@@ -259,8 +251,8 @@ public class SystemsController implements Initializable {
         });
 
         String TYPE_COL = "Type";
-        TableColumn<Asset, String>  systemTypeCol = new TableColumn<>(TYPE_COL);
-        systemTypeCol.setCellValueFactory( cellData -> new SimpleStringProperty(
+        TableColumn<Asset, String> systemTypeCol = new TableColumn<>(TYPE_COL);
+        systemTypeCol.setCellValueFactory(cellData -> new SimpleStringProperty(
                 assetTypeDAO.getNameFromID(cellData.getValue().getAssetTypeID())));
 
 
@@ -270,8 +262,8 @@ public class SystemsController implements Initializable {
                 new PropertyValueFactory<>("serialNo"));
 
         String MODEL_COL = "Model";
-        TableColumn<Asset, String>  modelCol = new TableColumn<>(MODEL_COL);
-        modelCol.setCellValueFactory( cellData -> new SimpleStringProperty(
+        TableColumn<Asset, String> modelCol = new TableColumn<>(MODEL_COL);
+        modelCol.setCellValueFactory(cellData -> new SimpleStringProperty(
                 modelDAO.getModelNameFromModelID(modelDAO.getModelsByAssetTypeID(cellData.getValue().getAssetTypeID()).getModelID())));
 
         String RUL_COL = "RUL";
@@ -311,7 +303,7 @@ public class SystemsController implements Initializable {
 
         table.setItems(systems);
         table.setId("listTable");
-        table.getColumns().addAll(systemTypeCol, serialNoCol,modelCol, modelRULCol, recommendationCol, locationCol,siteCol,categoryCol,manufacturerCol,descriptionCol);
+        table.getColumns().addAll(systemTypeCol, serialNoCol, modelCol, modelRULCol, recommendationCol, locationCol, siteCol, categoryCol, manufacturerCol, descriptionCol);
         AnchorPane.setBottomAnchor(table, 0.0);
         AnchorPane.setTopAnchor(table, 5.0);
         AnchorPane.setRightAnchor(table, 0.0);

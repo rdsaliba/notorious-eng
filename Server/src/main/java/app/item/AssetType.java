@@ -1,12 +1,13 @@
 package app.item;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AssetType {
     private String id;
     private String name;
     private String description;
-    private ArrayList<AssetTypeParameter> thresholdList;
+    private List<AssetTypeParameter> thresholdList;
 
     public AssetType() {
 
@@ -19,22 +20,22 @@ public class AssetType {
         this.thresholdList = assetType.getThresholdList();
     }
 
+    public AssetType(String name) {
+        this.name = name;
+        thresholdList = new ArrayList<>();
+    }
+
+    public AssetType(String name, List<AssetTypeParameter> thresholdList) {
+        this.name = name;
+        this.thresholdList = thresholdList;
+    }
+
     public String getId() {
         return id;
     }
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public AssetType(String name) {
-        this.name = name;
-        thresholdList = new ArrayList<>();
-    }
-
-    public AssetType(String name, ArrayList<AssetTypeParameter> thresholdList) {
-        this.name = name;
-        this.thresholdList = thresholdList;
     }
 
     public String getName() {
@@ -45,16 +46,12 @@ public class AssetType {
         this.name = name;
     }
 
-    public ArrayList<AssetTypeParameter> getThresholdList() {
+    public List<AssetTypeParameter> getThresholdList() {
         return thresholdList;
     }
 
-    public void setThresholdList(ArrayList<AssetTypeParameter> thresholdList) {
+    public void setThresholdList(List<AssetTypeParameter> thresholdList) {
         this.thresholdList = thresholdList;
-    }
-
-    public void addThresholdValue(AssetTypeParameter parameter) {
-        thresholdList.add(parameter);
     }
 
     public String getDescription() {

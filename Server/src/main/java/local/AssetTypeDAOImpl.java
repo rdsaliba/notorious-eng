@@ -42,11 +42,11 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
     }
 
     @Override
-    public String getAssetTypeBoundary(String asset_type_id, String boundary_type){
+    public String getAssetTypeBoundary(String assetTypeId, String boundaryType){
         String boundary = "null";
         try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_TYPE_BOUNDARY)) {
-            ps.setString(1, boundary_type);
-            ps.setString(2, asset_type_id);
+            ps.setString(1, boundaryType);
+            ps.setString(2, assetTypeId);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     boundary = rs.getString("boundary");
@@ -63,14 +63,14 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
     /**
      * Gets the boundary values for an Asset Type.
      *
-     * @param asset_type_id is the id of the asset type
+     * @param assetTypeId is the id of the asset type
      * @return a map of the different boundary labels and their values
      */
     @Override
-    public HashMap<String, Double> getAssetTypeBoundaries(String asset_type_id) {
+    public HashMap<String, Double> getAssetTypeBoundaries(String assetTypeId) {
         HashMap<String, Double> boundaries = new HashMap<>();
         try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_TYPE_BOUNDARIES)) {
-            ps.setString(1, asset_type_id);
+            ps.setString(1, assetTypeId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next())
                     boundaries.put(rs.getString("parameter_name"), rs.getDouble("boundary"));

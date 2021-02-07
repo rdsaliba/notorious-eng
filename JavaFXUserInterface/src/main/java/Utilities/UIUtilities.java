@@ -1,4 +1,7 @@
+package Utilities;
 
+import Controllers.SystemInfoController;
+import Controllers.SystemTypeInfoController;
 import app.item.Asset;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -18,11 +21,48 @@ import java.text.ParsePosition;
 public class UIUtilities {
 
     /**
+     * Given a tableView this function will set the width to fit the largest content
+     *
+     * @author Paul
+     */
+    public static void autoResizeColumns(TableView<?> table) {
+        table.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
+        table.getColumns().forEach(column ->
+        {
+            Text t = new Text(column.getText());
+            double max = t.getLayoutBounds().getWidth();
+            for (int i = 0; i < table.getItems().size(); i++) {
+                if (column.getCellData(i) != null) {
+                    t = new Text(column.getCellData(i).toString());
+                    double calcWidth = t.getLayoutBounds().getWidth();
+                    if (calcWidth > max) {
+                        max = calcWidth;
+                    }
+                }
+            }
+            column.setPrefWidth(max + 35.0d);
+        });
+    }
+
+    /**
+     * This function validates an input of a change on a text field to only allow the change if it fits the DecimalFormat
+     *
+     * @author Paul
+     */
+    public static TextFormatter.Change checkFormat(DecimalFormat format, TextFormatter.Change c) {
+        if (c.getControlNewText().isEmpty())
+            return c;
+        ParsePosition parsePosition = new ParsePosition(0);
+        if (format.parse(c.getControlNewText(), parsePosition) == null || parsePosition.getIndex() < c.getControlNewText().length())
+            return null;
+        return c;
+    }
+
+    /**
      * Changes scenes once an element is clicked.
      *
      * @param mouseEvent
      * @param fxmlFileName
-     *
      * @author Jeff
      */
     public void changeScene(MouseEvent mouseEvent, String fxmlFileName) {
@@ -48,15 +88,14 @@ public class UIUtilities {
      *
      * @param mouseEvent
      * @param fxmlFileName
-     *
      * @author Jeff
      */
     public void changeScene(MouseEvent mouseEvent, TableRow<Asset> row, String fxmlFileName, Asset asset) {
-        Stage primaryStage = (Stage) row.getScene().getWindow();
+        row.getScene().getWindow();
         try {
-            if(!row.isEmpty()){
+            if (!row.isEmpty()) {
                 FXMLLoader loader = new FXMLLoader();
-                loader.setLocation(getClass().getResource("/SystemInfo.fxml"));
+                loader.setLocation(getClass().getResource(fxmlFileName + ".fxml"));
                 Parent systemsParent = loader.load();
                 Scene systemInfo = new Scene(systemsParent);
 
@@ -82,7 +121,7 @@ public class UIUtilities {
      * @author Najim
      */
     public void changeScene(MouseEvent mouseEvent, TableRow<SystemTypeList> row, String fxmlFileName, SystemTypeList assetType) {
-        Stage primaryStage = (Stage) row.getScene().getWindow();
+        row.getScene().getWindow();
         try {
             if (!row.isEmpty()) {
                 FXMLLoader loader = new FXMLLoader();
@@ -100,49 +139,6 @@ public class UIUtilities {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-
-    /**
-     * Given a tableView this function will set the width to fit the largest content
-     *
-     * @author  Paul
-     */
-    public static void autoResizeColumns( TableView<?> table )
-    {
-        table.setColumnResizePolicy( TableView.UNCONSTRAINED_RESIZE_POLICY);
-        table.getColumns().stream().forEach( (column) ->
-        {
-            Text t = new Text( column.getText() );
-            double max = t.getLayoutBounds().getWidth();
-            for ( int i = 0; i < table.getItems().size(); i++ )
-            {
-                if ( column.getCellData( i ) != null )
-                {
-                    t = new Text( column.getCellData( i ).toString() );
-                    double calcwidth = t.getLayoutBounds().getWidth();
-                    if ( calcwidth > max )
-                    {
-                        max = calcwidth;
-                    }
-                }
-            }
-            column.setPrefWidth( max + 35.0d );
-        } );
-    }
-
-    /**
-     * This function validates an input of a change on a textfield to only allow the change if it fits the DecimalFormat
-     *
-     * @author Paul
-     */
-    public static TextFormatter.Change checkFormat(DecimalFormat format, TextFormatter.Change c) {
-        if ( c.getControlNewText().isEmpty() )
-            return c;
-        ParsePosition parsePosition = new ParsePosition( 0 );
-        if ( format.parse( c.getControlNewText(), parsePosition ) == null || parsePosition.getIndex() < c.getControlNewText().length() )
-            return null;
-        return c;
     }
 
 }
