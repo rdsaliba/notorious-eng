@@ -3,7 +3,6 @@ package Controllers;
 import Utilities.SystemTypeList;
 import Utilities.TextConstants;
 import Utilities.UIUtilities;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -13,12 +12,11 @@ import javafx.scene.input.MouseEvent;
 import local.AssetTypeDAOImpl;
 
 import java.net.URL;
-import java.text.DecimalFormat;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class SystemTypeInfoController implements Initializable {
-    private final String SYSTEM_TYPE_LIST = "/Utilities.SystemTypeList";
+    private final String SYSTEM_TYPE_LIST = "/SystemTypeList";
 
     @FXML
     private Button systemMenuBtn;
@@ -70,32 +68,14 @@ public class SystemTypeInfoController implements Initializable {
         systemTypeName.setText(assetType.getAssetType().getName());
         systemTypeDesc.setText(assetType.getAssetType().getDescription());
         try {
-            thresholdOK.setText(new DecimalFormat("#.##").format(Double.parseDouble(assetType.getValueOk())));
+            thresholdOK.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueOk())));
+            thresholdAdvisory.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueAdvisory())));
+            thresholdCaution.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueCaution())));
+            thresholdWarning.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueWarning())));
+            thresholdFailed.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueFailed())));
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
-        try {
-            thresholdAdvisory.setText(new DecimalFormat("#.##").format(Double.parseDouble(assetType.getValueAdvisory())));
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-        }
-        try {
-            thresholdCaution.setText(new DecimalFormat("#.##").format(Double.parseDouble(assetType.getValueCaution())));
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-        }
-        try {
-            thresholdWarning.setText(new DecimalFormat("#.##").format(Double.parseDouble(assetType.getValueWarning())));
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-        }
-        try {
-            thresholdFailed.setText(new DecimalFormat("#.##").format(Double.parseDouble(assetType.getValueFailed())));
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-        }
-
-
     }
 
     /**
@@ -118,40 +98,40 @@ public class SystemTypeInfoController implements Initializable {
         });
 
         systemTypeName.textProperty().addListener((obs, oldText, newText) -> {
-            if (handleTextChange(obs, newText, originalAssetType.getName()))
+            if (handleTextChange(newText, originalAssetType.getName()))
                 assetType.getAssetType().setName(newText);
         });
         systemTypeDesc.textProperty().addListener((obs, oldText, newText) -> {
-            if (handleTextChange(obs, newText, originalAssetType.getDescription()))
+            if (handleTextChange(newText, originalAssetType.getDescription()))
                 assetType.getAssetType().setDescription(newText);
         });
 
         thresholdOK.textProperty().addListener((obs, oldText, newText) -> {
-            if (handleTextChange(obs, newText, originalAssetType.getValueOk()))
+            if (handleTextChange(newText, originalAssetType.getValueOk()))
                 assetType.setValueOk(newText);
         });
         thresholdOK.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
 
         thresholdAdvisory.textProperty().addListener((obs, oldText, newText) -> {
-            if (handleTextChange(obs, newText, originalAssetType.getValueAdvisory()))
+            if (handleTextChange(newText, originalAssetType.getValueAdvisory()))
                 assetType.setValueAdvisory(newText);
         });
         thresholdAdvisory.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
 
         thresholdCaution.textProperty().addListener((obs, oldText, newText) -> {
-            if (handleTextChange(obs, newText, originalAssetType.getValueCaution()))
+            if (handleTextChange(newText, originalAssetType.getValueCaution()))
                 assetType.setValueCaution(newText);
         });
         thresholdCaution.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
 
         thresholdWarning.textProperty().addListener((obs, oldText, newText) -> {
-            if (handleTextChange(obs, newText, originalAssetType.getValueWarning()))
+            if (handleTextChange(newText, originalAssetType.getValueWarning()))
                 assetType.setValueWarning(newText);
         });
         thresholdWarning.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
 
         thresholdFailed.textProperty().addListener((obs, oldText, newText) -> {
-            if (handleTextChange(obs, newText, originalAssetType.getValueFailed()))
+            if (handleTextChange(newText, originalAssetType.getValueFailed()))
                 assetType.setValueFailed(newText);
         });
         thresholdFailed.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
@@ -163,7 +143,7 @@ public class SystemTypeInfoController implements Initializable {
      *
      * @author Paul
      */
-    private boolean handleTextChange(ObservableValue<? extends String> obs, String newText, String field) {
+    private boolean handleTextChange(String newText, String field) {
         if ((field).equals(originalAssetType.getName()) || field.equals(originalAssetType.getDescription())) {
             if (!newText.isEmpty() && !newText.equals(field)) {
                 infoSaveBtn.setDisable(false);
