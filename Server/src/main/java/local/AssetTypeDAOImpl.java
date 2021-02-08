@@ -13,7 +13,7 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
     private static final String GET_ASSET_TYPES = "SELECT * FROM asset_type";
     private static final String GET_ASSET_TYPE_NAME_FROM_ID = "SELECT name FROM asset_type where asset_type_id = ?";
     private static final String GET_ASSET_TYPE_BOUNDARY = "SELECT *  FROM asset_type_parameters WHERE parameter_name = ? AND asset_type_id = ?";
-    private static final String GET_ASSET_TYPE_BOUNDARIES = "SELECT *  FROM asset_type_parameters WHERE asset_type_id = ?";
+    private static final String GET_ASSET_TYPE_BOUNDARIES = "SELECT *  FROM asset_type_parameters WHERE asset_type_id = ? and boundary is not null";
     private static final String GET_ASSET_TYPE_ID_COUNT = "SELECT asset_type_id, COUNT(*) as 'count' FROM asset WHERE archived = ? AND asset_type_id = ?";
     private static final String DELETE_ASSET_TYPE = "DELETE FROM asset_type where asset_type_id = ?";
     private static final String UPDATE_ASSET_TYPE = "UPDATE asset_type set name =?, description = ? where asset_type_id = ?";
@@ -23,6 +23,7 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
      * This will return an arraylist of the count for all the asset type ids from the
      * asset table
      * edit: returns the count for a single asset type
+     *
      * @author Shirwa, Paul
      */
     @Override
@@ -42,7 +43,7 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
     }
 
     @Override
-    public String getAssetTypeBoundary(String assetTypeId, String boundaryType){
+    public String getAssetTypeBoundary(String assetTypeId, String boundaryType) {
         String boundary = "null";
         try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_TYPE_BOUNDARY)) {
             ps.setString(1, boundaryType);
@@ -56,7 +57,7 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
             e.printStackTrace();
         }
         if (boundary == null || boundary.equals("null"))
-            boundary= "-";
+            boundary = "-";
         return boundary;
     }
 
@@ -135,7 +136,7 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
     }
 
     @Override
-    public String getNameFromID(String id){
+    public String getNameFromID(String id) {
         String name = "";
         try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_TYPE_NAME_FROM_ID)) {
             ps.setString(1, id);
@@ -158,13 +159,13 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
             ps.setString(3, assetType.getId());
             ps.executeQuery();
             try (PreparedStatement ps2 = getConnection().prepareStatement(UPDATE_ASSET_TYPE_PARAMETER)) {
-                for (AssetTypeParameter assetTypeParameter: assetType.getThresholdList()){
+                for (AssetTypeParameter assetTypeParameter : assetType.getThresholdList()) {
                     if (assetTypeParameter.getValue() == null)
                         ps2.setNull(1, Types.DOUBLE);
                     else
                         ps2.setDouble(1, assetTypeParameter.getValue());
-                    ps2.setString(2,assetType.getId());
-                    ps2.setString(3,assetTypeParameter.getName());
+                    ps2.setString(2, assetType.getId());
+                    ps2.setString(3, assetTypeParameter.getName());
                     ps2.addBatch();
                 }
                 ps2.executeBatch();
@@ -173,10 +174,11 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
             e.printStackTrace();
         }
     }
+
     @Override
     public void deleteAssetTypeByID(String assetTypeID) {
         try (PreparedStatement ps = getConnection().prepareStatement(DELETE_ASSET_TYPE)) {
-            ps.setString(1,assetTypeID);
+            ps.setString(1, assetTypeID);
             ps.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();
