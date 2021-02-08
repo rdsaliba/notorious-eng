@@ -21,7 +21,6 @@ import java.util.ArrayList;
 public class AssetDAOImpl extends DAO implements AssetDAO {
 
     private static final String GET_ASSETS_TO_UPDATE = "SELECT * FROM asset WHERE archived = false AND updated = true";
-    private static final String DELETE_ASSET = "DELETE FROM ? WHERE asset_id = ?";
     private static final String GET_ASSET_INFO_FROM_ASSET_ID = "SELECT DISTINCT att.* FROM attribute_measurements am, attribute att WHERE att.attribute_id=am.attribute_id AND am.asset_id = ?";
     private static final String GET_ATTRIBUTES_NAMES_FROM_ASSET_ID = "SELECT DISTINCT att.attribute_name FROM attribute att, attribute_measurements am, asset a WHERE a.asset_id= ? AND am.asset_id = a.asset_id AND att.attribute_id = am.attribute_id order by att.attribute_id";
     private static final String GET_ASSETS_FROM_ASSET_TYPE_ID = "SELECT * FROM asset a WHERE a.archived = true AND a.asset_type_id = ?";
@@ -31,7 +30,6 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
     private static final String INSERT_NEW_ASSET_MEASUREMENT = "INSERT INTO asset_model_calculation values( ? , ? ,now(), ?)";
     private static final String SET_UPDATED_FALSE = "UPDATE asset set updated = 0 where asset_id = ?";
     private static final String SET_UPDATED_TRUE = "UPDATE asset set updated = 1 where asset_id = ?";
-    private static final String INSERT_ASSET = "INSERT INTO asset (name, asset_type_id, description, sn, manufacturer, category, site, location, unit_nb) values(?,?,?,?,?,?,?,?,?)";
     private static final String UPDATE_RECOMMENDATION = "UPDATE asset set recommendation = ? WHERE asset_id = ?";
 
     /**
@@ -53,31 +51,6 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         return assets;
     }
 
-    /**
-     * When given an asset ID this will delete the the asset from the database as well as the corresponding
-     * tables that reference the asset ID
-     *
-     * @param assetID represents the asset's ID
-     * @author Jeff
-     */
-    @Override
-    public void deleteAssetByID(int assetID) {
-        try (PreparedStatement ps = getConnection().prepareStatement(DELETE_ASSET)) {
-            for (int i = 0; i < 3; i++) {
-                if (i == 0) {
-                    ps.setString(1, " attribute_measurements ");
-                } else if (i == 1) {
-                    ps.setString(1, " asset_model_calculation ");
-                } else {
-                    ps.setString(1, " asset ");
-                }
-                ps.setInt(2, assetID);
-                ps.executeQuery();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 
     /**
      * When given an asset ID this return an arraylist of string containing all the names of the attributes
@@ -201,29 +174,6 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
             e.printStackTrace();
         }
         resetAssetUpdate(asset.getId());
-    }
-
-    /**
-     * Inserts an asset in the database.
-     *
-     * @param asset is an asset that is added by the user
-     */
-    @Override
-    public void insertAsset(Asset asset) {
-        try (PreparedStatement ps = getConnection().prepareStatement(INSERT_ASSET)) {
-            ps.setString(1, asset.getName());
-            ps.setInt(2, Integer.parseInt(asset.getAssetTypeID()));
-            ps.setString(3, asset.getDescription());
-            ps.setString(4, asset.getSerialNo());
-            ps.setString(5, asset.getManufacturer());
-            ps.setString(6, asset.getCategory());
-            ps.setString(7, asset.getSite());
-            ps.setString(8, asset.getLocation());
-            ps.setString(9, asset.getSerialNo());
-            ps.executeQuery();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 
     /**

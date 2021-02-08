@@ -3,13 +3,13 @@ package Controllers;
 import Utilities.SystemTypeList;
 import Utilities.TextConstants;
 import Utilities.UIUtilities;
+import external.AssetTypeDAOImpl;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import local.AssetTypeDAOImpl;
 
 import java.net.URL;
 import java.util.Optional;

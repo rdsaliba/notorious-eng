@@ -1,4 +1,4 @@
-package local;
+package external;
 
 import app.ConfigProperties;
 
@@ -28,8 +28,7 @@ public class DatabaseConnection {
         }
     }
 
-    private DatabaseConnection() {
-    }
+    private DatabaseConnection() {}
 
     public static DatabaseConnection getInstance() {
         if (openConnection == null) {

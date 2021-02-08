@@ -6,7 +6,7 @@
   @version 1.0
   @last_edit 12/27/2020
  */
-package local;
+package external;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -24,7 +24,7 @@ public class DAO {
         return DatabaseConnection.getConnection();
     }
 
-    public ResultSet nonParamQuery(String query) {
+    public ResultSet nonParamQuery(String query){
         ResultSet rs = null;
         try (PreparedStatement ps = getConnection().prepareStatement(query)) {
             rs = ps.executeQuery();

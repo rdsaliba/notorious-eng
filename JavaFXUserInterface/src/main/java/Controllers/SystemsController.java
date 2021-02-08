@@ -3,6 +3,8 @@ package Controllers;
 import Utilities.UIUtilities;
 import app.ModelController;
 import app.item.Asset;
+import external.AssetTypeDAOImpl;
+import external.ModelDAOImpl;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -19,8 +21,6 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
-import local.AssetTypeDAOImpl;
-import local.ModelDAOImpl;
 import rul.assessment.AssessmentController;
 
 import java.net.URL;
