@@ -32,12 +32,14 @@ import java.net.URL;
 import java.sql.ResultSet;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class SystemInfoController implements Initializable {
 
+    private static final int SENSOR_GRAPH_SIZE = 5;
     @FXML
     private Button systemMenuBtn;
     @FXML
@@ -74,15 +76,13 @@ public class SystemInfoController implements Initializable {
     private Tab rawDataTab;
     @FXML
     private AnchorPane rawDataListPane;
-
     private Asset system;
     private AssetDAOImpl assetDAOImpl;
     private AssetTypeDAOImpl assetTypeDAOImpl;
     private AttributeDAOImpl attributeDAOImpl;
     private ModelDAOImpl modelDAO;
     private UIUtilities uiUtilities;
-
-    private Timeline rawDataTimeline;
+    private ArrayList<Timeline> timelines;
 
     /**
      * Initialize runs before the scene is displayed.
@@ -99,6 +99,7 @@ public class SystemInfoController implements Initializable {
         modelDAO = new ModelDAOImpl();
         attributeDAOImpl = new AttributeDAOImpl();
         uiUtilities = new UIUtilities();
+        timelines = new ArrayList<>();
         attachEvents();
     }
 
@@ -109,7 +110,7 @@ public class SystemInfoController implements Initializable {
      * @param system is an asset object that will get initialized
      * @author Jeff
      */
-    void initData(Asset system) {
+    public void initData(Asset system) {
         this.system = system;
         String systemTypeName = assetTypeDAOImpl.getNameFromID(system.getAssetTypeID());
         systemName.setText(systemTypeName + " - " + system.getSerialNo());
@@ -150,28 +151,34 @@ public class SystemInfoController implements Initializable {
             String CYCLE = "Cycle";
             xAxis.setLabel(CYCLE);
             xAxis.setAnimated(false);
-            final LineChart<String, String> sensorChart =
-                    new LineChart<>(xAxis, yAxis);
+            final LineChart<String, String> sensorChart = new LineChart<>(xAxis, yAxis);
             String SENSOR_VALUES = "Sensor Values";
             sensorChart.setTitle(SENSOR_VALUES);
-            XYChart.Series<String, String> series = new XYChart.Series<>();
             sensorChart.setAnimated(false);
 
+            XYChart.Series<String, String> series = new XYChart.Series<>();
+            ObservableList<XYChart.Data<String, String>> data = FXCollections.observableArrayList();
+
+            ArrayList<Measurement> initialMeasurements = attributeDAOImpl.getLastXMeasurementsByAssetIDAndAttributeID(Integer.toString(system.getId()), Integer.toString(sensor.getId()), SENSOR_GRAPH_SIZE);
+            initialMeasurements.stream()
+                    .sorted(Collections.reverseOrder((t, measurement) -> measurement.getTime() - t.getTime()))
+                    .forEach(d -> data.add(new XYChart.Data<>(Integer.toString(d.getTime()), Double.toString(d.getValue()))));
+
             Timeline timeline = new Timeline(new KeyFrame(Duration.millis(1000), e -> {
-                ArrayList<Measurement> measurements = attributeDAOImpl.getLastXMeasurementsByAssetIDAndAttributeID(Integer.toString(system.getId()), Integer.toString(sensor.getId()), 5);
-                if (!sensorChart.getXAxis().isValueOnAxis(Integer.toString(measurements.get(0).getTime())))
-                    series.getData().add(new XYChart.Data<>(Integer.toString(measurements.get(0).getTime()), Double.toString(measurements.get(0).getValue())));
-                else if (series.getData().size() != measurements.size()) {
-                    for (int i = measurements.size() - 1; i >= 0; i--) {
-                        series.getData().add(new XYChart.Data<>(Integer.toString(measurements.get(i).getTime()), Double.toString(measurements.get(i).getValue())));
-                    }
-                }
-                if (series.getData().size() > 5)
-                    series.getData().remove(0);
+                ArrayList<Measurement> measurements = attributeDAOImpl.getLastXMeasurementsByAssetIDAndAttributeID(Integer.toString(system.getId()), Integer.toString(sensor.getId()), SENSOR_GRAPH_SIZE);
+                measurements.stream()
+                        .sorted(Collections.reverseOrder((t, measurement) -> measurement.getTime() - t.getTime()))
+                        .filter(m -> !sensorChart.getXAxis().isValueOnAxis(Integer.toString(m.getTime())))
+                        .forEach(d -> data.add(new XYChart.Data<>(Integer.toString(d.getTime()), Double.toString(d.getValue()))));
+
+                if (data.size() > SENSOR_GRAPH_SIZE)
+                    data.remove(0, data.size() - SENSOR_GRAPH_SIZE);
             }));
             timeline.setCycleCount(Animation.INDEFINITE);
             timeline.play();
+            timelines.add(timeline);
 
+            series.setData(data);
             sensorChart.getData().add(series);
             sensorChart.setPrefWidth(275.0);
             sensorChart.setPrefHeight(163.0);
@@ -195,8 +202,7 @@ public class SystemInfoController implements Initializable {
      */
     public void attachEvents() {
         systemMenuBtn.setOnMouseClicked(mouseEvent -> {
-            if (rawDataTimeline != null)
-                rawDataTimeline.stop();
+            timelines.forEach(Timeline::stop);
             uiUtilities.changeScene(mouseEvent, "/Systems");
         });
         //Attach link to systemTypeMenuBtn to go to SystemTypeList.fxml
@@ -240,6 +246,12 @@ public class SystemInfoController implements Initializable {
         }
     }
 
+    /**
+     * Fill the raw data table with the current measurement for the asset and update the list every
+     * second with new measurement as they come in
+     *
+     * @author Paul
+     */
     public void generateRawDataTable() {
         TableView<ObservableList> tableview = new TableView<>();
         ObservableList<ObservableList> data = FXCollections.observableArrayList();
@@ -254,12 +266,13 @@ public class SystemInfoController implements Initializable {
             }
 
             updateRawTableView(data, lastCycle);
-            if (rawDataTimeline == null)
-                rawDataTimeline = new Timeline(new KeyFrame(Duration.millis(1000), e -> updateRawTableView(data, lastCycle)));
 
-            rawDataTimeline.setCycleCount(Animation.INDEFINITE); // loop forever
-            rawDataTimeline.play();
+            Timeline timeline = new Timeline(new KeyFrame(Duration.millis(1000), e -> updateRawTableView(data, lastCycle)));
 
+            timeline.setCycleCount(Animation.INDEFINITE); // loop forever
+            timeline.play();
+
+            timelines.add(timeline);
 
             tableview.setItems(data);
         } catch (Exception e) {
@@ -276,6 +289,16 @@ public class SystemInfoController implements Initializable {
         rawDataListPane.getChildren().addAll(tableview);
     }
 
+
+    /**
+     * this function fills the row of the raw table view given the table object and
+     * what from what cycle do we want to get the information
+     * ex: if given lastCycle 5 for asset 1 it will get all measurements for asset 1
+     * and for time cycle over 5 and insert them in the table while making use of the
+     * observable list from javafx
+     *
+     * @author Paul
+     */
     private void updateRawTableView(ObservableList<ObservableList> data, AtomicInteger lastCycle) {
         ResultSet rs = assetDAOImpl.createMeasurementsFromAssetIdAndTime(system.getId(), lastCycle.get());
         try {
