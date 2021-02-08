@@ -1,3 +1,9 @@
+/*
+  The Asset Type List class keeps track of asset types and their threshold values.
+
+  @author
+  @last_edit 02/7/2020
+ */
 import app.item.AssetType;
 import app.item.AssetTypeParameter;
 
@@ -106,6 +112,7 @@ public class AssetTypeList {
     public String getName() {
         return assetType.getName();
     }
+
     public String getDescription() {
         return assetType.getDescription();
     }

@@ -1,7 +1,6 @@
 /* Second strategy design pattern and implementation of Model Strategy
  *
  * @author Khaled
- * @version 1.0
  * @last_edit 12/28/2020
  */
 

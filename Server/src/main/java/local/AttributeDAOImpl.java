@@ -1,3 +1,10 @@
+/*
+  Implementation of the DAO design pattern
+  This class extends the general DAO object and implements the AttributeDAO interface
+
+  @author
+  @last_edit 02/7/2020
+ */
 package local;
 
 import app.item.Measurement;

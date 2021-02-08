@@ -1,3 +1,9 @@
+/*
+  Creates the connection to the MariaDB database.
+
+  @author Najim, Roy
+  @last_edit 02/7/2020
+ */
 package local;
 
 import java.sql.Connection;

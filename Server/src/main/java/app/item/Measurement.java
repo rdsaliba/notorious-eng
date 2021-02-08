@@ -3,7 +3,6 @@
   the time cycle at which the measurement was taken as well as the value attached to it.
 
   @author Jeremie Chouteau
-  @version 2.0
   @last_edit 12/24/2020
  */
 package app.item;

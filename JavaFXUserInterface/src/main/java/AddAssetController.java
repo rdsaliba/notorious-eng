@@ -1,3 +1,9 @@
+/*
+  This Controller is responsible for handling the addition of assets.
+
+  @author
+  @last_edit 02/7/2020
+ */
 import app.item.Asset;
 import app.item.AssetType;
 import javafx.collections.FXCollections;

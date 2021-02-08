@@ -1,3 +1,10 @@
+/*
+  Implementation of the DAO design pattern
+  This class extends the general DAO object and implements the AssetTypeDAO interface
+
+  @author
+  @last_edit 02/7/2020
+ */
 package local;
 
 import app.item.AssetType;
@@ -173,6 +180,7 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
             e.printStackTrace();
         }
     }
+
     @Override
     public void deleteAssetTypeByID(String assetTypeID) {
         try (PreparedStatement ps = getConnection().prepareStatement(DELETE_ASSET_TYPE)) {

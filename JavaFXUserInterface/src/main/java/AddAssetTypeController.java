@@ -1,3 +1,9 @@
+/*
+  This Controller is responsible for handling the addition of asset types.
+
+  @author Jeff, Paul, Najim
+  @last_edit 02/7/2020
+ */
 import app.item.AssetType;
 import app.item.AssetTypeParameter;
 import javafx.fxml.FXML;

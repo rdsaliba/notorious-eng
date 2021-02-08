@@ -6,9 +6,8 @@
   It contains a reference to the RUL estimates calculated for the asset including when
   that estimation was made (timestamp) as well as the value attached to it.
 
-  @author Roy, Saliba, Paul Micu, Jeremie Chouteau
-  @version 2.1
-  @last_edit 12/24/2020
+  @author Roy Saliba, Paul Micu, Jeremie Chouteau
+  @last_edit 02/7/2020
  */
 package app.item;
 

@@ -1,3 +1,11 @@
+/*
+  This Controller is responsible for handling the information view
+  of an asset. It constructs attribute panes, generates the raw data table
+  and handles the deletion of an asset.
+
+  @author Jeff, Paul, Roy
+  @last_edit 02/7/2020
+ */
 import app.item.Asset;
 import app.item.AssetAttribute;
 import app.item.Measurement;
@@ -84,7 +92,6 @@ public class AssetInfoController implements Initializable {
 
     private final String CYCLE = "Cycle";
     private final String Attribute_VALUES = "Attribute Values";
-    private final String ALERT_TITLE = "Confirmation Dialog";
     private final String ALERT_HEADER = "Confirmation of asset deletion";
     private final String ALERT_CONTENT = "Are you sure you want to delete this asset?";
 
@@ -226,7 +233,7 @@ public class AssetInfoController implements Initializable {
      */
     void deleteDialog(MouseEvent mouseEvent) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle(ALERT_TITLE);
+        alert.setTitle(TextConstants.ALERT_TITLE);
         alert.setHeaderText(ALERT_HEADER);
         alert.setContentText(ALERT_CONTENT);
 

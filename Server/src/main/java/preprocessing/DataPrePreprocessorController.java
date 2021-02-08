@@ -4,7 +4,6 @@
   it will return an Instances object with the attributes and their corresponding data selected by the algorithm removed
 
   @author Paul Micu
-  @version 1.0
   @last_edit 11/01/2020
  */
 package preprocessing;

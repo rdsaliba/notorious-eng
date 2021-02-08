@@ -1,3 +1,9 @@
+/*
+  Interface for the AttributeDAO object
+
+  @author
+  @last_edit 02/7/2020
+ */
 package local;
 
 import app.item.Measurement;

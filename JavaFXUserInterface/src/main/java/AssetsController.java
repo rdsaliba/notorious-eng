@@ -1,3 +1,11 @@
+/*
+  This Controller is responsible for handling the assets view.
+  It generates the thumbnails and the list of assets. It also
+  handles the sorting of assets.
+
+  @author Jeff, Paul, Najim
+  @last_edit 02/7/2020
+ */
 import app.ModelController;
 import app.item.Asset;
 import javafx.animation.Animation;

@@ -1,3 +1,11 @@
+/*
+  This Controller is responsible for handling the information view
+  of an asset type. It handles the editing of asset types
+  and saving them to the database.
+
+  @author Jeff, Paul, Roy, Najim
+  @last_edit 02/7/2020
+ */
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -51,6 +59,18 @@ public class AssetTypeInfoController implements Initializable {
     private AssetTypeList originalAssetType;
     private AssetTypeDAOImpl assetTypeDAO;
 
+    private final String ALERT_HEADER = "Confirmation of asset type deletion";
+    private final String ALERT_CONTENT = "Are you sure you want to delete this asset type? \n " +
+            "this will delete all the assets of this type";
+
+    /**
+     * Initialize runs before the scene is displayed.
+     * It initializes elements and data in the scene.
+     *
+     * @param url            url to be used
+     * @param resourceBundle url to be used
+     * @author Jeff
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         uiUtilities = new UIUtilities();
@@ -175,14 +195,12 @@ public class AssetTypeInfoController implements Initializable {
                 infoSaveBtn.getStyleClass().add("infoSaveFalse");
                 return false;
             }
-        }
-        else if (!newText.isEmpty() && !field.equals("-") && Double.parseDouble(newText) == Double.parseDouble(field)) {
+        } else if (!newText.isEmpty() && !field.equals("-") && Double.parseDouble(newText) == Double.parseDouble(field)) {
             infoSaveBtn.setDisable(true);
             infoSaveBtn.getStyleClass().clear();
             infoSaveBtn.getStyleClass().add("infoSaveFalse");
             return false;
-        }
-        else {
+        } else {
             infoSaveBtn.setDisable(false);
             infoSaveBtn.getStyleClass().clear();
             infoSaveBtn.getStyleClass().add("infoSaveTrue");
@@ -211,12 +229,8 @@ public class AssetTypeInfoController implements Initializable {
      */
     private void deleteDialog(MouseEvent mouseEvent) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        String ALERT_TITLE = "Confirmation Dialog";
-        alert.setTitle(ALERT_TITLE);
-        String ALERT_HEADER = "Confirmation of asset type deletion";
+        alert.setTitle(TextConstants.ALERT_TITLE);
         alert.setHeaderText(ALERT_HEADER);
-        String ALERT_CONTENT = "Are you sure you want to delete this asset type? \n " +
-                "this will delete all the assets of this type";
         alert.setContentText(ALERT_CONTENT);
 
         Optional<ButtonType> result = alert.showAndWait();

@@ -1,3 +1,9 @@
+/*
+  This Controller is responsible for generating the list of asset types.
+
+  @author Najim, Shirwa, Paul
+  @last_edit 02/7/2020
+ */
 import app.item.AssetType;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

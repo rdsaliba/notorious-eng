@@ -3,8 +3,7 @@
   This includes the id of the asset, its name and all the measurements we have for it.
 
   @author Paul Micu, Jeremie Chouteau
-  @version 2.0
-  @last_edit 24/12/2020
+  @last_edit 02/7/2020
  */
 package app.item;
 

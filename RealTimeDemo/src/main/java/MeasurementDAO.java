@@ -1,3 +1,11 @@
+/*
+  Implementation of the DAO design pattern.
+  This class extends the general DAO object and calculates the RUL
+  of assets in real time with new incoming measurements.
+
+  @author
+  @last_edit 02/7/2020
+ */
 import app.item.Asset;
 import app.item.AssetAttribute;
 import app.item.AssetInfo;
