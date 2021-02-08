@@ -17,8 +17,10 @@ import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.testfx.api.FxAssert;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
+import org.testfx.matcher.base.WindowMatchers;
 
 import static org.junit.Assert.*;
 
@@ -42,6 +44,11 @@ public class SystemsTest extends ApplicationTest {
         release(new KeyCode[]{});
         release(new MouseButton[]{});
     }
+    @Test
+    public void testApplicationLaunch() {
+        FxAssert.verifyThat(window("CBMS"), WindowMatchers.isShowing());
+    }
+
 
     @Test
     public void hasThumbnails() {
