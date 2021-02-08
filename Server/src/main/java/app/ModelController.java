@@ -59,6 +59,9 @@ public class ModelController {
                 System.out.println("ModelController - initialize - checkAsset - start");
                 checkAssets();
                 System.out.println("ModelController - initialize - checkAsset - end");
+                System.out.println("ModelController - initialize - checkModels - start");
+                checkModels();
+                System.out.println("ModelController - initialize - checkModels - end");
             }
         }, 0, 5000);
     }

@@ -22,7 +22,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
 
     private static final String GET_ASSETS_TO_UPDATE = "SELECT * FROM asset WHERE archived = false AND updated = true";
     private static final String DELETE_ASSET = "DELETE FROM ? WHERE asset_id = ?";
-    private static final String GET_ASSET_INFO_FROM_ASSET_ID = "SELECT * FROM attribute_measurements am, attribute att WHERE att.attribute_id=am.attribute_id AND am.asset_id = ?";
+    private static final String GET_ASSET_INFO_FROM_ASSET_ID = "SELECT DISTINCT att.* FROM attribute_measurements am, attribute att WHERE att.attribute_id=am.attribute_id AND am.asset_id = ?";
     private static final String GET_ATTRIBUTES_NAMES_FROM_ASSET_ID = "SELECT DISTINCT att.attribute_name FROM attribute att, attribute_measurements am, asset a WHERE a.asset_id= ? AND am.asset_id = a.asset_id AND att.attribute_id = am.attribute_id order by att.attribute_id";
     private static final String GET_ASSETS_FROM_ASSET_TYPE_ID = "SELECT * FROM asset a WHERE a.archived = true AND a.asset_type_id = ?";
     private static final String GET_ASSET_TYPE_NAME_FROM_ASSET_ID = "SELECT at.name FROM asset_type at WHERE at.asset_type_id = ?";
@@ -52,7 +52,6 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         }
         return assets;
     }
-
 
     /**
      * When given an asset ID this will delete the the asset from the database as well as the corresponding
@@ -165,7 +164,6 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         }
         return assets;
     }
-
 
     @Override
     public ArrayList<Asset> getAllLiveAssetsDes() {
@@ -305,26 +303,26 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
     @Override
     public AssetInfo createAssetInfo(int assetID) {
         AssetInfo newAssetInfo = new AssetInfo();
+        StringBuilder preparedStatementPart1 = new StringBuilder();
+        StringBuilder preparedStatementPart2 = new StringBuilder();
         try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_INFO_FROM_ASSET_ID)) {
             ps.setInt(1, assetID);
             try (ResultSet attributesQuery = ps.executeQuery()) {
-                int previousAttributeID = 1;
-                String previousAttributeName = "";
-                AssetAttribute newAttribute = new AssetAttribute();
                 while (attributesQuery.next()) {
-                    int attributeID = attributesQuery.getInt("attribute_id");
-                    if (previousAttributeID != attributeID || !attributesQuery.next()) {
-                        if (!attributesQuery.next())
-                            newAttribute.addMeasurement(attributesQuery.getInt("time"), attributesQuery.getDouble("value"));
-                        newAttribute.setId(previousAttributeID);
-                        newAttribute.setName(previousAttributeName);
-                        previousAttributeID = attributeID;
-                        newAssetInfo.addAttribute(newAttribute);
-                        newAttribute = new AssetAttribute();
+                    AssetAttribute newAtt = new AssetAttribute(attributesQuery.getInt("attribute_id"), attributesQuery.getString("attribute_name"));
+                    preparedStatementPart1.append(", Coalesce(Sum(`").append(newAtt.getName()).append("`), 0) AS '").append(newAtt.getName()).append("'");
+                    preparedStatementPart2.append(", CASE WHEN tab.attribute_id = ").append(newAtt.getId()).append(" THEN tab.value end AS `").append(newAtt.getName()).append("`");
+                    newAssetInfo.addAttribute(newAtt);
+                }
+                try (PreparedStatement measurementStatement = getConnection().prepareStatement("SELECT `Cycle` " + preparedStatementPart1 + " FROM (SELECT tab.`time` as 'Cycle'" + preparedStatementPart2 + " FROM (SELECT am.attribute_id, am.`time`, am.value FROM attribute_measurements am WHERE asset_id = ?  ORDER BY attribute_id, time) tab) tab2 GROUP BY `CYCLE` asc;")) {
+                    measurementStatement.setInt(1, assetID);
+                    try (ResultSet measurementQuery = measurementStatement.executeQuery()) {
+                        while (measurementQuery.next()) {
+                            for (int i = 0; i < measurementQuery.getMetaData().getColumnCount() - 1; i++) {
+                                newAssetInfo.getAssetAttributes().get(i).addMeasurement(measurementQuery.getInt("Cycle"), measurementQuery.getDouble(newAssetInfo.getAssetAttributes().get(i).getName()));
+                            }
+                        }
                     }
-                    previousAttributeName = attributesQuery.getString("attribute_name");
-                    newAttribute.addMeasurement(attributesQuery.getInt("time"), attributesQuery.getDouble("value"));
-
                 }
             }
             return newAssetInfo;
@@ -333,6 +331,4 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         }
         return null;
     }
-
-
 }
