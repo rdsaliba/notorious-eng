@@ -20,10 +20,7 @@ import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instances;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 public class ModelController {
     private static ModelController instance = null;
@@ -65,22 +62,23 @@ public class ModelController {
 
 
     /**
-     *  This function will return an arraylist of all live assets
+     * This function will return an list of all live assets
      *
+     * @return a List of all live assets
      * @author Paul
      */
-    public ArrayList<Asset> getAllLiveAssets() {
+    public List<Asset> getAllLiveAssets() {
         return assetDaoImpl.getAllLiveAssets();
     }
 
-    public ArrayList<Asset> getAllLiveAssetsDes() {
+    public List<Asset> getAllLiveAssetsDes() {
         return assetDaoImpl.getAllLiveAssetsDes();
     }
 
 
     /**
-     *  this function checks all Assets for updated status
-     *  and if the asset needs to be updated, it will recalculate the RUL using the corresponding model
+     * this function checks all Assets for updated status
+     * and if the asset needs to be updated, it will recalculate the RUL using the corresponding model
      *
      * @author Paul
      */
@@ -92,8 +90,8 @@ public class ModelController {
         TrainedModel trainedModel;
         Double estimation;
         for (Asset asset : assetsToUpdate) {
-            trainedModel= getModelForAssetType(trainedModels,asset.getAssetTypeID());
-            estimation= estimateRUL(asset, trainedModel.getModelClassifier());
+            trainedModel = getModelForAssetType(trainedModels, asset.getAssetTypeID());
+            estimation = estimateRUL(asset, trainedModel.getModelClassifier());
             asset.setRecommendation(assessmentController.getRecommendation(estimation, asset.getAssetTypeID()));
             assetDaoImpl.updateRecommendation(asset.getId(), asset.getRecommendation());
             assetDaoImpl.addRULEstimation(estimation, asset, trainedModel);
@@ -101,20 +99,20 @@ public class ModelController {
         return !assetsToUpdate.isEmpty();
     }
 
-    public TrainedModel getModelForAssetType(ArrayList<TrainedModel> trainedModels,String assetTypeID){
-        for (TrainedModel tm : trainedModels){
+    public TrainedModel getModelForAssetType(List<TrainedModel> trainedModels, String assetTypeID) {
+        for (TrainedModel tm : trainedModels) {
             if (tm.getAssetTypeID() == Integer.parseInt(assetTypeID))
                 return tm;
         }
         trainedModels.add(modelDAOImpl.getModelsByAssetTypeID(assetTypeID));
-        return trainedModels.get(trainedModels.size()-1);
+        return trainedModels.get(trainedModels.size() - 1);
     }
 
     /**
-     *  This function checks all models for a retrain tag
-     *  the retrain tag is only active if new archived assets are added
-     *  if it needs retraining it will retrain using the corresponding
-     *  asset and model info
+     * This function checks all models for a retrain tag
+     * the retrain tag is only active if new archived assets are added
+     * if it needs retraining it will retrain using the corresponding
+     * asset and model info
      *
      * @author Paul
      */
@@ -137,7 +135,7 @@ public class ModelController {
     }
 
     /**
-     *  Given a trained model this function will retrain it with the current data and settings of the model
+     * Given a trained model this function will retrain it with the current data and settings of the model
      *
      * @author Paul
      */
@@ -152,8 +150,8 @@ public class ModelController {
     }
 
     /**
-     *  This function simply returns the Model Strategy object that is referenced
-     *  in the trained model object
+     * This function simply returns the Model Strategy object that is referenced
+     * in the trained model object
      *
      * @author Paul
      */
@@ -164,8 +162,8 @@ public class ModelController {
                 return new LinearRegressionModelImpl();
             case "LSTM":
                 return new LSTMModelImpl();
-
-
+            case "RandomForest":                            //To be entered in DB: RandomForest
+                return new RandomForestModelImpl();
             case "RandomCommittee":                    //To be entered in DB: RandomCommittee
                 return new RandomCommitteeModelImpl();
             default:
@@ -194,12 +192,12 @@ public class ModelController {
     }
 
     /**
-     *  given a list of assets this function will return the corresponding
-     *  WEKA instances object
+     * given a list of assets this function will return the corresponding
+     * WEKA instances object
      *
      * @author Paul
      */
-    public Instances createInstancesFromAssets(ArrayList<Asset> assets) {
+    public Instances createInstancesFromAssets(List<Asset> assets) {
         ArrayList<Attribute> attributesVector;
         Instances data;
         double[] values;

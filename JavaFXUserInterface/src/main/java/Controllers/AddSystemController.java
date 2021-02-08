@@ -1,8 +1,10 @@
+package Controllers;
+
+import Utilities.UIUtilities;
 import app.item.Asset;
 import app.item.AssetType;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -17,6 +19,11 @@ import java.util.ResourceBundle;
 
 public class AddSystemController implements Initializable {
 
+    private static final String SAVE_DIALOG = "Save Dialog";
+    private static final String SAVE_HEADER = "Asset has been saved to the database.";
+    private static final String ERROR_DIALOG = "Error Dialog";
+    private static final String ERROR_HEADER = "Please enter values for all text fields.";
+    private static final String SYSTEMS = "/Systems";
     @FXML
     public Button systemMenuBtn;
     @FXML
@@ -41,23 +48,17 @@ public class AddSystemController implements Initializable {
     private TextField siteInput;
     @FXML
     private TextField locationInput;
-
     private AssetDAOImpl assetDAOImpl;
     private AssetTypeDAOImpl assetTypeDAOImpl;
     private UIUtilities uiUtilities;
     private AssetType selectedAssetType;
-    private final String SAVE_DIALOG = "Save Dialog";
-    private final String SAVE_HEADER = "Asset has been saved to the database.";
-    private final String ERROR_DIALOG = "Error Dialog";
-    private final String ERROR_HEADER = "Please enter values for all text fields.";
 
     /**
      * Initialize runs before the scene is displayed.
      * It initializes elements and data in the scene.
      *
-     * @param url url to be used
+     * @param url            url to be used
      * @param resourceBundle resource bundle to be used
-     *
      * @author Jeff
      */
     @Override
@@ -76,27 +77,26 @@ public class AddSystemController implements Initializable {
      * @author Jeff
      */
     public void attachEvents() {
-        systemTypeChoiceBox.valueProperty().addListener((obs, oldval, newval) -> {
-            if(newval != null)
-                selectedAssetType = newval;
+        systemTypeChoiceBox.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null)
+                selectedAssetType = newVal;
         });
 
         saveBtn.setOnMouseClicked(mouseEvent -> {
             Asset newAsset = assembleAsset();
-            if(!isAssetEmpty(newAsset)) {
+            if (!isAssetEmpty(newAsset)) {
                 saveAsset(newAsset);
                 saveDialog(mouseEvent);
-            }
-            else {
+            } else {
                 errorDialog(mouseEvent);
             }
         });
         // Change scenes to Systems.fxml
-        systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
-        //Attach link to systemTypeMenuBtn to go to SystemTypeList.fxml
-        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/SystemTypeList"));
+        systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, SYSTEMS));
+        //Attach link to systemTypeMenuBtn to go to Utilities.SystemTypeList.fxml
+        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Utilities.SystemTypeList"));
         // Change scenes to Systems.fxml
-        cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
+        cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, SYSTEMS));
     }
 
 
@@ -162,8 +162,8 @@ public class AddSystemController implements Initializable {
         alert.setHeaderText(SAVE_HEADER);
 
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK){
-            uiUtilities.changeScene(mouseEvent, "/Systems");
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            uiUtilities.changeScene(mouseEvent, SYSTEMS);
         }
     }
 
@@ -177,16 +177,16 @@ public class AddSystemController implements Initializable {
         alert.setTitle(ERROR_DIALOG);
         alert.setHeaderText(ERROR_HEADER);
 
-        Optional<ButtonType> result = alert.showAndWait();
+        alert.showAndWait();
     }
 
     /**
-     *  Checks to see if values of the asset are filled.
+     * Checks to see if values of the asset are filled.
      *
      * @param asset os an asset object
      * @return whether or not the asset object passed is empty (no info or attributes) or not
      */
-    boolean isAssetEmpty(Asset asset) {
+    public boolean isAssetEmpty(Asset asset) {
         return asset.getName().equals("") || asset.getAssetTypeID().equals("") || asset.getDescription().equals("") ||
                 asset.getSerialNo().equals("") || asset.getManufacturer().equals("") || asset.getCategory().equals("") || asset.getSite().equals("") || asset.getLocation().equals("");
     }

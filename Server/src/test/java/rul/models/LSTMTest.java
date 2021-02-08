@@ -10,8 +10,8 @@ import java.io.FileReader;
 
 import static org.junit.Assert.assertEquals;
 
-public class LSTMRegressionTest {
-    //private LinearRegressionModelImpl lr;
+public class LSTMTest
+{
     private ModelsController modelsController;
 
 

@@ -22,5 +22,5 @@ public interface ModelDAO {
 
     String getModelNameFromModelID(int modelID);
 
-    TrainedModel createTrainedModelFromResultSet(ResultSet rs, Boolean withModel) throws SQLException;
+    TrainedModel createTrainedModelFromResultSet(ResultSet rs, boolean withModel) throws SQLException;
 }

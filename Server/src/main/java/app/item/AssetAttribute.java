@@ -9,20 +9,23 @@
 package app.item;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AssetAttribute {
+    private final ArrayList<Measurement> measurements;
     private int id;
     private String name;
-    private final ArrayList<Measurement> measurements;
 
-    public AssetAttribute() {measurements = new ArrayList<>();}
+    public AssetAttribute() {
+        measurements = new ArrayList<>();
+    }
 
     public void addMeasurement(int time, double value) {
         Measurement mNew = new Measurement(time, value);
         measurements.add(mNew);
     }
 
-    public ArrayList<Measurement> getMeasurements() {
+    public List<Measurement> getMeasurements() {
         return measurements;
     }
 

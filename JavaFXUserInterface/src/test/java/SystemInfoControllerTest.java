@@ -1,12 +1,11 @@
+import Controllers.SystemInfoController;
+import Controllers.SystemsController;
 import app.item.Asset;
-import app.item.AssetAttribute;
-import app.item.AssetInfo;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;

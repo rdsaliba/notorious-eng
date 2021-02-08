@@ -1,3 +1,8 @@
+package Controllers;
+
+import Utilities.SystemTypeList;
+import Utilities.TextConstants;
+import Utilities.UIUtilities;
 import app.item.AssetType;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -17,20 +22,32 @@ import java.util.ResourceBundle;
 public class SystemTypeController implements Initializable {
 
     //Configure the table and columns
-    @FXML private TableView<SystemTypeList> tableView;
-    @FXML private TableColumn<SystemTypeList,String> columnName;
-    @FXML private TableColumn<SystemTypeList,Integer> columnLiveAssets;
-    @FXML private TableColumn<SystemTypeList,Integer> columnArchivedAssets;
-    @FXML private TableColumn<SystemTypeList,Double> columnOk;
-    @FXML private TableColumn<SystemTypeList,Double> columnAdvisory;
-    @FXML private TableColumn<SystemTypeList,Double> columnCaution;
-    @FXML private TableColumn<SystemTypeList,Double> columnWarning;
-    @FXML private TableColumn<SystemTypeList,Double> columnFailed;
+    @FXML
+    private TableView<SystemTypeList> tableView;
+    @FXML
+    private TableColumn<SystemTypeList, String> columnName;
+    @FXML
+    private TableColumn<SystemTypeList, Integer> columnLiveAssets;
+    @FXML
+    private TableColumn<SystemTypeList, Integer> columnArchivedAssets;
+    @FXML
+    private TableColumn<SystemTypeList, Double> columnOk;
+    @FXML
+    private TableColumn<SystemTypeList, Double> columnAdvisory;
+    @FXML
+    private TableColumn<SystemTypeList, Double> columnCaution;
+    @FXML
+    private TableColumn<SystemTypeList, Double> columnWarning;
+    @FXML
+    private TableColumn<SystemTypeList, Double> columnFailed;
 
     //Configure buttons
-    @FXML private Button systemMenuBtn;
-    @FXML private Button systemTypeMenuBtn;
-    @FXML private Button addTypeBtn;
+    @FXML
+    private Button systemMenuBtn;
+    @FXML
+    private Button systemTypeMenuBtn;
+    @FXML
+    private Button addTypeBtn;
 
     private UIUtilities uiUtilities;
 
@@ -60,13 +77,10 @@ public class SystemTypeController implements Initializable {
     /**
      * This method will return an ObservableList of SystemList objects
      *
-     * @author Shirwa
-     *
+     * @author Shirwa, Paul
      * edit: There was an issue where the getAssetTypeIdCount() would not match in size to the assetTypeList()
      * and it would crash the system if there was an asset type with no assets associated to it
      * so this methode was rewrote
-     *
-     * @author Paul
      */
     private ObservableList<SystemTypeList> getSystemList() {
         ObservableList<SystemTypeList> systemtypelist = FXCollections.observableArrayList();
@@ -75,11 +89,11 @@ public class SystemTypeController implements Initializable {
 
         ArrayList<AssetType> assetTypeList = assetTypeDOA.getAssetTypeList();
 
-        for (AssetType assetType: assetTypeList){
+        for (AssetType assetType : assetTypeList) {
             systemtypelist.add(new SystemTypeList(
                     assetType,
-                    assetTypeDOA.getAssetTypeIdCount(assetType.getId(),true),
-                    assetTypeDOA.getAssetTypeIdCount(assetType.getId(),false),
+                    assetTypeDOA.getAssetTypeIdCount(assetType.getId(), true),
+                    assetTypeDOA.getAssetTypeIdCount(assetType.getId(), false),
                     assetTypeDOA.getAssetTypeBoundary(assetType.getId(), TextConstants.OK_THRESHOLD),
                     assetTypeDOA.getAssetTypeBoundary(assetType.getId(), TextConstants.CAUTION_THRESHOLD),
                     assetTypeDOA.getAssetTypeBoundary(assetType.getId(), TextConstants.ADVISORY_THRESHOLD),
@@ -99,13 +113,13 @@ public class SystemTypeController implements Initializable {
      */
     public void attachEvents() {
         //set up the columns in the table
-       attachColumnEvents();
+        attachColumnEvents();
 
         //Attach link to systemMenuButton to go to Systems.fxml
         systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
 
-        //Attach link to systemTypeMenuBtn to go to SystemTypeList.fxml
-        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/SystemTypeList"));
+        //Attach link to systemTypeMenuBtn to go to Utilities.SystemTypeList.fxml
+        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Utilities.SystemTypeList"));
 
         //Attach link to addTypeBtn to go to AddSystemType.fxml
         addTypeBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/AddSystemType"));
@@ -116,7 +130,7 @@ public class SystemTypeController implements Initializable {
      *
      * @author Paul
      */
-    public void attachColumnEvents(){
+    public void attachColumnEvents() {
         columnName.setCellValueFactory(new PropertyValueFactory<>("name"));
         columnLiveAssets.setCellValueFactory(new PropertyValueFactory<>("liveAssets"));
         columnArchivedAssets.setCellValueFactory(new PropertyValueFactory<>("archivedAssets"));

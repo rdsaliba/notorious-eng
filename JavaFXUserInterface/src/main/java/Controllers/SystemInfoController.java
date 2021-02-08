@@ -1,3 +1,6 @@
+package Controllers;
+
+import Utilities.UIUtilities;
 import app.item.Asset;
 import app.item.AssetAttribute;
 import app.item.Measurement;
@@ -5,11 +8,8 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.CategoryAxis;
@@ -21,7 +21,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
-import javafx.util.Callback;
 import javafx.util.Duration;
 import local.AssetDAOImpl;
 import local.AssetTypeDAOImpl;
@@ -31,10 +30,7 @@ import rul.assessment.AssessmentController;
 
 import java.net.URL;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class SystemInfoController implements Initializable {
 
@@ -107,7 +103,7 @@ public class SystemInfoController implements Initializable {
      * @param system is an asset object that will get initialized
      * @author Jeff
      */
-    void initData(Asset system) {
+    public void initData(Asset system) {
         this.system = system;
         String systemTypeName = assetTypeDAOImpl.getNameFromID(system.getAssetTypeID());
         systemName.setText(systemTypeName + " - " + system.getSerialNo());
@@ -193,16 +189,13 @@ public class SystemInfoController implements Initializable {
      */
     public void attachEvents() {
         systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
-        //Attach link to systemTypeMenuBtn to go to SystemTypeList.fxml
-        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/SystemTypeList"));
+        //Attach link to systemTypeMenuBtn to go to Utilities.SystemTypeList.fxml
+        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Utilities.SystemTypeList"));
         deleteBtn.setOnMouseClicked(this::deleteDialog);
 
-        rawDataTab.setOnSelectionChanged(new EventHandler<Event>() {
-            @Override
-            public void handle(Event event) {
-                rawDataListPane.getChildren().clear();
-                generateRawDataTable();
-            }
+        rawDataTab.setOnSelectionChanged(event -> {
+            rawDataListPane.getChildren().clear();
+            generateRawDataTable();
         });
     }
 
@@ -237,23 +230,23 @@ public class SystemInfoController implements Initializable {
     }
 
     public void generateRawDataTable() {
-        TableView<ObservableList<String>> table = new TableView();
+        TableView<ObservableList<String>> table = new TableView<>();
         table.getItems().clear();
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(3000), e -> {
             ObservableList<AssetAttribute> attributes = FXCollections.observableArrayList(assetDAOImpl.createAssetInfo(system.getId()).getAssetAttributes());
 
             int columnIndex = 1;
-            TableColumn[] tableColumns = new TableColumn[attributes.size() + 1];
+            TableColumn<ObservableList<String>, String>[] tableColumns = new TableColumn[attributes.size() + 1];
 
-            ArrayList<ArrayList<Measurement>> data = new ArrayList();
+            ArrayList<List<Measurement>> data = new ArrayList<>();
 
-            tableColumns[0] = new TableColumn("Cycle");
+            tableColumns[0] = new TableColumn<>("Cycle");
             data.add(attributes.get(0).getMeasurements());
             setCellValue(0, tableColumns[0]);
 
             for (AssetAttribute attribute : attributes) {
                 data.add(attribute.getMeasurements());
-                tableColumns[columnIndex] = new TableColumn(attribute.getName());
+                tableColumns[columnIndex] = new TableColumn<>(attribute.getName());
                 setCellValue(columnIndex, tableColumns[columnIndex]);
                 columnIndex++;
             }
@@ -261,15 +254,15 @@ public class SystemInfoController implements Initializable {
 
             ObservableList<ObservableList<String>> dataPerColumn = FXCollections.observableArrayList();
 
-            int outcounter = 0;
-            for (ArrayList<Measurement> dataList : data) {
+            int outCounter = 0;
+            for (List<Measurement> dataList : data) {
                 int counter = 0;
                 for (Measurement measurement : dataList) {
-                    if (outcounter < dataList.size()) {
+                    if (outCounter < dataList.size()) {
                         ObservableList<String> list = FXCollections.observableArrayList();
                         dataPerColumn.add(list);
-                        dataPerColumn.get(outcounter).add(String.valueOf(measurement.getTime()));
-                        outcounter++;
+                        dataPerColumn.get(outCounter).add(String.valueOf(measurement.getTime()));
+                        outCounter++;
                     } else {
                         dataPerColumn.get(counter).add(String.valueOf(measurement.getValue()));
                         counter++;
@@ -291,11 +284,7 @@ public class SystemInfoController implements Initializable {
         rawDataListPane.getChildren().addAll(table);
     }
 
-    public void setCellValue(int index, TableColumn tableColumn) {
-        tableColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ObservableList, String>, ObservableValue<String>>() {
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<ObservableList, String> param) {
-                return new SimpleStringProperty(param.getValue().get(index).toString());
-            }
-        });
+    public void setCellValue(int index, TableColumn<ObservableList<String>, String> tableColumn) {
+        tableColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(index)));
     }
 }

@@ -6,7 +6,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class Main {
-    public static int LIMIT = 20;
+    public final static int LIMIT = 20;
     public static int counter = 0;
 
     public static void main(String[] args) {
