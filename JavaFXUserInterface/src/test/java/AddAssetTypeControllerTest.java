@@ -1,3 +1,5 @@
+import Controllers.AddAssetTypeController;
+import Controllers.AssetTypeInfoController;
 import app.item.AssetType;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;

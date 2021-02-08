@@ -12,9 +12,10 @@
 package app.item;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AssetInfo {
-    private ArrayList<AssetAttribute> assetAttributes;
+    private List<AssetAttribute> assetAttributes;
 
     public AssetInfo() {
         assetAttributes = new ArrayList<>();
@@ -24,12 +25,11 @@ public class AssetInfo {
         assetAttributes.add(newAtt);
     }
 
-    public void setAssetAttributes(ArrayList<AssetAttribute>  newAtt) {
-        assetAttributes = newAtt;
-    }
-
-    public ArrayList<AssetAttribute> getAssetAttributes() {
+    public List<AssetAttribute> getAssetAttributes() {
         return assetAttributes;
     }
 
+    public void setAssetAttributes(List<AssetAttribute> newAtt) {
+        assetAttributes = newAtt;
+    }
 }

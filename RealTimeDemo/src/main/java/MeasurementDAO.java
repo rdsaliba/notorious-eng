@@ -24,20 +24,20 @@ public class MeasurementDAO extends DAO {
     public AssetInfo getMeasurementsFromID(int assetID, int limit) {
         AssetInfo toReturn = new AssetInfo();
         ArrayList<AssetAttribute> measurements = new ArrayList<>();
-        ResultSet rs;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_MEASUREMENTS)) {
             ps.setInt(1, assetID);
             ps.setInt(2, assetID);
             ps.setInt(3, limit);
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                if (measurements.isEmpty() || measurements.get(measurements.size() - 1).getId() != rs.getInt("attribute_id")) {
-                    AssetAttribute assetAttribute = new AssetAttribute();
-                    assetAttribute.setId(rs.getInt("attribute_id"));
-                    measurements.add(assetAttribute);
-                }
-                measurements.get(measurements.size() - 1).addMeasurement(rs.getInt("time"), rs.getDouble("value"));
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    if (measurements.isEmpty() || measurements.get(measurements.size() - 1).getId() != rs.getInt("attribute_id")) {
+                        AssetAttribute assetAttribute = new AssetAttribute();
+                        assetAttribute.setId(rs.getInt("attribute_id"));
+                        measurements.add(assetAttribute);
+                    }
+                    measurements.get(measurements.size() - 1).addMeasurement(rs.getInt("time"), rs.getDouble("value"));
 
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();

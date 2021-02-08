@@ -1,7 +1,6 @@
 /*
   Implementation of the DAO design pattern
   This class extends the general DAO object and implements the AssetTypeDAO interface
-
   @author
   @last_edit 02/7/2020
  */
@@ -49,11 +48,11 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
     }
 
     @Override
-    public String getAssetTypeThreshold(String asset_type_id, String threshold_type) {
+    public String getAssetTypeThreshold(String assetTypeId, String thresholdType) {
         String threshold = "null";
         try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_TYPE_THRESHOLD)) {
-            ps.setString(1, threshold_type);
-            ps.setString(2, asset_type_id);
+            ps.setString(1, thresholdType);
+            ps.setString(2, assetTypeId);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     threshold = rs.getString("boundary");
@@ -70,14 +69,14 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
     /**
      * Gets the threshold values for an Asset Type.
      *
-     * @param asset_type_id is the id of the asset type
+     * @param assetTypeId is the id of the asset type
      * @return a map of the different threshold labels and their values
      */
     @Override
-    public HashMap<String, Double> getAssetTypeThresholds(String asset_type_id) {
+    public HashMap<String, Double> getAssetTypeThresholds(String assetTypeId) {
         HashMap<String, Double> thresholds = new HashMap<>();
         try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_TYPE_THRESHOLDS)) {
-            ps.setString(1, asset_type_id);
+            ps.setString(1, assetTypeId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next())
                     thresholds.put(rs.getString("parameter_name"), rs.getDouble("boundary"));
@@ -180,7 +179,6 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
             e.printStackTrace();
         }
     }
-
     @Override
     public void deleteAssetTypeByID(String assetTypeID) {
         try (PreparedStatement ps = getConnection().prepareStatement(DELETE_ASSET_TYPE)) {

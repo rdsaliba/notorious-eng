@@ -7,7 +7,7 @@
 <?import javafx.scene.text.*?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="712.0"
             prefWidth="1026.0" stylesheets="@css/assets.css" xmlns="http://javafx.com/javafx/11.0.1"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="AssetTypeController">
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AssetTypeController">
     <children>
         <VBox layoutY="114.0" prefHeight="601.0" prefWidth="74.0" style="-fx-background-color: #0C072E;"
               AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="169.0">
@@ -93,10 +93,11 @@
                                 <TableColumn fx:id="columnWarning" text="Warning"/>
                                 <TableColumn fx:id="columnCaution" text="Caution"/>
                                 <TableColumn fx:id="columnAdvisory" text="Advisory"/>
-                        <TableColumn fx:id="columnOk"  text="OK" />
-                    </columns>
-                  </TableView>
-               </children></AnchorPane>
+                                <TableColumn fx:id="columnOk" text="OK"/>
+                            </columns>
+                        </TableView>
+                    </children>
+                </AnchorPane>
             </children>
         </AnchorPane>
     </children>

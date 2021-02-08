@@ -1,7 +1,6 @@
 /*
   This class implements the start function which runs first when opening the application.
    It sets the scene / view to the main page.
-
   @author
   @last_edit 02/7/2020
  */
@@ -13,7 +12,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class CBMSApplication extends Application {
-    private Scene scene;
 
     public static void main(String[] args) {
         launch(args);
@@ -28,7 +26,7 @@ public class CBMSApplication extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("/Assets.fxml"));
-        scene = new Scene(root);
+        Scene scene = new Scene(root);
         primaryStage.setTitle("CBMS");
         primaryStage.setScene(scene);
         primaryStage.show();

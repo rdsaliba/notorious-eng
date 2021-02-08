@@ -2,10 +2,13 @@
   This Controller is responsible for handling the information view
   of an asset. It constructs attribute panes, generates the raw data table
   and handles the deletion of an asset.
-
   @author Jeff, Paul, Roy
   @last_edit 02/7/2020
  */
+package Controllers;
+
+import Utilities.TextConstants;
+import Utilities.UIUtilities;
 import app.item.Asset;
 import app.item.AssetAttribute;
 import app.item.Measurement;
@@ -13,11 +16,8 @@ import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.CategoryAxis;
@@ -29,7 +29,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
-import javafx.util.Callback;
 import javafx.util.Duration;
 import local.AssetDAOImpl;
 import local.AssetTypeDAOImpl;
@@ -39,12 +38,13 @@ import rul.assessment.AssessmentController;
 
 import java.net.URL;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class AssetInfoController implements Initializable {
+    private static final String ALERT_HEADER = "Confirmation of asset deletion";
+    private static final String ALERT_CONTENT = "Are you sure you want to delete this asset?";
+    private static final String CYCLE = "Cycle";
+    private static final String ATTRIBUTE_VALUES = "Attribute Values";
 
     @FXML
     private Button assetMenuBtn;
@@ -90,11 +90,6 @@ public class AssetInfoController implements Initializable {
     private ModelDAOImpl modelDAO;
     private UIUtilities uiUtilities;
 
-    private final String CYCLE = "Cycle";
-    private final String Attribute_VALUES = "Attribute Values";
-    private final String ALERT_HEADER = "Confirmation of asset deletion";
-    private final String ALERT_CONTENT = "Are you sure you want to delete this asset?";
-
     /**
      * Initialize runs before the scene is displayed.
      * It initializes elements and data in the scene.
@@ -120,7 +115,7 @@ public class AssetInfoController implements Initializable {
      * @param asset is an asset object that will get initialized
      * @author Jeff
      */
-    void initData(Asset asset) {
+    public void initData(Asset asset) {
         this.asset = asset;
         String assetTypeName = assetTypeDAOImpl.getNameFromID(asset.getAssetTypeID());
         assetName.setText(assetTypeName + " - " + asset.getSerialNo());
@@ -157,12 +152,11 @@ public class AssetInfoController implements Initializable {
             pane.getStyleClass().add("attributePane");
             final CategoryAxis xAxis = new CategoryAxis();
             final CategoryAxis yAxis = new CategoryAxis();
-
             xAxis.setLabel(CYCLE);
             xAxis.setAnimated(false);
             final LineChart<String, String> attributeChart =
                     new LineChart<>(xAxis, yAxis);
-            attributeChart.setTitle(Attribute_VALUES);
+            attributeChart.setTitle(ATTRIBUTE_VALUES);
             XYChart.Series<String, String> series = new XYChart.Series<>();
             attributeChart.setAnimated(false);
 
@@ -203,17 +197,14 @@ public class AssetInfoController implements Initializable {
      * @author Jeff
      */
     public void attachEvents() {
-        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Assets"));
-        //Attach link to assetTypeMenuBtn to go to AssetTypeList.fxml
-        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/AssetTypeList"));
+        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS));
+        //Attach link to assetTypeMenuBtn to go to Utilities.AssetTypeList.fxml
+        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST));
         deleteBtn.setOnMouseClicked(this::deleteDialog);
 
-        rawDataTab.setOnSelectionChanged(new EventHandler<Event>() {
-            @Override
-            public void handle(Event event) {
-                rawDataListPane.getChildren().clear();
-                generateRawDataTable();
-            }
+        rawDataTab.setOnSelectionChanged(event -> {
+            rawDataListPane.getChildren().clear();
+            generateRawDataTable();
         });
     }
 
@@ -240,28 +231,28 @@ public class AssetInfoController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             deleteAsset();
-            uiUtilities.changeScene(mouseEvent, "/Assets");
+            uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS);
         }
     }
 
     public void generateRawDataTable() {
-        TableView<ObservableList<String>> table = new TableView();
+        TableView<ObservableList<String>> table = new TableView<>();
         table.getItems().clear();
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(3000), e -> {
             ObservableList<AssetAttribute> attributes = FXCollections.observableArrayList(assetDAOImpl.createAssetInfo(asset.getId()).getAssetAttributes());
 
             int columnIndex = 1;
-            TableColumn[] tableColumns = new TableColumn[attributes.size() + 1];
+            TableColumn<ObservableList<String>, String>[] tableColumns = new TableColumn[attributes.size() + 1];
 
-            ArrayList<ArrayList<Measurement>> data = new ArrayList();
+            ArrayList<List<Measurement>> data = new ArrayList<>();
 
-            tableColumns[0] = new TableColumn(CYCLE);
+            tableColumns[0] = new TableColumn<>(CYCLE);
             data.add(attributes.get(0).getMeasurements());
             setCellValue(0, tableColumns[0]);
 
             for (AssetAttribute attribute : attributes) {
                 data.add(attribute.getMeasurements());
-                tableColumns[columnIndex] = new TableColumn(attribute.getName());
+                tableColumns[columnIndex] = new TableColumn<>(attribute.getName());
                 setCellValue(columnIndex, tableColumns[columnIndex]);
                 columnIndex++;
             }
@@ -269,15 +260,15 @@ public class AssetInfoController implements Initializable {
 
             ObservableList<ObservableList<String>> dataPerColumn = FXCollections.observableArrayList();
 
-            int outcounter = 0;
-            for (ArrayList<Measurement> dataList : data) {
+            int outCounter = 0;
+            for (List<Measurement> dataList : data) {
                 int counter = 0;
                 for (Measurement measurement : dataList) {
-                    if (outcounter < dataList.size()) {
+                    if (outCounter < dataList.size()) {
                         ObservableList<String> list = FXCollections.observableArrayList();
                         dataPerColumn.add(list);
-                        dataPerColumn.get(outcounter).add(String.valueOf(measurement.getTime()));
-                        outcounter++;
+                        dataPerColumn.get(outCounter).add(String.valueOf(measurement.getTime()));
+                        outCounter++;
                     } else {
                         dataPerColumn.get(counter).add(String.valueOf(measurement.getValue()));
                         counter++;
@@ -299,11 +290,7 @@ public class AssetInfoController implements Initializable {
         rawDataListPane.getChildren().addAll(table);
     }
 
-    public void setCellValue(int index, TableColumn tableColumn) {
-        tableColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<ObservableList, String>, ObservableValue<String>>() {
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<ObservableList, String> param) {
-                return new SimpleStringProperty(param.getValue().get(index).toString());
-            }
-        });
+    public void setCellValue(int index, TableColumn<ObservableList<String>, String> tableColumn) {
+        tableColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(index)));
     }
 }

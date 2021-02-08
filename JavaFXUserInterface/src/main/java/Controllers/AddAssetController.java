@@ -1,9 +1,12 @@
 /*
   This Controller is responsible for handling the addition of assets.
-
   @author
   @last_edit 02/7/2020
  */
+package Controllers;
+
+import Utilities.TextConstants;
+import Utilities.UIUtilities;
 import app.item.Asset;
 import app.item.AssetType;
 import javafx.collections.FXCollections;
@@ -21,6 +24,11 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class AddAssetController implements Initializable {
+
+    private static final String SAVE_DIALOG = "Save Dialog";
+    private static final String SAVE_HEADER = "Asset has been saved to the database.";
+    private static final String ERROR_DIALOG = "Error Dialog";
+    private static final String ERROR_HEADER = "Please enter values for all text fields.";
 
     @FXML
     public Button assetMenuBtn;
@@ -46,23 +54,17 @@ public class AddAssetController implements Initializable {
     private TextField siteInput;
     @FXML
     private TextField locationInput;
-
     private AssetDAOImpl assetDAOImpl;
     private AssetTypeDAOImpl assetTypeDAOImpl;
     private UIUtilities uiUtilities;
     private AssetType selectedAssetType;
-    private final String SAVE_DIALOG = "Save Dialog";
-    private final String SAVE_HEADER = "Asset has been saved to the database.";
-    private final String ERROR_DIALOG = "Error Dialog";
-    private final String ERROR_HEADER = "Please enter values for all text fields.";
 
     /**
      * Initialize runs before the scene is displayed.
      * It initializes elements and data in the scene.
      *
-     * @param url url to be used
+     * @param url            url to be used
      * @param resourceBundle resource bundle to be used
-     *
      * @author Jeff
      */
     @Override
@@ -81,9 +83,9 @@ public class AddAssetController implements Initializable {
      * @author Jeff
      */
     public void attachEvents() {
-        assetTypeChoiceBox.valueProperty().addListener((obs, oldval, newval) -> {
-            if (newval != null)
-                selectedAssetType = newval;
+        assetTypeChoiceBox.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null)
+                selectedAssetType = newVal;
         });
 
         saveBtn.setOnMouseClicked(mouseEvent -> {
@@ -96,11 +98,11 @@ public class AddAssetController implements Initializable {
             }
         });
         // Change scenes to Assets.fxml
-        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Assets"));
-        //Attach link to assetTypeMenuBtn to go to AssetTypeList.fxml
-        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/AssetTypeList"));
+        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS));
+        //Attach link to assetTypeMenuBtn to go to Utilities.AssetTypeList.fxml
+        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST));
         // Change scenes to Assets.fxml
-        cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Assets"));
+        cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS));
     }
 
 
@@ -166,8 +168,8 @@ public class AddAssetController implements Initializable {
         alert.setHeaderText(SAVE_HEADER);
 
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK){
-            uiUtilities.changeScene(mouseEvent, "/Assets");
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS);
         }
     }
 
@@ -181,16 +183,16 @@ public class AddAssetController implements Initializable {
         alert.setTitle(ERROR_DIALOG);
         alert.setHeaderText(ERROR_HEADER);
 
-        Optional<ButtonType> result = alert.showAndWait();
+        alert.showAndWait();
     }
 
     /**
-     *  Checks to see if values of the asset are filled.
+     * Checks to see if values of the asset are filled.
      *
      * @param asset os an asset object
      * @return whether or not the asset object passed is empty (no info or attributes) or not
      */
-    boolean isAssetEmpty(Asset asset) {
+    public boolean isAssetEmpty(Asset asset) {
         return asset.getName().equals("") || asset.getAssetTypeID().equals("") || asset.getDescription().equals("") ||
                 asset.getSerialNo().equals("") || asset.getManufacturer().equals("") || asset.getCategory().equals("") || asset.getSite().equals("") || asset.getLocation().equals("");
     }

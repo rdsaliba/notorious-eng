@@ -6,6 +6,10 @@
   @author Jeff, Paul, Najim
   @last_edit 02/7/2020
  */
+package Controllers;
+
+import Utilities.TextConstants;
+import Utilities.UIUtilities;
 import app.ModelController;
 import app.item.Asset;
 import javafx.animation.Animation;
@@ -13,8 +17,6 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -44,6 +46,23 @@ import java.util.Collections;
 import java.util.ResourceBundle;
 
 public class AssetsController implements Initializable {
+    private static final String DEFAULT_SORT = "Default";
+    private static final String ASCENDING_RUL_SORT = "Ascending RUL";
+    private static final String DESCENDING_RUL_SORT = "Descending RUL";
+    private static final String RECOMMENDATION = "Recommendation";
+    private static final String LINEAR_RUL = "Linear RUL";
+    private static final String TYPE_COL = "Type";
+    private static final String SERIAL_NO_COL = "Serial No.";
+    private static final String MODEL_COL = "Model";
+    private static final String RUL_COL = "RUL";
+    private static final String LOCATION_COL = "Location";
+    private static final String MANUFACTURER_COL = "Manufacturer";
+    private static final String CATEGORY_COL = "Category";
+    private static final String SITE_COL = "Site";
+    private static final String DESCRIPTION_COL = "Description";
+
+    private final AssetTypeDAOImpl assetTypeDAO;
+    private final ModelDAOImpl modelDAO;
     @FXML
     private Button assetMenuBtn;
     @FXML
@@ -60,27 +79,8 @@ public class AssetsController implements Initializable {
     private Tab listTab;
     @FXML
     private ChoiceBox<String> sortAsset;
-
-    private final ObservableList<Pane> boxes = FXCollections.observableArrayList();
     private UIUtilities uiUtilities;
     private ObservableList<Asset> assets;
-    private final AssetTypeDAOImpl assetTypeDAO;
-    private final ModelDAOImpl modelDAO;
-
-    private final String RECOMMENDATION_COL = "Recommendation";
-    private final String DEFAULT_SORT = "Default";
-    private final String ASCENDING_RUL_SORT = "Ascending RUL";
-    private final String DESCENDING_RUL_SORT = "Descending RUL";
-    private final String LINEAR_RUL_COL = "Linear RUL";
-    private final String TYPE_COL = "Type";
-    private final String SERIAL_NO_COL = "Serial No.";
-    private final String MODEL_COL = "Model";
-    private final String RUL_COL = "RUL";
-    private final String LOCATION_COL = "Location";
-    private final String MANUFACTURER_COL = "Manufacturer";
-    private final String CATEGORY_COL = "Category";
-    private final String SITE_COL = "Site";
-    private final String DESCRIPTION_COL = "Description";
 
     public AssetsController() {
         assetTypeDAO = new AssetTypeDAOImpl();
@@ -98,9 +98,8 @@ public class AssetsController implements Initializable {
      * Initialize runs before the scene is displayed.
      * It initializes elements and data in the scene.
      *
-     * @param url url to be used
+     * @param url            url to be used
      * @param resourceBundle resourceBundle to be used
-     *
      * @author Jeff
      */
     @Override
@@ -129,10 +128,10 @@ public class AssetsController implements Initializable {
         });
 
         //Attach link to assetMenuButton to go to Assets.fxml
-        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Assets"));
+        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS));
 
-        //Attach link to assetTypeMenuBtn to go to AssetTypeList.fxml
-        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/AssetTypeList"));
+        //Attach link to assetTypeMenuBtn to go to Utilities.AssetTypeList.fxml
+        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST));
 
         //Attach link to addAssetButton to go to AddAsset.fxml
         addAssetBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/AddAsset"));
@@ -145,33 +144,30 @@ public class AssetsController implements Initializable {
         sortAsset.setValue(DEFAULT_SORT);
         //Listener on the sort ChoiceBox. Depending on the sort selected, all assets panes are cleared and generated again
         //with the appropriate sort applied.
-        sortAsset.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
-                switch (newValue) {
-                    case ASCENDING_RUL_SORT:
-                        if (thumbnailTab.isSelected()) {
-                            assetsThumbPane.getChildren().clear();
-                            assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssetsDes());
-                            Collections.reverse(assets);
-                            generateThumbnails();
-                        }
-                        break;
-                    case DESCENDING_RUL_SORT:
-                        if (thumbnailTab.isSelected()) {
-                            assetsThumbPane.getChildren().clear();
-                            assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssetsDes());
-                            generateThumbnails();
-                        }
-                        break;
-                    default:
-                        if (thumbnailTab.isSelected()) {
-                            assetsThumbPane.getChildren().clear();
-                            assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
-                            generateThumbnails();
-                        }
-                        break;
-                }
+        sortAsset.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
+            switch (newValue) {
+                case ASCENDING_RUL_SORT:
+                    if (thumbnailTab.isSelected()) {
+                        assetsThumbPane.getChildren().clear();
+                        assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssetsDes());
+                        Collections.reverse(assets);
+                        generateThumbnails();
+                    }
+                    break;
+                case DESCENDING_RUL_SORT:
+                    if (thumbnailTab.isSelected()) {
+                        assetsThumbPane.getChildren().clear();
+                        assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssetsDes());
+                        generateThumbnails();
+                    }
+                    break;
+                default:
+                    if (thumbnailTab.isSelected()) {
+                        assetsThumbPane.getChildren().clear();
+                        assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
+                        generateThumbnails();
+                    }
+                    break;
             }
         });
     }
@@ -214,9 +210,9 @@ public class AssetsController implements Initializable {
             Text assetName = new Text(asset.getSerialNo());
             Text assetType = new Text(assetTypeDAO.getNameFromID(asset.getAssetTypeID()));
 
-            Text linearLabel = new Text(LINEAR_RUL_COL + ": ");
+            Text linearLabel = new Text(LINEAR_RUL + ": ");
             Text linearRUL = new Text(String.valueOf(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(asset.getId()))));
-            Text recommendationLabel = new Text(RECOMMENDATION_COL + ": ");
+            Text recommendationLabel = new Text(RECOMMENDATION + ": ");
             Text recommendation = new Text(asset.getRecommendation());
 
             Timeline timeline =
@@ -293,7 +289,7 @@ public class AssetsController implements Initializable {
         modelRULCol.setCellValueFactory(cellData -> new SimpleDoubleProperty(
                 Double.parseDouble(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(cellData.getValue().getId())))).asObject());
 
-        TableColumn<Asset, String> recommendationCol = new TableColumn<>(RECOMMENDATION_COL);
+        TableColumn<Asset, String> recommendationCol = new TableColumn<>(RECOMMENDATION);
         recommendationCol.setCellValueFactory(
                 new PropertyValueFactory<>("recommendation"));
 

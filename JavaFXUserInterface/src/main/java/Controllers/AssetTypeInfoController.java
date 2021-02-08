@@ -6,6 +6,11 @@
   @author Jeff, Paul, Roy, Najim
   @last_edit 02/7/2020
  */
+package Controllers;
+
+import Utilities.AssetTypeList;
+import Utilities.TextConstants;
+import Utilities.UIUtilities;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -13,7 +18,6 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import local.AssetTypeDAOImpl;
 
 import java.net.URL;
@@ -22,6 +26,9 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class AssetTypeInfoController implements Initializable {
+    private static final String ALERT_HEADER = "Confirmation of asset type deletion";
+    private static final String ALERT_CONTENT = "Are you sure you want to delete this asset type? \n " +
+            "this will delete all the assets of this type";
 
     @FXML
     private Button assetMenuBtn;
@@ -31,12 +38,6 @@ public class AssetTypeInfoController implements Initializable {
     private Button infoSaveBtn;
     @FXML
     private Button infoDeleteBtn;
-    @FXML
-    private Button modelEditBtn;
-    @FXML
-    private Button modelDeleteBtn;
-    @FXML
-    private AnchorPane assetTypeInformation;
     @FXML
     private TextField assetTypeName;
     @FXML
@@ -59,18 +60,6 @@ public class AssetTypeInfoController implements Initializable {
     private AssetTypeList originalAssetType;
     private AssetTypeDAOImpl assetTypeDAO;
 
-    private final String ALERT_HEADER = "Confirmation of asset type deletion";
-    private final String ALERT_CONTENT = "Are you sure you want to delete this asset type? \n " +
-            "this will delete all the assets of this type";
-
-    /**
-     * Initialize runs before the scene is displayed.
-     * It initializes elements and data in the scene.
-     *
-     * @param url            url to be used
-     * @param resourceBundle url to be used
-     * @author Jeff
-     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         uiUtilities = new UIUtilities();
@@ -79,13 +68,13 @@ public class AssetTypeInfoController implements Initializable {
     }
 
     /**
-     * initData receives the Asset Type data that was selected from AssetTypeList.FXML
+     * initData receives the Asset Type data that was selected from Utilities.AssetTypeList.FXML
      * Then, uses that data to populate the text fields in the scene.
      *
-     * @param assetType
+     * @param assetType represents the asset type we want to get info on
      * @author Najim, Paul
      */
-    void initData(AssetTypeList assetType) {
+    public void initData(AssetTypeList assetType) {
         this.assetType = assetType;
         this.originalAssetType = new AssetTypeList(assetType);
         assetTypeName.setText(assetType.getAssetType().getName());
@@ -93,22 +82,27 @@ public class AssetTypeInfoController implements Initializable {
         try {
             thresholdOK.setText(new DecimalFormat("#.##").format(Double.parseDouble(assetType.getValueOk())));
         } catch (NumberFormatException e) {
+            e.printStackTrace();
         }
         try {
             thresholdAdvisory.setText(new DecimalFormat("#.##").format(Double.parseDouble(assetType.getValueAdvisory())));
         } catch (NumberFormatException e) {
+            e.printStackTrace();
         }
         try {
             thresholdCaution.setText(new DecimalFormat("#.##").format(Double.parseDouble(assetType.getValueCaution())));
         } catch (NumberFormatException e) {
+            e.printStackTrace();
         }
         try {
             thresholdWarning.setText(new DecimalFormat("#.##").format(Double.parseDouble(assetType.getValueWarning())));
         } catch (NumberFormatException e) {
+            e.printStackTrace();
         }
         try {
             thresholdFailed.setText(new DecimalFormat("#.##").format(Double.parseDouble(assetType.getValueFailed())));
         } catch (NumberFormatException e) {
+            e.printStackTrace();
         }
 
 
@@ -117,23 +111,20 @@ public class AssetTypeInfoController implements Initializable {
     /**
      * Attaches events to elements in the scene.
      *
-     * @author Najim
-     *
+     * @author Najim, Paul
      * Edit: added all the text proprety listeners and text formaters for all the fields
-     *
-     * @author Paul
      */
     public void attachEvents() {
         // Change scenes to Assets.fxml
-        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Assets"));
-        //Attach link to assetTypeMenuBtn to go to AssetTypeList.fxml
-        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/AssetTypeList"));
+        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS));
+        //Attach link to assetTypeMenuBtn to go to Utilities.AssetTypeList.fxml
+        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST));
         infoDeleteBtn.setOnMouseClicked(this::deleteDialog);
 
         infoSaveBtn.setDisable(true);
         infoSaveBtn.setOnMouseClicked(mouseEvent -> {
             assetTypeDAO.updateAssetType(assetType.toAssetType());
-            uiUtilities.changeScene(mouseEvent, "/AssetTypeList");
+            uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST);
         });
 
         assetTypeName.textProperty().addListener((obs, oldText, newText) -> {
@@ -146,41 +137,41 @@ public class AssetTypeInfoController implements Initializable {
         });
 
         thresholdOK.textProperty().addListener((obs, oldText, newText) -> {
-            if(handleTextChange(obs, newText, originalAssetType.getValueOk()))
+            if (handleTextChange(obs, newText, originalAssetType.getValueOk()))
                 assetType.setValueOk(newText);
         });
-        thresholdOK.setTextFormatter( new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat,c)));
+        thresholdOK.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
 
         thresholdAdvisory.textProperty().addListener((obs, oldText, newText) -> {
-            if(handleTextChange(obs, newText, originalAssetType.getValueAdvisory()))
+            if (handleTextChange(obs, newText, originalAssetType.getValueAdvisory()))
                 assetType.setValueAdvisory(newText);
         });
-        thresholdAdvisory.setTextFormatter( new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat,c)));
+        thresholdAdvisory.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
 
         thresholdCaution.textProperty().addListener((obs, oldText, newText) -> {
-            if(handleTextChange(obs, newText, originalAssetType.getValueCaution()))
+            if (handleTextChange(obs, newText, originalAssetType.getValueCaution()))
                 assetType.setValueCaution(newText);
         });
-        thresholdCaution.setTextFormatter( new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat,c)));
+        thresholdCaution.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
 
         thresholdWarning.textProperty().addListener((obs, oldText, newText) -> {
-            if(handleTextChange(obs, newText, originalAssetType.getValueWarning()))
+            if (handleTextChange(obs, newText, originalAssetType.getValueWarning()))
                 assetType.setValueWarning(newText);
         });
-        thresholdWarning.setTextFormatter( new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat,c)));
+        thresholdWarning.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
 
         thresholdFailed.textProperty().addListener((obs, oldText, newText) -> {
-            if(handleTextChange(obs, newText, originalAssetType.getValueFailed()))
+            if (handleTextChange(obs, newText, originalAssetType.getValueFailed()))
                 assetType.setValueFailed(newText);
         });
-        thresholdFailed.setTextFormatter( new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat,c)));
+        thresholdFailed.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
 
     }
 
     /**
-     *  Handle the text change of the user fields to turn on or off the save functionality
+     * Handle the text change of the user fields to turn on or off the save functionality
      *
-     * @author  Paul
+     * @author Paul
      */
     private boolean handleTextChange(ObservableValue<? extends String> obs, String newText, String field) {
         if ((field).equals(originalAssetType.getName()) || field.equals(originalAssetType.getDescription())) {
@@ -236,7 +227,7 @@ public class AssetTypeInfoController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             deleteAssetType();
-            uiUtilities.changeScene(mouseEvent, "/AssetTypeList");
+            uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST);
         }
     }
 
@@ -246,7 +237,6 @@ public class AssetTypeInfoController implements Initializable {
      * @author Paul
      */
     private void deleteAssetType() {
-        AssetTypeDAOImpl assetTypeDAO = new AssetTypeDAOImpl();
         assetTypeDAO.deleteAssetTypeByID(assetType.getId());
     }
 }

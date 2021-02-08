@@ -1,9 +1,10 @@
 /*
   The Asset Type List class keeps track of asset types and their threshold values.
-
   @author
   @last_edit 02/7/2020
  */
+package Utilities;
+
 import app.item.AssetType;
 import app.item.AssetTypeParameter;
 
@@ -11,12 +12,23 @@ import java.util.ArrayList;
 
 public class AssetTypeList {
     private AssetType assetType;
-    private int liveAssets, archivedAssets;
-    private String valueOk, valueCaution, valueAdvisory, valueWarning, valueFailed;
+    private int liveAssets;
+    private int archivedAssets;
+    private String valueOk;
+    private String valueCaution;
+    private String valueAdvisory;
+    private String valueWarning;
+    private String valueFailed;
 
-    public AssetTypeList(String name, int liveAssets) {
-        this.assetType = new AssetType(name);
+    public AssetTypeList(AssetType assetType, int liveAssets, int archivedAssets, String valueOk, String valueCaution, String valueAdvisory, String valueWarning, String valueFailed) {
+        this.assetType = assetType;
         this.liveAssets = liveAssets;
+        this.archivedAssets = archivedAssets;
+        this.valueOk = valueOk;
+        this.valueCaution = valueCaution;
+        this.valueAdvisory = valueAdvisory;
+        this.valueWarning = valueWarning;
+        this.valueFailed = valueFailed;
     }
 
     public AssetTypeList(AssetTypeList copy) {
@@ -28,17 +40,6 @@ public class AssetTypeList {
         this.valueAdvisory = copy.getValueAdvisory();
         this.valueWarning = copy.getValueWarning();
         this.valueFailed = copy.getValueFailed();
-    }
-
-    public AssetTypeList(AssetType assetType, int liveAssets, int archivedAssets, String valueOk, String valueCaution, String valueAdvisory, String valueWarning, String valueFailed) {
-        this.assetType = assetType;
-        this.liveAssets = liveAssets;
-        this.archivedAssets = archivedAssets;
-        this.valueOk = valueOk;
-        this.valueCaution = valueCaution;
-        this.valueAdvisory = valueAdvisory;
-        this.valueWarning = valueWarning;
-        this.valueFailed = valueFailed;
     }
 
     public AssetType getAssetType() {
@@ -113,15 +114,15 @@ public class AssetTypeList {
         return assetType.getName();
     }
 
-    public String getDescription() {
-        return assetType.getDescription();
-    }
-
     public void setName(String name) {
         this.assetType.setName(name);
     }
 
-    public AssetType toAssetType(){
+    public String getDescription() {
+        return assetType.getDescription();
+    }
+
+    public AssetType toAssetType() {
         AssetType newAssetType = new AssetType();
         ArrayList<AssetTypeParameter> newAssetTypeParameter = new ArrayList<>();
         newAssetType.setId(assetType.getId());
@@ -129,29 +130,29 @@ public class AssetTypeList {
         newAssetType.setDescription(assetType.getDescription());
 
         if (this.valueOk.isEmpty())
-            newAssetTypeParameter.add( new AssetTypeParameter(TextConstants.OK_THRESHOLD,null));
+            newAssetTypeParameter.add(new AssetTypeParameter(TextConstants.OK_THRESHOLD, null));
         else if (!this.valueOk.equals("-"))
-            newAssetTypeParameter.add( new AssetTypeParameter(TextConstants.OK_THRESHOLD,Double.parseDouble(this.valueOk)));
+            newAssetTypeParameter.add(new AssetTypeParameter(TextConstants.OK_THRESHOLD, Double.parseDouble(this.valueOk)));
 
         if (this.valueAdvisory.isEmpty())
-            newAssetTypeParameter.add( new AssetTypeParameter(TextConstants.ADVISORY_THRESHOLD,null));
+            newAssetTypeParameter.add(new AssetTypeParameter(TextConstants.ADVISORY_THRESHOLD, null));
         else if (!this.valueAdvisory.equals("-"))
-            newAssetTypeParameter.add( new AssetTypeParameter(TextConstants.ADVISORY_THRESHOLD,Double.parseDouble(this.valueAdvisory)));
+            newAssetTypeParameter.add(new AssetTypeParameter(TextConstants.ADVISORY_THRESHOLD, Double.parseDouble(this.valueAdvisory)));
 
         if (this.valueCaution.isEmpty())
-            newAssetTypeParameter.add( new AssetTypeParameter(TextConstants.CAUTION_THRESHOLD,null));
+            newAssetTypeParameter.add(new AssetTypeParameter(TextConstants.CAUTION_THRESHOLD, null));
         else if (!this.valueCaution.equals("-"))
-            newAssetTypeParameter.add( new AssetTypeParameter(TextConstants.CAUTION_THRESHOLD,Double.parseDouble(this.valueCaution)));
+            newAssetTypeParameter.add(new AssetTypeParameter(TextConstants.CAUTION_THRESHOLD, Double.parseDouble(this.valueCaution)));
 
         if (this.valueWarning.isEmpty())
-            newAssetTypeParameter.add( new AssetTypeParameter(TextConstants.WARNING_THRESHOLD,null));
+            newAssetTypeParameter.add(new AssetTypeParameter(TextConstants.WARNING_THRESHOLD, null));
         else if (!this.valueWarning.equals("-"))
-            newAssetTypeParameter.add( new AssetTypeParameter(TextConstants.WARNING_THRESHOLD,Double.parseDouble(this.valueWarning)));
+            newAssetTypeParameter.add(new AssetTypeParameter(TextConstants.WARNING_THRESHOLD, Double.parseDouble(this.valueWarning)));
 
         if (this.valueFailed.isEmpty())
-            newAssetTypeParameter.add( new AssetTypeParameter(TextConstants.FAILED_THRESHOLD,null));
+            newAssetTypeParameter.add(new AssetTypeParameter(TextConstants.FAILED_THRESHOLD, null));
         else if (!this.valueFailed.equals("-"))
-            newAssetTypeParameter.add( new AssetTypeParameter(TextConstants.FAILED_THRESHOLD,Double.parseDouble(this.valueFailed)));
+            newAssetTypeParameter.add(new AssetTypeParameter(TextConstants.FAILED_THRESHOLD, Double.parseDouble(this.valueFailed)));
 
         newAssetType.setThresholdList(newAssetTypeParameter);
         return newAssetType;

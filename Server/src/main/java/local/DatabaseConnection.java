@@ -6,28 +6,37 @@
  */
 package local;
 
+import app.ConfigProperties;
+
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DatabaseConnection {
-    private static final String URL = "jdbc:mariadb://127.0.0.1:3306/cbms?";
-    //Make sure to set the user and password to the proper values.
-    //Credentials should be set to that which you are using on your local DB server.
-    private static final String USER = "root"; // todo  use username and password specific to your machine
-    private static final String PASSWORD = "";
+
+    private static ConfigProperties properties = new ConfigProperties();
+
     private static DatabaseConnection openConnection;
     private static Connection conn;
+
+    private static String URL = null;
+    private static String USER = null;
+    private static String PASSWORD = null;
+
+    static {
+        try {
+            URL = properties.getConfigValues("database_url");
+            USER = properties.getConfigValues("database_user");
+            PASSWORD = properties.getConfigValues("database_password");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     private DatabaseConnection() {
     }
 
-    /**
-     * Creates an instance of the class. Does not allow for more than one instance of the class.
-     *
-     * @return An instance of the class.
-     * @author Najim
-     */
     public static DatabaseConnection getInstance() {
         if (openConnection == null) {
             openConnection = new DatabaseConnection();
@@ -35,13 +44,6 @@ public class DatabaseConnection {
         return openConnection;
     }
 
-
-    /**
-     * Getter
-     *
-     * @return A Connection object
-     * @author Najim
-     */
     public static Connection getConnection() {
         if (conn == null) {
             try {

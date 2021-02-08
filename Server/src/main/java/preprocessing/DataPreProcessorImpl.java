@@ -22,10 +22,10 @@ import weka.filters.unsupervised.attribute.Remove;
 import java.util.ArrayList;
 
 public class DataPreProcessorImpl implements DataPreProcessor {
-    private Instances originalDataset;
+    private final Instances originalDataset;
+    private final ArrayList<Integer> removedIndex;
     private Instances reducedDataset;
     private Instances minimallyReducedDataset;
-    private final ArrayList<Integer> removedIndex;
 
     public DataPreProcessorImpl(Instances originalDataset) {
         this.originalDataset = originalDataset;
@@ -34,15 +34,15 @@ public class DataPreProcessorImpl implements DataPreProcessor {
         this.removedIndex = new ArrayList<>();
     }
 
-    /**  this will add the RUL to the training instances object, this is needed for the model training
+    /**
+     * this will add the RUL to the training instances object, this is needed for the model training
      *
      * @author Khaled
-     * */
+     */
     private static Instances addRUL(Instances trainingData, ArrayList<Double> maxCycles) {
 
         Instance firstRow = trainingData.firstInstance();
         double assetID = firstRow.value(0);
-        //int engineNum = 1;
         Attribute engine = trainingData.attribute("Asset_id");
         Instance row;
 
@@ -68,8 +68,9 @@ public class DataPreProcessorImpl implements DataPreProcessor {
     /**
      * This method takes in instances and parses the maximum cycle of each engine (assetID) in those instances and
      * returns it in an ArrayList.
+     *
      * @author Khaled
-     * */
+     */
     private static ArrayList<Double> getMaxCycles(Instances data) {
         Attribute engine = data.attribute("Asset_id");
         Attribute timeCycle = data.attribute("Time_Cycle");
@@ -89,21 +90,68 @@ public class DataPreProcessorImpl implements DataPreProcessor {
                 Instance prevRow = data.instance(i - 1);
                 maxCycles.add(prevRow.value(timeCycle));
                 assetID++;
-            }
-
-            else if (assetID == lastAssetID) {
+            } else if (assetID == lastAssetID) {
                 Instance last = data.lastInstance();
                 maxCycles.add(last.value(timeCycle));
                 break;
-            }
-
-            else if(row.value(engine) != assetID) {
+            } else if (row.value(engine) != assetID) {
                 assetID++;
             }
         }
         return maxCycles;
     }
 
+    /**
+     * Given an Instance object, this will add an RUL attribute at the end of the other attributes
+     *
+     * @author Khaled
+     */
+    public static Instances addRULCol(Instances newData) throws Exception {
+        Add filter = new Add();
+        filter.setAttributeIndex("last");
+        filter.setAttributeName("RUL");
+        filter.setInputFormat(newData);
+        newData = Filter.useFilter(newData, filter);
+        newData.setClass(newData.attribute("RUL"));
+
+        //Get max cycle of each engine (highest time cycle - 1)
+        ArrayList<Double> maxCycles = getMaxCycles(newData);
+
+        return addRUL(newData, maxCycles);
+    }
+
+    /**
+     * Given 2 instances Object, it will remove the attributes that are not shared between the two and return the test set
+     *
+     * @author Paul Micu
+     */
+    public static Instances removeAttributes(Instances trainDataset, Instances testDataset) throws Exception {
+        ArrayList<Integer> indexes = new ArrayList<>();
+        for (int i = 0; i < testDataset.numAttributes(); i++) {
+            if (!setContains(trainDataset, testDataset.attribute(i))) {
+                indexes.add(i);
+            }
+        }
+        int[] arr = new int[indexes.size()];
+
+        for (int i = 0; i < indexes.size(); i++)
+            arr[i] = indexes.get(i);
+
+        Remove remove = new Remove();
+        remove.setAttributeIndicesArray(arr);
+        remove.setInputFormat(testDataset);
+        return Filter.useFilter(testDataset, remove);
+    }
+
+    private static boolean setContains(Instances dataset, Attribute att) {
+        for (int i = 0; i < dataset.numAttributes(); i++) {
+            if (att.name().equals(dataset.attribute(i).name())) {
+                return true;
+            }
+
+        }
+        return false;
+    }
 
     /**
      * This method will filter the attributes and remove the ones that do not provide useful information
@@ -156,56 +204,6 @@ public class DataPreProcessorImpl implements DataPreProcessor {
         minimallyReducedDataset = Filter.useFilter(originalDataset, remove);
         if (minimallyReducedDataset.attribute("RUL") == null)
             minimallyReducedDataset = addRULCol(minimallyReducedDataset);
-    }
-
-    /**Given an Instance object, this will add an RUL attribute at the end of the other attributes
-     *
-     * @author Khaled
-     * */
-    public static Instances addRULCol(Instances newData) throws Exception {
-        Add filter = new Add();
-        filter.setAttributeIndex("last");
-        filter.setAttributeName("RUL");
-        filter.setInputFormat(newData);
-        newData = Filter.useFilter(newData, filter);
-        newData.setClass(newData.attribute("RUL"));
-
-        //Get max cycle of each engine (highest time cycle - 1)
-        ArrayList<Double> maxCycles = getMaxCycles(newData);
-
-        return addRUL(newData, maxCycles);
-    }
-
-    /**Given 2 instances Object, it will remove the attributes that are not shared between the two and return the test set
-     *
-     * @author Paul Micu
-     * */
-    public static Instances removeAttributes(Instances trainDataset, Instances testDataset) throws Exception {
-        ArrayList<Integer> indexes = new ArrayList<>();
-        for (int i = 0; i < testDataset.numAttributes(); i++) {
-            if (!setContains(trainDataset, testDataset.attribute(i))) {
-                indexes.add(i);
-            }
-        }
-        int[] arr = new int[indexes.size()];
-
-        for (int i = 0; i < indexes.size(); i++)
-            arr[i] = indexes.get(i);
-
-        Remove remove = new Remove();
-        remove.setAttributeIndicesArray(arr);
-        remove.setInputFormat(testDataset);
-        return Filter.useFilter(testDataset, remove);
-    }
-
-    private static boolean setContains(Instances dataset, Attribute att) {
-        for (int i = 0; i < dataset.numAttributes(); i++) {
-            if (att.name().equals(dataset.attribute(i).name())) {
-                return true;
-            }
-
-        }
-        return false;
     }
 
     @Override

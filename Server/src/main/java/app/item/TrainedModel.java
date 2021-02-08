@@ -6,7 +6,6 @@
  */
 package app.item;
 
-
 import weka.classifiers.Classifier;
 
 public class TrainedModel {
@@ -14,9 +13,6 @@ public class TrainedModel {
     private int assetTypeID;
     private boolean retrain;
     private Classifier modelClassifier;
-
-    public TrainedModel() {
-    }
 
     public int getModelID() {
         return modelID;

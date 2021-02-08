@@ -15,7 +15,7 @@ public interface AssetTypeDAO {
 
     int getAssetTypeIdCount(String assetTypeID, boolean isLive);
 
-    String getAssetTypeThreshold(String asset_type_id, String threshold_type);
+    String getAssetTypeThreshold(String assetTypeId, String thresholdType);
 
     int insertAssetType(AssetType assetType);
 
@@ -27,5 +27,5 @@ public interface AssetTypeDAO {
 
     void deleteAssetTypeByID(String assetTypeID);
 
-    HashMap<String, Double> getAssetTypeThresholds(String asset_type_id);
+    HashMap<String, Double> getAssetTypeThresholds(String assetTypeId);
 }

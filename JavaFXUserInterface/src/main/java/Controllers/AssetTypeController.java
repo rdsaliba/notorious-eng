@@ -1,9 +1,13 @@
 /*
   This Controller is responsible for generating the list of asset types.
-
   @author Najim, Shirwa, Paul
   @last_edit 02/7/2020
  */
+package Controllers;
+
+import Utilities.AssetTypeList;
+import Utilities.TextConstants;
+import Utilities.UIUtilities;
 import app.item.AssetType;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -78,12 +82,10 @@ public class AssetTypeController implements Initializable {
     /**
      * This method will return an ObservableList of AssetList objects
      *
-     * @author Shirwa
-     * <p>
+     * @author Shirwa, Paul
      * edit: There was an issue where the getAssetTypeIdCount() would not match in size to the assetTypeList()
      * and it would crash the asset if there was an asset type with no assets associated to it
      * so this methode was rewrote
-     * @author Paul
      */
     private ObservableList<AssetTypeList> getAssetList() {
         ObservableList<AssetTypeList> assettypelist = FXCollections.observableArrayList();
@@ -119,10 +121,10 @@ public class AssetTypeController implements Initializable {
         attachColumnEvents();
 
         //Attach link to assetMenuButton to go to Assets.fxml
-        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Assets"));
+        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS));
 
-        //Attach link to assetTypeMenuBtn to go to AssetTypeList.fxml
-        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/AssetTypeList"));
+        //Attach link to assetTypeMenuBtn to go to Utilities.AssetTypeList.fxml
+        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST));
 
         //Attach link to addTypeBtn to go to AddAssetType.fxml
         addTypeBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/AddAssetType"));
@@ -133,7 +135,7 @@ public class AssetTypeController implements Initializable {
      *
      * @author Paul
      */
-    public void attachColumnEvents(){
+    public void attachColumnEvents() {
         columnName.setCellValueFactory(new PropertyValueFactory<>("name"));
         columnLiveAssets.setCellValueFactory(new PropertyValueFactory<>("liveAssets"));
         columnArchivedAssets.setCellValueFactory(new PropertyValueFactory<>("archivedAssets"));

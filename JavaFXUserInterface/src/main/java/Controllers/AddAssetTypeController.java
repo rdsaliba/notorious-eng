@@ -1,9 +1,12 @@
 /*
   This Controller is responsible for handling the addition of asset types.
-
   @author Jeff, Paul, Najim
   @last_edit 02/7/2020
  */
+package Controllers;
+
+import Utilities.TextConstants;
+import Utilities.UIUtilities;
 import app.item.AssetType;
 import app.item.AssetTypeParameter;
 import javafx.fxml.FXML;
@@ -12,7 +15,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
-import javafx.scene.layout.AnchorPane;
 import local.AssetTypeDAOImpl;
 
 import java.net.URL;
@@ -27,8 +29,6 @@ public class AddAssetTypeController implements Initializable {
     private Button assetTypeMenuBtn;
     @FXML
     private Button cancelBtn;
-    @FXML
-    private AnchorPane assetTypeInformation;
     @FXML
     private Button saveBtn;
     @FXML
@@ -54,9 +54,8 @@ public class AddAssetTypeController implements Initializable {
      * Initialize runs before the scene is displayed.
      * It initializes elements and data in the scene.
      *
-     * @param url url to be used
+     * @param url            url to be used
      * @param resourceBundle resource bundle to be used
-     *
      * @author Jeff
      */
     @Override
@@ -74,14 +73,14 @@ public class AddAssetTypeController implements Initializable {
      */
     public void attachEvents() {
         // Change scenes to Assets.fxml
-        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Assets"));
-        //Attach link to assetTypeMenuBtn to go to AssetTypeList.fxml
-        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/AssetTypeList"));
+        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST));
+        //Attach link to assetTypeMenuBtn to go to Utilities.AssetTypeList.fxml
+        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST));
         // Change scenes to Assets.fxml
-        cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/AssetTypeList"));
+        cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST));
         saveBtn.setOnMouseClicked(mouseEvent -> {
             if (saveAssetType(assembleAssetType()))
-                uiUtilities.changeScene(mouseEvent, "/AssetTypeList");
+                uiUtilities.changeScene(mouseEvent, "/Utilities.AssetTypeList");
         });
 
 
@@ -89,7 +88,7 @@ public class AddAssetTypeController implements Initializable {
         thresholdAdvisoryValue.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
         thresholdCautionValue.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
         thresholdWarningValue.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
-        thresholdFailedValue.setTextFormatter( new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat,c)));
+        thresholdFailedValue.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
     }
 
 
@@ -113,10 +112,10 @@ public class AddAssetTypeController implements Initializable {
             assetTypeParameters.add(new AssetTypeParameter(TextConstants.CAUTION_THRESHOLD, cautionValue));
 
             Double warningValue = thresholdWarningValue.getText().isEmpty() ? null : Double.parseDouble(thresholdWarningValue.getText());
-            assetTypeParameters.add(new AssetTypeParameter(TextConstants.WARNING_THRESHOLD,warningValue));
+            assetTypeParameters.add(new AssetTypeParameter(TextConstants.WARNING_THRESHOLD, warningValue));
 
             Double failedValue = thresholdFailedValue.getText().isEmpty() ? null : Double.parseDouble(thresholdFailedValue.getText());
-            assetTypeParameters.add(new AssetTypeParameter(TextConstants.FAILED_THRESHOLD,failedValue));
+            assetTypeParameters.add(new AssetTypeParameter(TextConstants.FAILED_THRESHOLD, failedValue));
 
             assetType.setThresholdList(assetTypeParameters);
             return assetType;
@@ -130,7 +129,7 @@ public class AddAssetTypeController implements Initializable {
      * @author Jeff , Paul
      */
     public boolean saveAssetType(AssetType assetType) {
-        if (assetType != null){
+        if (assetType != null) {
             db.insertAssetType(assetType);
             return true;
         }
