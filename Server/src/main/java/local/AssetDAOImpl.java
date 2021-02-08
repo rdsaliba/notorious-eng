@@ -339,7 +339,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
      *  this means that the data comes pre arranged in the ResultSet to simplify adding it to the
      *  table in the UI
      *
-     * @param assetID
+     * @param assetID the id of the asset we want the measurement for
      * @param fromTime this represents from what time cycle we want to start retrieving information
      * @author Paul
      */
