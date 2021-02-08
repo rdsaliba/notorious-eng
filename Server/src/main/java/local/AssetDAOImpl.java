@@ -335,6 +335,14 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         return null;
     }
 
+    /** this function returns the measurements for a given asset and cycle in a table format
+     *  this means that the data comes pre arranged in the ResultSet to simplify adding it to the
+     *  table in the UI
+     *
+     * @param assetID
+     * @param fromTime this represents from what time cycle we want to start retrieving information
+     * @author Paul
+     */
     public ResultSet createMeasurementsFromAssetIdAndTime(int assetID, int fromTime) {
         StringBuilder preparedStatementPart1 = new StringBuilder();
         StringBuilder preparedStatementPart2 = new StringBuilder();

@@ -139,7 +139,7 @@ public class SystemInfoController implements Initializable {
     /**
      * Constructs the sensor panes to be able to display data in a nice format.
      *
-     * @author Jeff
+     * @author Jeff, Paul
      */
     public void constructSensorPanes() {
         for (AssetAttribute sensor : system.getAssetInfo().getAssetAttributes()) {
