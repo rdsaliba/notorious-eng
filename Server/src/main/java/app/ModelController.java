@@ -164,6 +164,8 @@ public class ModelController {
                 return new LSTMModelImpl();
             case "RandomForest":                            //To be entered in DB: RandomForest
                 return new RandomForestModelImpl();
+            case "RandomCommittee":                    //To be entered in DB: RandomCommittee
+                return new RandomCommitteeModelImpl();
             default:
                 return null;
         }
