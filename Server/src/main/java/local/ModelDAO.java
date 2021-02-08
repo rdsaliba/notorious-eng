@@ -20,7 +20,7 @@ public interface ModelDAO {
 
     TrainedModel getModelsByAssetTypeID(String assetTypeID);
 
-    String getModelNameFromModelID(int modelID);
+    String getModelNameFromAssetTypeID(String modelID);
 
     TrainedModel createTrainedModelFromResultSet(ResultSet rs, boolean withModel) throws SQLException;
 }

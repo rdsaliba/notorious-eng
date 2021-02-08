@@ -29,8 +29,12 @@ import local.ModelDAOImpl;
 import rul.assessment.AssessmentController;
 
 import java.net.URL;
+import java.sql.ResultSet;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Optional;
+import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class SystemInfoController implements Initializable {
 
@@ -78,6 +82,8 @@ public class SystemInfoController implements Initializable {
     private ModelDAOImpl modelDAO;
     private UIUtilities uiUtilities;
 
+    private Timeline rawDataTimeline;
+
     /**
      * Initialize runs before the scene is displayed.
      * It initializes elements and data in the scene.
@@ -103,7 +109,7 @@ public class SystemInfoController implements Initializable {
      * @param system is an asset object that will get initialized
      * @author Jeff
      */
-    public void initData(Asset system) {
+    void initData(Asset system) {
         this.system = system;
         String systemTypeName = assetTypeDAOImpl.getNameFromID(system.getAssetTypeID());
         systemName.setText(systemTypeName + " - " + system.getSerialNo());
@@ -113,7 +119,7 @@ public class SystemInfoController implements Initializable {
         manufacturerOutput.setText(system.getManufacturer());
         locationOutput.setText(system.getLocation());
         siteOutput.setText(system.getSite());
-        modelOutput.setText(modelDAO.getModelNameFromModelID(modelDAO.getModelsByAssetTypeID(system.getAssetTypeID()).getModelID()));
+        modelOutput.setText(modelDAO.getModelNameFromAssetTypeID(system.getAssetTypeID()));
         categoryOutput.setText(system.getCategory());
 
         rulOutput.setText(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(system.getId())));
@@ -188,15 +194,20 @@ public class SystemInfoController implements Initializable {
      * @author Jeff
      */
     public void attachEvents() {
-        systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
-        //Attach link to systemTypeMenuBtn to go to Utilities.SystemTypeList.fxml
-        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Utilities.SystemTypeList"));
+        systemMenuBtn.setOnMouseClicked(mouseEvent -> {
+            if (rawDataTimeline != null)
+                rawDataTimeline.stop();
+            uiUtilities.changeScene(mouseEvent, "/Systems");
+        });
+        //Attach link to systemTypeMenuBtn to go to SystemTypeList.fxml
+        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/SystemTypeList"));
         deleteBtn.setOnMouseClicked(this::deleteDialog);
 
         rawDataTab.setOnSelectionChanged(event -> {
             rawDataListPane.getChildren().clear();
             generateRawDataTable();
         });
+
     }
 
     /**
@@ -230,61 +241,55 @@ public class SystemInfoController implements Initializable {
     }
 
     public void generateRawDataTable() {
-        TableView<ObservableList<String>> table = new TableView<>();
-        table.getItems().clear();
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(3000), e -> {
-            ObservableList<AssetAttribute> attributes = FXCollections.observableArrayList(assetDAOImpl.createAssetInfo(system.getId()).getAssetAttributes());
-
-            int columnIndex = 1;
-            TableColumn<ObservableList<String>, String>[] tableColumns = new TableColumn[attributes.size() + 1];
-
-            ArrayList<List<Measurement>> data = new ArrayList<>();
-
-            tableColumns[0] = new TableColumn<>("Cycle");
-            data.add(attributes.get(0).getMeasurements());
-            setCellValue(0, tableColumns[0]);
-
-            for (AssetAttribute attribute : attributes) {
-                data.add(attribute.getMeasurements());
-                tableColumns[columnIndex] = new TableColumn<>(attribute.getName());
-                setCellValue(columnIndex, tableColumns[columnIndex]);
-                columnIndex++;
+        TableView<ObservableList> tableview = new TableView<>();
+        ObservableList<ObservableList> data = FXCollections.observableArrayList();
+        AtomicInteger lastCycle = new AtomicInteger();
+        ResultSet resultSet = assetDAOImpl.createMeasurementsFromAssetIdAndTime(system.getId(), lastCycle.get());
+        try {
+            for (int i = 0; i < resultSet.getMetaData().getColumnCount(); i++) {
+                final int j = i;
+                TableColumn<ObservableList, String> col = new TableColumn(resultSet.getMetaData().getColumnName(i + 1));
+                col.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(j).toString()));
+                tableview.getColumns().addAll(col);
             }
-            table.getColumns().addAll(tableColumns);
 
-            ObservableList<ObservableList<String>> dataPerColumn = FXCollections.observableArrayList();
+            updateRawTableView(data, lastCycle);
+            if (rawDataTimeline == null)
+                rawDataTimeline = new Timeline(new KeyFrame(Duration.millis(1000), e -> updateRawTableView(data, lastCycle)));
 
-            int outCounter = 0;
-            for (List<Measurement> dataList : data) {
-                int counter = 0;
-                for (Measurement measurement : dataList) {
-                    if (outCounter < dataList.size()) {
-                        ObservableList<String> list = FXCollections.observableArrayList();
-                        dataPerColumn.add(list);
-                        dataPerColumn.get(outCounter).add(String.valueOf(measurement.getTime()));
-                        outCounter++;
-                    } else {
-                        dataPerColumn.get(counter).add(String.valueOf(measurement.getValue()));
-                        counter++;
-                    }
-                }
-            }
-            Collections.reverse(dataPerColumn);
-            table.setItems(dataPerColumn);
+            rawDataTimeline.setCycleCount(Animation.INDEFINITE); // loop forever
+            rawDataTimeline.play();
 
-        }));
-        timeline.setCycleCount(Animation.INDEFINITE);
-        timeline.play();
 
-        table.setId("RawDataTable");
-        AnchorPane.setBottomAnchor(table, 0.0);
-        AnchorPane.setTopAnchor(table, 5.0);
-        AnchorPane.setRightAnchor(table, 0.0);
-        AnchorPane.setLeftAnchor(table, 0.0);
-        rawDataListPane.getChildren().addAll(table);
+            tableview.setItems(data);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error on Building Data");
+        }
+
+
+        tableview.setId("RawDataTable");
+        AnchorPane.setBottomAnchor(tableview, 0.0);
+        AnchorPane.setTopAnchor(tableview, 5.0);
+        AnchorPane.setRightAnchor(tableview, 0.0);
+        AnchorPane.setLeftAnchor(tableview, 0.0);
+        rawDataListPane.getChildren().addAll(tableview);
     }
 
-    public void setCellValue(int index, TableColumn<ObservableList<String>, String> tableColumn) {
-        tableColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(index)));
+    private void updateRawTableView(ObservableList<ObservableList> data, AtomicInteger lastCycle) {
+        ResultSet rs = assetDAOImpl.createMeasurementsFromAssetIdAndTime(system.getId(), lastCycle.get());
+        try {
+            while (rs.next()) {
+                ObservableList<String> row = FXCollections.observableArrayList();
+                for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
+                    row.add(rs.getString(i));
+                }
+                data.add(0, row);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            System.out.println("Error on Building Data");
+        }
+        lastCycle.set(data.size());
     }
 }

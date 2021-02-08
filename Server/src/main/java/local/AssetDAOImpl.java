@@ -33,6 +33,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
     private static final String SET_UPDATED_TRUE = "UPDATE asset set updated = 1 where asset_id = ?";
     private static final String INSERT_ASSET = "INSERT INTO asset (name, asset_type_id, description, sn, manufacturer, category, site, location, unit_nb) values(?,?,?,?,?,?,?,?,?)";
     private static final String UPDATE_RECOMMENDATION = "UPDATE asset set recommendation = ? WHERE asset_id = ?";
+    private static final String GET_ATTRIBUTE_DETAILS_FROM_ASSET_ID = "SELECT att.* FROM attribute_measurements am, attribute att WHERE att.attribute_id=am.attribute_id AND am.asset_id = ? GROUP by attribute_id";
 
     /**
      * This will return an arraylist of assets that have the updated tag set to true
@@ -334,5 +335,38 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         return null;
     }
 
+    public ResultSet createMeasurementsFromAssetIdAndTime(int assetID, int fromTime) {
+        StringBuilder preparedStatementPart1 = new StringBuilder();
+        StringBuilder preparedStatementPart2 = new StringBuilder();
+        ResultSet returned = null;
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_ATTRIBUTE_DETAILS_FROM_ASSET_ID)) {
+            ps.setInt(1, assetID);
+            ResultSet rs = ps.executeQuery();
 
+            while (rs.next()) {
+                preparedStatementPart1.append(", Coalesce(Sum(`");
+                preparedStatementPart1.append(rs.getString("attribute_name"));
+                preparedStatementPart1.append("`), 0) AS '");
+                preparedStatementPart1.append(rs.getString("attribute_name"));
+                preparedStatementPart1.append("'");
+
+                preparedStatementPart2.append(", CASE WHEN tab.attribute_id = ");
+                preparedStatementPart2.append(rs.getString("attribute_id"));
+                preparedStatementPart2.append(" THEN tab.value end AS `");
+                preparedStatementPart2.append(rs.getString("attribute_name"));
+                preparedStatementPart2.append("`");
+            }
+
+            // i'm unsure why but i cannot do setString on the prepared statement, it keeps failing the query.
+            // This way is the same in terms of usage and speed and security.
+            try (PreparedStatement measurementStatement = getConnection().prepareStatement("SELECT `Cycle` " + preparedStatementPart1 + " FROM (SELECT tab.`time` as 'Cycle'" + preparedStatementPart2 + " FROM (SELECT am.attribute_id, am.`time`, am.value FROM attribute_measurements am WHERE asset_id = ? AND time > ? ORDER BY attribute_id, time) tab) tab2 GROUP BY `CYCLE` asc;")) {
+                measurementStatement.setInt(1, assetID);
+                measurementStatement.setInt(2, fromTime);
+                returned = measurementStatement.executeQuery();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return returned;
+    }
 }
