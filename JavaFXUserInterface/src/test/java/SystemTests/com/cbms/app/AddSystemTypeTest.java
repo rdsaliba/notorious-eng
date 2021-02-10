@@ -18,7 +18,8 @@ import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class AddSystemTypeTest extends ApplicationTest {
     private Scene scene;
@@ -29,7 +30,7 @@ public class AddSystemTypeTest extends ApplicationTest {
         FXMLLoader fxmlLoader = new FXMLLoader(SystemTypeInfoController.class.getResource("/AddSystemType.fxml"));
         Parent root = fxmlLoader.load();
         scene = new Scene(root);
-        addSystemTypeController = (AddSystemTypeController) fxmlLoader.getController();
+        addSystemTypeController = fxmlLoader.getController();
         stage.setTitle("CBMS");
         stage.setScene(scene);
         stage.show();

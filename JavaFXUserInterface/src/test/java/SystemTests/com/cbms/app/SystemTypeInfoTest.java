@@ -22,7 +22,7 @@ import org.testfx.framework.junit.ApplicationTest;
 
 import java.util.ArrayList;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class SystemTypeInfoTest extends ApplicationTest {
 
@@ -34,7 +34,7 @@ public class SystemTypeInfoTest extends ApplicationTest {
         FXMLLoader fxmlLoader = new FXMLLoader(SystemTypeInfoController.class.getResource("/SystemTypeInfo.fxml"));
         Parent root = fxmlLoader.load();
         scene = new Scene(root);
-        systemTypeInfoController = (SystemTypeInfoController) fxmlLoader.getController();
+        systemTypeInfoController = fxmlLoader.getController();
 
         AssetType assetType = new AssetType();
         ArrayList<AssetTypeParameter> parameters = new ArrayList<>();

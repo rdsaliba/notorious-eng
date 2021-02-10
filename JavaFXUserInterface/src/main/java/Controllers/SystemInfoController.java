@@ -4,6 +4,10 @@ import Utilities.UIUtilities;
 import app.item.Asset;
 import app.item.AssetAttribute;
 import app.item.Measurement;
+import external.AssetDAOImpl;
+import external.AssetTypeDAOImpl;
+import external.AttributeDAOImpl;
+import external.ModelDAOImpl;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -22,10 +26,6 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
-import local.AssetDAOImpl;
-import local.AssetTypeDAOImpl;
-import local.AttributeDAOImpl;
-import local.ModelDAOImpl;
 import rul.assessment.AssessmentController;
 
 import java.net.URL;
@@ -190,7 +190,7 @@ public class SystemInfoController implements Initializable {
     public void attachEvents() {
         systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
         //Attach link to systemTypeMenuBtn to go to Utilities.SystemTypeList.fxml
-        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Utilities.SystemTypeList"));
+        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/SystemTypeList"));
         deleteBtn.setOnMouseClicked(this::deleteDialog);
 
         rawDataTab.setOnSelectionChanged(event -> {

@@ -33,7 +33,7 @@ public class AddSystemTest extends ApplicationTest {
         FXMLLoader fxmlLoader = new FXMLLoader(AddSystemController.class.getResource("/AddSystem.fxml"));
         Parent root = fxmlLoader.load();
         scene = new Scene(root);
-        addSystemController = (AddSystemController) fxmlLoader.getController();
+        addSystemController = fxmlLoader.getController();
         stage.setTitle("CBMS");
         stage.setScene(scene);
         stage.show();

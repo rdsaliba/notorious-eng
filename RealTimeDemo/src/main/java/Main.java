@@ -6,7 +6,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class Main {
-    public final static int LIMIT = 20;
+    public final static int LIMIT = 10;
     public static int counter = 0;
 
     public static void main(String[] args) {
@@ -32,7 +32,7 @@ public class Main {
                 System.out.println("New Measurements for time max - " + (counter + 1) + " - end");
                 counter++;
             }
-        }, 0, 3000);
+        }, 0, 1000);
 
     }
 }

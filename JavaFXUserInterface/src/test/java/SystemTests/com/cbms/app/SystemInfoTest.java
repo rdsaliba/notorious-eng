@@ -3,6 +3,7 @@ package SystemTests.com.cbms.app;
 import Controllers.SystemInfoController;
 import Controllers.SystemsController;
 import app.item.Asset;
+import external.AssetDAOImpl;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -15,7 +16,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import local.AssetDAOImpl;
 import org.junit.After;
 import org.junit.Test;
 import org.testfx.api.FxAssert;
@@ -25,7 +25,8 @@ import org.testfx.matcher.base.NodeMatchers;
 
 import java.util.ArrayList;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class SystemInfoTest extends ApplicationTest {
 
@@ -37,7 +38,7 @@ public class SystemInfoTest extends ApplicationTest {
         FXMLLoader fxmlLoader = new FXMLLoader(SystemsController.class.getResource("/SystemInfo.fxml"));
         Parent root = fxmlLoader.load();
         scene = new Scene(root);
-        systemInfoController = (SystemInfoController) fxmlLoader.getController();
+        systemInfoController = fxmlLoader.getController();
 //        Asset asset = new Asset();
 //        asset.setId(123);
 //        asset.setLocation("location");
