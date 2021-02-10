@@ -284,9 +284,9 @@ public class SystemsController implements Initializable {
                 modelDAO.getModelNameFromModelID(modelDAO.getModelsByAssetTypeID(cellData.getValue().getAssetTypeID()).getModelID())));
 
         String RUL_COL = "RUL";
-        TableColumn<Asset, Double> modelRULCol = new TableColumn<>(RUL_COL);
+        TableColumn<Asset, Number> modelRULCol = new TableColumn<>(RUL_COL);
         modelRULCol.setCellValueFactory(cellData -> new SimpleDoubleProperty(
-                Double.parseDouble(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(cellData.getValue().getId())))).asObject());
+                Double.parseDouble(TextConstants.ThresholdValueFormat.format(Double.parseDouble(cellData.getValue().getRul().getValue())))));
 
         String RECOMMENDATION_COL = "Recommendation";
         TableColumn<Asset, String> recommendationCol = new TableColumn<>(RECOMMENDATION_COL);
