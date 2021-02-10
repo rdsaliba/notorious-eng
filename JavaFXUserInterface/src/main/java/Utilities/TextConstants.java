@@ -9,8 +9,8 @@ public class TextConstants {
     public static final String WARNING_THRESHOLD = "Warning";
     public static final String FAILED_THRESHOLD = "Failed";
 
-    public static final DecimalFormat ThresholdValueFormat = new DecimalFormat("#.0");
     public static final DecimalFormat RULValueFormat = new DecimalFormat("#.##");
+    public static final DecimalFormat ThresholdValueFormat = new DecimalFormat("#.00");
 
     private TextConstants() {
         throw new IllegalStateException("Utility class");

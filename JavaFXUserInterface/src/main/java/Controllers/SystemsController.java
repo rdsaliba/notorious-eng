@@ -4,6 +4,8 @@ import Utilities.TextConstants;
 import Utilities.UIUtilities;
 import app.ModelController;
 import app.item.Asset;
+import external.AssetTypeDAOImpl;
+import external.ModelDAOImpl;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -11,27 +13,17 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import javafx.util.Duration;
-import local.AssetTypeDAOImpl;
-import local.ModelDAOImpl;
 import rul.assessment.AssessmentController;
 
-import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.Collections;
@@ -128,7 +120,7 @@ public class SystemsController implements Initializable {
         systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
 
         //Attach link to systemTypeMenuBtn to go to Utilities.SystemTypeList.fxml
-        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Utilities.SystemTypeList"));
+        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/SystemTypeList"));
 
         //Attach link to addSystemButton to go to AddSystem.fxml
         addSystemBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/AddSystem"));
@@ -180,28 +172,7 @@ public class SystemsController implements Initializable {
         for (Asset system : systems) {
 
             Pane pane = new Pane();
-
-            //When clicked on a system, open SystemInfo.FXML for that system.
-            pane.setOnMouseClicked(new EventHandler<>() {
-                @Override
-                public void handle(MouseEvent mouseEvent) {
-                    try {
-                        FXMLLoader loader = new FXMLLoader();
-                        loader.setLocation(getClass().getResource("/SystemInfo.fxml"));
-                        Parent systemsParent = loader.load();
-                        Scene systemInfo = new Scene(systemsParent);
-
-                        Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-                        window.setScene(systemInfo);
-                        SystemInfoController controller = loader.getController();
-                        controller.initData(system);
-                        window.show();
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
+            pane.setOnMouseClicked(event -> uiUtilities.changeScene(event, "/SystemInfo", system));
 
             pane.getStyleClass().add("systemPane");
             Text systemName = new Text(system.getSerialNo());

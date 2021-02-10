@@ -18,8 +18,6 @@ import java.util.ArrayList;
 public interface AssetDAO {
     ArrayList<Asset> getAssetsToUpdate();
 
-    void deleteAssetByID(int assetID);
-
     ArrayList<Asset> getAssetsFromAssetTypeID(int assetTypeID);
 
     ArrayList<String> getAttributesNameFromAssetID(int assetID);
@@ -31,8 +29,6 @@ public interface AssetDAO {
     ArrayList<Asset> getAllLiveAssetsDes();
 
     void addRULEstimation(Double estimation, Asset asset, TrainedModel model);
-
-    void insertAsset(Asset asset);
 
     void resetAssetUpdate(int assetID);
 
