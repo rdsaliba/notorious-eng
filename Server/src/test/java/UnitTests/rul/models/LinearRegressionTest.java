@@ -3,8 +3,6 @@ package UnitTests.rul.models;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import rul.models.LinearRegressionModelImpl;
-import rul.models.ModelsController;
 import weka.classifiers.functions.LinearRegression;
 import weka.core.Instances;
 
