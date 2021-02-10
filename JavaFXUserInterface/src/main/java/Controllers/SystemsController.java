@@ -51,10 +51,12 @@ public class SystemsController implements Initializable {
     private UIUtilities uiUtilities;
     private ObservableList<Asset> systems;
     private Timeline rulTimeline;
+    private TableView<Asset> table;
 
     public SystemsController() {
         assetTypeDAO = new AssetTypeDAOImpl();
         modelDAO = new ModelDAOImpl();
+        table = new TableView<>();
 
         try {
             systems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
@@ -79,7 +81,6 @@ public class SystemsController implements Initializable {
         attachEvents();
         updateRULs();
         generateThumbnails();
-
     }
 
     /**
@@ -94,6 +95,7 @@ public class SystemsController implements Initializable {
                     for (Asset asset:systems) {
                         asset.setRul(String.valueOf(TextConstants.RULValueFormat.format(AssessmentController.getLatestEstimate(asset.getId()))));
                     }
+                    table.refresh();
                 }));
 
         rulTimeline.setCycleCount(Animation.INDEFINITE); // loop forever
@@ -229,7 +231,7 @@ public class SystemsController implements Initializable {
      * @author Jeff
      */
     public void generateList() {
-        TableView<Asset> table = new TableView<>();
+
 
         // When TableRow is clicked, send data to SystemInfo scene.
         table.setRowFactory(tv -> {
