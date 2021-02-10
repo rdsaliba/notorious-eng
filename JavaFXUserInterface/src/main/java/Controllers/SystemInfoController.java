@@ -16,6 +16,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
@@ -24,7 +26,14 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import rul.assessment.AssessmentController;
 
@@ -214,18 +223,71 @@ public class SystemInfoController implements Initializable {
      * @param mouseEvent is an event trigger for this delete dialog
      */
     void deleteDialog(MouseEvent mouseEvent) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        String ALERT_TITLE = "Confirmation Dialog";
-        alert.setTitle(ALERT_TITLE);
         String ALERT_HEADER = "Confirmation of system deletion";
-        alert.setHeaderText(ALERT_HEADER);
         String ALERT_CONTENT = "Are you sure you want to delete this system?";
-        alert.setContentText(ALERT_CONTENT);
+        CustomDialog dialog = new CustomDialog(ALERT_HEADER,ALERT_CONTENT,mouseEvent);
+        dialog.openDialog();
+//        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+//        String ALERT_TITLE = "Confirmation Dialog";
+//        alert.setTitle(ALERT_TITLE);
+//        String ALERT_HEADER = "Confirmation of system deletion";
+//        alert.setHeaderText(ALERT_HEADER);
+//        String ALERT_CONTENT = "Are you sure you want to delete this system?";
+//        alert.setContentText(ALERT_CONTENT);
+//
+//        Optional<ButtonType> result = alert.showAndWait();
+//        if (result.isPresent() && result.get() == ButtonType.OK) {
+//            deleteAsset();
+//            uiUtilities.changeScene(mouseEvent, "/Systems");
+//        }
+    }
 
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            deleteAsset();
-            uiUtilities.changeScene(mouseEvent, "/Systems");
+    public void removeSystem(MouseEvent mouseEvent){
+        deleteAsset();
+        uiUtilities.changeScene(mouseEvent, "/Systems");
+    }
+
+    private class CustomDialog extends Stage {
+        CustomDialog(String header,String content,MouseEvent mouseEvent){
+            Pane root = new Pane();
+
+            initStyle(StageStyle.TRANSPARENT);
+            initModality(Modality.APPLICATION_MODAL);
+
+            Rectangle bg =  new Rectangle(500,200, Color.WHITESMOKE);
+            bg.setStroke( Color.BLACK);
+            bg.setStrokeWidth(1.5);
+
+            Text headerText = new Text(header);
+            headerText.setFont(Font.font(20));
+
+            Text contentText = new Text(content);
+            contentText.setFont(Font.font(16));
+
+            VBox box = new VBox(10, headerText, contentText);
+            box.setPadding(new Insets(15));
+
+            Button btn = new Button("OK");
+            btn.setTranslateX(bg.getWidth()-50);
+            btn.setTranslateY(bg.getHeight()-50);
+            btn.setOnAction(e->{
+                removeSystem(mouseEvent);
+                closeDialog();
+            });
+
+            Button cancelBtn = new Button("CANCEL");
+            cancelBtn.setTranslateX(bg.getWidth()-130);
+            cancelBtn.setTranslateY(bg.getHeight()-50);
+            cancelBtn.setOnAction(e->closeDialog());
+
+            root.getChildren().addAll(bg,box,btn,cancelBtn);
+            setScene(new Scene(root,null));
+        }
+        void openDialog(){
+            show();
+        }
+        void closeDialog(){
+            close();
         }
     }
 
