@@ -24,7 +24,7 @@ public class DAO {
         return DatabaseConnection.getConnection();
     }
 
-    public ResultSet nonParamQuery(String query){
+    public ResultSet nonParamQuery(String query) {
         ResultSet rs = null;
         try (PreparedStatement ps = getConnection().prepareStatement(query)) {
             rs = ps.executeQuery();

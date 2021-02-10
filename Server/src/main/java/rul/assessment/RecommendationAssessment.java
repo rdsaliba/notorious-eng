@@ -2,7 +2,12 @@ package rul.assessment;
 
 
 import local.AssetTypeDAOImpl;
+
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static utilities.Constants.*;
 
 public class RecommendationAssessment {
 
@@ -22,15 +27,14 @@ public class RecommendationAssessment {
     }
 
     private String calculateBoundaries(Double rulEstimation, HashMap<String, Double> boundaries) {
-        if (rulEstimation >= boundaries.get("Ok"))
-            return "Ok";
-        else if (rulEstimation >= boundaries.get("Advisory"))
-            return "Advisory";
-        else if (rulEstimation >= boundaries.get("Caution"))
-            return "Caution";
-        else if (rulEstimation >= boundaries.get("Warning"))
-            return "Warning";
-        else
-            return "Failed";
+        AtomicReference<String> recommendation = new AtomicReference<>(OK_THRESHOLD);
+        String[] thresholds = {ADVISORY_THRESHOLD, CAUTION_THRESHOLD, WARNING_THRESHOLD, FAILED_THRESHOLD};
+
+        Arrays.stream(thresholds).forEach(t -> {
+            if (boundaries.containsKey(t) && rulEstimation != null && rulEstimation <= boundaries.get(t))
+                recommendation.set(t);
+        });
+        return recommendation.get();
+
     }
 }

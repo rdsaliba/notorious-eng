@@ -1,6 +1,7 @@
 package local;
 
 import app.ConfigProperties;
+
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,7 +9,7 @@ import java.sql.SQLException;
 
 public class DatabaseConnection {
 
-    private static ConfigProperties properties = new ConfigProperties();
+    private static final ConfigProperties properties = new ConfigProperties();
 
     private static DatabaseConnection openConnection;
     private static Connection conn;
@@ -27,7 +28,8 @@ public class DatabaseConnection {
         }
     }
 
-    private DatabaseConnection() {}
+    private DatabaseConnection() {
+    }
 
     public static DatabaseConnection getInstance() {
         if (openConnection == null) {

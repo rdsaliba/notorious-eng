@@ -4,6 +4,7 @@ import Utilities.SystemTypeList;
 import Utilities.TextConstants;
 import Utilities.UIUtilities;
 import app.item.AssetType;
+import external.AssetTypeDAOImpl;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -13,7 +14,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import local.AssetTypeDAOImpl;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -119,7 +119,7 @@ public class SystemTypeController implements Initializable {
         systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
 
         //Attach link to systemTypeMenuBtn to go to Utilities.SystemTypeList.fxml
-        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Utilities.SystemTypeList"));
+        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/SystemTypeList"));
 
         //Attach link to addTypeBtn to go to AddSystemType.fxml
         addTypeBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/AddSystemType"));

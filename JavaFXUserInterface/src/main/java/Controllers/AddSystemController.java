@@ -3,6 +3,8 @@ package Controllers;
 import Utilities.UIUtilities;
 import app.item.Asset;
 import app.item.AssetType;
+import external.AssetDAOImpl;
+import external.AssetTypeDAOImpl;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -10,8 +12,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.util.StringConverter;
-import local.AssetDAOImpl;
-import local.AssetTypeDAOImpl;
 
 import java.net.URL;
 import java.util.Optional;
@@ -88,13 +88,13 @@ public class AddSystemController implements Initializable {
                 saveAsset(newAsset);
                 saveDialog(mouseEvent);
             } else {
-                errorDialog(mouseEvent);
+                errorDialog();
             }
         });
         // Change scenes to Systems.fxml
         systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, SYSTEMS));
         //Attach link to systemTypeMenuBtn to go to Utilities.SystemTypeList.fxml
-        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Utilities.SystemTypeList"));
+        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/SystemTypeList"));
         // Change scenes to Systems.fxml
         cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, SYSTEMS));
     }
@@ -170,9 +170,8 @@ public class AddSystemController implements Initializable {
     /**
      * Creates a dialog to inform the user that there was an error in the user input
      *
-     * @param mouseEvent is the event that triggers the dialog
      */
-    void errorDialog(MouseEvent mouseEvent) {
+    void errorDialog() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(ERROR_DIALOG);
         alert.setHeaderText(ERROR_HEADER);
