@@ -1,5 +1,6 @@
 package Controllers;
 
+import Utilities.CustomDialog;
 import Utilities.UIUtilities;
 import app.item.Asset;
 import app.item.AssetType;
@@ -9,19 +10,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.util.StringConverter;
 
 import java.net.URL;
@@ -97,9 +86,9 @@ public class AddSystemController implements Initializable {
             Asset newAsset = assembleAsset();
             if (!isAssetEmpty(newAsset)) {
                 saveAsset(newAsset);
-                saveDialog(mouseEvent);
+                CustomDialog.addSystemControllerSaveDialog(mouseEvent);
             } else {
-                errorDialog();
+                CustomDialog.addSystemControllerErrorDialog(mouseEvent);
             }
         });
         // Change scenes to Systems.fxml
@@ -161,108 +150,6 @@ public class AddSystemController implements Initializable {
     public void saveAsset(Asset newAsset) {
         assetDAOImpl.insertAsset(newAsset);
     }
-
-    /**
-     * Creates a dialog to alert the user that an asset was saved to the database
-     *
-     * @param mouseEvent is the event that triggers the dialog
-     */
-    void saveDialog(MouseEvent mouseEvent) {
-        CustomDialog dialog = new CustomDialog(SAVE_DIALOG,SAVE_HEADER,mouseEvent);
-        dialog.openDialog();
-//        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-//        alert.setTitle(SAVE_DIALOG);
-//        alert.setHeaderText(SAVE_HEADER);
-//
-//        Optional<ButtonType> result = alert.showAndWait();
-//        if (result.isPresent() && result.get() == ButtonType.OK) {
-//            uiUtilities.changeScene(mouseEvent, SYSTEMS);
-//        }
-    }
-
-    /**
-     * Creates a dialog to inform the user that there was an error in the user input
-     *
-     */
-    void errorDialog() {
-        CustomDialog dialog = new CustomDialog(ERROR_DIALOG,ERROR_HEADER);
-        dialog.openDialog();
-//        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-//        alert.setTitle(ERROR_DIALOG);
-//        alert.setHeaderText(ERROR_HEADER);
-//
-//        alert.showAndWait();
-    }
-
-    private class CustomDialog extends Stage {
-        CustomDialog(String header,String content){
-            Pane root = new Pane();
-
-            initStyle(StageStyle.TRANSPARENT);
-            initModality(Modality.APPLICATION_MODAL);
-
-            Rectangle bg =  new Rectangle(500,200, Color.WHITESMOKE);
-            bg.setStroke( Color.BLACK);
-            bg.setStrokeWidth(1.5);
-
-            Text headerText = new Text(header);
-            headerText.setFont(Font.font(20));
-
-            Text contentText = new Text(content);
-            contentText.setFont(Font.font(16));
-
-            VBox box = new VBox(10, headerText, contentText);
-            box.setPadding(new Insets(15));
-
-            Button btn = new Button("OK");
-            btn.setTranslateX(bg.getWidth()-50);
-            btn.setTranslateY(bg.getHeight()-50);
-            btn.setOnAction(e-> closeDialog());
-
-            root.getChildren().addAll(bg,box,btn);
-            setScene(new Scene(root,null));
-        }
-
-
-
-        CustomDialog(String header,String content,MouseEvent mouseEvent){
-            Pane root = new Pane();
-
-            initStyle(StageStyle.TRANSPARENT);
-            initModality(Modality.APPLICATION_MODAL);
-
-            Rectangle bg =  new Rectangle(500,200, Color.WHITESMOKE);
-            bg.setStroke( Color.BLACK);
-            bg.setStrokeWidth(1.5);
-
-            Text headerText = new Text(header);
-            headerText.setFont(Font.font(20));
-
-            Text contentText = new Text(content);
-            contentText.setFont(Font.font(16));
-
-            VBox box = new VBox(10, headerText, contentText);
-            box.setPadding(new Insets(15));
-
-            Button btn = new Button("OK");
-            btn.setTranslateX(bg.getWidth()-50);
-            btn.setTranslateY(bg.getHeight()-50);
-            btn.setOnAction(e->{
-                uiUtilities.changeScene(mouseEvent, SYSTEMS);
-                closeDialog();
-            });
-
-            root.getChildren().addAll(bg,box,btn);
-            setScene(new Scene(root,null));
-        }
-        void openDialog(){
-            show();
-        }
-        void closeDialog(){
-            close();
-        }
-    }
-
 
 
     /**

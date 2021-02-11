@@ -1,29 +1,18 @@
 package Controllers;
 
+import Utilities.CustomDialog;
 import Utilities.SystemTypeList;
 import Utilities.TextConstants;
 import Utilities.UIUtilities;
 import external.AssetTypeDAOImpl;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 import java.awt.*;
 import java.net.URL;
@@ -104,7 +93,7 @@ public class SystemTypeInfoController implements Initializable {
         systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
         //Attach link to systemTypeMenuBtn to go to Utilities.SystemTypeList.fxml
         systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, SYSTEM_TYPE_LIST));
-        infoDeleteBtn.setOnMouseClicked(this::deleteDialog);
+        infoDeleteBtn.setOnMouseClicked(mouseEvent-> CustomDialog.systemTypeInfoControllerDialog(mouseEvent, assetType.getId()));
 
         infoSaveBtn.setDisable(true);
         infoSaveBtn.setOnMouseClicked(mouseEvent -> {
@@ -198,88 +187,11 @@ public class SystemTypeInfoController implements Initializable {
     }
 
     /**
-     * Creates a dialog box that asks user if they want to delete an assetType.
-     *
-     * @param mouseEvent is an event trigger for this delete dialog
-     * @author Paul
-     */
-    private void deleteDialog(MouseEvent mouseEvent) {
-        String ALERT_HEADER = "Confirmation of system type deletion";
-        String ALERT_CONTENT = "Are you sure you want to delete this system type? \n " +
-                "this will delete all the assets of this type";
-        CustomDialog dialog = new CustomDialog(ALERT_HEADER,ALERT_CONTENT,mouseEvent);
-        dialog.openDialog();
-//        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-//        String ALERT_TITLE = "Confirmation Dialog";
-//        alert.setTitle(ALERT_TITLE);
-//        String ALERT_HEADER = "Confirmation of system type deletion";
-//        alert.setHeaderText(ALERT_HEADER);
-//        String ALERT_CONTENT = "Are you sure you want to delete this system type? \n " +
-//                "this will delete all the assets of this type";
-//        alert.setContentText(ALERT_CONTENT);
-//
-//        Optional<ButtonType> result = alert.showAndWait();
-//        if (result.isPresent() && result.get() == ButtonType.OK) {
-//            deleteAssetType();
-//            uiUtilities.changeScene(mouseEvent, SYSTEM_TYPE_LIST);
-//        }
-    }
-
-    public void removeAssetType(MouseEvent mouseEvent){
-        deleteAssetType();
-        uiUtilities.changeScene(mouseEvent, SYSTEM_TYPE_LIST);
-    }
-
-    private class CustomDialog extends Stage {
-        CustomDialog(String header,String content,MouseEvent mouseEvent){
-            Pane root = new Pane();
-
-            initStyle(StageStyle.TRANSPARENT);
-            initModality(Modality.APPLICATION_MODAL);
-
-            Rectangle bg =  new Rectangle(500,200, Color.WHITESMOKE);
-            bg.setStroke( Color.BLACK);
-            bg.setStrokeWidth(1.5);
-
-            Text headerText = new Text(header);
-            headerText.setFont(Font.font(20));
-
-            Text contentText = new Text(content);
-            contentText.setFont(Font.font(16));
-
-            VBox box = new VBox(10, headerText, contentText);
-            box.setPadding(new Insets(15));
-
-            Button btn = new Button("OK");
-            btn.setTranslateX(bg.getWidth()-50);
-            btn.setTranslateY(bg.getHeight()-50);
-            btn.setOnAction(e->{
-                removeAssetType(mouseEvent);
-                closeDialog();
-            });
-
-            Button cancelBtn = new Button("CANCEL");
-            cancelBtn.setTranslateX(bg.getWidth()-130);
-            cancelBtn.setTranslateY(bg.getHeight()-50);
-            cancelBtn.setOnAction(e->closeDialog());
-
-            root.getChildren().addAll(bg,box,btn,cancelBtn);
-            setScene(new Scene(root,null));
-        }
-        void openDialog(){
-            show();
-        }
-        void closeDialog(){
-            close();
-        }
-    }
-
-    /**
      * Send the asset ID to the Database class in order for it to be deleted.
      *
      * @author Paul
      */
-    private void deleteAssetType() {
+    public void deleteAssetType() {
         assetTypeDAO.deleteAssetTypeByID(assetType.getId());
     }
 }
