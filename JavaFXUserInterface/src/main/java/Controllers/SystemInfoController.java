@@ -201,12 +201,9 @@ public class SystemInfoController implements Initializable {
      * @author Jeff
      */
     public void attachEvents() {
-        systemMenuBtn.setOnMouseClicked(mouseEvent -> {
-            timelines.forEach(Timeline::stop);
-            uiUtilities.changeScene(mouseEvent, "/Systems");
-        });
+        systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(timelines, mouseEvent, "/Systems"));
         //Attach link to systemTypeMenuBtn to go to SystemTypeList.fxml
-        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/SystemTypeList"));
+        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(timelines, mouseEvent, "/SystemTypeList"));
         deleteBtn.setOnMouseClicked(this::deleteDialog);
 
         rawDataTab.setOnSelectionChanged(event -> {
@@ -242,7 +239,7 @@ public class SystemInfoController implements Initializable {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             deleteAsset();
-            uiUtilities.changeScene(mouseEvent, "/Systems");
+            uiUtilities.changeScene(timelines, mouseEvent, "/Systems");
         }
     }
 
