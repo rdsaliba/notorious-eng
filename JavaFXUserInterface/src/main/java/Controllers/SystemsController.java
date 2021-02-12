@@ -63,7 +63,6 @@ public class SystemsController implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     /**
@@ -178,7 +177,7 @@ public class SystemsController implements Initializable {
 
             pane.getStyleClass().add("systemPane");
             Text systemName = new Text(system.getSerialNo());
-            Text systemType = new Text(assetTypeDAO.getNameFromID(system.getAssetTypeID()));
+            Text systemType = new Text(system.getAssetTypeName());
             // UI String constants
             String RECOMMENDATION = "Recommendation: ";
             String LINEAR_RUL = "Linear RUL: ";
@@ -221,7 +220,6 @@ public class SystemsController implements Initializable {
         }
 
         systemsThumbPane.getChildren().addAll(boxes);
-
     }
 
 
@@ -231,7 +229,6 @@ public class SystemsController implements Initializable {
      * @author Jeff
      */
     public void generateList() {
-
 
         // When TableRow is clicked, send data to SystemInfo scene.
         table.setRowFactory(tv -> {
@@ -243,7 +240,7 @@ public class SystemsController implements Initializable {
         String TYPE_COL = "Type";
         TableColumn<Asset, String> systemTypeCol = new TableColumn<>(TYPE_COL);
         systemTypeCol.setCellValueFactory(cellData -> new SimpleStringProperty(
-                assetTypeDAO.getNameFromID(cellData.getValue().getAssetTypeID())));
+                cellData.getValue().getAssetTypeName()));
 
 
         String SERIAL_NO_COL = "Serial No.";
@@ -299,7 +296,13 @@ public class SystemsController implements Initializable {
         AnchorPane.setRightAnchor(table, 0.0);
         AnchorPane.setLeftAnchor(table, 0.0);
         systemsListPane.getChildren().addAll(table);
-
     }
 
+    /**
+     * Stops the timeline
+     *
+     */
+    private void closeTimeline() {
+        rulTimeline.stop();
+    }
 }

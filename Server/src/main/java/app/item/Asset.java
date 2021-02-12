@@ -20,6 +20,7 @@ public class Asset extends Item {
     private String manufacturer;
     private String category;
     private String site;
+    private String assetTypeName;
     private SimpleStringProperty rul;
     private AssetInfo assetInfo;
 
@@ -105,6 +106,14 @@ public class Asset extends Item {
 
     public void setRul(String rul) {
         this.rul.setValue(rul);
+    }
+
+    public String getAssetTypeName() {
+        return assetTypeName;
+    }
+
+    public void setAssetTypeName(String assetTypeName) {
+        this.assetTypeName = assetTypeName;
     }
 
     @Override
