@@ -118,13 +118,22 @@ public class SystemsController implements Initializable {
         });
 
         //Attach link to systemMenuButton to go to Systems.fxml
-        systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
+        systemMenuBtn.setOnMouseClicked(mouseEvent -> {
+            closeTimeline();
+            uiUtilities.changeScene(mouseEvent, "/Systems");
+        });
 
         //Attach link to systemTypeMenuBtn to go to Utilities.SystemTypeList.fxml
-        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/SystemTypeList"));
+        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> {
+            closeTimeline();
+            uiUtilities.changeScene(mouseEvent, "/SystemTypeList");
+        });
 
         //Attach link to addSystemButton to go to AddSystem.fxml
-        addSystemBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/AddSystem"));
+        addSystemBtn.setOnMouseClicked(mouseEvent -> {
+            closeTimeline();
+            uiUtilities.changeScene(mouseEvent, "/AddSystem");
+        });
 
         //Adding items to the choiceBox (drop down list)
         sortSystem.getItems().add("Default");
@@ -303,6 +312,7 @@ public class SystemsController implements Initializable {
      *
      */
     private void closeTimeline() {
-        rulTimeline.stop();
+        if(rulTimeline != null)
+            rulTimeline.stop();
     }
 }
