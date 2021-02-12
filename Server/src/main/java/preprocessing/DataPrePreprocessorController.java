@@ -23,23 +23,41 @@ public class DataPrePreprocessorController {
         return instance;
     }
 
-
+    /*
+        Reduced data is returned from the implementation methods after using Weka's built in
+        filtering that eliminates columns that don't correlate with the RUL values.
+     */
     public Instances reduceData(Instances originalData) throws Exception {
         dataPreProcessorImpl = new DataPreProcessorImpl(originalData);
         dataPreProcessorImpl.processFullReduction();
         return dataPreProcessorImpl.getReducedDataset();
     }
 
+    /*
+       Minimally reduced data is returned from the implementation methods after manually eliminating
+       columns that have standard deviation of 0 or close to 0.
+    */
     public Instances minimallyReduceData(Instances originalData) throws Exception {
         dataPreProcessorImpl = new DataPreProcessorImpl(originalData);
         dataPreProcessorImpl.processMinimalReduction();
         return dataPreProcessorImpl.getMinimallyReducedDataset();
     }
 
+    /*
+       Instances in their original data state (no RUL values) are passed in, then the implementation
+       method is called and returned which adds an RUL column with filled in values of RUL at each
+       instance based on the max cycle of each asset. These RUL values are needed to train the
+       models.
+     */
     public Instances addRULCol(Instances toADD) throws Exception {
         return DataPreProcessorImpl.addRULCol(toADD);
     }
 
+    /*
+        Training and Testing instances are passed in, if they don't contain the same columns, the
+        attributes not shared between them will get eliminated and the instances without
+        these attributes will be returned.
+     */
     public Instances removeAttributes(Instances trainDataset, Instances testDataset) throws Exception {
         return DataPreProcessorImpl.removeAttributes(trainDataset,testDataset);
     }

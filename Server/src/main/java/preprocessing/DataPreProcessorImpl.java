@@ -143,6 +143,10 @@ public class DataPreProcessorImpl implements DataPreProcessor {
         return Filter.useFilter(testDataset, remove);
     }
 
+    /*
+        Helper method for removeAttributes to check if the attributes are contained in the
+        dataset.
+     */
     private static boolean setContains(Instances dataset, Attribute att) {
         for (int i = 0; i < dataset.numAttributes(); i++) {
             if (att.name().equals(dataset.attribute(i).name())) {
@@ -216,6 +220,9 @@ public class DataPreProcessorImpl implements DataPreProcessor {
         return minimallyReducedDataset;
     }
 
+    /*
+        Returns the remove filter after applying the indices that should be deleted.
+     */
     @Override
     public Remove getRemovedIndexList() throws Exception {
         Remove remove = new Remove();
