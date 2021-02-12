@@ -4,20 +4,20 @@ import Utilities.TextConstants;
 import Utilities.UIUtilities;
 import app.item.AssetType;
 import app.item.AssetTypeParameter;
+import external.AssetTypeDAOImpl;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
-import local.AssetTypeDAOImpl;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class AddSystemTypeController implements Initializable {
-    private final String SYSTEM_TYPE_LIST = "/Utilities.SystemTypeList";
+    private final String SYSTEM_TYPE_LIST = "/SystemTypeList";
 
     @FXML
     private Button systemMenuBtn;
@@ -76,7 +76,7 @@ public class AddSystemTypeController implements Initializable {
         cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, SYSTEM_TYPE_LIST));
         saveBtn.setOnMouseClicked(mouseEvent -> {
             if (saveAssetType(assembleSystemType()))
-                uiUtilities.changeScene(mouseEvent, "/Utilities.SystemTypeList");
+                uiUtilities.changeScene(mouseEvent, "/SystemTypeList");
         });
 
 
