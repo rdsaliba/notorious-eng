@@ -235,7 +235,7 @@ public class SystemsController implements Initializable {
         String MODEL_COL = "Model";
         TableColumn<Asset, String> modelCol = new TableColumn<>(MODEL_COL);
         modelCol.setCellValueFactory(cellData -> new SimpleStringProperty(
-                modelDAO.getModelNameFromModelID(modelDAO.getModelsByAssetTypeID(cellData.getValue().getAssetTypeID()).getModelID())));
+                modelDAO.getModelNameFromAssetTypeID(cellData.getValue().getAssetTypeID())));
 
         String RUL_COL = "RUL";
         TableColumn<Asset, Double> modelRULCol = new TableColumn<>(RUL_COL);

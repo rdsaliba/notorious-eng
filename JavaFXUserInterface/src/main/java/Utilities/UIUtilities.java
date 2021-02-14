@@ -3,6 +3,7 @@ package Utilities;
 import Controllers.SystemInfoController;
 import Controllers.SystemTypeInfoController;
 import app.item.Asset;
+import javafx.animation.Timeline;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -17,6 +18,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.ParsePosition;
+import java.util.ArrayList;
 
 public class UIUtilities {
 
@@ -155,5 +157,10 @@ public class UIUtilities {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void changeScene(ArrayList<Timeline> timelines, MouseEvent mouseEvent, String s) {
+        timelines.forEach(Timeline::stop);
+        changeScene(mouseEvent,s);
     }
 }
