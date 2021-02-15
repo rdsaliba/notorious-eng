@@ -32,7 +32,7 @@ public class AssetTypeInfoControllerTest extends ApplicationTest {
         FXMLLoader fxmlLoader = new FXMLLoader(AssetTypeInfoController.class.getResource("/AssetTypeInfo.fxml"));
         Parent root = fxmlLoader.load();
         scene = new Scene(root);
-        assetTypeInfoController = (AssetTypeInfoController) fxmlLoader.getController();
+        assetTypeInfoController = fxmlLoader.getController();
 
         AssetType assetType = new AssetType();
         ArrayList<AssetTypeParameter> parameters = new ArrayList<>();

@@ -9,6 +9,7 @@ package Utilities;
 import Controllers.AssetInfoController;
 import Controllers.AssetTypeInfoController;
 import app.item.Asset;
+import javafx.animation.Timeline;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -23,6 +24,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.ParsePosition;
+import java.util.ArrayList;
 
 public class UIUtilities {
 
@@ -98,21 +100,8 @@ public class UIUtilities {
      */
     public void changeScene(MouseEvent mouseEvent, TableRow<Asset> row, String fxmlFileName, Asset asset) {
         row.getScene().getWindow();
-        try {
-            if (!row.isEmpty()) {
-                FXMLLoader loader = new FXMLLoader();
-                loader.setLocation(getClass().getResource(fxmlFileName + ".fxml"));
-                Parent assetsParent = loader.load();
-                Scene assetInfo = new Scene(assetsParent);
-
-                Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-                window.setScene(assetInfo);
-                AssetInfoController controller = loader.getController();
-                controller.initData(asset);
-                window.show();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (!row.isEmpty()) {
+            changeScene(mouseEvent, fxmlFileName, asset);
         }
     }
 
@@ -147,4 +136,36 @@ public class UIUtilities {
         }
     }
 
+    /**
+     * Changes scenes once an element is clicked, and
+     * sends an asset to the new scene's controller.
+     *
+     * @param mouseEvent   the mouse click event
+     * @param fxmlFileName the name of the fxml file we want to navigate to
+     * @param asset        the asset we want to sent to the other page
+     * @author Paul
+     */
+    public void changeScene(MouseEvent mouseEvent, String fxmlFileName, Asset asset) {
+
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource(fxmlFileName + ".fxml"));
+            Parent assetTypeParent = loader.load();
+            Scene assetTypeInfo = new Scene(assetTypeParent);
+
+            Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
+            window.setScene(assetTypeInfo);
+            AssetInfoController controller = loader.getController();
+            controller.initData(asset);
+            window.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void changeScene(ArrayList<Timeline> timelines, MouseEvent mouseEvent, String s) {
+        timelines.forEach(Timeline::stop);
+        changeScene(mouseEvent,s);
+    }
 }

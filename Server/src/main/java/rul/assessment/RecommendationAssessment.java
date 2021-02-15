@@ -9,7 +9,11 @@ package rul.assessment;
 
 import local.AssetTypeDAOImpl;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static utilities.Constants.*;
 
 public class RecommendationAssessment {
 
@@ -29,15 +33,14 @@ public class RecommendationAssessment {
     }
 
     private String calculateThresholds(Double rulEstimation, HashMap<String, Double> thresholds) {
-        if (rulEstimation >= thresholds.get("Ok"))
-            return "Ok";
-        else if (rulEstimation >= thresholds.get("Advisory"))
-            return "Advisory";
-        else if (rulEstimation >= thresholds.get("Caution"))
-            return "Caution";
-        else if (rulEstimation >= thresholds.get("Warning"))
-            return "Warning";
-        else
-            return "Failed";
+        AtomicReference<String> recommendation = new AtomicReference<>(OK_THRESHOLD);
+        String[] thresholdValues = {ADVISORY_THRESHOLD, CAUTION_THRESHOLD, WARNING_THRESHOLD, FAILED_THRESHOLD};
+
+        Arrays.stream(thresholdValues).forEach(t -> {
+            if (thresholds.containsKey(t) && rulEstimation != null && rulEstimation <= thresholds.get(t))
+                recommendation.set(t);
+        });
+        return recommendation.get();
+
     }
 }

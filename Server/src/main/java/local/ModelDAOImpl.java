@@ -21,21 +21,21 @@ import java.util.ArrayList;
 public class ModelDAOImpl extends DAO implements ModelDAO {
     private static final String UPDATE_SERIALIZE_OBJECT = "UPDATE trained_model SET retrain = false, serialized_model  = ? WHERE model_id = ? AND asset_type_id = ?";
     private static final String GET_SERIALIZE_OBJECT = "SELECT * FROM trained_model WHERE retrain = true";
-    private static final String GET_MODEL_NAME_FROM_ID = "SELECT name from model where model_id = ?";
+    private static final String GET_MODEL_NAME_FROM_ID = "SELECT name from trained_model, model where trained_model.model_id = model.model_id and asset_type_id = ?";
     private static final String GET_MODEL_FROM_ASSET_TYPE = "SELECT * FROM trained_model WHERE asset_type_id = ?";
 
     /**
-     * Given a model id, this function will return the string corresponding
-     * to the name of the model in the database
+     * Given a asset type id, this function will return the string corresponding
+     * to the name of the model in the database associated with the asset type
      *
-     * @param modelID represents a model's id
+     * @param assetTypeID represents a asset type id
      * @author Paul
      */
     @Override
-    public String getModelNameFromModelID(int modelID) {
+    public String getModelNameFromAssetTypeID(String assetTypeID) {
         String name = null;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_NAME_FROM_ID)) {
-            ps.setInt(1, modelID);
+            ps.setString(1, assetTypeID);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next())
                     name = rs.getString("name");
@@ -106,7 +106,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
             ps.setString(1, assetTypeID);
             try (ResultSet queryResult = ps.executeQuery()) {
                 while (queryResult.next()) {
-                    tm = createTrainedModelFromResultSet(queryResult, true);
+                    tm = createTrainedModelFromResultSet(queryResult, false);
                 }
             }
         } catch (SQLException e) {

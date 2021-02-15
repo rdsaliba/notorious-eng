@@ -9,6 +9,8 @@ import Utilities.TextConstants;
 import Utilities.UIUtilities;
 import app.item.Asset;
 import app.item.AssetType;
+import external.AssetDAOImpl;
+import external.AssetTypeDAOImpl;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -16,8 +18,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.util.StringConverter;
-import local.AssetDAOImpl;
-import local.AssetTypeDAOImpl;
 
 import java.net.URL;
 import java.util.Optional;
@@ -94,7 +94,7 @@ public class AddAssetController implements Initializable {
                 saveAsset(newAsset);
                 saveDialog(mouseEvent);
             } else {
-                errorDialog(mouseEvent);
+                errorDialog();
             }
         });
         // Change scenes to Assets.fxml
@@ -176,9 +176,8 @@ public class AddAssetController implements Initializable {
     /**
      * Creates a dialog to inform the user that there was an error in the user input
      *
-     * @param mouseEvent is the event that triggers the dialog
      */
-    void errorDialog(MouseEvent mouseEvent) {
+    void errorDialog() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(ERROR_DIALOG);
         alert.setHeaderText(ERROR_HEADER);

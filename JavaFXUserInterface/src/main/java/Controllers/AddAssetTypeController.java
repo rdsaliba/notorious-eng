@@ -9,13 +9,13 @@ import Utilities.TextConstants;
 import Utilities.UIUtilities;
 import app.item.AssetType;
 import app.item.AssetTypeParameter;
+import external.AssetTypeDAOImpl;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
-import local.AssetTypeDAOImpl;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -80,7 +80,7 @@ public class AddAssetTypeController implements Initializable {
         cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST));
         saveBtn.setOnMouseClicked(mouseEvent -> {
             if (saveAssetType(assembleAssetType()))
-                uiUtilities.changeScene(mouseEvent, "/Utilities.AssetTypeList");
+                uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST);
         });
 
 

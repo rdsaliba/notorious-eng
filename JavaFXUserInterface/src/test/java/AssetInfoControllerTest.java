@@ -1,6 +1,7 @@
 import Controllers.AssetInfoController;
 import Controllers.AssetsController;
 import app.item.Asset;
+import external.AssetDAOImpl;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -13,7 +14,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import local.AssetDAOImpl;
 import org.junit.After;
 import org.junit.Test;
 import org.testfx.api.FxAssert;
@@ -36,7 +36,7 @@ public class AssetInfoControllerTest extends ApplicationTest {
         FXMLLoader fxmlLoader = new FXMLLoader(AssetsController.class.getResource("/AssetInfo.fxml"));
         Parent root = fxmlLoader.load();
         scene = new Scene(root);
-        assetInfoController = (AssetInfoController) fxmlLoader.getController();
+        assetInfoController = fxmlLoader.getController();
 //        Asset asset = new Asset();
 //        asset.setId(123);
 //        asset.setLocation("location");

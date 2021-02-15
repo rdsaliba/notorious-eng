@@ -13,10 +13,7 @@ import local.AssetDAOImpl;
 import local.ModelDAOImpl;
 import preprocessing.DataPrePreprocessorController;
 import rul.assessment.AssessmentController;
-import rul.models.LSTMModelImpl;
-import rul.models.LinearRegressionModelImpl;
-import rul.models.ModelStrategy;
-import rul.models.ModelsController;
+import rul.models.*;
 import weka.classifiers.Classifier;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
@@ -58,6 +55,9 @@ public class ModelController {
                 System.out.println("ModelController - initialize - checkAsset - start");
                 checkAssets();
                 System.out.println("ModelController - initialize - checkAsset - end");
+                System.out.println("ModelController - initialize - checkModels - start");
+                checkModels();
+                System.out.println("ModelController - initialize - checkModels - end");
             }
         }, 0, 5000);
     }
@@ -158,12 +158,16 @@ public class ModelController {
      * @author Paul
      */
     private ModelStrategy getModelStrategy(TrainedModel trainedModel) {
-        String stratName = modelDAOImpl.getModelNameFromModelID(trainedModel.getModelID());
+        String stratName = modelDAOImpl.getModelNameFromAssetTypeID(String.valueOf(trainedModel.getAssetTypeID()));
         switch (stratName) {
             case "Linear":
                 return new LinearRegressionModelImpl();
             case "LSTM":
                 return new LSTMModelImpl();
+            case "RandomForest":                            //To be entered in DB: RandomForest
+                return new RandomForestModelImpl();
+            case "RandomCommittee":                    //To be entered in DB: RandomCommittee
+                return new RandomCommitteeModelImpl();
             default:
                 return null;
         }

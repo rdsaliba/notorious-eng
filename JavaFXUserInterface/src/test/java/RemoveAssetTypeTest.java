@@ -1,5 +1,5 @@
 import app.item.AssetType;
-import local.AssetTypeDAOImpl;
+import external.AssetTypeDAOImpl;
 import org.junit.Assert;
 import org.junit.Test;
 

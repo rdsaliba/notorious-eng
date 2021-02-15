@@ -16,7 +16,13 @@ public class AssetAttribute {
     private String name;
 
     public AssetAttribute() {
-        measurements = new ArrayList<>();
+        this.measurements = new ArrayList<>();
+    }
+
+    public AssetAttribute(int id, String name) {
+        this.measurements = new ArrayList<>();
+        this.id = id;
+        this.name = name;
     }
 
     public void addMeasurement(int time, double value) {

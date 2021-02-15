@@ -28,7 +28,7 @@ public class AddAssetTypeControllerTest extends ApplicationTest {
         FXMLLoader fxmlLoader = new FXMLLoader(AssetTypeInfoController.class.getResource("/AddAssetType.fxml"));
         Parent root = fxmlLoader.load();
         scene = new Scene(root);
-        addAssetTypeController = (AddAssetTypeController) fxmlLoader.getController();
+        addAssetTypeController = fxmlLoader.getController();
         stage.setTitle("CBMS");
         stage.setScene(scene);
         stage.show();

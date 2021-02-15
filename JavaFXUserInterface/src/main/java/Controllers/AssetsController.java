@@ -12,6 +12,8 @@ import Utilities.TextConstants;
 import Utilities.UIUtilities;
 import app.ModelController;
 import app.item.Asset;
+import external.AssetTypeDAOImpl;
+import external.ModelDAOImpl;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -19,27 +21,17 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import javafx.util.Duration;
-import local.AssetTypeDAOImpl;
-import local.ModelDAOImpl;
 import rul.assessment.AssessmentController;
 
-import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.Collections;
@@ -183,28 +175,7 @@ public class AssetsController implements Initializable {
         for (Asset asset : assets) {
 
             Pane pane = new Pane();
-
-            //When clicked on a asset, open AssetInfo.FXML for that asset.
-            pane.setOnMouseClicked(new EventHandler<>() {
-                @Override
-                public void handle(MouseEvent mouseEvent) {
-                    try {
-                        FXMLLoader loader = new FXMLLoader();
-                        loader.setLocation(getClass().getResource("/AssetInfo.fxml"));
-                        Parent assetsParent = loader.load();
-                        Scene assetInfo = new Scene(assetsParent);
-
-                        Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-                        window.setScene(assetInfo);
-                        AssetInfoController controller = loader.getController();
-                        controller.initData(asset);
-                        window.show();
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
+            pane.setOnMouseClicked(event -> uiUtilities.changeScene(event, "/AssetInfo", asset));
 
             pane.getStyleClass().add("assetPane");
             Text assetName = new Text(asset.getSerialNo());
@@ -283,7 +254,7 @@ public class AssetsController implements Initializable {
 
         TableColumn<Asset, String> modelCol = new TableColumn<>(MODEL_COL);
         modelCol.setCellValueFactory(cellData -> new SimpleStringProperty(
-                modelDAO.getModelNameFromModelID(modelDAO.getModelsByAssetTypeID(cellData.getValue().getAssetTypeID()).getModelID())));
+                modelDAO.getModelNameFromAssetTypeID(cellData.getValue().getAssetTypeID())));
 
         TableColumn<Asset, Double> modelRULCol = new TableColumn<>(RUL_COL);
         modelRULCol.setCellValueFactory(cellData -> new SimpleDoubleProperty(

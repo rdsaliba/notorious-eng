@@ -18,7 +18,7 @@ public class TextConstants {
     public static final String ASSETS = "/Assets";
     public static final String ASSET_TYPE_LIST = "/AssetTypeList";
     public static final String ALERT_TITLE = "Confirmation Dialog";
-    public static final DecimalFormat ThresholdValueFormat = new DecimalFormat("#.0");
+    public static final DecimalFormat ThresholdValueFormat = new DecimalFormat("#.00");
 
     private TextConstants() {
         throw new IllegalStateException("Utility class");

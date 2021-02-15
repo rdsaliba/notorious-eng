@@ -15,7 +15,7 @@ import java.sql.SQLException;
 
 public class DatabaseConnection {
 
-    private static ConfigProperties properties = new ConfigProperties();
+    private static final ConfigProperties properties = new ConfigProperties();
 
     private static DatabaseConnection openConnection;
     private static Connection conn;
