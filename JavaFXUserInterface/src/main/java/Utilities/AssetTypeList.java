@@ -1,3 +1,8 @@
+/*
+  The Asset Type List class keeps track of asset types and their threshold values.
+  @author
+  @last_edit 02/7/2020
+ */
 package Utilities;
 
 import app.item.AssetType;
@@ -5,7 +10,7 @@ import app.item.AssetTypeParameter;
 
 import java.util.ArrayList;
 
-public class SystemTypeList {
+public class AssetTypeList {
     private AssetType assetType;
     private int liveAssets;
     private int archivedAssets;
@@ -15,7 +20,7 @@ public class SystemTypeList {
     private String valueWarning;
     private String valueFailed;
 
-    public SystemTypeList(AssetType assetType, int liveAssets, int archivedAssets, String valueOk, String valueCaution, String valueAdvisory, String valueWarning, String valueFailed) {
+    public AssetTypeList(AssetType assetType, int liveAssets, int archivedAssets, String valueOk, String valueCaution, String valueAdvisory, String valueWarning, String valueFailed) {
         this.assetType = assetType;
         this.liveAssets = liveAssets;
         this.archivedAssets = archivedAssets;
@@ -26,7 +31,7 @@ public class SystemTypeList {
         this.valueFailed = valueFailed;
     }
 
-    public SystemTypeList(SystemTypeList copy) {
+    public AssetTypeList(AssetTypeList copy) {
         this.assetType = new AssetType(copy.getAssetType());
         this.liveAssets = copy.getLiveAssets();
         this.archivedAssets = copy.getArchivedAssets();
@@ -117,6 +122,11 @@ public class SystemTypeList {
         return assetType.getDescription();
     }
 
+    /** This methode generates an AssetType object given the values of the current object
+     *
+     * @return AssetType Object
+     * @author Paul
+     */
     public AssetType toAssetType() {
         AssetType newAssetType = new AssetType();
         ArrayList<AssetTypeParameter> newAssetTypeParameter = new ArrayList<>();

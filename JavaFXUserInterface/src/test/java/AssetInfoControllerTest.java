@@ -1,5 +1,5 @@
-import Controllers.SystemInfoController;
-import Controllers.SystemsController;
+import Controllers.AssetInfoController;
+import Controllers.AssetsController;
 import app.item.Asset;
 import external.AssetDAOImpl;
 import javafx.fxml.FXMLLoader;
@@ -26,17 +26,17 @@ import java.util.ArrayList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class SystemInfoControllerTest extends ApplicationTest {
+public class AssetInfoControllerTest extends ApplicationTest {
 
     private Scene scene;
-    private static SystemInfoController systemInfoController;
+    private static AssetInfoController assetInfoController;
 
     @Override
-    public void start (Stage stage) throws Exception {
-        FXMLLoader fxmlLoader = new FXMLLoader(SystemsController.class.getResource("/SystemInfo.fxml"));
+    public void start(Stage stage) throws Exception {
+        FXMLLoader fxmlLoader = new FXMLLoader(AssetsController.class.getResource("/AssetInfo.fxml"));
         Parent root = fxmlLoader.load();
         scene = new Scene(root);
-        systemInfoController = fxmlLoader.getController();
+        assetInfoController = fxmlLoader.getController();
 //        Asset asset = new Asset();
 //        asset.setId(123);
 //        asset.setLocation("location");
@@ -63,7 +63,7 @@ public class SystemInfoControllerTest extends ApplicationTest {
 //        asset.setAssetInfo(assetInfo);
         AssetDAOImpl assetDAOImpl = new AssetDAOImpl();
         ArrayList<Asset> assets = assetDAOImpl.getAllLiveAssets();
-        systemInfoController.initData(assets.get(0));
+        assetInfoController.initData(assets.get(0));
         stage.setTitle("CBMS");
         stage.setScene(scene);
         stage.show();
@@ -84,23 +84,23 @@ public class SystemInfoControllerTest extends ApplicationTest {
     }
 
     @Test
-    public void testSystemsButtonClick() {
-        clickOn("#systemMenuBtn");
-        Node addSystemScene = lookup("#systemsTitle").query();
-        from(addSystemScene).lookup((Text t) -> t.getText().startsWith("Systems"));
+    public void testAssetsButtonClick() {
+        clickOn("#assetMenuBtn");
+        Node addAssetScene = lookup("#assetsTitle").query();
+        from(addAssetScene).lookup((Text t) -> t.getText().startsWith("Assets"));
     }
 
     @Test
-    public void testSystemTypeButtonClick() {
-        clickOn("#systemTypeMenuBtn");
-        Node addSystemScene = lookup("#systemTypesTitle").query();
-        from(addSystemScene).lookup((Text t) -> t.getText().startsWith("System Types"));
+    public void testAssetTypeButtonClick() {
+        clickOn("#assetTypeMenuBtn");
+        Node addAssetScene = lookup("#assetTypesTitle").query();
+        from(addAssetScene).lookup((Text t) -> t.getText().startsWith("Asset Types"));
     }
 
     @Test
     public void testInformationTabClick() {
         clickOn("#informationTab");
-        FlowPane rootNode = (FlowPane) scene.getRoot().lookup("#sensorFlowPane");
+        FlowPane rootNode = (FlowPane) scene.getRoot().lookup("#attributeFlowPane");
         assertTrue(rootNode.getChildren().size() > 0);
     }
 
