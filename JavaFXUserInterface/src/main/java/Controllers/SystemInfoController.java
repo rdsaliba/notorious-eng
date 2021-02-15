@@ -193,7 +193,7 @@ public class SystemInfoController implements Initializable {
         systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
         //Attach link to systemTypeMenuBtn to go to Utilities.SystemTypeList.fxml
         systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/SystemTypeList"));
-        deleteBtn.setOnMouseClicked(mouseEvent-> CustomDialog.systemInfoController(mouseEvent, system.getId()));
+        deleteBtn.setOnMouseClicked(mouseEvent -> CustomDialog.systemInfoController(mouseEvent, system.getId()));
 
         rawDataTab.setOnSelectionChanged(event -> {
             rawDataListPane.getChildren().clear();

@@ -93,7 +93,7 @@ public class SystemTypeInfoController implements Initializable {
         systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
         //Attach link to systemTypeMenuBtn to go to Utilities.SystemTypeList.fxml
         systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, SYSTEM_TYPE_LIST));
-        infoDeleteBtn.setOnMouseClicked(mouseEvent-> CustomDialog.systemTypeInfoControllerDialog(mouseEvent, assetType.getId()));
+        infoDeleteBtn.setOnMouseClicked(mouseEvent -> CustomDialog.systemTypeInfoControllerDialog(mouseEvent, assetType.getId()));
 
         infoSaveBtn.setDisable(true);
         infoSaveBtn.setOnMouseClicked(mouseEvent -> {
