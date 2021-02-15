@@ -1,6 +1,11 @@
+/*
+  This Controller is responsible for generating the list of asset types.
+  @author Najim, Shirwa, Paul
+  @last_edit 02/7/2020
+ */
 package Controllers;
 
-import Utilities.SystemTypeList;
+import Utilities.AssetTypeList;
 import Utilities.TextConstants;
 import Utilities.UIUtilities;
 import app.item.AssetType;
@@ -19,33 +24,33 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class SystemTypeController implements Initializable {
+public class AssetTypeController implements Initializable {
 
     //Configure the table and columns
     @FXML
-    private TableView<SystemTypeList> tableView;
+    private TableView<AssetTypeList> tableView;
     @FXML
-    private TableColumn<SystemTypeList, String> columnName;
+    private TableColumn<AssetTypeList, String> columnName;
     @FXML
-    private TableColumn<SystemTypeList, Integer> columnLiveAssets;
+    private TableColumn<AssetTypeList, Integer> columnLiveAssets;
     @FXML
-    private TableColumn<SystemTypeList, Integer> columnArchivedAssets;
+    private TableColumn<AssetTypeList, Integer> columnArchivedAssets;
     @FXML
-    private TableColumn<SystemTypeList, Double> columnOk;
+    private TableColumn<AssetTypeList, Double> columnOk;
     @FXML
-    private TableColumn<SystemTypeList, Double> columnAdvisory;
+    private TableColumn<AssetTypeList, Double> columnAdvisory;
     @FXML
-    private TableColumn<SystemTypeList, Double> columnCaution;
+    private TableColumn<AssetTypeList, Double> columnCaution;
     @FXML
-    private TableColumn<SystemTypeList, Double> columnWarning;
+    private TableColumn<AssetTypeList, Double> columnWarning;
     @FXML
-    private TableColumn<SystemTypeList, Double> columnFailed;
+    private TableColumn<AssetTypeList, Double> columnFailed;
 
     //Configure buttons
     @FXML
-    private Button systemMenuBtn;
+    private Button assetMenuBtn;
     @FXML
-    private Button systemTypeMenuBtn;
+    private Button assetTypeMenuBtn;
     @FXML
     private Button addTypeBtn;
 
@@ -55,7 +60,7 @@ public class SystemTypeController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         uiUtilities = new UIUtilities();
         attachEvents();
-        fillSystemTypeTable();
+        fillAssetTypeTable();
     }
 
     /**
@@ -63,46 +68,46 @@ public class SystemTypeController implements Initializable {
      *
      * @author Shirwa
      */
-    public void fillSystemTypeTable() {
-        tableView.setItems(getSystemList());
-        // When TableRow is clicked, send data to SystemTypeInfo scene.
+    public void fillAssetTypeTable() {
+        tableView.setItems(getAssetList());
+        // When TableRow is clicked, send data to AssetTypeInfo scene.
         tableView.setRowFactory(tv -> {
-            TableRow<SystemTypeList> row = new TableRow<>();
-            row.setOnMouseClicked(event -> uiUtilities.changeScene(event, row, "/SystemTypeInfo", row.getItem()));
+            TableRow<AssetTypeList> row = new TableRow<>();
+            row.setOnMouseClicked(event -> uiUtilities.changeScene(event, row, "/AssetTypeInfo", row.getItem()));
             return row;
         });
         UIUtilities.autoResizeColumns(tableView);
     }
 
     /**
-     * This method will return an ObservableList of SystemList objects
+     * This method will return an ObservableList of AssetList objects
      *
      * @author Shirwa, Paul
      * edit: There was an issue where the getAssetTypeIdCount() would not match in size to the assetTypeList()
-     * and it would crash the system if there was an asset type with no assets associated to it
+     * and it would crash the asset if there was an asset type with no assets associated to it
      * so this methode was rewrote
      */
-    private ObservableList<SystemTypeList> getSystemList() {
-        ObservableList<SystemTypeList> systemtypelist = FXCollections.observableArrayList();
+    private ObservableList<AssetTypeList> getAssetList() {
+        ObservableList<AssetTypeList> assettypelist = FXCollections.observableArrayList();
 
         AssetTypeDAOImpl assetTypeDOA = new AssetTypeDAOImpl();
 
         ArrayList<AssetType> assetTypeList = assetTypeDOA.getAssetTypeList();
 
         for (AssetType assetType : assetTypeList) {
-            systemtypelist.add(new SystemTypeList(
+            assettypelist.add(new AssetTypeList(
                     assetType,
                     assetTypeDOA.getAssetTypeIdCount(assetType.getId(), true),
                     assetTypeDOA.getAssetTypeIdCount(assetType.getId(), false),
-                    assetTypeDOA.getAssetTypeBoundary(assetType.getId(), TextConstants.OK_THRESHOLD),
-                    assetTypeDOA.getAssetTypeBoundary(assetType.getId(), TextConstants.CAUTION_THRESHOLD),
-                    assetTypeDOA.getAssetTypeBoundary(assetType.getId(), TextConstants.ADVISORY_THRESHOLD),
-                    assetTypeDOA.getAssetTypeBoundary(assetType.getId(), TextConstants.WARNING_THRESHOLD),
-                    assetTypeDOA.getAssetTypeBoundary(assetType.getId(), TextConstants.FAILED_THRESHOLD)
+                    assetTypeDOA.getAssetTypeThreshold(assetType.getId(), TextConstants.OK_THRESHOLD),
+                    assetTypeDOA.getAssetTypeThreshold(assetType.getId(), TextConstants.CAUTION_THRESHOLD),
+                    assetTypeDOA.getAssetTypeThreshold(assetType.getId(), TextConstants.ADVISORY_THRESHOLD),
+                    assetTypeDOA.getAssetTypeThreshold(assetType.getId(), TextConstants.WARNING_THRESHOLD),
+                    assetTypeDOA.getAssetTypeThreshold(assetType.getId(), TextConstants.FAILED_THRESHOLD)
 
             ));
         }
-        return systemtypelist;
+        return assettypelist;
     }
 
     /**
@@ -115,14 +120,14 @@ public class SystemTypeController implements Initializable {
         //set up the columns in the table
         attachColumnEvents();
 
-        //Attach link to systemMenuButton to go to Systems.fxml
-        systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
+        //Attach link to assetMenuButton to go to Assets.fxml
+        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE));
 
-        //Attach link to systemTypeMenuBtn to go to Utilities.SystemTypeList.fxml
-        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/SystemTypeList"));
+        //Attach link to assetTypeMenuBtn to go to Utilities.AssetTypeList.fxml
+        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
 
-        //Attach link to addTypeBtn to go to AddSystemType.fxml
-        addTypeBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/AddSystemType"));
+        //Attach link to addTypeBtn to go to AddAssetType.fxml
+        addTypeBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/AddAssetType"));
     }
 
     /**

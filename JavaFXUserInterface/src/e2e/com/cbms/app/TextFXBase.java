@@ -48,7 +48,7 @@ public class TextFXBase extends ApplicationTest {
     }
 
     @Test
-    public void ScrollDownSystems () {
+    public void ScrollDownAssets () {
         scroll(5, VerticalDirection.DOWN);
     }
 }

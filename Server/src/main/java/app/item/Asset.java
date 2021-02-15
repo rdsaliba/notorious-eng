@@ -2,8 +2,7 @@
   Model for the assets of the predictive system.
 
   @author Roy Saliba
-  @version 1.0
-  @last_edit 11/07/2020
+  @last_edit 02/7/2020
  */
 package app.item;
 

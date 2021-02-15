@@ -1,5 +1,13 @@
+/*
+  This Controller is responsible for handling the information view
+  of an asset. It constructs attribute panes, generates the raw data table
+  and handles the deletion of an asset.
+  @author Jeff, Paul, Roy
+  @last_edit 02/7/2020
+ */
 package Controllers;
 
+import Utilities.TextConstants;
 import Utilities.UIUtilities;
 import app.item.Asset;
 import app.item.AssetAttribute;
@@ -37,23 +45,27 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class SystemInfoController implements Initializable {
+public class AssetInfoController implements Initializable {
+    private static final String ALERT_HEADER = "Confirmation of asset deletion";
+    private static final String ALERT_CONTENT = "Are you sure you want to delete this asset?";
+    private static final String CYCLE = "Cycle";
+    private static final String ATTRIBUTE_VALUES = "Attribute Values";
 
-    private static final int SENSOR_GRAPH_SIZE = 5;
+    private static final int ATTRIBUTE_GRAPH_SIZE = 5;
     @FXML
-    private Button systemMenuBtn;
+    private Button assetMenuBtn;
     @FXML
-    private Button systemTypeMenuBtn;
+    private Button assetTypeMenuBtn;
     @FXML
     private Button deleteBtn;
     @FXML
-    private Text systemName;
+    private Text assetName;
     @FXML
-    private Text systemNameOutput;
+    private Text assetNameOutput;
     @FXML
-    private FlowPane sensorFlowPane;
+    private FlowPane attributeFlowPane;
     @FXML
-    private Text systemTypeOutput;
+    private Text assetTypeOutput;
     @FXML
     private Text serialNumberOutput;
     @FXML
@@ -76,7 +88,7 @@ public class SystemInfoController implements Initializable {
     private Tab rawDataTab;
     @FXML
     private AnchorPane rawDataListPane;
-    private Asset system;
+    private Asset asset;
     private AssetDAOImpl assetDAOImpl;
     private AssetTypeDAOImpl assetTypeDAOImpl;
     private AttributeDAOImpl attributeDAOImpl;
@@ -104,94 +116,91 @@ public class SystemInfoController implements Initializable {
     }
 
     /**
-     * initData receives the Engine data that was selected from System.FXML
+     * initData receives the Engine data that was selected from Asset.FXML
      * Then, uses that data to populate the text fields in the scene.
      *
-     * @param system is an asset object that will get initialized
+     * @param asset is an asset object that will get initialized
      * @author Jeff
      */
-    public void initData(Asset system) {
-        this.system = system;
-        String systemTypeName = assetTypeDAOImpl.getNameFromID(system.getAssetTypeID());
-        systemName.setText(systemTypeName + " - " + system.getSerialNo());
-        systemNameOutput.setText(system.getName());
-        systemTypeOutput.setText(systemTypeName);
-        serialNumberOutput.setText(system.getSerialNo());
-        manufacturerOutput.setText(system.getManufacturer());
-        locationOutput.setText(system.getLocation());
-        siteOutput.setText(system.getSite());
-        modelOutput.setText(modelDAO.getModelNameFromAssetTypeID(system.getAssetTypeID()));
-        categoryOutput.setText(system.getCategory());
+    public void initData(Asset asset) {
+        this.asset = asset;
+        String assetTypeName = assetTypeDAOImpl.getNameFromID(asset.getAssetTypeID());
+        assetName.setText(assetTypeName + " - " + asset.getSerialNo());
+        assetNameOutput.setText(asset.getName());
+        assetTypeOutput.setText(assetTypeName);
+        serialNumberOutput.setText(asset.getSerialNo());
+        manufacturerOutput.setText(asset.getManufacturer());
+        locationOutput.setText(asset.getLocation());
+        siteOutput.setText(asset.getSite());
+        modelOutput.setText(modelDAO.getModelNameFromAssetTypeID(asset.getAssetTypeID()));
+        categoryOutput.setText(asset.getCategory());
 
-        rulOutput.setText(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(system.getId())));
-        recommendationOutput.setText(system.getRecommendation());
+        rulOutput.setText(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(asset.getId())));
+        recommendationOutput.setText(asset.getRecommendation());
 
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(1000), e -> rulOutput.setText(String.valueOf(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(system.getId()))))));
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(1000), e -> rulOutput.setText(String.valueOf(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(asset.getId()))))));
 
         timeline.setCycleCount(Animation.INDEFINITE); // loop forever
         timeline.play();
 
 
-        descriptionOutput.setText(system.getDescription());
-        constructSensorPanes();
+        descriptionOutput.setText(asset.getDescription());
+        constructAttributePanes();
     }
 
     /**
-     * Constructs the sensor panes to be able to display data in a nice format.
+     * Constructs the attribute panes to be able to display data in a nice format.
      *
      * @author Jeff, Paul
      */
-    public void constructSensorPanes() {
-        for (AssetAttribute sensor : system.getAssetInfo().getAssetAttributes()) {
+    public void constructAttributePanes() {
+        for (AssetAttribute attribute : asset.getAssetInfo().getAssetAttributes()) {
             Pane pane = new Pane();
-            pane.getStyleClass().add("sensorPane");
+            pane.getStyleClass().add("attributePane");
             final CategoryAxis xAxis = new CategoryAxis();
             final CategoryAxis yAxis = new CategoryAxis();
-            // UI String constants
-            String CYCLE = "Cycle";
             xAxis.setLabel(CYCLE);
             xAxis.setAnimated(false);
-            final LineChart<String, String> sensorChart = new LineChart<>(xAxis, yAxis);
-            String SENSOR_VALUES = "Sensor Values";
-            sensorChart.setTitle(SENSOR_VALUES);
-            sensorChart.setAnimated(false);
+            final LineChart<String, String> attributeChart = new LineChart<>(xAxis, yAxis);
+            attributeChart.setTitle(ATTRIBUTE_VALUES);
+            attributeChart.setAnimated(false);
 
             XYChart.Series<String, String> series = new XYChart.Series<>();
             ObservableList<XYChart.Data<String, String>> data = FXCollections.observableArrayList();
 
-            ArrayList<Measurement> initialMeasurements = attributeDAOImpl.getLastXMeasurementsByAssetIDAndAttributeID(Integer.toString(system.getId()), Integer.toString(sensor.getId()), SENSOR_GRAPH_SIZE);
+            ArrayList<Measurement> initialMeasurements = attributeDAOImpl.getLastXMeasurementsByAssetIDAndAttributeID(Integer.toString(asset.getId()), Integer.toString(attribute.getId()), ATTRIBUTE_GRAPH_SIZE);
             initialMeasurements.stream()
                     .sorted(Collections.reverseOrder((t, measurement) -> measurement.getTime() - t.getTime()))
                     .forEach(d -> data.add(new XYChart.Data<>(Integer.toString(d.getTime()), Double.toString(d.getValue()))));
 
             Timeline timeline = new Timeline(new KeyFrame(Duration.millis(1000), e -> {
-                ArrayList<Measurement> measurements = attributeDAOImpl.getLastXMeasurementsByAssetIDAndAttributeID(Integer.toString(system.getId()), Integer.toString(sensor.getId()), SENSOR_GRAPH_SIZE);
+                ArrayList<Measurement> measurements = attributeDAOImpl.getLastXMeasurementsByAssetIDAndAttributeID(Integer.toString(asset.getId()), Integer.toString(attribute.getId()), ATTRIBUTE_GRAPH_SIZE);
                 measurements.stream()
                         .sorted(Collections.reverseOrder((t, measurement) -> measurement.getTime() - t.getTime()))
-                        .filter(m -> !sensorChart.getXAxis().isValueOnAxis(Integer.toString(m.getTime())))
+                        .filter(m -> !attributeChart.getXAxis().isValueOnAxis(Integer.toString(m.getTime())))
                         .forEach(d -> data.add(new XYChart.Data<>(Integer.toString(d.getTime()), Double.toString(d.getValue()))));
 
-                if (data.size() > SENSOR_GRAPH_SIZE)
-                    data.remove(0, data.size() - SENSOR_GRAPH_SIZE);
+                if (data.size() > ATTRIBUTE_GRAPH_SIZE)
+                    data.remove(0, data.size() - ATTRIBUTE_GRAPH_SIZE);
             }));
             timeline.setCycleCount(Animation.INDEFINITE);
             timeline.play();
             timelines.add(timeline);
 
             series.setData(data);
-            sensorChart.getData().add(series);
-            sensorChart.setPrefWidth(275.0);
-            sensorChart.setPrefHeight(163.0);
-            sensorChart.setLayoutX(12.0);
-            sensorChart.setLayoutY(50.0);
-            pane.getChildren().add(sensorChart);
-            Text sensorName = new Text(sensor.getName());
-            sensorName.setId("sensorType");
-            sensorName.setLayoutX(35.0);
-            sensorName.setLayoutY(30.0);
-            pane.getChildren().add(sensorName);
+            attributeChart.getData().add(series);
+            attributeChart.setPrefWidth(275.0);
+            attributeChart.setPrefHeight(163.0);
+            attributeChart.setLayoutX(12.0);
+            attributeChart.setLayoutY(50.0);
+            pane.getChildren().add(attributeChart);
+            Text attributeName = new Text(attribute.getName());
+            attributeName.setId("attributeType");
+            attributeName.setLayoutX(35.0);
+            attributeName.setLayoutY(30.0);
+            pane.getChildren().add(attributeName);
 
-            sensorFlowPane.getChildren().add(pane);
+            attributeFlowPane.getChildren().add(pane);
         }
     }
 
@@ -201,16 +210,15 @@ public class SystemInfoController implements Initializable {
      * @author Jeff
      */
     public void attachEvents() {
-        systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(timelines, mouseEvent, "/Systems"));
-        //Attach link to systemTypeMenuBtn to go to SystemTypeList.fxml
-        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(timelines, mouseEvent, "/SystemTypeList"));
+        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(timelines, mouseEvent, TextConstants.ASSETS_SCENE));
+        //Attach link to assetTypeMenuBtn to go to AssetTypeList.fxml
+        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(timelines, mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
         deleteBtn.setOnMouseClicked(this::deleteDialog);
 
         rawDataTab.setOnSelectionChanged(event -> {
             rawDataListPane.getChildren().clear();
             generateRawDataTable();
         });
-
     }
 
     /**
@@ -219,7 +227,7 @@ public class SystemInfoController implements Initializable {
      * @author Jeff
      */
     public void deleteAsset() {
-        assetDAOImpl.deleteAssetByID(system.getId());
+        assetDAOImpl.deleteAssetByID(asset.getId());
     }
 
     /**
@@ -229,17 +237,14 @@ public class SystemInfoController implements Initializable {
      */
     void deleteDialog(MouseEvent mouseEvent) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        String ALERT_TITLE = "Confirmation Dialog";
-        alert.setTitle(ALERT_TITLE);
-        String ALERT_HEADER = "Confirmation of system deletion";
+        alert.setTitle(TextConstants.ALERT_TITLE_DIALOG);
         alert.setHeaderText(ALERT_HEADER);
-        String ALERT_CONTENT = "Are you sure you want to delete this system?";
         alert.setContentText(ALERT_CONTENT);
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             deleteAsset();
-            uiUtilities.changeScene(timelines, mouseEvent, "/Systems");
+            uiUtilities.changeScene(timelines, mouseEvent, TextConstants.ASSETS_SCENE);
         }
     }
 
@@ -253,7 +258,7 @@ public class SystemInfoController implements Initializable {
         TableView<ObservableList> tableview = new TableView<>();
         ObservableList<ObservableList> data = FXCollections.observableArrayList();
         AtomicInteger lastCycle = new AtomicInteger();
-        ResultSet resultSet = assetDAOImpl.createMeasurementsFromAssetIdAndTime(system.getId(), lastCycle.get());
+        ResultSet resultSet = assetDAOImpl.createMeasurementsFromAssetIdAndTime(asset.getId(), lastCycle.get());
         try {
             for (int i = 0; i < resultSet.getMetaData().getColumnCount(); i++) {
                 final int j = i;
@@ -297,7 +302,7 @@ public class SystemInfoController implements Initializable {
      * @author Paul
      */
     private void updateRawTableView(ObservableList<ObservableList> data, AtomicInteger lastCycle) {
-        ResultSet rs = assetDAOImpl.createMeasurementsFromAssetIdAndTime(system.getId(), lastCycle.get());
+        ResultSet rs = assetDAOImpl.createMeasurementsFromAssetIdAndTime(asset.getId(), lastCycle.get());
         try {
             while (rs.next()) {
                 ObservableList<String> row = FXCollections.observableArrayList();

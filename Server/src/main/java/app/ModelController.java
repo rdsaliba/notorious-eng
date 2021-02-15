@@ -3,7 +3,6 @@
   It will setup the database and train the models
 
   @author Paul Micu
-  @version 2.0
   @last_edit 12/27/2020
  */
 package app;

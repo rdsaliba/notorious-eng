@@ -5,11 +5,14 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="712.0" prefWidth="1026.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AddSystemTypeController">
-    <VBox layoutY="169.0" prefHeight="543.0" prefWidth="74.0" style="-fx-background-color: #0C072E;" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="169.0">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="712.0"
+            prefWidth="1026.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="Controllers.AddAssetTypeController">
+    <VBox layoutY="169.0" prefHeight="543.0" prefWidth="74.0" style="-fx-background-color: #0C072E;"
+          AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="169.0">
         <children>
-            <Button fx:id="systemMenuBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0"
-                    prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css" text="Systems"
+            <Button fx:id="assetMenuBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0"
+                    prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css" text="Assets"
                     textAlignment="CENTER" textFill="#f0f0f0">
                 <font>
                     <Font name="Segoe UI Bold" size="14.0"/>
@@ -22,9 +25,9 @@
                     </ImageView>
                 </graphic>
             </Button>
-            <Button fx:id="systemTypeMenuBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0"
+            <Button fx:id="assetTypeMenuBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0"
                     prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css"
-                    text="System&#10;Types" textAlignment="CENTER" textFill="#f0f0f0" translateY="15.0">
+                    text="Asset&#10;Types" textAlignment="CENTER" textFill="#f0f0f0" translateY="15.0">
                 <font>
                     <Font name="Segoe UI Bold" size="14.0"/>
                 </font>
@@ -52,33 +55,42 @@
             </Button>
         </children>
     </VBox>
-    <VBox prefHeight="169.0" prefWidth="74.0" style="-fx-background-color: #0C072E;" AnchorPane.topAnchor="0.0" />
-    <AnchorPane layoutX="75.0" prefHeight="712.0" prefWidth="951.0" style="-fx-background-color: #F8F8F8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="75.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-        <AnchorPane layoutX="-1.0" prefHeight="42.0" prefWidth="952.0" style="-fx-background-color: #FFFFFF;" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="0.0">
-            <Text fill="#0c072e" layoutX="14.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Add System Type">
+    <VBox prefHeight="169.0" prefWidth="74.0" style="-fx-background-color: #0C072E;" AnchorPane.topAnchor="0.0"/>
+    <AnchorPane layoutX="75.0" prefHeight="712.0" prefWidth="951.0" style="-fx-background-color: #F8F8F8;"
+                AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="75.0" AnchorPane.rightAnchor="0.0"
+                AnchorPane.topAnchor="0.0">
+        <AnchorPane layoutX="-1.0" prefHeight="42.0" prefWidth="952.0" style="-fx-background-color: #FFFFFF;"
+                    AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="0.0">
+            <Text fill="#0c072e" layoutX="14.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0"
+                  text="Add Asset Type">
                 <font>
-                    <Font name="Segoe UI Bold" size="18.0" />
+                    <Font name="Segoe UI Bold" size="18.0"/>
                 </font>
             </Text>
         </AnchorPane>
-        <AnchorPane fx:id="systemTypeInformation" layoutX="42.0" layoutY="79.0" prefHeight="350.0" prefWidth="867.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #F0F0F0;" AnchorPane.leftAnchor="42.0" AnchorPane.rightAnchor="42.0">
-            <Text fill="#0c072e" layoutX="24.0" layoutY="25.0" strokeType="OUTSIDE" strokeWidth="0.0" text="System Type Information">
+        <AnchorPane fx:id="assetTypeInformation" layoutX="42.0" layoutY="79.0" prefHeight="350.0" prefWidth="867.0"
+                    style="-fx-background-color: #FFFFFF; -fx-border-color: #F0F0F0;" AnchorPane.leftAnchor="42.0"
+                    AnchorPane.rightAnchor="42.0">
+            <Text fill="#0c072e" layoutX="24.0" layoutY="25.0" strokeType="OUTSIDE" strokeWidth="0.0"
+                  text="Asset Type Information">
                 <font>
-                    <Font name="Segoe UI Bold" size="16.0" />
+                    <Font name="Segoe UI Bold" size="16.0"/>
                 </font>
             </Text>
-            <TextField fx:id="systemTypeName" layoutX="220.0" layoutY="61.0" prefHeight="25.0" prefWidth="350.0" />
-            <Text fill="#0c072e" layoutX="20.0" layoutY="79.0" strokeType="OUTSIDE" strokeWidth="0.0" text="System Type Name">
+            <TextField fx:id="assetTypeName" layoutX="220.0" layoutY="61.0" prefHeight="25.0" prefWidth="350.0"/>
+            <Text fill="#0c072e" layoutX="20.0" layoutY="79.0" strokeType="OUTSIDE" strokeWidth="0.0"
+                  text="Asset Type Name">
                 <font>
-                    <Font name="Segoe UI Bold" size="14.0" />
+                    <Font name="Segoe UI Bold" size="14.0"/>
                 </font>
             </Text>
-            <Text fill="#0c072e" layoutX="20.0" layoutY="118.0" strokeType="OUTSIDE" strokeWidth="0.0" text="System Type Description">
+            <Text fill="#0c072e" layoutX="20.0" layoutY="118.0" strokeType="OUTSIDE" strokeWidth="0.0"
+                  text="Asset Type Description">
                 <font>
-                    <Font name="Segoe UI Bold" size="14.0" />
+                    <Font name="Segoe UI Bold" size="14.0"/>
                 </font>
             </Text>
-            <TextArea fx:id="systemTypeDescription" layoutX="220.0" layoutY="100.0" prefHeight="63.0" prefWidth="350.0" />
+            <TextArea fx:id="assetTypeDescription" layoutX="220.0" layoutY="100.0" prefHeight="63.0" prefWidth="350.0"/>
             <Text fill="#0c072e" layoutX="100.0" layoutY="192.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Thresholds">
                 <font>
                     <Font name="Segoe UI Bold" size="14.0" />
