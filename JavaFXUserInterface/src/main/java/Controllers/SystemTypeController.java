@@ -83,26 +83,31 @@ public class SystemTypeController implements Initializable {
      * so this methode was rewrote
      */
     private ObservableList<SystemTypeList> getSystemList() {
-        ObservableList<SystemTypeList> systemtypelist = FXCollections.observableArrayList();
+        ObservableList<SystemTypeList> systemTypeList = FXCollections.observableArrayList();
 
         AssetTypeDAOImpl assetTypeDOA = new AssetTypeDAOImpl();
 
         ArrayList<AssetType> assetTypeList = assetTypeDOA.getAssetTypeList();
 
         for (AssetType assetType : assetTypeList) {
-            systemtypelist.add(new SystemTypeList(
+            systemTypeList.add(new SystemTypeList(
                     assetType,
                     assetTypeDOA.getAssetTypeIdCount(assetType.getId(), true),
                     assetTypeDOA.getAssetTypeIdCount(assetType.getId(), false),
                     assetTypeDOA.getAssetTypeBoundary(assetType.getId(), TextConstants.OK_THRESHOLD),
+                    assetTypeDOA.getAssetTypeBoundaryCount(assetType.getId(), TextConstants.OK_THRESHOLD),
                     assetTypeDOA.getAssetTypeBoundary(assetType.getId(), TextConstants.CAUTION_THRESHOLD),
+                    assetTypeDOA.getAssetTypeBoundaryCount(assetType.getId(), TextConstants.CAUTION_THRESHOLD),
                     assetTypeDOA.getAssetTypeBoundary(assetType.getId(), TextConstants.ADVISORY_THRESHOLD),
+                    assetTypeDOA.getAssetTypeBoundaryCount(assetType.getId(), TextConstants.ADVISORY_THRESHOLD),
                     assetTypeDOA.getAssetTypeBoundary(assetType.getId(), TextConstants.WARNING_THRESHOLD),
-                    assetTypeDOA.getAssetTypeBoundary(assetType.getId(), TextConstants.FAILED_THRESHOLD)
+                    assetTypeDOA.getAssetTypeBoundaryCount(assetType.getId(), TextConstants.WARNING_THRESHOLD),
+                    assetTypeDOA.getAssetTypeBoundary(assetType.getId(), TextConstants.FAILED_THRESHOLD),
+                    assetTypeDOA.getAssetTypeBoundaryCount(assetType.getId(), TextConstants.FAILED_THRESHOLD)
 
             ));
         }
-        return systemtypelist;
+        return systemTypeList;
     }
 
     /**
@@ -134,10 +139,10 @@ public class SystemTypeController implements Initializable {
         columnName.setCellValueFactory(new PropertyValueFactory<>("name"));
         columnLiveAssets.setCellValueFactory(new PropertyValueFactory<>("liveAssets"));
         columnArchivedAssets.setCellValueFactory(new PropertyValueFactory<>("archivedAssets"));
-        columnOk.setCellValueFactory(new PropertyValueFactory<>("valueOk"));
-        columnAdvisory.setCellValueFactory(new PropertyValueFactory<>("valueAdvisory"));
-        columnCaution.setCellValueFactory(new PropertyValueFactory<>("valueCaution"));
-        columnWarning.setCellValueFactory(new PropertyValueFactory<>("valueWarning"));
-        columnFailed.setCellValueFactory(new PropertyValueFactory<>("valueFailed"));
+        columnOk.setCellValueFactory(new PropertyValueFactory<>("countOk"));
+        columnAdvisory.setCellValueFactory(new PropertyValueFactory<>("countAdvisory"));
+        columnCaution.setCellValueFactory(new PropertyValueFactory<>("countCaution"));
+        columnWarning.setCellValueFactory(new PropertyValueFactory<>("countWarning"));
+        columnFailed.setCellValueFactory(new PropertyValueFactory<>("countFailed"));
     }
 }

@@ -47,7 +47,7 @@ public class SystemTypeInfoControllerTest extends ApplicationTest {
         assetType.setName("Asset Type Name");
 
         SystemTypeList systemTypeList = new SystemTypeList(assetType, 34, 67,
-                "Ok", "Caution", "Advisory", "Warning", "Failed");
+                "Ok",0, "Caution",0, "Advisory",0, "Warning",0, "Failed",0);
 
         systemTypeInfoController.initData(systemTypeList);
 
