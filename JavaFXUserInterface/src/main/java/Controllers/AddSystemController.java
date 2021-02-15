@@ -11,6 +11,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
 import javafx.util.StringConverter;
 
 import java.net.URL;
@@ -24,6 +26,7 @@ public class AddSystemController implements Initializable {
     private static final String ERROR_DIALOG = "Error Dialog";
     private static final String ERROR_HEADER = "Please enter values for all text fields.";
     private static final String SYSTEMS = "/Systems";
+    private static final String SYSTEM_NAME_ERROR = "Please Enter a Value";
     @FXML
     public Button systemMenuBtn;
     @FXML
@@ -48,6 +51,9 @@ public class AddSystemController implements Initializable {
     private TextField siteInput;
     @FXML
     private TextField locationInput;
+    @FXML
+    private AnchorPane inputError;
+
     private AssetDAOImpl assetDAOImpl;
     private AssetTypeDAOImpl assetTypeDAOImpl;
     private UIUtilities uiUtilities;
@@ -84,11 +90,13 @@ public class AddSystemController implements Initializable {
 
         saveBtn.setOnMouseClicked(mouseEvent -> {
             Asset newAsset = assembleAsset();
-            if (!isAssetEmpty(newAsset)) {
-                saveAsset(newAsset);
-                saveDialog(mouseEvent);
-            } else {
-                errorDialog();
+            if (formInputValidation()) {
+                if (!isAssetEmpty(newAsset)) {
+                    saveAsset(newAsset);
+                    saveDialog(mouseEvent);
+                } else {
+                    errorDialog();
+                }
             }
         });
         // Change scenes to Systems.fxml
@@ -188,5 +196,66 @@ public class AddSystemController implements Initializable {
     public boolean isAssetEmpty(Asset asset) {
         return asset.getName().equals("") || asset.getAssetTypeID().equals("") || asset.getDescription().equals("") ||
                 asset.getSerialNo().equals("") || asset.getManufacturer().equals("") || asset.getCategory().equals("") || asset.getSite().equals("") || asset.getLocation().equals("");
+    }
+
+    public boolean formInputValidation() {
+        String systemNameValue = systemNameInput.getText();
+        Text systemNameError = new Text(SYSTEM_NAME_ERROR);
+        AnchorPane.setLeftAnchor(systemNameError, 540.0);
+        String systemDescriptionValue = systemDescriptionTextArea.getText();
+        String serialNumberValue = serialNumberInput.getText();
+        String manufacturerValue = manufacturerInput.getText();
+        String categoryValue = categoryInput.getText();
+        String siteValue = siteInput.getText();
+        String locationValue = locationInput.getText();
+        String regexWordAndHyphen = "(?=\\S*[-])([a-zA-Z0-9-]*)|([a-zA-Z0-9]*)"; //Any word containing letters, numbers and hyphens
+        String regexLettersAndHyphen = "(?=\\S*[-])([a-zA-Z-]*)|([a-zA-Z]*)"; //Any word containing letters and hyphens
+        boolean valid = true;
+
+        if (systemNameValue.trim().isEmpty() || systemNameValue.length() > 50) {
+            valid = false;
+            systemNameInput.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+            inputError.getChildren().add(systemNameError);
+        } else {
+            systemNameInput.setStyle(null);
+        }
+        if (systemDescriptionValue.length() > 300) {
+            valid = false;
+            systemDescriptionTextArea.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+        } else {
+            systemDescriptionTextArea.setStyle(null);
+        }
+        if (serialNumberValue.trim().isEmpty() || serialNumberValue.length() > 20 || !serialNumberValue.trim().matches(regexWordAndHyphen)) {
+            valid = false;
+            serialNumberInput.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+        } else {
+            serialNumberInput.setStyle(null);
+        }
+        if (manufacturerValue.length() > 20 || !manufacturerValue.trim().matches(regexWordAndHyphen)) {
+            valid = false;
+            manufacturerInput.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+        } else {
+            manufacturerInput.setStyle(null);
+        }
+        if (categoryValue.length() > 20 || !categoryValue.trim().matches(regexLettersAndHyphen)) {
+            valid = false;
+            categoryInput.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+        } else {
+            categoryInput.setStyle(null);
+        }
+        if (siteValue.length() > 20 || !siteValue.trim().matches(regexWordAndHyphen)) {
+            valid = false;
+            siteInput.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+        } else {
+            siteInput.setStyle(null);
+        }
+        if (locationValue.length() > 20 || !locationValue.trim().matches(regexWordAndHyphen)) {
+            valid = false;
+            locationInput.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+        } else {
+            locationInput.setStyle(null);
+        }
+
+        return valid;
     }
 }
