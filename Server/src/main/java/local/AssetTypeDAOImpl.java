@@ -47,6 +47,10 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
         return 0;
     }
 
+    /**
+     * This will return a string that holds the variable of the threshold
+     * @author Shirwa
+     */
     @Override
     public String getAssetTypeThreshold(String assetTypeId, String thresholdType) {
         String threshold = "null";
@@ -87,7 +91,10 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
         return thresholds;
     }
 
-
+    /**
+     * This method will add a new name and description to the database asset_type table
+     * @author Shirwa
+     */
     @Override
     public int insertAssetType(AssetType assetType) {
         try (PreparedStatement ps = getConnection().prepareStatement(INSERT_ASSET_TYPE,
@@ -120,6 +127,7 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
     /**
      * This method retrieves the complete list of possible asset types and return their
      * names
+     * @author Shirwa
      */
     @Override
     public ArrayList<AssetType> getAssetTypeList() {
@@ -140,6 +148,10 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
         return assetTypeList;
     }
 
+    /**
+     * This method will return the name of the asset type
+     * @author Shirwa
+     */
     @Override
     public String getNameFromID(String id){
         String name = "";
@@ -155,7 +167,10 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
         return name;
     }
 
-
+    /**
+     * This method will update name and description of a row in the database asset_type table
+     * @author Shirwa
+     */
     @Override
     public void updateAssetType(AssetType assetType) {
         try (PreparedStatement ps = getConnection().prepareStatement(UPDATE_ASSET_TYPE)) {
