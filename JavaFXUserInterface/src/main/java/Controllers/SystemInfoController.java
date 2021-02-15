@@ -113,6 +113,7 @@ public class SystemInfoController implements Initializable {
      */
     public void initData(Asset system) {
         this.system = system;
+        this.system.setAssetInfo(assetDAOImpl.createAssetInfo(system.getId()));
         String systemTypeName = assetTypeDAOImpl.getNameFromID(system.getAssetTypeID());
         systemName.setText(systemTypeName + " - " + system.getSerialNo());
         systemNameOutput.setText(system.getName());

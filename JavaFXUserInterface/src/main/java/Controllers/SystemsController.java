@@ -1,5 +1,6 @@
 package Controllers;
 
+import Utilities.TextConstants;
 import Utilities.UIUtilities;
 import app.ModelController;
 import app.item.Asset;
@@ -51,17 +52,19 @@ public class SystemsController implements Initializable {
     private ChoiceBox<String> sortSystem;
     private UIUtilities uiUtilities;
     private ObservableList<Asset> systems;
+    private Timeline rulTimeline;
+    private TableView<Asset> table;
 
     public SystemsController() {
         assetTypeDAO = new AssetTypeDAOImpl();
         modelDAO = new ModelDAOImpl();
+        table = new TableView<>();
 
         try {
             systems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     /**
@@ -77,8 +80,27 @@ public class SystemsController implements Initializable {
         uiUtilities = new UIUtilities();
 
         attachEvents();
+        updateRULs();
         generateThumbnails();
+    }
 
+    /**
+     * Updates the RUL values of all systems.
+     *
+     * @author Jeff
+     */
+    public void updateRULs() {
+        rulTimeline =
+                new Timeline(new KeyFrame(Duration.millis(3000), e ->
+                {
+                    for (Asset asset:systems) {
+                        asset.setRul(String.valueOf(TextConstants.RULValueFormat.format(AssessmentController.getLatestEstimate(asset.getId()))));
+                    }
+                    table.refresh();
+                }));
+
+        rulTimeline.setCycleCount(Animation.INDEFINITE); // loop forever
+        rulTimeline.play();
     }
 
     /**
@@ -98,13 +120,22 @@ public class SystemsController implements Initializable {
         });
 
         //Attach link to systemMenuButton to go to Systems.fxml
-        systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
+        systemMenuBtn.setOnMouseClicked(mouseEvent -> {
+            closeTimeline();
+            uiUtilities.changeScene(mouseEvent, "/Systems");
+        });
 
         //Attach link to systemTypeMenuBtn to go to Utilities.SystemTypeList.fxml
-        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/SystemTypeList"));
+        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> {
+            closeTimeline();
+            uiUtilities.changeScene(mouseEvent, "/SystemTypeList");
+        });
 
         //Attach link to addSystemButton to go to AddSystem.fxml
-        addSystemBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/AddSystem"));
+        addSystemBtn.setOnMouseClicked(mouseEvent -> {
+            closeTimeline();
+            uiUtilities.changeScene(mouseEvent, "/AddSystem");
+        });
 
         //Adding items to the choiceBox (drop down list)
         sortSystem.getItems().add(SORT_DEFAULT);
@@ -145,21 +176,17 @@ public class SystemsController implements Initializable {
 
             pane.getStyleClass().add("systemPane");
             Text systemName = new Text(system.getSerialNo());
-            Text systemType = new Text(assetTypeDAO.getNameFromID(system.getAssetTypeID()));
+            Text systemType = new Text(system.getAssetTypeName());
             // UI String constants
             String RECOMMENDATION = "Recommendation: ";
             String LINEAR_RUL = "Linear RUL: ";
             Text linearLabel = new Text(LINEAR_RUL);
-            Text linearRUL = new Text(String.valueOf(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(system.getId()))));
             Text recommendationLabel = new Text(RECOMMENDATION);
             Text recommendation = new Text(system.getRecommendation());
 
-            Timeline timeline =
-                    new Timeline(new KeyFrame(Duration.millis(1000), e -> linearRUL.setText(String.valueOf(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(system.getId()))))));
-
-            timeline.setCycleCount(Animation.INDEFINITE); // loop forever
-            timeline.play();
-
+            Text linearRUL = new Text();
+            SimpleStringProperty s = system.getRul();
+            linearRUL.textProperty().bind(s);
 
             systemName.setId("systemName");
             systemType.setId("systemType");
@@ -192,7 +219,6 @@ public class SystemsController implements Initializable {
         }
 
         systemsThumbPane.getChildren().addAll(boxes);
-
     }
 
 
@@ -202,7 +228,6 @@ public class SystemsController implements Initializable {
      * @author Jeff
      */
     public void generateList() {
-        TableView<Asset> table = new TableView<>();
 
         // When TableRow is clicked, send data to SystemInfo scene.
         table.setRowFactory(tv -> {
@@ -214,7 +239,7 @@ public class SystemsController implements Initializable {
         String TYPE_COL = "Type";
         TableColumn<Asset, String> systemTypeCol = new TableColumn<>(TYPE_COL);
         systemTypeCol.setCellValueFactory(cellData -> new SimpleStringProperty(
-                assetTypeDAO.getNameFromID(cellData.getValue().getAssetTypeID())));
+                cellData.getValue().getAssetTypeName()));
 
 
         String SERIAL_NO_COL = "Serial No.";
@@ -228,9 +253,9 @@ public class SystemsController implements Initializable {
                 modelDAO.getModelNameFromAssetTypeID(cellData.getValue().getAssetTypeID())));
 
         String RUL_COL = "RUL";
-        TableColumn<Asset, Double> modelRULCol = new TableColumn<>(RUL_COL);
+        TableColumn<Asset, Number> modelRULCol = new TableColumn<>(RUL_COL);
         modelRULCol.setCellValueFactory(cellData -> new SimpleDoubleProperty(
-                Double.parseDouble(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(cellData.getValue().getId())))).asObject());
+                Double.parseDouble(TextConstants.ThresholdValueFormat.format(Double.parseDouble(cellData.getValue().getRul().getValue())))));
 
         String RECOMMENDATION_COL = "Recommendation";
         TableColumn<Asset, String> recommendationCol = new TableColumn<>(RECOMMENDATION_COL);
@@ -270,7 +295,14 @@ public class SystemsController implements Initializable {
         AnchorPane.setRightAnchor(table, 0.0);
         AnchorPane.setLeftAnchor(table, 0.0);
         systemsListPane.getChildren().addAll(table);
-
     }
 
+    /**
+     * Stops the timeline
+     *
+     */
+    private void closeTimeline() {
+        if(rulTimeline != null)
+            rulTimeline.stop();
+    }
 }

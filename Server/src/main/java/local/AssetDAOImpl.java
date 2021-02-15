@@ -43,7 +43,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         ArrayList<Asset> assets = new ArrayList<>();
         try (ResultSet rs = nonParamQuery(GET_ASSETS_TO_UPDATE)) {
             while (rs.next()) {
-                assets.add(createAssetFromQueryResult(rs));
+                assets.add(createFullAssetFromQueryResult(rs));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -90,7 +90,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
             ps.setInt(1, assetTypeID);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    assets.add(createAssetFromQueryResult(rs));
+                    assets.add(createFullAssetFromQueryResult(rs));
                 }
             }
         } catch (SQLException e) {
@@ -228,6 +228,31 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
      */
     @Override
     public Asset createAssetFromQueryResult(ResultSet assetsQuery) throws SQLException {
+        Asset newAsset = new Asset();
+        newAsset.setId(assetsQuery.getInt("asset_id"));
+        newAsset.setName(assetsQuery.getString("name"));
+        newAsset.setAssetTypeID(assetsQuery.getString("asset_type_id"));
+        newAsset.setDescription(assetsQuery.getString("description"));
+        newAsset.setLocation(assetsQuery.getString("location"));
+        newAsset.setCategory(assetsQuery.getString("category"));
+        newAsset.setManufacturer(assetsQuery.getString("manufacturer"));
+        newAsset.setSite(assetsQuery.getString("site"));
+        newAsset.setSerialNo(assetsQuery.getString("sn"));
+        newAsset.setRecommendation(assetsQuery.getString("recommendation"));
+        newAsset.setAssetTypeName(assetsQuery.getString("asset_type.name"));
+        //newAsset.setAssetInfo(createAssetInfo(newAsset.getId()));
+        return newAsset;
+    }
+
+    /**
+     * Given a result set of assets, this function will create the Asset object corresponding to the current
+     * result set values
+     *
+     * @param assetsQuery represents the result set of asset query
+     * @author Jeff, Paul
+     */
+    @Override
+    public Asset createFullAssetFromQueryResult(ResultSet assetsQuery) throws SQLException {
         Asset newAsset = new Asset();
         newAsset.setId(assetsQuery.getInt("asset_id"));
         newAsset.setName(assetsQuery.getString("name"));
