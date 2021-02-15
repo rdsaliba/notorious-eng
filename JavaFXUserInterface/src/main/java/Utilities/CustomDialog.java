@@ -118,8 +118,6 @@ public class CustomDialog extends Stage {
     }
 
     public static void addSystemControllerErrorDialog(MouseEvent mouseEvent) {
-        String ERROR_DIALOG = "Error Dialog";
-        String ERROR_HEADER = "Please enter values for all text fields.";
         CustomDialog dialog = new CustomDialog(textConstants.ERROR_DIALOG, textConstants.ERROR_HEADER, mouseEvent);
         dialog.getRoot().getChildren().remove(dialog.getCancelBtn());
         dialog.getOkButton().setOnAction(e -> dialog.closeDialog());
