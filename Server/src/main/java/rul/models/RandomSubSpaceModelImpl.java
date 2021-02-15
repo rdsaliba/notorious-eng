@@ -1,5 +1,5 @@
-/* Third strategy design pattern and implementation of Model Strategy.
- * This class is to be used for the model RandomForest
+/* Model strategy implementation for Random SubSpace Model. Ensemble learning method aka
+ * attribute/feature bagging.
  *
  * @author Khaled
  * @last_edit 02/14/2021
@@ -8,25 +8,24 @@
 package rul.models;
 
 import weka.classifiers.Classifier;
-import weka.classifiers.trees.RandomForest;
+import weka.classifiers.meta.RandomSubSpace;
 import weka.core.Instances;
 
-public class RandomForestModelImpl implements ModelStrategy
-{
+public class RandomSubSpaceModelImpl implements ModelStrategy{
+
     /**
      * This function takes the assets as the training dataset, and returns the trained
-     * Random Forest classifier.
+     * Random SubSpace classifier.
      * @author Khaled
      */
-
     @Override
-    public Classifier trainModel(Instances dataToTrain)
+    public  Classifier trainModel(Instances dataToTrain)
     {
-        Classifier randomForest = new RandomForest();
+        Classifier randomSubSpace = new RandomSubSpace();
         dataToTrain.setClassIndex(dataToTrain.numAttributes() - 1);
 
         try {
-            randomForest.buildClassifier(dataToTrain);
+            randomSubSpace.buildClassifier(dataToTrain);
         }
 
         catch (Exception e) {
@@ -34,7 +33,6 @@ public class RandomForestModelImpl implements ModelStrategy
             return null;
         }
 
-        return randomForest;
+        return randomSubSpace;
     }
-
 }

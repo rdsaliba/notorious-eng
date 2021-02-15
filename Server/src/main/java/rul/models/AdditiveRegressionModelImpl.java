@@ -1,32 +1,30 @@
-/* Third strategy design pattern and implementation of Model Strategy.
- * This class is to be used for the model RandomForest
+/* Another regression model strategy implementation. This model is more flexible than Linear
+ * Regression (which is a special case of Additive Regression).
  *
  * @author Khaled
  * @last_edit 02/14/2021
  */
-
 package rul.models;
 
 import weka.classifiers.Classifier;
-import weka.classifiers.trees.RandomForest;
+import weka.classifiers.meta.AdditiveRegression;
 import weka.core.Instances;
 
-public class RandomForestModelImpl implements ModelStrategy
-{
+public class AdditiveRegressionModelImpl implements ModelStrategy{
+
     /**
      * This function takes the assets as the training dataset, and returns the trained
-     * Random Forest classifier.
+     * Additive Regression classifier.
      * @author Khaled
      */
-
     @Override
     public Classifier trainModel(Instances dataToTrain)
     {
-        Classifier randomForest = new RandomForest();
+        Classifier additiveRegression = new AdditiveRegression();
         dataToTrain.setClassIndex(dataToTrain.numAttributes() - 1);
 
         try {
-            randomForest.buildClassifier(dataToTrain);
+            additiveRegression.buildClassifier(dataToTrain);
         }
 
         catch (Exception e) {
@@ -34,7 +32,7 @@ public class RandomForestModelImpl implements ModelStrategy
             return null;
         }
 
-        return randomForest;
+        return additiveRegression;
     }
 
 }

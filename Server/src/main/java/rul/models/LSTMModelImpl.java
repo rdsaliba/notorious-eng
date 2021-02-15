@@ -38,16 +38,17 @@ public class LSTMModelImpl implements ModelStrategy
         trainDataset.setClassIndex(trainDataset.numAttributes() - 1);
 
         //DL4J Recurrent Neural Network (RNN)
-        Dl4jMlpClassifier network = new Dl4jMlpClassifier();
+        Classifier network = new Dl4jMlpClassifier();
 
         try
         {
             //Setting Parameters for the model
-            network.setNumEpochs(1);                //Bigger the better but also takes more time
+            ((Dl4jMlpClassifier) network).setNumEpochs(1);                //Bigger the better but also takes more time
             //network.setEarlyStopping(new EarlyStopping()); //TODO: set a stopping to make it stop if no progress
-            network.setBatchSize("100");
-            network.setSeed(124564);                            //to ensure randomness
-            network.setNumDecimalPlaces(2);
+            ((Dl4jMlpClassifier) network).setBatchSize("100");
+            //network.setSeed(124564);                            //to ensure randomness
+            //network.setNumDecimalPlaces(2);
+
 
             //Network configurations
             NeuralNetConfiguration networkConfig = new NeuralNetConfiguration();
@@ -55,7 +56,7 @@ public class LSTMModelImpl implements ModelStrategy
             networkConfig.setWeightInit(WeightInit.XAVIER);
             networkConfig.setUpdater(new Adam());
             networkConfig.setBiasUpdater(new Sgd());
-            network.setNeuralNetConfiguration(networkConfig);
+            ((Dl4jMlpClassifier) network).setNeuralNetConfiguration(networkConfig);
 
             //Set Layers
             LSTM lstmLayer1 = new LSTM();
@@ -70,7 +71,7 @@ public class LSTMModelImpl implements ModelStrategy
             outLayer.setLossFn(new LossMSE());                  //Loss function is Mean Square Error
             outLayer.setActivationFunction(new ActivationSwish());      //Activation function
             outLayer.setNOut(1);                                        //Single output
-            network.setLayers(lstmLayer1, outLayer);                //Two layers for now, LSTM and the output
+            ((Dl4jMlpClassifier) network).setLayers(lstmLayer1, outLayer);                //Two layers for now, LSTM and the output
 
             //train with the DL4J classifier
             network.buildClassifier(trainDataset);
