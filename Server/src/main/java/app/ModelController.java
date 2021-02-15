@@ -159,7 +159,7 @@ public class ModelController {
      * @author Paul
      */
     private ModelStrategy getModelStrategy(TrainedModel trainedModel) {
-        String stratName = modelDAOImpl.getModelNameFromModelID(trainedModel.getModelID());
+        String stratName = modelDAOImpl.getModelNameFromAssetTypeID(String.valueOf(trainedModel.getAssetTypeID()));
         switch (stratName) {
             case "Linear":
                 return new LinearRegressionModelImpl();

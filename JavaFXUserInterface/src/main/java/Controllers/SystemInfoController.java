@@ -31,11 +31,17 @@ import javafx.util.Duration;
 import rul.assessment.AssessmentController;
 
 import java.net.URL;
+import java.sql.ResultSet;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class SystemInfoController implements Initializable {
 
+    private static final int SENSOR_GRAPH_SIZE = 5;
     @FXML
     private Button systemMenuBtn;
     @FXML
@@ -72,13 +78,13 @@ public class SystemInfoController implements Initializable {
     private Tab rawDataTab;
     @FXML
     private AnchorPane rawDataListPane;
-
     private Asset system;
     private AssetDAOImpl assetDAOImpl;
     private AssetTypeDAOImpl assetTypeDAOImpl;
     private AttributeDAOImpl attributeDAOImpl;
     private ModelDAOImpl modelDAO;
     private UIUtilities uiUtilities;
+    private ArrayList<Timeline> timelines;
 
     /**
      * Initialize runs before the scene is displayed.
@@ -95,6 +101,7 @@ public class SystemInfoController implements Initializable {
         modelDAO = new ModelDAOImpl();
         attributeDAOImpl = new AttributeDAOImpl();
         uiUtilities = new UIUtilities();
+        timelines = new ArrayList<>();
         attachEvents();
     }
 
@@ -115,7 +122,7 @@ public class SystemInfoController implements Initializable {
         manufacturerOutput.setText(system.getManufacturer());
         locationOutput.setText(system.getLocation());
         siteOutput.setText(system.getSite());
-        modelOutput.setText(modelDAO.getModelNameFromModelID(modelDAO.getModelsByAssetTypeID(system.getAssetTypeID()).getModelID()));
+        modelOutput.setText(modelDAO.getModelNameFromAssetTypeID(system.getAssetTypeID()));
         categoryOutput.setText(system.getCategory());
 
         rulOutput.setText(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(system.getId())));
@@ -134,7 +141,7 @@ public class SystemInfoController implements Initializable {
     /**
      * Constructs the sensor panes to be able to display data in a nice format.
      *
-     * @author Jeff
+     * @author Jeff, Paul
      */
     public void constructSensorPanes() {
         for (AssetAttribute sensor : system.getAssetInfo().getAssetAttributes()) {
@@ -146,28 +153,34 @@ public class SystemInfoController implements Initializable {
             String CYCLE = "Cycle";
             xAxis.setLabel(CYCLE);
             xAxis.setAnimated(false);
-            final LineChart<String, String> sensorChart =
-                    new LineChart<>(xAxis, yAxis);
+            final LineChart<String, String> sensorChart = new LineChart<>(xAxis, yAxis);
             String SENSOR_VALUES = "Sensor Values";
             sensorChart.setTitle(SENSOR_VALUES);
-            XYChart.Series<String, String> series = new XYChart.Series<>();
             sensorChart.setAnimated(false);
 
+            XYChart.Series<String, String> series = new XYChart.Series<>();
+            ObservableList<XYChart.Data<String, String>> data = FXCollections.observableArrayList();
+
+            ArrayList<Measurement> initialMeasurements = attributeDAOImpl.getLastXMeasurementsByAssetIDAndAttributeID(Integer.toString(system.getId()), Integer.toString(sensor.getId()), SENSOR_GRAPH_SIZE);
+            initialMeasurements.stream()
+                    .sorted(Collections.reverseOrder((t, measurement) -> measurement.getTime() - t.getTime()))
+                    .forEach(d -> data.add(new XYChart.Data<>(Integer.toString(d.getTime()), Double.toString(d.getValue()))));
+
             Timeline timeline = new Timeline(new KeyFrame(Duration.millis(1000), e -> {
-                ArrayList<Measurement> measurements = attributeDAOImpl.getLastXMeasurementsByAssetIDAndAttributeID(Integer.toString(system.getId()), Integer.toString(sensor.getId()), 5);
-                if (!sensorChart.getXAxis().isValueOnAxis(Integer.toString(measurements.get(0).getTime())))
-                    series.getData().add(new XYChart.Data<>(Integer.toString(measurements.get(0).getTime()), Double.toString(measurements.get(0).getValue())));
-                else if (series.getData().size() != measurements.size()) {
-                    for (int i = measurements.size() - 1; i >= 0; i--) {
-                        series.getData().add(new XYChart.Data<>(Integer.toString(measurements.get(i).getTime()), Double.toString(measurements.get(i).getValue())));
-                    }
-                }
-                if (series.getData().size() > 5)
-                    series.getData().remove(0);
+                ArrayList<Measurement> measurements = attributeDAOImpl.getLastXMeasurementsByAssetIDAndAttributeID(Integer.toString(system.getId()), Integer.toString(sensor.getId()), SENSOR_GRAPH_SIZE);
+                measurements.stream()
+                        .sorted(Collections.reverseOrder((t, measurement) -> measurement.getTime() - t.getTime()))
+                        .filter(m -> !sensorChart.getXAxis().isValueOnAxis(Integer.toString(m.getTime())))
+                        .forEach(d -> data.add(new XYChart.Data<>(Integer.toString(d.getTime()), Double.toString(d.getValue()))));
+
+                if (data.size() > SENSOR_GRAPH_SIZE)
+                    data.remove(0, data.size() - SENSOR_GRAPH_SIZE);
             }));
             timeline.setCycleCount(Animation.INDEFINITE);
             timeline.play();
+            timelines.add(timeline);
 
+            series.setData(data);
             sensorChart.getData().add(series);
             sensorChart.setPrefWidth(275.0);
             sensorChart.setPrefHeight(163.0);
@@ -190,15 +203,19 @@ public class SystemInfoController implements Initializable {
      * @author Jeff
      */
     public void attachEvents() {
-        systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
-        //Attach link to systemTypeMenuBtn to go to Utilities.SystemTypeList.fxml
-        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/SystemTypeList"));
-        deleteBtn.setOnMouseClicked(mouseEvent -> CustomDialog.systemInfoController(mouseEvent, system.getId()));
+        systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(timelines, mouseEvent, "/Systems"));
+        //Attach link to systemTypeMenuBtn to go to SystemTypeList.fxml
+        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(timelines, mouseEvent, "/SystemTypeList"));
+        deleteBtn.setOnMouseClicked(mouseEvent -> {
+            timelines.forEach(Timeline::stop);
+            CustomDialog.systemInfoController(mouseEvent, system.getId());
+            });
 
         rawDataTab.setOnSelectionChanged(event -> {
             rawDataListPane.getChildren().clear();
             generateRawDataTable();
         });
+
     }
 
     /**
@@ -210,62 +227,73 @@ public class SystemInfoController implements Initializable {
         assetDAOImpl.deleteAssetByID(system.getId());
     }
 
+    /**
+     * Fill the raw data table with the current measurement for the asset and update the list every
+     * second with new measurement as they come in
+     *
+     * @author Paul
+     */
     public void generateRawDataTable() {
-        TableView<ObservableList<String>> table = new TableView<>();
-        table.getItems().clear();
-        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(3000), e -> {
-            ObservableList<AssetAttribute> attributes = FXCollections.observableArrayList(assetDAOImpl.createAssetInfo(system.getId()).getAssetAttributes());
-
-            int columnIndex = 1;
-            TableColumn<ObservableList<String>, String>[] tableColumns = new TableColumn[attributes.size() + 1];
-
-            ArrayList<List<Measurement>> data = new ArrayList<>();
-
-            tableColumns[0] = new TableColumn<>("Cycle");
-            data.add(attributes.get(0).getMeasurements());
-            setCellValue(0, tableColumns[0]);
-
-            for (AssetAttribute attribute : attributes) {
-                data.add(attribute.getMeasurements());
-                tableColumns[columnIndex] = new TableColumn<>(attribute.getName());
-                setCellValue(columnIndex, tableColumns[columnIndex]);
-                columnIndex++;
+        TableView<ObservableList> tableview = new TableView<>();
+        ObservableList<ObservableList> data = FXCollections.observableArrayList();
+        AtomicInteger lastCycle = new AtomicInteger();
+        ResultSet resultSet = assetDAOImpl.createMeasurementsFromAssetIdAndTime(system.getId(), lastCycle.get());
+        try {
+            for (int i = 0; i < resultSet.getMetaData().getColumnCount(); i++) {
+                final int j = i;
+                TableColumn<ObservableList, String> col = new TableColumn(resultSet.getMetaData().getColumnName(i + 1));
+                col.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(j).toString()));
+                tableview.getColumns().addAll(col);
             }
-            table.getColumns().addAll(tableColumns);
 
-            ObservableList<ObservableList<String>> dataPerColumn = FXCollections.observableArrayList();
+            updateRawTableView(data, lastCycle);
 
-            int outCounter = 0;
-            for (List<Measurement> dataList : data) {
-                int counter = 0;
-                for (Measurement measurement : dataList) {
-                    if (outCounter < dataList.size()) {
-                        ObservableList<String> list = FXCollections.observableArrayList();
-                        dataPerColumn.add(list);
-                        dataPerColumn.get(outCounter).add(String.valueOf(measurement.getTime()));
-                        outCounter++;
-                    } else {
-                        dataPerColumn.get(counter).add(String.valueOf(measurement.getValue()));
-                        counter++;
-                    }
-                }
-            }
-            Collections.reverse(dataPerColumn);
-            table.setItems(dataPerColumn);
+            Timeline timeline = new Timeline(new KeyFrame(Duration.millis(1000), e -> updateRawTableView(data, lastCycle)));
 
-        }));
-        timeline.setCycleCount(Animation.INDEFINITE);
-        timeline.play();
+            timeline.setCycleCount(Animation.INDEFINITE); // loop forever
+            timeline.play();
 
-        table.setId("RawDataTable");
-        AnchorPane.setBottomAnchor(table, 0.0);
-        AnchorPane.setTopAnchor(table, 5.0);
-        AnchorPane.setRightAnchor(table, 0.0);
-        AnchorPane.setLeftAnchor(table, 0.0);
-        rawDataListPane.getChildren().addAll(table);
+            timelines.add(timeline);
+
+            tableview.setItems(data);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Error on Building Data");
+        }
+
+
+        tableview.setId("RawDataTable");
+        AnchorPane.setBottomAnchor(tableview, 0.0);
+        AnchorPane.setTopAnchor(tableview, 5.0);
+        AnchorPane.setRightAnchor(tableview, 0.0);
+        AnchorPane.setLeftAnchor(tableview, 0.0);
+        rawDataListPane.getChildren().addAll(tableview);
     }
 
-    public void setCellValue(int index, TableColumn<ObservableList<String>, String> tableColumn) {
-        tableColumn.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(index)));
+
+    /**
+     * this function fills the row of the raw table view given the table object and
+     * what from what cycle do we want to get the information
+     * ex: if given lastCycle 5 for asset 1 it will get all measurements for asset 1
+     * and for time cycle over 5 and insert them in the table while making use of the
+     * observable list from javafx
+     *
+     * @author Paul
+     */
+    private void updateRawTableView(ObservableList<ObservableList> data, AtomicInteger lastCycle) {
+        ResultSet rs = assetDAOImpl.createMeasurementsFromAssetIdAndTime(system.getId(), lastCycle.get());
+        try {
+            while (rs.next()) {
+                ObservableList<String> row = FXCollections.observableArrayList();
+                for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
+                    row.add(rs.getString(i));
+                }
+                data.add(0, row);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            System.out.println("Error on Building Data");
+        }
+        lastCycle.set(data.size());
     }
 }
