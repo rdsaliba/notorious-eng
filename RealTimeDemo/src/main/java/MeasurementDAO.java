@@ -21,6 +21,14 @@ public class MeasurementDAO extends DAO {
     private static final String INSERT_MEASUREMENT_FOR_ASSET = "insert into attribute_measurements values (?,?,?,?)";
     private static final String DELETE_MEASUREMENT = "delete from attribute_measurements where asset_id =? and time > ((SELECT MAX(time) FROM attribute_measurements where asset_id=?) - ?) order by attribute_id";
 
+    /** this methods returns an asset info object populated with the attributes measurements
+     * of the last x time cycles where x is identified by the limit
+     *
+     * @param assetID the id of the specific asset
+     * @param limit how many entries to get
+     * @return AssetInfo
+     * @author Paul
+     */
     public AssetInfo getMeasurementsFromID(int assetID, int limit) {
         AssetInfo toReturn = new AssetInfo();
         ArrayList<AssetAttribute> measurements = new ArrayList<>();
@@ -46,6 +54,13 @@ public class MeasurementDAO extends DAO {
         return toReturn;
     }
 
+    /** this methods deletes the last x cycles worth of measurements for a specific asset type
+     * where x is represented by limit
+     *
+     * @param assetID the id of the specific asset
+     * @param limit how many entries to delete
+     * @author Paul
+     */
     public void deleteMeasurementsFromID(int assetID, int limit) {
 
         try (PreparedStatement ps = getConnection().prepareStatement(DELETE_MEASUREMENT)) {
@@ -58,6 +73,13 @@ public class MeasurementDAO extends DAO {
         }
     }
 
+    /** This method makes inserts for the specific time cycle
+     * to insert the measurements held in the asset
+     *
+     * @param asset the asset to insert
+     * @param time what time to insert
+     * @author Paul
+     */
     public void insertMeasurement(Asset asset, int time) {
         try (PreparedStatement ps = getConnection().prepareStatement(INSERT_MEASUREMENT_FOR_ASSET)) {
             for (AssetAttribute assetAttribute : asset.getAssetInfo().getAssetAttributes()) {

@@ -18,6 +18,10 @@ public class AttributeDAOImpl extends DAO implements AttributeDAO {
 
     private static final String GET_LATEST_MEASUREMENTS_FROM_ASSET_AND_ATTRIBUTE_ID = "SELECT * FROM attribute_measurements WHERE asset_id = ? and attribute_id = ? order by time desc limit ?;";
 
+    /** this method will return the latest(identified by limiter) measurements for the asset id and attribute id combination
+     *
+     * @author Paul
+     */
     @Override
     public ArrayList<Measurement> getLastXMeasurementsByAssetIDAndAttributeID(String assetID, String attributeID, int limiter) {
         ArrayList<Measurement> measurements = new ArrayList<>();

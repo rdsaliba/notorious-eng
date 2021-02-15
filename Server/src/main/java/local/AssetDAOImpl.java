@@ -260,6 +260,11 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         }
     }
 
+    /**This method changes the update indicator of the assert in the database to true
+     *
+     * @param assetID the specific id of the asset
+     * @author Paul
+     */
     @Override
     public void setAssetUpdate(int assetID) {
         try (PreparedStatement ps = getConnection().prepareStatement(SET_UPDATED_TRUE)) {

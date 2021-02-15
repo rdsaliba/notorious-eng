@@ -235,6 +235,10 @@ public class AssetInfoController implements Initializable {
         }
     }
 
+    /** This method populates the raw data table using a complex query and timeline
+     *
+     * @author Paul
+     */
     public void generateRawDataTable() {
         TableView<ObservableList<String>> table = new TableView<>();
         table.getItems().clear();

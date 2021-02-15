@@ -122,6 +122,11 @@ public class AssetTypeList {
         return assetType.getDescription();
     }
 
+    /** This methode generates an AssetType object given the values of the current object
+     *
+     * @return AssetType Object
+     * @author Paul
+     */
     public AssetType toAssetType() {
         AssetType newAssetType = new AssetType();
         ArrayList<AssetTypeParameter> newAssetTypeParameter = new ArrayList<>();

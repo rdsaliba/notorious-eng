@@ -179,6 +179,12 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
             e.printStackTrace();
         }
     }
+
+    /** Given an assetTypeId this method will delete all assets(including measurements and rul) corresponding to the asset type
+     * it also deletes the assetType itself from the db
+     *
+     * @param assetTypeID
+     */
     @Override
     public void deleteAssetTypeByID(String assetTypeID) {
         try (PreparedStatement ps = getConnection().prepareStatement(DELETE_ASSET_TYPE)) {
