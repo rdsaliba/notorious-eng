@@ -26,6 +26,7 @@ public class CustomDialog extends Stage {
     private static final String SYSTEMS = "/Systems";
 
     private static UIUtilities uiUtilities = new UIUtilities();
+    private static TextConstants textConstants;
     private Button btn;
     private Pane root;
     private Rectangle bg;
@@ -89,7 +90,7 @@ public class CustomDialog extends Stage {
         String ALERT_CONTENT = "Are you sure you want to delete this system type? \n " +
                 "this will delete all the assets of this type";
 
-        CustomDialog dialog = new CustomDialog(ALERT_HEADER, ALERT_CONTENT, mouseEvent);
+        CustomDialog dialog = new CustomDialog(textConstants.ALERT_HEADER, textConstants.ALERT_CONTENT, mouseEvent);
         dialog.getOkButton().setOnAction(e -> {
             assetTypeDAO.deleteAssetTypeByID(systemID);
             uiUtilities.changeScene(mouseEvent, SYSTEM_TYPE_LIST);
@@ -102,7 +103,7 @@ public class CustomDialog extends Stage {
         AssetDAOImpl assetDAOImpl = new AssetDAOImpl();
         String ALERT_HEADER = "Confirmation of system deletion";
         String ALERT_CONTENT = "Are you sure you want to delete this system?";
-        CustomDialog dialog = new CustomDialog(ALERT_HEADER, ALERT_CONTENT, mouseEvent);
+        CustomDialog dialog = new CustomDialog(textConstants.ALERT_HEADER, textConstants.ALERT_CONTENT, mouseEvent);
         //Set the functionality of the btn
         dialog.getOkButton().setOnAction(e -> {
             assetDAOImpl.deleteAssetByID(systemID);
@@ -115,7 +116,7 @@ public class CustomDialog extends Stage {
     public static void addSystemControllerSaveDialog(MouseEvent mouseEvent) {
         String SAVE_DIALOG = "Save Dialog";
         String SAVE_HEADER = "Asset has been saved to the database.";
-        CustomDialog dialog = new CustomDialog(SAVE_DIALOG, SAVE_HEADER, mouseEvent);
+        CustomDialog dialog = new CustomDialog(textConstants.SAVE_DIALOG, textConstants.SAVE_HEADER, mouseEvent);
         dialog.getRoot().getChildren().remove(dialog.getCancelBtn());
         dialog.getOkButton().setOnAction(e -> {
             uiUtilities.changeScene(mouseEvent, SYSTEMS);
@@ -128,7 +129,7 @@ public class CustomDialog extends Stage {
     public static void addSystemControllerErrorDialog(MouseEvent mouseEvent) {
         String ERROR_DIALOG = "Error Dialog";
         String ERROR_HEADER = "Please enter values for all text fields.";
-        CustomDialog dialog = new CustomDialog(ERROR_DIALOG, ERROR_HEADER, mouseEvent);
+        CustomDialog dialog = new CustomDialog(textConstants.ERROR_DIALOG, textConstants.ERROR_HEADER, mouseEvent);
         dialog.getRoot().getChildren().remove(dialog.getCancelBtn());
         dialog.getOkButton().setOnAction(e -> dialog.closeDialog());
         dialog.openDialog();
