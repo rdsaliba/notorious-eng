@@ -25,7 +25,6 @@ import javafx.util.Duration;
 import rul.assessment.AssessmentController;
 
 import java.net.URL;
-import java.text.DecimalFormat;
 import java.util.ResourceBundle;
 
 public class SystemsController implements Initializable {
@@ -93,7 +92,7 @@ public class SystemsController implements Initializable {
         rulTimeline =
                 new Timeline(new KeyFrame(Duration.millis(3000), e ->
                 {
-                    for (Asset asset:systems) {
+                    for (Asset asset : systems) {
                         asset.setRul(String.valueOf(TextConstants.RULValueFormat.format(AssessmentController.getLatestEstimate(asset.getId()))));
                     }
                     table.refresh();
@@ -150,9 +149,9 @@ public class SystemsController implements Initializable {
                 if (newValue.equals(SORT_DEFAULT)) {
                     FXCollections.sort(systems, (asset, t1) -> asset.getId() - t1.getId());
                 } else if (newValue.equals(SORT_RUL_ASC)) {
-                    FXCollections.sort(systems, (asset, t1) -> t1.getId() - asset.getId());
+                    FXCollections.sort(systems, (asset, t1) -> Double.valueOf(asset.getRul().getValue()).compareTo(Double.valueOf(t1.getRul().getValue())));
                 } else if (newValue.equals(SORT_RUL_DESC)) {
-                    FXCollections.sort(systems, (asset, t1) -> t1.getId() - asset.getId());
+                    FXCollections.sort(systems, (asset, t1) -> Double.valueOf(t1.getRul().getValue()).compareTo(Double.valueOf(asset.getRul().getValue())));
                 }
                 systemsThumbPane.getChildren().clear();
                 generateThumbnails();
@@ -299,10 +298,9 @@ public class SystemsController implements Initializable {
 
     /**
      * Stops the timeline
-     *
      */
     private void closeTimeline() {
-        if(rulTimeline != null)
+        if (rulTimeline != null)
             rulTimeline.stop();
     }
 }

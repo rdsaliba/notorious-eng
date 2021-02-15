@@ -26,8 +26,6 @@ public interface AssetDAO {
 
     ArrayList<Asset> getAllLiveAssets();
 
-    ArrayList<Asset> getAllLiveAssetsDes();
-
     void addRULEstimation(Double estimation, Asset asset, TrainedModel model);
 
     void resetAssetUpdate(int assetID);
