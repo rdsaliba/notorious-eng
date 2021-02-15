@@ -210,9 +210,9 @@ public class AssetInfoController implements Initializable {
      * @author Jeff
      */
     public void attachEvents() {
-        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(timelines, mouseEvent, TextConstants.ASSETS));
+        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(timelines, mouseEvent, TextConstants.ASSETS_SCENE));
         //Attach link to assetTypeMenuBtn to go to AssetTypeList.fxml
-        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(timelines, mouseEvent, TextConstants.ASSET_TYPE_LIST));
+        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(timelines, mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
         deleteBtn.setOnMouseClicked(this::deleteDialog);
 
         rawDataTab.setOnSelectionChanged(event -> {
@@ -237,14 +237,14 @@ public class AssetInfoController implements Initializable {
      */
     void deleteDialog(MouseEvent mouseEvent) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle(TextConstants.ALERT_TITLE);
+        alert.setTitle(TextConstants.ALERT_TITLE_DIALOG);
         alert.setHeaderText(ALERT_HEADER);
         alert.setContentText(ALERT_CONTENT);
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             deleteAsset();
-            uiUtilities.changeScene(timelines, mouseEvent, TextConstants.ASSETS);
+            uiUtilities.changeScene(timelines, mouseEvent, TextConstants.ASSETS_SCENE);
         }
     }
 

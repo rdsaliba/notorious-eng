@@ -1,8 +1,8 @@
 /*
-  This class can be extended to the system need.
-  Will include all information relevant to an asset such as sensors information, data source origin,
+  This class can be extended to the asset need.
+  Will include all information relevant to an asset such as attributes information, data source origin,
   RUL estimates and others.
-  It contains a reference to the asset attributes (sensors, operational settings)
+  It contains a reference to the asset attributes (attributes, operational settings)
   It contains a reference to the RUL estimates calculated for the asset including when
   that estimation was made (timestamp) as well as the value attached to it.
 

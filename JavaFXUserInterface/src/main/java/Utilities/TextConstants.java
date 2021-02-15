@@ -15,9 +15,9 @@ public class TextConstants {
     public static final String WARNING_THRESHOLD = "Warning";
     public static final String FAILED_THRESHOLD = "Failed";
 
-    public static final String ASSETS = "/Assets";
-    public static final String ASSET_TYPE_LIST = "/AssetTypeList";
-    public static final String ALERT_TITLE = "Confirmation Dialog";
+    public static final String ASSETS_SCENE = "/Assets";
+    public static final String ASSET_TYPE_LIST_SCENE = "/AssetTypeList";
+    public static final String ALERT_TITLE_DIALOG = "Confirmation Dialog";
     public static final DecimalFormat ThresholdValueFormat = new DecimalFormat("#.00");
 
     private TextConstants() {

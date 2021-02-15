@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 
 public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
-    private static final String GET_ASSET_TYPE_BOUNDARIES = "SELECT *  FROM asset_type_parameters WHERE asset_type_id = ? and boundary is not null";
+    private static final String GET_ASSET_TYPE_THRESHOLDS = "SELECT *  FROM asset_type_parameters WHERE asset_type_id = ? and boundary is not null";
 
     /**
      * Gets the threshold values for an Asset Type.
