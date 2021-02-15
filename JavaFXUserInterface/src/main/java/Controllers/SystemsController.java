@@ -25,10 +25,12 @@ import rul.assessment.AssessmentController;
 
 import java.net.URL;
 import java.text.DecimalFormat;
-import java.util.Collections;
 import java.util.ResourceBundle;
 
 public class SystemsController implements Initializable {
+    private static final String SORT_DEFAULT = "Default";
+    private static final String SORT_RUL_ASC = "Ascending RUL";
+    private static final String SORT_RUL_DESC = "Descending RUL";
     private final AssetTypeDAOImpl assetTypeDAO;
     private final ModelDAOImpl modelDAO;
     @FXML
@@ -105,37 +107,25 @@ public class SystemsController implements Initializable {
         addSystemBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/AddSystem"));
 
         //Adding items to the choiceBox (drop down list)
-        sortSystem.getItems().add("Default");
-        sortSystem.getItems().add("Ascending RUL");
-        sortSystem.getItems().add("Descending RUL");
+        sortSystem.getItems().add(SORT_DEFAULT);
+        sortSystem.getItems().add(SORT_RUL_ASC);
+        sortSystem.getItems().add(SORT_RUL_DESC);
         //Default Value
-        sortSystem.setValue("Default");
+        sortSystem.setValue(SORT_DEFAULT);
         //Listener on the sort ChoiceBox. Depending on the sort selected, all systems panes are cleared and generated again
         //with the appropriate sort applied.
         sortSystem.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
-            switch (newValue) {
-                case "Ascending RUL":
-                    if (thumbnailTab.isSelected()) {
-                        systemsThumbPane.getChildren().clear();
-                        systems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssetsDes());
-                        Collections.reverse(systems);
-                        generateThumbnails();
-                    }
-                    break;
-                case "Descending RUL":
-                    if (thumbnailTab.isSelected()) {
-                        systemsThumbPane.getChildren().clear();
-                        systems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssetsDes());
-                        generateThumbnails();
-                    }
-                    break;
-                default:
-                    if (thumbnailTab.isSelected()) {
-                        systemsThumbPane.getChildren().clear();
-                        systems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
-                        generateThumbnails();
-                    }
-                    break;
+            if (!oldValue.equals(newValue)) {
+                if (newValue.equals(SORT_DEFAULT)) {
+                    FXCollections.sort(systems, (asset, t1) -> asset.getId() - t1.getId());
+                } else if (newValue.equals(SORT_RUL_ASC)) {
+                    FXCollections.sort(systems, (asset, t1) -> t1.getId() - asset.getId());
+                } else if (newValue.equals(SORT_RUL_DESC)) {
+                    FXCollections.sort(systems, (asset, t1) -> t1.getId() - asset.getId());
+                }
+                systemsThumbPane.getChildren().clear();
+                generateThumbnails();
+
             }
         });
     }
