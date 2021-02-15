@@ -24,6 +24,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import rul.assessment.AssessmentController;
@@ -142,6 +143,12 @@ public class SystemInfoController implements Initializable {
      * @author Jeff, Paul
      */
     public void constructSensorPanes() {
+        if (system.getAssetInfo().getAssetAttributes().isEmpty()) {
+            Text noSensorsText = new Text("No sensor readings to display");
+            noSensorsText.setFont(new Font("Segoe UI Bold", 14));
+            sensorFlowPane.getChildren().add(noSensorsText);
+
+        }
         for (AssetAttribute sensor : system.getAssetInfo().getAssetAttributes()) {
             Pane pane = new Pane();
             pane.getStyleClass().add("sensorPane");
