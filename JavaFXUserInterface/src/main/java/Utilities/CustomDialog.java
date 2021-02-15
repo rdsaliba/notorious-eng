@@ -22,8 +22,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 public class CustomDialog extends Stage {
-    private static final String SYSTEM_TYPE_LIST = "/SystemTypeList";
-    private static final String SYSTEMS = "/Systems";
+
 
     private static UIUtilities uiUtilities = new UIUtilities();
     private static TextConstants textConstants;
@@ -64,36 +63,32 @@ public class CustomDialog extends Stage {
         setScene(new Scene(root, null));
     }
 
-    Pane getRoot() {
+    public Pane getRoot() {
         return root;
     }
 
-    Button getCancelBtn() {
+    public Button getCancelBtn() {
         return cancelBtn;
     }
 
-    Button getOkButton() {
+    public Button getOkButton() {
         return btn;
     }
 
-    void openDialog() {
+    public void openDialog() {
         show();
     }
 
-    void closeDialog() {
+    public void closeDialog() {
         close();
     }
 
     public static void systemTypeInfoControllerDialog(MouseEvent mouseEvent, String systemID) {
         AssetTypeDAOImpl assetTypeDAO = new AssetTypeDAOImpl();
-        String ALERT_HEADER = "Confirmation of system type deletion";
-        String ALERT_CONTENT = "Are you sure you want to delete this system type? \n " +
-                "this will delete all the assets of this type";
-
         CustomDialog dialog = new CustomDialog(textConstants.ALERT_HEADER, textConstants.ALERT_CONTENT, mouseEvent);
         dialog.getOkButton().setOnAction(e -> {
             assetTypeDAO.deleteAssetTypeByID(systemID);
-            uiUtilities.changeScene(mouseEvent, SYSTEM_TYPE_LIST);
+            uiUtilities.changeScene(mouseEvent, textConstants.SYSTEM_TYPE_LIST);
             dialog.closeDialog();
         });
         dialog.openDialog();
@@ -101,8 +96,6 @@ public class CustomDialog extends Stage {
 
     public static void systemInfoController(MouseEvent mouseEvent, int systemID) {
         AssetDAOImpl assetDAOImpl = new AssetDAOImpl();
-        String ALERT_HEADER = "Confirmation of system deletion";
-        String ALERT_CONTENT = "Are you sure you want to delete this system?";
         CustomDialog dialog = new CustomDialog(textConstants.ALERT_HEADER, textConstants.ALERT_CONTENT, mouseEvent);
         //Set the functionality of the btn
         dialog.getOkButton().setOnAction(e -> {
@@ -114,12 +107,10 @@ public class CustomDialog extends Stage {
     }
 
     public static void addSystemControllerSaveDialog(MouseEvent mouseEvent) {
-        String SAVE_DIALOG = "Save Dialog";
-        String SAVE_HEADER = "Asset has been saved to the database.";
         CustomDialog dialog = new CustomDialog(textConstants.SAVE_DIALOG, textConstants.SAVE_HEADER, mouseEvent);
         dialog.getRoot().getChildren().remove(dialog.getCancelBtn());
         dialog.getOkButton().setOnAction(e -> {
-            uiUtilities.changeScene(mouseEvent, SYSTEMS);
+            uiUtilities.changeScene(mouseEvent, textConstants.SYSTEMS);
             dialog.closeDialog();
         });
         dialog.openDialog();
