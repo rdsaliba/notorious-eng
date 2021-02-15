@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 public class AssetDAOImpl extends DAO implements AssetDAO {
 
-    private static final String DELETE_ASSET = "DELETE FROM ? WHERE asset_id = ?";
+    private static final String DELETE_ASSET = "DELETE FROM asset WHERE asset_id = ?";
     private static final String GET_ASSET_INFO_FROM_ASSET_ID = "SELECT DISTINCT att.* FROM attribute_measurements am, attribute att WHERE att.attribute_id=am.attribute_id AND am.asset_id = ?";
     private static final String GET_ALL_LIVE_ASSETS = "SELECT * FROM asset, asset_type WHERE asset.asset_type_id=asset_type.asset_type_id AND archived = false";
     private static final String INSERT_ASSET = "INSERT INTO asset (name, asset_type_id, description, sn, manufacturer, category, site, location, unit_nb) values(?,?,?,?,?,?,?,?,?)";
@@ -31,22 +31,13 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
      * tables that reference the asset ID
      *
      * @param assetID represents the asset's ID
-     * @author Jeff
+     * @author Jeff, Paul
      */
     @Override
     public void deleteAssetByID(int assetID) {
         try (PreparedStatement ps = getConnection().prepareStatement(DELETE_ASSET)) {
-            for (int i = 0; i < 3; i++) {
-                if (i == 0) {
-                    ps.setString(1, " attribute_measurements ");
-                } else if (i == 1) {
-                    ps.setString(1, " asset_model_calculation ");
-                } else {
-                    ps.setString(1, " asset ");
-                }
-                ps.setInt(2, assetID);
-                ps.executeQuery();
-            }
+            ps.setInt(1, assetID);
+            ps.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -159,11 +150,12 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         return null;
     }
 
-    /** this function returns the measurements for a given asset and cycle in a table format
-     *  this means that the data comes pre arranged in the ResultSet to simplify adding it to the
-     *  table in the UI
+    /**
+     * this function returns the measurements for a given asset and cycle in a table format
+     * this means that the data comes pre arranged in the ResultSet to simplify adding it to the
+     * table in the UI
      *
-     * @param assetID the id of the asset we want the measurement for
+     * @param assetID  the id of the asset we want the measurement for
      * @param fromTime this represents from what time cycle we want to start retrieving information
      * @author Paul
      */
