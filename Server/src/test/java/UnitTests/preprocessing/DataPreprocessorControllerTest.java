@@ -1,14 +1,15 @@
-package preprocessing;
+package UnitTests.preprocessing;
 
 import org.junit.Before;
 import org.junit.Test;
+import preprocessing.DataPrePreprocessorController;
 import weka.core.Instances;
 
 import java.io.FileReader;
 
 import static org.junit.Assert.assertEquals;
 
-public class reductionTest {
+public class DataPreprocessorControllerTest {
     DataPrePreprocessorController dataPrePreprocessorController;
 
     @Before

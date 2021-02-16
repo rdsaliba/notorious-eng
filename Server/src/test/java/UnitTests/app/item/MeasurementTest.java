@@ -1,5 +1,6 @@
-package app.item;
+package UnitTests.app.item;
 
+import app.item.Measurement;
 import org.junit.*;
 
 import static org.junit.Assert.*;

@@ -1,8 +1,10 @@
-package rul.models;
+package UnitTests.rul.models;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import rul.models.ModelsController;
+import rul.models.RandomCommitteeModelImpl;
 import weka.classifiers.Classifier;
 import weka.classifiers.meta.RandomCommittee;
 import weka.core.Instances;

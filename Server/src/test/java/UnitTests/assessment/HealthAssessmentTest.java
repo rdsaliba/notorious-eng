@@ -1,4 +1,4 @@
-package assessment;
+package UnitTests.assessment;
 
 import org.junit.Before;
 import org.junit.Test;

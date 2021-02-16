@@ -1,8 +1,10 @@
-package rul.models;
+package UnitTests.rul.models;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import rul.models.LSTMModelImpl;
+import rul.models.ModelsController;
 import weka.classifiers.functions.Dl4jMlpClassifier;
 import weka.core.Instances;
 

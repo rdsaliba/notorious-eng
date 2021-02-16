@@ -1,5 +1,6 @@
-package app.item;
+package UnitTests.app.item;
 
+import app.item.AssetAttribute;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

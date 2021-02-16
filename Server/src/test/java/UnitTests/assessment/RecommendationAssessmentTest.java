@@ -1,4 +1,4 @@
-package assessment;
+package UnitTests.assessment;
 
 import local.AssetTypeDAOImpl;
 import org.junit.Before;
@@ -22,31 +22,31 @@ public class RecommendationAssessmentTest {
     @Test
     public void testOkRecommendation() {
         assertEquals(OK_THRESHOLD,
-                recommendationAssessment.getRecommendation(assetTypeDAO.getAssetTypeThresholds(ASSET_TYPE).get(OK_THRESHOLD), ASSET_TYPE));
+                recommendationAssessment.getRecommendation(assetTypeDAO.getAssetTypeBoundaries(ASSET_TYPE).get(OK_THRESHOLD), ASSET_TYPE));
     }
 
     @Test
     public void testAdvisoryRecommendation() {
         assertEquals(ADVISORY_THRESHOLD,
-                recommendationAssessment.getRecommendation(assetTypeDAO.getAssetTypeThresholds(ASSET_TYPE).get(ADVISORY_THRESHOLD), ASSET_TYPE));
+                recommendationAssessment.getRecommendation(assetTypeDAO.getAssetTypeBoundaries(ASSET_TYPE).get(ADVISORY_THRESHOLD), ASSET_TYPE));
     }
 
     @Test
     public void testWarningRecommendation() {
         assertEquals(WARNING_THRESHOLD,
-                recommendationAssessment.getRecommendation(assetTypeDAO.getAssetTypeThresholds(ASSET_TYPE).get(WARNING_THRESHOLD), ASSET_TYPE));
+                recommendationAssessment.getRecommendation(assetTypeDAO.getAssetTypeBoundaries(ASSET_TYPE).get(WARNING_THRESHOLD), ASSET_TYPE));
     }
 
     @Test
     public void testFailedRecommendation() {
         assertEquals(FAILED_THRESHOLD,
-                recommendationAssessment.getRecommendation(assetTypeDAO.getAssetTypeThresholds(ASSET_TYPE).get(FAILED_THRESHOLD), ASSET_TYPE));
+                recommendationAssessment.getRecommendation(assetTypeDAO.getAssetTypeBoundaries(ASSET_TYPE).get(FAILED_THRESHOLD), ASSET_TYPE));
     }
 
     @Test
     public void testCautionRecommendation() {
         assertEquals(CAUTION_THRESHOLD,
-                recommendationAssessment.getRecommendation(assetTypeDAO.getAssetTypeThresholds(ASSET_TYPE).get(CAUTION_THRESHOLD), ASSET_TYPE));
+                recommendationAssessment.getRecommendation(assetTypeDAO.getAssetTypeBoundaries(ASSET_TYPE).get(CAUTION_THRESHOLD), ASSET_TYPE));
     }
 
 }
