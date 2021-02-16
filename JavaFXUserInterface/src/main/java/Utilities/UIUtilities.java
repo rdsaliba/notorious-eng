@@ -1,7 +1,7 @@
 package Utilities;
 
-import Controllers.SystemInfoController;
-import Controllers.SystemTypeInfoController;
+import Controllers.AssetInfoController;
+import Controllers.AssetTypeInfoController;
 import app.item.Asset;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -69,12 +69,12 @@ public class UIUtilities {
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource(fxmlFileName + ".fxml"));
-            Parent systemsParent = loader.load();
-            Scene systemInfo = new Scene(systemsParent);
+            Parent AssetsParent = loader.load();
+            Scene AssetInfo = new Scene(AssetsParent);
 
             Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
 
-            window.setScene(systemInfo);
+            window.setScene(AssetInfo);
             window.show();
 
         } catch (IOException e) {
@@ -108,18 +108,18 @@ public class UIUtilities {
      * @param assetType
      * @author Najim
      */
-    public void changeScene(MouseEvent mouseEvent, TableRow<SystemTypeList> row, String fxmlFileName, SystemTypeList assetType) {
+    public void changeScene(MouseEvent mouseEvent, TableRow<AssetTypeList> row, String fxmlFileName, AssetTypeList assetType) {
         row.getScene().getWindow();
         try {
             if (!row.isEmpty()) {
                 FXMLLoader loader = new FXMLLoader();
                 loader.setLocation(getClass().getResource(fxmlFileName + ".fxml"));
-                Parent systemTypeParent = loader.load();
-                Scene systemTypeInfo = new Scene(systemTypeParent);
+                Parent AssetTypeParent = loader.load();
+                Scene AssetTypeInfo = new Scene(AssetTypeParent);
 
                 Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-                window.setScene(systemTypeInfo);
-                SystemTypeInfoController controller = loader.getController();
+                window.setScene(AssetTypeInfo);
+                AssetTypeInfoController controller = loader.getController();
                 controller.initData(assetType);
                 controller.setImage(assetType.getAssetType().getName());
                 window.show();
@@ -143,12 +143,12 @@ public class UIUtilities {
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource(fxmlFileName + ".fxml"));
-            Parent systemTypeParent = loader.load();
-            Scene systemTypeInfo = new Scene(systemTypeParent);
+            Parent AssetTypeParent = loader.load();
+            Scene AssetTypeInfo = new Scene(AssetTypeParent);
 
             Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-            window.setScene(systemTypeInfo);
-            SystemInfoController controller = loader.getController();
+            window.setScene(AssetTypeInfo);
+            AssetInfoController controller = loader.getController();
             controller.initData(asset);
             window.show();
 

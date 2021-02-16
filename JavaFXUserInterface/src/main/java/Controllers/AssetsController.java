@@ -28,34 +28,34 @@ import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.ResourceBundle;
 
-public class SystemsController implements Initializable {
+public class AssetsController implements Initializable {
     private final AssetTypeDAOImpl assetTypeDAO;
     private final ModelDAOImpl modelDAO;
     @FXML
-    private Button systemMenuBtn;
+    private Button AssetMenuBtn;
     @FXML
-    private Button systemTypeMenuBtn;
+    private Button AssetTypeMenuBtn;
     @FXML
-    private Button addSystemBtn;
+    private Button addAssetBtn;
     @FXML
-    private FlowPane systemsThumbPane;
+    private FlowPane AssetsThumbPane;
     @FXML
-    private AnchorPane systemsListPane;
+    private AnchorPane AssetsListPane;
     @FXML
     private Tab thumbnailTab;
     @FXML
     private Tab listTab;
     @FXML
-    private ChoiceBox<String> sortSystem;
+    private ChoiceBox<String> sortAsset;
     private UIUtilities uiUtilities;
-    private ObservableList<Asset> systems;
+    private ObservableList<Asset> Assets;
 
-    public SystemsController() {
+    public AssetsController() {
         assetTypeDAO = new AssetTypeDAOImpl();
         modelDAO = new ModelDAOImpl();
 
         try {
-            systems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
+            Assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -86,53 +86,53 @@ public class SystemsController implements Initializable {
      */
     public void attachEvents() {
         thumbnailTab.setOnSelectionChanged(event -> {
-            systemsThumbPane.getChildren().clear();
+            AssetsThumbPane.getChildren().clear();
             generateThumbnails();
         });
 
         listTab.setOnSelectionChanged(event -> {
-            systemsListPane.getChildren().clear();
+            AssetsListPane.getChildren().clear();
             generateList();
         });
 
-        //Attach link to systemMenuButton to go to Systems.fxml
-        systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
+        //Attach link to AssetMenuButton to go to Assets.fxml
+        AssetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Assets"));
 
-        //Attach link to systemTypeMenuBtn to go to Utilities.SystemTypeList.fxml
-        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/SystemTypeList"));
+        //Attach link to AssetTypeMenuBtn to go to Utilities.AssetTypeList.fxml
+        AssetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/AssetTypeList"));
 
-        //Attach link to addSystemButton to go to AddSystem.fxml
-        addSystemBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/AddSystem"));
+        //Attach link to addAssetButton to go to AddAsset.fxml
+        addAssetBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/AddAsset"));
 
         //Adding items to the choiceBox (drop down list)
-        sortSystem.getItems().add("Default");
-        sortSystem.getItems().add("Ascending RUL");
-        sortSystem.getItems().add("Descending RUL");
+        sortAsset.getItems().add("Default");
+        sortAsset.getItems().add("Ascending RUL");
+        sortAsset.getItems().add("Descending RUL");
         //Default Value
-        sortSystem.setValue("Default");
-        //Listener on the sort ChoiceBox. Depending on the sort selected, all systems panes are cleared and generated again
+        sortAsset.setValue("Default");
+        //Listener on the sort ChoiceBox. Depending on the sort selected, all Assets panes are cleared and generated again
         //with the appropriate sort applied.
-        sortSystem.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
+        sortAsset.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
             switch (newValue) {
                 case "Ascending RUL":
                     if (thumbnailTab.isSelected()) {
-                        systemsThumbPane.getChildren().clear();
-                        systems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssetsDes());
-                        Collections.reverse(systems);
+                        AssetsThumbPane.getChildren().clear();
+                        Assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssetsDes());
+                        Collections.reverse(Assets);
                         generateThumbnails();
                     }
                     break;
                 case "Descending RUL":
                     if (thumbnailTab.isSelected()) {
-                        systemsThumbPane.getChildren().clear();
-                        systems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssetsDes());
+                        AssetsThumbPane.getChildren().clear();
+                        Assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssetsDes());
                         generateThumbnails();
                     }
                     break;
                 default:
                     if (thumbnailTab.isSelected()) {
-                        systemsThumbPane.getChildren().clear();
-                        systems = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
+                        AssetsThumbPane.getChildren().clear();
+                        Assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
                         generateThumbnails();
                     }
                     break;
@@ -148,40 +148,40 @@ public class SystemsController implements Initializable {
     public void generateThumbnails() {
         ObservableList<Pane> boxes = FXCollections.observableArrayList();
 
-        for (Asset system : systems) {
+        for (Asset Asset : Assets) {
 
             Pane pane = new Pane();
-            pane.setOnMouseClicked(event -> uiUtilities.changeScene(event, "/SystemInfo", system));
+            pane.setOnMouseClicked(event -> uiUtilities.changeScene(event, "/AssetInfo", Asset));
 
-            pane.getStyleClass().add("systemPane");
-            Text systemName = new Text(system.getSerialNo());
-            Text systemType = new Text(assetTypeDAO.getNameFromID(system.getAssetTypeID()));
+            pane.getStyleClass().add("AssetPane");
+            Text AssetName = new Text(Asset.getSerialNo());
+            Text AssetType = new Text(assetTypeDAO.getNameFromID(Asset.getAssetTypeID()));
             // UI String constants
             String RECOMMENDATION = "Recommendation: ";
             String LINEAR_RUL = "Linear RUL: ";
             Text linearLabel = new Text(LINEAR_RUL);
-            Text linearRUL = new Text(String.valueOf(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(system.getId()))));
+            Text linearRUL = new Text(String.valueOf(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(Asset.getId()))));
             Text recommendationLabel = new Text(RECOMMENDATION);
-            Text recommendation = new Text(system.getRecommendation());
+            Text recommendation = new Text(Asset.getRecommendation());
 
             Timeline timeline =
-                    new Timeline(new KeyFrame(Duration.millis(1000), e -> linearRUL.setText(String.valueOf(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(system.getId()))))));
+                    new Timeline(new KeyFrame(Duration.millis(1000), e -> linearRUL.setText(String.valueOf(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(Asset.getId()))))));
 
             timeline.setCycleCount(Animation.INDEFINITE); // loop forever
             timeline.play();
 
 
-            systemName.setId("systemName");
-            systemType.setId("systemType");
+            AssetName.setId("AssetName");
+            AssetType.setId("AssetType");
             linearLabel.setId("linearLabel");
             linearRUL.setId("linearRUL");
             recommendationLabel.setId("recommendationLabel");
             recommendation.setId("recommendation");
 
-            systemName.setLayoutX(14.0);
-            systemName.setLayoutY(28.0);
-            systemType.setLayoutX(14.0);
-            systemType.setLayoutY(60.0);
+            AssetName.setLayoutX(14.0);
+            AssetName.setLayoutY(28.0);
+            AssetType.setLayoutX(14.0);
+            AssetType.setLayoutY(60.0);
             recommendationLabel.setLayoutX(14.0);
             recommendationLabel.setLayoutY(100.0);
             recommendation.setLayoutX(230.0);
@@ -191,8 +191,8 @@ public class SystemsController implements Initializable {
             linearRUL.setLayoutX(230.0);
             linearRUL.setLayoutY(120.0);
 
-            pane.getChildren().add(systemName);
-            pane.getChildren().add(systemType);
+            pane.getChildren().add(AssetName);
+            pane.getChildren().add(AssetType);
             pane.getChildren().add(linearLabel);
             pane.getChildren().add(linearRUL);
             pane.getChildren().add(recommendationLabel);
@@ -201,7 +201,7 @@ public class SystemsController implements Initializable {
             boxes.add(pane);
         }
 
-        systemsThumbPane.getChildren().addAll(boxes);
+        AssetsThumbPane.getChildren().addAll(boxes);
 
     }
 
@@ -214,16 +214,16 @@ public class SystemsController implements Initializable {
     public void generateList() {
         TableView<Asset> table = new TableView<>();
 
-        // When TableRow is clicked, send data to SystemInfo scene.
+        // When TableRow is clicked, send data to AssetInfo scene.
         table.setRowFactory(tv -> {
             TableRow<Asset> row = new TableRow<>();
-            row.setOnMouseClicked(event -> uiUtilities.changeScene(event, row, "/SystemInfo", row.getItem()));
+            row.setOnMouseClicked(event -> uiUtilities.changeScene(event, row, "/AssetInfo", row.getItem()));
             return row;
         });
 
         String TYPE_COL = "Type";
-        TableColumn<Asset, String> systemTypeCol = new TableColumn<>(TYPE_COL);
-        systemTypeCol.setCellValueFactory(cellData -> new SimpleStringProperty(
+        TableColumn<Asset, String> AssetTypeCol = new TableColumn<>(TYPE_COL);
+        AssetTypeCol.setCellValueFactory(cellData -> new SimpleStringProperty(
                 assetTypeDAO.getNameFromID(cellData.getValue().getAssetTypeID())));
 
 
@@ -272,14 +272,14 @@ public class SystemsController implements Initializable {
         descriptionCol.setCellValueFactory(
                 new PropertyValueFactory<>("description"));
 
-        table.setItems(systems);
+        table.setItems(Assets);
         table.setId("listTable");
-        table.getColumns().addAll(systemTypeCol, serialNoCol, modelCol, modelRULCol, recommendationCol, locationCol, siteCol, categoryCol, manufacturerCol, descriptionCol);
+        table.getColumns().addAll(AssetTypeCol, serialNoCol, modelCol, modelRULCol, recommendationCol, locationCol, siteCol, categoryCol, manufacturerCol, descriptionCol);
         AnchorPane.setBottomAnchor(table, 0.0);
         AnchorPane.setTopAnchor(table, 5.0);
         AnchorPane.setRightAnchor(table, 0.0);
         AnchorPane.setLeftAnchor(table, 0.0);
-        systemsListPane.getChildren().addAll(table);
+        AssetsListPane.getChildren().addAll(table);
 
     }
 

@@ -14,11 +14,11 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="712.0" prefWidth="1026.0" stylesheets="@css/systeminfo.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.SystemInfoController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="712.0" prefWidth="1026.0" stylesheets="@css/Assetinfo.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AssetInfoController">
     <children>
         <VBox layoutY="169.0" prefHeight="543.0" prefWidth="74.0" style="-fx-background-color: #0C072E;" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="169.0">
             <children>
-                <Button fx:id="systemMenuBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0" prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css" text="Systems" textAlignment="CENTER" textFill="#f0f0f0">
+                <Button fx:id="AssetMenuBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0" prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css" text="Assets" textAlignment="CENTER" textFill="#f0f0f0">
                     <font>
                         <Font name="Segoe UI Bold" size="14.0" />
                     </font>
@@ -30,7 +30,7 @@
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button fx:id="systemTypeMenuBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0" prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css" text="System&#10;Types" textAlignment="CENTER" textFill="#f0f0f0" translateY="15.0">
+                <Button fx:id="AssetTypeMenuBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0" prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css" text="Asset&#10;Types" textAlignment="CENTER" textFill="#f0f0f0" translateY="15.0">
                     <font>
                         <Font name="Segoe UI Bold" size="14.0" />
                     </font>
@@ -59,7 +59,7 @@
         <VBox prefHeight="169.0" prefWidth="74.0" style="-fx-background-color: #0C072E;" AnchorPane.topAnchor="0.0" />
         <AnchorPane layoutX="74.0" prefHeight="42.0" prefWidth="952.0" style="-fx-border-style: hidden hidden solid hidden; -fx-border-color: F0F0F0;" AnchorPane.leftAnchor="74.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
-                <Text fx:id="systemName" fill="#0c072e" layoutX="14.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="System Name">
+                <Text fx:id="AssetName" fill="#0c072e" layoutX="14.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Asset Name">
                     <font>
                         <Font name="Segoe UI Bold" size="18.0" />
                     </font>
@@ -82,15 +82,15 @@
                             <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="382.0" prefWidth="945.0">
                                     <children>
-                                        <AnchorPane fx:id="systemInfoPane" layoutX="6.0" maxHeight="258.0" prefHeight="258.0" prefWidth="928.0" style="-fx-background-color: FFFFFF;" AnchorPane.bottomAnchor="383.0" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="18.0" AnchorPane.topAnchor="0.0">
+                                        <AnchorPane fx:id="AssetInfoPane" layoutX="6.0" maxHeight="258.0" prefHeight="258.0" prefWidth="928.0" style="-fx-background-color: FFFFFF;" AnchorPane.bottomAnchor="383.0" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="18.0" AnchorPane.topAnchor="0.0">
                                             <children>
-                                                <Text fx:id="systemTypeLabel" fill="#0c072e" layoutX="14.0" layoutY="85.0" strokeType="OUTSIDE" strokeWidth="0.0" text="System Type:" />
+                                                <Text fx:id="AssetTypeLabel" fill="#0c072e" layoutX="14.0" layoutY="85.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Asset Type:" />
                                                 <Text fx:id="serialNumber" fill="#0c072e" layoutX="14.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Serial Number:" />
                                                 <Text fx:id="manufacturer" fill="#0c072e" layoutX="394.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Manufacturer:" />
-                                                <Text fx:id="systemLocation" fill="#0c072e" layoutX="14.0" layoutY="113.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Location:" />
+                                                <Text fx:id="AssetLocation" fill="#0c072e" layoutX="14.0" layoutY="113.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Location:" />
                                                 <Text fill="#0c072e" layoutX="14.0" layoutY="141.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Site:" />
                                                 <Text fx:id="description" fill="#0c072e" layoutX="394.0" layoutY="83.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Description:" />
-                                                <Text fx:id="systemTypeOutput" fill="#0c072e" layoutX="159.0" layoutY="84.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
+                                                <Text fx:id="AssetTypeOutput" fill="#0c072e" layoutX="159.0" layoutY="84.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
                                                 <Text fx:id="serialNumberOutput" fill="#0c072e" layoutX="159.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
                                                 <Text fx:id="manufacturerOutput" fill="#0c072e" layoutX="533.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
                                                 <Text fx:id="locationOutput" fill="#0c072e" layoutX="159.0" layoutY="113.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
@@ -102,8 +102,8 @@
                                                 <Text fx:id="rulOutput" fill="#0c072e" layoutX="159.0" layoutY="199.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
                                                 <Text fill="#0c072e" layoutX="394.0" layoutY="54.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Category:" />
                                                 <Text fx:id="categoryOutput" fill="#0c072e" layoutX="533.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
-                                                <Text fx:id="systemNameLabel" fill="#0c072e" layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="System Name:" />
-                                                <Text fx:id="systemNameOutput" fill="#0c072e" layoutX="159.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
+                                                <Text fx:id="AssetNameLabel" fill="#0c072e" layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Asset Name:" />
+                                                <Text fx:id="AssetNameOutput" fill="#0c072e" layoutX="159.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
                                                 <Text fill="#0c072e" layoutX="13.0" layoutY="227.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Recommendation:" />
                                                 <Text fx:id="recommendationOutput" fill="#0c072e" layoutX="159.0" layoutY="227.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
                                             </children>
@@ -127,7 +127,7 @@
         </AnchorPane>
     </children>
     <stylesheets>
-        <URL value="@css/systeminfo.css" />
-        <URL value="@css/systems.css" />
+        <URL value="@css/Assetinfo.css" />
+        <URL value="@css/Assets.css" />
     </stylesheets>
 </AnchorPane>

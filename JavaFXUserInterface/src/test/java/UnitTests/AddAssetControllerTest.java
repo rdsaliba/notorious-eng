@@ -1,6 +1,6 @@
 package UnitTests;
 
-import Controllers.AddSystemController;
+import Controllers.AddAssetController;
 import app.item.Asset;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -20,19 +20,19 @@ import org.testfx.framework.junit.ApplicationTest;
 
 import static org.junit.Assert.*;
 
-public class AddSystemControllerTest extends ApplicationTest {
+public class AddAssetControllerTest extends ApplicationTest {
 
     private Asset fullAsset;
     private Asset emptyAsset;
-    private AddSystemController addSystemController;
+    private AddAssetController addAssetController;
     private Scene scene;
 
     @Override
     public void start (Stage stage) throws Exception {
-        FXMLLoader fxmlLoader = new FXMLLoader(AddSystemController.class.getResource("/AddSystem.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(AddAssetController.class.getResource("/AddAsset.fxml"));
         Parent root = fxmlLoader.load();
         scene = new Scene(root);
-        addSystemController = (AddSystemController) fxmlLoader.getController();
+        addAssetController = (AddAssetController) fxmlLoader.getController();
         stage.setTitle("CBMS");
         stage.setScene(scene);
         stage.show();
@@ -70,12 +70,12 @@ public class AddSystemControllerTest extends ApplicationTest {
 
     @Test
     public void isAssetEmptyTrue() {
-        assertTrue(addSystemController.isAssetEmpty(emptyAsset));
+        assertTrue(addAssetController.isAssetEmpty(emptyAsset));
     }
 
     @Test
     public void isAssetEmptyFalse() {
-        assertFalse(addSystemController.isAssetEmpty(fullAsset));
+        assertFalse(addAssetController.isAssetEmpty(fullAsset));
     }
 
 }

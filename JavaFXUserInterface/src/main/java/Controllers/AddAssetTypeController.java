@@ -16,21 +16,21 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class AddSystemTypeController implements Initializable {
-    private final String SYSTEM_TYPE_LIST = "/SystemTypeList";
+public class AddAssetTypeController implements Initializable {
+    private final String Asset_TYPE_LIST = "/AssetTypeList";
 
     @FXML
-    private Button systemMenuBtn;
+    private Button AssetMenuBtn;
     @FXML
-    private Button systemTypeMenuBtn;
+    private Button AssetTypeMenuBtn;
     @FXML
     private Button cancelBtn;
     @FXML
     private Button saveBtn;
     @FXML
-    private TextField systemTypeName;
+    private TextField AssetTypeName;
     @FXML
-    private TextArea systemTypeDescription;
+    private TextArea AssetTypeDescription;
     @FXML
     private TextField thresholdOKValue;
     @FXML
@@ -68,15 +68,15 @@ public class AddSystemTypeController implements Initializable {
      * @author Jeff , Paul
      */
     public void attachEvents() {
-        // Change scenes to Systems.fxml
-        systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, SYSTEM_TYPE_LIST));
-        //Attach link to systemTypeMenuBtn to go to Utilities.SystemTypeList.fxml
-        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, SYSTEM_TYPE_LIST));
-        // Change scenes to Systems.fxml
-        cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, SYSTEM_TYPE_LIST));
+        // Change scenes to Assets.fxml
+        AssetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, Asset_TYPE_LIST));
+        //Attach link to AssetTypeMenuBtn to go to Utilities.AssetTypeList.fxml
+        AssetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, Asset_TYPE_LIST));
+        // Change scenes to Assets.fxml
+        cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, Asset_TYPE_LIST));
         saveBtn.setOnMouseClicked(mouseEvent -> {
-            if (saveAssetType(assembleSystemType()))
-                uiUtilities.changeScene(mouseEvent, "/SystemTypeList");
+            if (saveAssetType(assembleAssetType()))
+                uiUtilities.changeScene(mouseEvent, "/AssetTypeList");
         });
 
 
@@ -93,10 +93,10 @@ public class AddSystemTypeController implements Initializable {
      *
      * @author Jeff , Paul
      */
-    public AssetType assembleSystemType() {
-        if (systemTypeName.getText().length() > 0 && systemTypeDescription.getText().length() > 0) {
-            AssetType assetType = new AssetType(systemTypeName.getText());
-            assetType.setDescription(systemTypeDescription.getText());
+    public AssetType assembleAssetType() {
+        if (AssetTypeName.getText().length() > 0 && AssetTypeDescription.getText().length() > 0) {
+            AssetType assetType = new AssetType(AssetTypeName.getText());
+            assetType.setDescription(AssetTypeDescription.getText());
 
             Double okValue = thresholdOKValue.getText().isEmpty() ? null : Double.parseDouble(thresholdOKValue.getText());
             assetTypeParameters.add(new AssetTypeParameter(TextConstants.OK_THRESHOLD, okValue));

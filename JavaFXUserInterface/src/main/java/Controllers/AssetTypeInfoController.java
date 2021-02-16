@@ -1,6 +1,6 @@
 package Controllers;
 
-import Utilities.SystemTypeList;
+import Utilities.AssetTypeList;
 import Utilities.TextConstants;
 import Utilities.UIUtilities;
 import external.AssetTypeDAOImpl;
@@ -15,21 +15,21 @@ import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-public class SystemTypeInfoController implements Initializable {
-    private final String SYSTEM_TYPE_LIST = "/SystemTypeList";
+public class AssetTypeInfoController implements Initializable {
+    private final String Asset_TYPE_LIST = "/AssetTypeList";
 
     @FXML
-    private Button systemMenuBtn;
+    private Button AssetMenuBtn;
     @FXML
-    private Button systemTypeMenuBtn;
+    private Button AssetTypeMenuBtn;
     @FXML
     private Button infoSaveBtn;
     @FXML
     private Button infoDeleteBtn;
     @FXML
-    private TextField systemTypeName;
+    private TextField AssetTypeName;
     @FXML
-    private TextArea systemTypeDesc;
+    private TextArea AssetTypeDesc;
     @FXML
     private TextField thresholdOK;
     @FXML
@@ -41,11 +41,11 @@ public class SystemTypeInfoController implements Initializable {
     @FXML
     private TextField thresholdFailed;
     @FXML
-    private ImageView systemTypeImageView;
+    private ImageView AssetTypeImageView;
 
     private UIUtilities uiUtilities;
-    private SystemTypeList assetType;
-    private SystemTypeList originalAssetType;
+    private AssetTypeList assetType;
+    private AssetTypeList originalAssetType;
     private AssetTypeDAOImpl assetTypeDAO;
 
     @Override
@@ -56,17 +56,17 @@ public class SystemTypeInfoController implements Initializable {
     }
 
     /**
-     * initData receives the System Type data that was selected from Utilities.SystemTypeList.FXML
+     * initData receives the Asset Type data that was selected from Utilities.AssetTypeList.FXML
      * Then, uses that data to populate the text fields in the scene.
      *
      * @param assetType represents the asset type we want to get info on
      * @author Najim, Paul
      */
-    public void initData(SystemTypeList assetType) {
+    public void initData(AssetTypeList assetType) {
         this.assetType = assetType;
-        this.originalAssetType = new SystemTypeList(assetType);
-        systemTypeName.setText(assetType.getAssetType().getName());
-        systemTypeDesc.setText(assetType.getAssetType().getDescription());
+        this.originalAssetType = new AssetTypeList(assetType);
+        AssetTypeName.setText(assetType.getAssetType().getName());
+        AssetTypeDesc.setText(assetType.getAssetType().getDescription());
         try {
             thresholdOK.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueOk())));
             thresholdAdvisory.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueAdvisory())));
@@ -85,23 +85,23 @@ public class SystemTypeInfoController implements Initializable {
      * Edit: added all the text proprety listeners and text formaters for all the fields
      */
     public void attachEvents() {
-        // Change scenes to Systems.fxml
-        systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
-        //Attach link to systemTypeMenuBtn to go to Utilities.SystemTypeList.fxml
-        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, SYSTEM_TYPE_LIST));
+        // Change scenes to Assets.fxml
+        AssetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Assets"));
+        //Attach link to AssetTypeMenuBtn to go to Utilities.AssetTypeList.fxml
+        AssetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, Asset_TYPE_LIST));
         infoDeleteBtn.setOnMouseClicked(this::deleteDialog);
 
         infoSaveBtn.setDisable(true);
         infoSaveBtn.setOnMouseClicked(mouseEvent -> {
             assetTypeDAO.updateAssetType(assetType.toAssetType());
-            uiUtilities.changeScene(mouseEvent, SYSTEM_TYPE_LIST);
+            uiUtilities.changeScene(mouseEvent, Asset_TYPE_LIST);
         });
 
-        systemTypeName.textProperty().addListener((obs, oldText, newText) -> {
+        AssetTypeName.textProperty().addListener((obs, oldText, newText) -> {
             if (handleTextChange(newText, originalAssetType.getName()))
                 assetType.getAssetType().setName(newText);
         });
-        systemTypeDesc.textProperty().addListener((obs, oldText, newText) -> {
+        AssetTypeDesc.textProperty().addListener((obs, oldText, newText) -> {
             if (handleTextChange(newText, originalAssetType.getDescription()))
                 assetType.getAssetType().setDescription(newText);
         });
@@ -170,15 +170,15 @@ public class SystemTypeInfoController implements Initializable {
     }
 
     /**
-     * Changes the Image depending on the System Type.
+     * Changes the Image depending on the Asset Type.
      *
      * @author Najim
      */
     public void setImage(String typeName) {
         if (typeName.contains("Engine")) {
-            systemTypeImageView.setImage(new Image("imgs/system_type_engine.png"));
+            AssetTypeImageView.setImage(new Image("imgs/Asset_type_engine.png"));
         } else {
-            systemTypeImageView.setImage(new Image("imgs/unknown_system_type.png"));
+            AssetTypeImageView.setImage(new Image("imgs/unknown_Asset_type.png"));
         }
     }
 
@@ -192,16 +192,16 @@ public class SystemTypeInfoController implements Initializable {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         String ALERT_TITLE = "Confirmation Dialog";
         alert.setTitle(ALERT_TITLE);
-        String ALERT_HEADER = "Confirmation of system type deletion";
+        String ALERT_HEADER = "Confirmation of Asset type deletion";
         alert.setHeaderText(ALERT_HEADER);
-        String ALERT_CONTENT = "Are you sure you want to delete this system type? \n " +
+        String ALERT_CONTENT = "Are you sure you want to delete this Asset type? \n " +
                 "this will delete all the assets of this type";
         alert.setContentText(ALERT_CONTENT);
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             deleteAssetType();
-            uiUtilities.changeScene(mouseEvent, SYSTEM_TYPE_LIST);
+            uiUtilities.changeScene(mouseEvent, Asset_TYPE_LIST);
         }
     }
 

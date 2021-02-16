@@ -15,7 +15,7 @@ public class CBMSApplication extends Application{
 
         @Override
         public void start(Stage primaryStage) throws Exception {
-            Parent root = FXMLLoader.load(getClass().getResource("/Systems.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/Assets.fxml"));
             Scene scene = new Scene(root);
             primaryStage.setTitle("CBMS");
             primaryStage.setScene(scene);
@@ -30,8 +30,8 @@ public class CBMSApplication extends Application{
         }
 
         private void closeProgram() {
-            System.out.println("Program closing.");
+            Asset.out.println("Program closing.");
             Platform.exit();
-            System.exit(0);
+            Asset.exit(0);
         }
 }

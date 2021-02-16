@@ -5,11 +5,11 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="712.0" prefWidth="1026.0" stylesheets="@css/systems.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.SystemsController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="712.0" prefWidth="1026.0" stylesheets="@css/Assets.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AssetsController">
     <children>
         <VBox layoutY="169.0" prefHeight="543.0" prefWidth="74.0" style="-fx-background-color: #0C072E;" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="169.0">
             <children>
-                <Button fx:id="systemMenuBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0" prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css" text="Systems" textAlignment="CENTER" textFill="#f0f0f0">
+                <Button fx:id="AssetMenuBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0" prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css" text="Assets" textAlignment="CENTER" textFill="#f0f0f0">
                     <font>
                         <Font name="Segoe UI Bold" size="14.0"/>
                     </font>
@@ -21,9 +21,9 @@
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button fx:id="systemTypeMenuBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0"
+                <Button fx:id="AssetTypeMenuBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0"
                         prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css"
-                        text="System&#10;Types" textAlignment="CENTER" textFill="#f0f0f0" translateY="15.0">
+                        text="Asset&#10;Types" textAlignment="CENTER" textFill="#f0f0f0" translateY="15.0">
                     <font>
                         <Font name="Segoe UI Bold" size="14.0"/>
                     </font>
@@ -55,12 +55,12 @@
         <VBox prefHeight="169.0" prefWidth="74.0" style="-fx-background-color: #0C072E;" AnchorPane.topAnchor="0.0" />
         <AnchorPane layoutX="74.0" maxHeight="42.0" prefHeight="42.0" prefWidth="952.0" AnchorPane.leftAnchor="74.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
-                <Text fx:id="systemsTitle" fill="#0c072e" layoutX="14.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Systems">
+                <Text fx:id="AssetsTitle" fill="#0c072e" layoutX="14.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Assets">
                     <font>
                         <Font name="Segoe UI Bold" size="18.0" />
                     </font>
                 </Text>
-                <Button fx:id="addSystemBtn" layoutX="914.0" layoutY="10.0" mnemonicParsing="false" stylesheets="@css/style.css" text="Add System" textFill="WHITE" AnchorPane.rightAnchor="14.0">
+                <Button fx:id="addAssetBtn" layoutX="914.0" layoutY="10.0" mnemonicParsing="false" stylesheets="@css/style.css" text="Add Asset" textFill="WHITE" AnchorPane.rightAnchor="14.0">
                     <font>
                         <Font name="Segoe UI Bold" size="12.0" />
                     </font>
@@ -79,13 +79,13 @@
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                     <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefHeight="642.0" prefWidth="950.0" vbarPolicy="NEVER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0">
                                         <content>
-                                            <FlowPane fx:id="systemsThumbPane" hgap="10.0" prefHeight="582.0" prefWidth="882.0" style="-fx-padding: 10;" vgap="10.0">
+                                            <FlowPane fx:id="AssetsThumbPane" hgap="10.0" prefHeight="582.0" prefWidth="882.0" style="-fx-padding: 10;" vgap="10.0">
                                                 <children>
                                                 </children>
                                             </FlowPane>
                                         </content>
                                     </ScrollPane>
-                                    <ChoiceBox fx:id="sortSystem" layoutX="125.0" layoutY="11.0" prefHeight="27.0"
+                                    <ChoiceBox fx:id="sortAsset" layoutX="125.0" layoutY="11.0" prefHeight="27.0"
                                                prefWidth="98.0" stylesheets="@css/style.css"
                                                AnchorPane.leftAnchor="83.0"/>
                                     <Label layoutX="15.0" layoutY="15.0" text="Sort by" AnchorPane.leftAnchor="15.0">
@@ -98,7 +98,7 @@
                         </Tab>
                         <Tab fx:id="listTab" text="List">
                             <content>
-                                <AnchorPane fx:id="systemsListPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                <AnchorPane fx:id="AssetsListPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                 </AnchorPane>
                             </content>
                         </Tab>

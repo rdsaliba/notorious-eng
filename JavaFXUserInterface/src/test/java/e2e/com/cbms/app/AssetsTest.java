@@ -1,6 +1,6 @@
 package e2e.com.cbms.app;
 
-import Controllers.SystemsController;
+import Controllers.AssetsController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -25,13 +25,13 @@ import org.testfx.matcher.base.WindowMatchers;
 import static org.junit.Assert.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class SystemsTest extends ApplicationTest {
+public class AssetsTest extends ApplicationTest {
 
     private Scene scene;
 
     @Override
     public void start (Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(SystemsController.class.getResource("/Systems.fxml"));
+        Parent root = FXMLLoader.load(AssetsController.class.getResource("/Assets.fxml"));
         scene = new Scene(root);
         stage.setTitle("CBMS");
         stage.setScene(scene);
@@ -52,7 +52,7 @@ public class SystemsTest extends ApplicationTest {
 
     @Test
     public void hasThumbnails() {
-        FlowPane rootNode = (FlowPane) scene.getRoot().lookup("#systemsThumbPane");
+        FlowPane rootNode = (FlowPane) scene.getRoot().lookup("#AssetsThumbPane");
         assertTrue(rootNode.getChildren().size() > 0);
     }
 
@@ -64,24 +64,24 @@ public class SystemsTest extends ApplicationTest {
     }
 
     @Test
-    public void hasAddSystemButton() {
+    public void hasAddAssetButton() {
         AnchorPane rootNode = (AnchorPane) scene.getRoot();
-        Button button = from(rootNode).lookup("#addSystemBtn").query();
-        assertEquals("Add System", button.getText());
+        Button button = from(rootNode).lookup("#addAssetBtn").query();
+        assertEquals("Add Asset", button.getText());
     }
 
     @Test
-    public void hasSystemMenuButton() {
+    public void hasAssetMenuButton() {
         AnchorPane rootNode = (AnchorPane) scene.getRoot();
-        Button button = from(rootNode).lookup("#systemMenuBtn").query();
-        assertEquals("Systems", button.getText());
+        Button button = from(rootNode).lookup("#AssetMenuBtn").query();
+        assertEquals("Assets", button.getText());
     }
 
     @Test
-    public void hasSystemTypeMenuButton() {
+    public void hasAssetTypeMenuButton() {
         AnchorPane rootNode = (AnchorPane) scene.getRoot();
-        Button button = from(rootNode).lookup("#systemTypeMenuBtn").query();
-        assertEquals("System\nTypes", button.getText());
+        Button button = from(rootNode).lookup("#AssetTypeMenuBtn").query();
+        assertEquals("Asset\nTypes", button.getText());
     }
 
     @Test
@@ -92,36 +92,36 @@ public class SystemsTest extends ApplicationTest {
     }
 
     @Test
-    public void testAddSystemButtonClick() {
-        clickOn("#addSystemBtn");
-        Node addSystemScene = lookup("#addSystemTitle").query();
-        from(addSystemScene).lookup((Text t) -> t.getText().startsWith("Add System"));
+    public void testAddAssetButtonClick() {
+        clickOn("#addAssetBtn");
+        Node addAssetScene = lookup("#addAssetTitle").query();
+        from(addAssetScene).lookup((Text t) -> t.getText().startsWith("Add Asset"));
     }
 
     @Test
-    public void testSystemsButtonClick() {
-        clickOn("#systemMenuBtn");
-        Node addSystemScene = lookup("#systemsTitle").query();
-        from(addSystemScene).lookup((Text t) -> t.getText().startsWith("Systems"));
+    public void testAssetsButtonClick() {
+        clickOn("#AssetMenuBtn");
+        Node addAssetScene = lookup("#AssetsTitle").query();
+        from(addAssetScene).lookup((Text t) -> t.getText().startsWith("Assets"));
     }
 
     @Test
-    public void testSystemTypeButtonClick() {
-        clickOn("#systemTypeMenuBtn");
-        Node addSystemScene = lookup("#systemTypesTitle").query();
-        from(addSystemScene).lookup((Text t) -> t.getText().startsWith("System Types"));
+    public void testAssetTypeButtonClick() {
+        clickOn("#AssetTypeMenuBtn");
+        Node addAssetScene = lookup("#AssetTypesTitle").query();
+        from(addAssetScene).lookup((Text t) -> t.getText().startsWith("Asset Types"));
     }
 
     @Test
     public void testSortAscendingClick() {
-        clickOn("#sortSystem");
+        clickOn("#sortAsset");
         type(KeyCode.DOWN);
         type(KeyCode.ENTER);
     }
 
     @Test
     public void testSortDescendingClick() {
-        clickOn("#sortSystem");
+        clickOn("#sortAsset");
         type(KeyCode.DOWN);
         type(KeyCode.DOWN);
         type(KeyCode.ENTER);

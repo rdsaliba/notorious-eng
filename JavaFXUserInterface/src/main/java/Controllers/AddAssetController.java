@@ -17,27 +17,27 @@ import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-public class AddSystemController implements Initializable {
+public class AddAssetController implements Initializable {
 
     private static final String SAVE_DIALOG = "Save Dialog";
     private static final String SAVE_HEADER = "Asset has been saved to the database.";
     private static final String ERROR_DIALOG = "Error Dialog";
     private static final String ERROR_HEADER = "Please enter values for all text fields.";
-    private static final String SYSTEMS = "/Systems";
+    private static final String AssetS = "/Assets";
     @FXML
-    public Button systemMenuBtn;
+    public Button AssetMenuBtn;
     @FXML
-    private Button systemTypeMenuBtn;
+    private Button AssetTypeMenuBtn;
     @FXML
     private Button cancelBtn;
     @FXML
     private Button saveBtn;
     @FXML
-    private ChoiceBox<AssetType> systemTypeChoiceBox;
+    private ChoiceBox<AssetType> AssetTypeChoiceBox;
     @FXML
-    private TextField systemNameInput;
+    private TextField AssetNameInput;
     @FXML
-    private TextArea systemDescriptionTextArea;
+    private TextArea AssetDescriptionTextArea;
     @FXML
     private TextField serialNumberInput;
     @FXML
@@ -68,7 +68,7 @@ public class AddSystemController implements Initializable {
         uiUtilities = new UIUtilities();
         attachEvents();
         initializeFieldValues();
-        systemDescriptionTextArea.setWrapText(true);
+        AssetDescriptionTextArea.setWrapText(true);
     }
 
     /**
@@ -77,7 +77,7 @@ public class AddSystemController implements Initializable {
      * @author Jeff
      */
     public void attachEvents() {
-        systemTypeChoiceBox.valueProperty().addListener((obs, oldVal, newVal) -> {
+        AssetTypeChoiceBox.valueProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null)
                 selectedAssetType = newVal;
         });
@@ -91,26 +91,26 @@ public class AddSystemController implements Initializable {
                 errorDialog();
             }
         });
-        // Change scenes to Systems.fxml
-        systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, SYSTEMS));
-        //Attach link to systemTypeMenuBtn to go to Utilities.SystemTypeList.fxml
-        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/SystemTypeList"));
-        // Change scenes to Systems.fxml
-        cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, SYSTEMS));
+        // Change scenes to Assets.fxml
+        AssetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, AssetS));
+        //Attach link to AssetTypeMenuBtn to go to Utilities.AssetTypeList.fxml
+        AssetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/AssetTypeList"));
+        // Change scenes to Assets.fxml
+        cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, AssetS));
     }
 
 
     /**
      * Initializes the default and possible values for all fields that can accept user input. For example,
-     * it establishes the possible dropdown values for the system type selection.
+     * it establishes the possible dropdown values for the Asset type selection.
      */
     public void initializeFieldValues() {
         // Establishes the asset types available for selection in the dropdown
         ObservableList<AssetType> assetTypeNamesList;
         assetTypeNamesList = FXCollections.observableArrayList(assetTypeDAOImpl.getAssetTypeList());
-        systemTypeChoiceBox.setItems(assetTypeNamesList);
-        systemTypeChoiceBox.setValue(systemTypeChoiceBox.getItems().get(0));
-        systemTypeChoiceBox.setConverter(new StringConverter<>() {
+        AssetTypeChoiceBox.setItems(assetTypeNamesList);
+        AssetTypeChoiceBox.setValue(AssetTypeChoiceBox.getItems().get(0));
+        AssetTypeChoiceBox.setConverter(new StringConverter<>() {
             @Override
             public String toString(AssetType assetType) {
                 return assetType.getName();
@@ -118,7 +118,7 @@ public class AddSystemController implements Initializable {
 
             @Override
             public AssetType fromString(String s) {
-                return systemTypeChoiceBox.getItems().stream().filter(ap ->
+                return AssetTypeChoiceBox.getItems().stream().filter(ap ->
                         ap.getName().equals(s)).findFirst().orElse(null);
             }
         });
@@ -131,9 +131,9 @@ public class AddSystemController implements Initializable {
      */
     public Asset assembleAsset() {
         Asset newAsset = new Asset();
-        newAsset.setName(systemNameInput.getText());
+        newAsset.setName(AssetNameInput.getText());
         newAsset.setAssetTypeID(selectedAssetType.getId());
-        newAsset.setDescription(systemDescriptionTextArea.getText());
+        newAsset.setDescription(AssetDescriptionTextArea.getText());
         newAsset.setSerialNo(serialNumberInput.getText());
         newAsset.setManufacturer(manufacturerInput.getText());
         newAsset.setCategory(categoryInput.getText());
@@ -163,7 +163,7 @@ public class AddSystemController implements Initializable {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            uiUtilities.changeScene(mouseEvent, SYSTEMS);
+            uiUtilities.changeScene(mouseEvent, AssetS);
         }
     }
 

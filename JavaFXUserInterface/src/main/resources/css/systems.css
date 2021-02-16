@@ -1,16 +1,16 @@
-.systemPane
+.AssetPane
 {
     -fx-background-color: #FFFFFF;
     -fx-pref-height: 131.0;
     -fx-pref-width: 298.0;
 }
 
-.systemPane:hover
+.AssetPane:hover
 {
     -fx-background-color: #bfbfbf;
 }
 
-#systemName
+#AssetName
 {
     -fx-font-family: 'Segoe UI';
     -fx-font-size: 21px;
@@ -18,7 +18,7 @@
     -fx-fill: '#0c072e';
 }
 
-#systemType, #linearLabel, #linearRUL, #linearRUL, #lstmLabel, #lstmRUL, #recommendation, #recommendationLabel
+#AssetType, #linearLabel, #linearRUL, #linearRUL, #lstmLabel, #lstmRUL, #recommendation, #recommendationLabel
 {
     -fx-font-family: 'Segoe UI';
     -fx-font-size: 16px;

@@ -1,7 +1,7 @@
 package e2e.com.cbms.app;
 
 
-import Controllers.AddSystemController;
+import Controllers.AddAssetController;
 import app.item.Asset;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -21,19 +21,19 @@ import org.testfx.framework.junit.ApplicationTest;
 
 import static org.junit.Assert.*;
 
-public class AddSystemTest extends ApplicationTest {
+public class AddAssetTest extends ApplicationTest {
 
     private Asset fullAsset;
     private Asset emptyAsset;
-    private AddSystemController addSystemController;
+    private AddAssetController addAssetController;
     private Scene scene;
 
     @Override
     public void start (Stage stage) throws Exception {
-        FXMLLoader fxmlLoader = new FXMLLoader(AddSystemController.class.getResource("/AddSystem.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(AddAssetController.class.getResource("/AddAsset.fxml"));
         Parent root = fxmlLoader.load();
         scene = new Scene(root);
-        addSystemController = fxmlLoader.getController();
+        addAssetController = fxmlLoader.getController();
         stage.setTitle("CBMS");
         stage.setScene(scene);
         stage.show();
@@ -78,29 +78,29 @@ public class AddSystemTest extends ApplicationTest {
     }
 
     @Test
-    public void testSystemsButtonClick() {
-        clickOn("#systemMenuBtn");
-        Node addSystemScene = lookup("#systemsTitle").query();
-        from(addSystemScene).lookup((Text t) -> t.getText().startsWith("Systems"));
+    public void testAssetsButtonClick() {
+        clickOn("#AssetMenuBtn");
+        Node addAssetScene = lookup("#AssetsTitle").query();
+        from(addAssetScene).lookup((Text t) -> t.getText().startsWith("Assets"));
     }
 
     @Test
-    public void testSystemTypeButtonClick() {
-        clickOn("#systemTypeMenuBtn");
-        Node addSystemScene = lookup("#systemTypesTitle").query();
-        from(addSystemScene).lookup((Text t) -> t.getText().startsWith("System Types"));
+    public void testAssetTypeButtonClick() {
+        clickOn("#AssetTypeMenuBtn");
+        Node addAssetScene = lookup("#AssetTypesTitle").query();
+        from(addAssetScene).lookup((Text t) -> t.getText().startsWith("Asset Types"));
     }
 
     @Test
-    public void testAssembleSystemType() {
-        clickOn("#systemNameInput").write("Name");
-        clickOn("#systemDescriptionTextArea").write("Description");
+    public void testAssembleAssetType() {
+        clickOn("#AssetNameInput").write("Name");
+        clickOn("#AssetDescriptionTextArea").write("Description");
         clickOn("#serialNumberInput").write("34543");
         clickOn("#manufacturerInput").write("Manu");
         clickOn("#categoryInput").write("cat");
         clickOn("#siteInput").write("site");
         clickOn("#locationInput").write("location");
-        Asset asset = addSystemController.assembleAsset();
+        Asset asset = addAssetController.assembleAsset();
         assertNotNull(asset);
     }
 
