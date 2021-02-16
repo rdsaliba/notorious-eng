@@ -1,4 +1,4 @@
-package SystemTests.com.cbms.app;
+package e2e.com.cbms.app;
 
 import Controllers.SystemInfoController;
 import Controllers.SystemsController;

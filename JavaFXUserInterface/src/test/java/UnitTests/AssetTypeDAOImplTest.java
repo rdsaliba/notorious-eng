@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
-public class RemoveSystemTypeTest {
+public class AssetTypeDAOImplTest {
 
     @Test
     public void testRemovingFunctionality(){

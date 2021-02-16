@@ -9,7 +9,7 @@ import java.io.FileReader;
 
 import static org.junit.Assert.assertEquals;
 
-public class reductionTest {
+public class DataPreprocessorControllerTest {
     DataPrePreprocessorController dataPrePreprocessorController;
 
     @Before

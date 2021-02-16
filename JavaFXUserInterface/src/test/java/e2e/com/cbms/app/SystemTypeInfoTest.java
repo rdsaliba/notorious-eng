@@ -1,8 +1,10 @@
-package SystemTests.com.cbms.app;
+package e2e.com.cbms.app;
 
-import Controllers.AddSystemTypeController;
 import Controllers.SystemTypeInfoController;
+import Utilities.SystemTypeList;
+import Utilities.TextConstants;
 import app.item.AssetType;
+import app.item.AssetTypeParameter;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -18,19 +20,39 @@ import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import java.util.ArrayList;
 
-public class AddSystemTypeTest extends ApplicationTest {
+import static org.junit.Assert.assertEquals;
+
+public class SystemTypeInfoTest extends ApplicationTest {
+
     private Scene scene;
-    private AddSystemTypeController addSystemTypeController;
+    private static SystemTypeInfoController systemTypeInfoController;
 
     @Override
     public void start (Stage stage) throws Exception {
-        FXMLLoader fxmlLoader = new FXMLLoader(SystemTypeInfoController.class.getResource("/AddSystemType.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(SystemTypeInfoController.class.getResource("/SystemTypeInfo.fxml"));
         Parent root = fxmlLoader.load();
         scene = new Scene(root);
-        addSystemTypeController = fxmlLoader.getController();
+        systemTypeInfoController = fxmlLoader.getController();
+
+        AssetType assetType = new AssetType();
+        ArrayList<AssetTypeParameter> parameters = new ArrayList<>();
+        parameters.add(new AssetTypeParameter(TextConstants.OK_THRESHOLD, 10.0));
+        parameters.add(new AssetTypeParameter(TextConstants.ADVISORY_THRESHOLD, 8.0));
+        parameters.add(new AssetTypeParameter(TextConstants.CAUTION_THRESHOLD, 6.0));
+        parameters.add(new AssetTypeParameter(TextConstants.WARNING_THRESHOLD, 3.0));
+        parameters.add(new AssetTypeParameter(TextConstants.FAILED_THRESHOLD, 1.0));
+        assetType.setThresholdList(parameters);
+        assetType.setId("1");
+        assetType.setDescription("This is a description");
+        assetType.setName("Asset Type Name");
+
+        SystemTypeList systemTypeList = new SystemTypeList(assetType, 34, 67,
+                "Ok", "Caution", "Advisory", "Warning", "Failed");
+
+        systemTypeInfoController.initData(systemTypeList);
+
         stage.setTitle("CBMS");
         stage.setScene(scene);
         stage.show();
@@ -62,25 +84,5 @@ public class AddSystemTypeTest extends ApplicationTest {
         clickOn("#systemTypeMenuBtn");
         Node rootNode = lookup("#systemTypesTitle").query();
         from(rootNode).lookup((Text t) -> t.getText().startsWith("System Types"));
-    }
-
-    @Test
-    public void testCancelButtonClick() {
-        clickOn("#cancelBtn");
-        Node rootNode = lookup("#systemTypesTitle").query();
-        from(rootNode).lookup((Text t) -> t.getText().startsWith("System Types"));
-    }
-
-    @Test
-    public void testAssembleSystemType() {
-        clickOn("#systemTypeName").write("Name");
-        clickOn("#systemTypeDescription").write("Description");
-        clickOn("#thresholdOKValue").write("23.0");
-        clickOn("#thresholdAdvisoryValue").write("20.0");
-        clickOn("#thresholdCautionValue").write("15.0");
-        clickOn("#thresholdWarningValue").write("10.0");
-        clickOn("#thresholdFailedValue").write("5.0");
-        AssetType assetType = addSystemTypeController.assembleSystemType();
-        assertNotNull(assetType);
     }
 }
