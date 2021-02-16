@@ -1,4 +1,4 @@
-package com.cbms.app;
+package e2e.com.cbms.app;
 
 import app.ModelController;
 import javafx.geometry.VerticalDirection;

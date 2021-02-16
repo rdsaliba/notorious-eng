@@ -1,3 +1,5 @@
+package e2e.com.cbms.app;
+
 import Controllers.AssetsController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -15,19 +17,20 @@ import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.testfx.api.FxAssert;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
+import org.testfx.matcher.base.WindowMatchers;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class AssetsControllerTest extends ApplicationTest {
+public class AssetsTest extends ApplicationTest {
 
     private Scene scene;
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start (Stage stage) throws Exception {
         Parent root = FXMLLoader.load(AssetsController.class.getResource("/Assets.fxml"));
         scene = new Scene(root);
         stage.setTitle("CBMS");
@@ -41,10 +44,15 @@ public class AssetsControllerTest extends ApplicationTest {
         release(new KeyCode[]{});
         release(new MouseButton[]{});
     }
+    @Test
+    public void testApplicationLaunch() {
+        FxAssert.verifyThat(window("CBMS"), WindowMatchers.isShowing());
+    }
+
 
     @Test
     public void hasThumbnails() {
-        FlowPane rootNode = (FlowPane) scene.getRoot().lookup("#assetsThumbPane");
+        FlowPane rootNode = (FlowPane) scene.getRoot().lookup("#AssetsThumbPane");
         assertTrue(rootNode.getChildren().size() > 0);
     }
 
@@ -65,14 +73,14 @@ public class AssetsControllerTest extends ApplicationTest {
     @Test
     public void hasAssetMenuButton() {
         AnchorPane rootNode = (AnchorPane) scene.getRoot();
-        Button button = from(rootNode).lookup("#assetMenuBtn").query();
+        Button button = from(rootNode).lookup("#AssetMenuBtn").query();
         assertEquals("Assets", button.getText());
     }
 
     @Test
     public void hasAssetTypeMenuButton() {
         AnchorPane rootNode = (AnchorPane) scene.getRoot();
-        Button button = from(rootNode).lookup("#assetTypeMenuBtn").query();
+        Button button = from(rootNode).lookup("#AssetTypeMenuBtn").query();
         assertEquals("Asset\nTypes", button.getText());
     }
 
@@ -92,15 +100,15 @@ public class AssetsControllerTest extends ApplicationTest {
 
     @Test
     public void testAssetsButtonClick() {
-        clickOn("#assetMenuBtn");
-        Node addAssetScene = lookup("#assetsTitle").query();
+        clickOn("#AssetMenuBtn");
+        Node addAssetScene = lookup("#AssetsTitle").query();
         from(addAssetScene).lookup((Text t) -> t.getText().startsWith("Assets"));
     }
 
     @Test
     public void testAssetTypeButtonClick() {
-        clickOn("#assetTypeMenuBtn");
-        Node addAssetScene = lookup("#assetTypesTitle").query();
+        clickOn("#AssetTypeMenuBtn");
+        Node addAssetScene = lookup("#AssetTypesTitle").query();
         from(addAssetScene).lookup((Text t) -> t.getText().startsWith("Asset Types"));
     }
 
@@ -111,11 +119,11 @@ public class AssetsControllerTest extends ApplicationTest {
         type(KeyCode.ENTER);
     }
 
-//    @Test
-//    public void testSortDescendingClick() {
-//        clickOn("#sortAsset");
-//        type(KeyCode.DOWN);
-//        type(KeyCode.DOWN);
-//        type(KeyCode.ENTER);
-//    }
+    @Test
+    public void testSortDescendingClick() {
+        clickOn("#sortAsset");
+        type(KeyCode.DOWN);
+        type(KeyCode.DOWN);
+        type(KeyCode.ENTER);
+    }
 }

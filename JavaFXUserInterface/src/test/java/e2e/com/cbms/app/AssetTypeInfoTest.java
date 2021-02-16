@@ -1,3 +1,5 @@
+package e2e.com.cbms.app;
+
 import Controllers.AssetTypeInfoController;
 import Utilities.AssetTypeList;
 import Utilities.TextConstants;
@@ -22,17 +24,17 @@ import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 
-public class AssetTypeInfoControllerTest extends ApplicationTest {
+public class AssetTypeInfoTest extends ApplicationTest {
 
     private Scene scene;
-    private static AssetTypeInfoController assetTypeInfoController;
+    private static AssetTypeInfoController AssetTypeInfoController;
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start (Stage stage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(AssetTypeInfoController.class.getResource("/AssetTypeInfo.fxml"));
         Parent root = fxmlLoader.load();
         scene = new Scene(root);
-        assetTypeInfoController = fxmlLoader.getController();
+        AssetTypeInfoController = fxmlLoader.getController();
 
         AssetType assetType = new AssetType();
         ArrayList<AssetTypeParameter> parameters = new ArrayList<>();
@@ -46,10 +48,10 @@ public class AssetTypeInfoControllerTest extends ApplicationTest {
         assetType.setDescription("This is a description");
         assetType.setName("Asset Type Name");
 
-        AssetTypeList assetTypeList = new AssetTypeList(assetType, 34, 67,
+        AssetTypeList AssetTypeList = new AssetTypeList(assetType, 34, 67,
                 "Ok", "Caution", "Advisory", "Warning", "Failed");
 
-        assetTypeInfoController.initData(assetTypeList);
+        AssetTypeInfoController.initData(AssetTypeList);
 
         stage.setTitle("CBMS");
         stage.setScene(scene);
@@ -72,15 +74,15 @@ public class AssetTypeInfoControllerTest extends ApplicationTest {
 
     @Test
     public void testAssetsButtonClick() {
-        clickOn("#assetMenuBtn");
-        Node rootNode = lookup("#assetsTitle").query();
+        clickOn("#AssetMenuBtn");
+        Node rootNode = lookup("#AssetsTitle").query();
         from(rootNode).lookup((Text t) -> t.getText().startsWith("Assets"));
     }
 
     @Test
     public void testAssetTypeButtonClick() {
-        clickOn("#assetTypeMenuBtn");
-        Node rootNode = lookup("#assetTypesTitle").query();
+        clickOn("#AssetTypeMenuBtn");
+        Node rootNode = lookup("#AssetTypesTitle").query();
         from(rootNode).lookup((Text t) -> t.getText().startsWith("Asset Types"));
     }
 }

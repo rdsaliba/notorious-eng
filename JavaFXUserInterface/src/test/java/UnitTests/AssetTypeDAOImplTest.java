@@ -1,3 +1,5 @@
+package UnitTests;
+
 import app.item.AssetType;
 import external.AssetTypeDAOImpl;
 import org.junit.Assert;
@@ -5,10 +7,10 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
-public class RemoveAssetTypeTest {
+public class AssetTypeDAOImplTest {
 
     @Test
-    public void testRemovingFunctionality() {
+    public void testRemovingFunctionality(){
         String testName = "Testing type";
         AssetTypeDAOImpl assetTypeDAO = new AssetTypeDAOImpl();
         AssetType assetType = new AssetType();

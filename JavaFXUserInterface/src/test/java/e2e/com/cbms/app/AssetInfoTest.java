@@ -1,3 +1,5 @@
+package e2e.com.cbms.app;
+
 import Controllers.AssetInfoController;
 import Controllers.AssetsController;
 import app.item.Asset;
@@ -26,17 +28,17 @@ import java.util.ArrayList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class AssetInfoControllerTest extends ApplicationTest {
+public class AssetInfoTest extends ApplicationTest {
 
     private Scene scene;
-    private static AssetInfoController assetInfoController;
+    private static AssetInfoController AssetInfoController;
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start (Stage stage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(AssetsController.class.getResource("/AssetInfo.fxml"));
         Parent root = fxmlLoader.load();
         scene = new Scene(root);
-        assetInfoController = fxmlLoader.getController();
+        AssetInfoController = fxmlLoader.getController();
 //        Asset asset = new Asset();
 //        asset.setId(123);
 //        asset.setLocation("location");
@@ -63,7 +65,7 @@ public class AssetInfoControllerTest extends ApplicationTest {
 //        asset.setAssetInfo(assetInfo);
         AssetDAOImpl assetDAOImpl = new AssetDAOImpl();
         ArrayList<Asset> assets = assetDAOImpl.getAllLiveAssets();
-        assetInfoController.initData(assets.get(0));
+        AssetInfoController.initData(assets.get(0));
         stage.setTitle("CBMS");
         stage.setScene(scene);
         stage.show();
@@ -85,22 +87,22 @@ public class AssetInfoControllerTest extends ApplicationTest {
 
     @Test
     public void testAssetsButtonClick() {
-        clickOn("#assetMenuBtn");
-        Node addAssetScene = lookup("#assetsTitle").query();
+        clickOn("#AssetMenuBtn");
+        Node addAssetScene = lookup("#AssetsTitle").query();
         from(addAssetScene).lookup((Text t) -> t.getText().startsWith("Assets"));
     }
 
     @Test
     public void testAssetTypeButtonClick() {
-        clickOn("#assetTypeMenuBtn");
-        Node addAssetScene = lookup("#assetTypesTitle").query();
+        clickOn("#AssetTypeMenuBtn");
+        Node addAssetScene = lookup("#AssetTypesTitle").query();
         from(addAssetScene).lookup((Text t) -> t.getText().startsWith("Asset Types"));
     }
 
     @Test
     public void testInformationTabClick() {
         clickOn("#informationTab");
-        FlowPane rootNode = (FlowPane) scene.getRoot().lookup("#attributeFlowPane");
+        FlowPane rootNode = (FlowPane) scene.getRoot().lookup("#sensorFlowPane");
         assertTrue(rootNode.getChildren().size() > 0);
     }
 
