@@ -3,7 +3,6 @@
   It will setup the database and train the models
 
   @author Paul Micu
-  @version 2.0
   @last_edit 12/27/2020
  */
 package app;
@@ -159,7 +158,7 @@ public class ModelController {
      * @author Paul
      */
     private ModelStrategy getModelStrategy(TrainedModel trainedModel) {
-        String stratName = modelDAOImpl.getModelNameFromModelID(trainedModel.getModelID());
+        String stratName = modelDAOImpl.getModelNameFromAssetTypeID(String.valueOf(trainedModel.getAssetTypeID()));
         switch (stratName) {
             case "Linear":                                  //1: Linear
                 return new LinearRegressionModelImpl();
