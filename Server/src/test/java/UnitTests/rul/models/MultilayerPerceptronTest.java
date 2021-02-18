@@ -1,23 +1,24 @@
-package rul.models;
+package UnitTests.rul.models;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import rul.models.ModelsController;
+import rul.models.MultilayerPerceptronModelImpl;
 import weka.classifiers.Classifier;
-import weka.classifiers.functions.SMOreg;
+import weka.classifiers.functions.MultilayerPerceptron;
 import weka.core.Instances;
 
 import java.io.FileReader;
 
 import static org.junit.Assert.assertEquals;
 
-public class SMORegTest
-{
+public class MultilayerPerceptronTest {
     private ModelsController modelsController;
 
     @Before
     public void setUp() {
-        modelsController = new ModelsController(new SMORegModelImpl());
+        modelsController = new ModelsController(new MultilayerPerceptronModelImpl());
     }
 
     @After
@@ -28,11 +29,11 @@ public class SMORegTest
     @Test
     public void trainModel() throws Exception {
         FileReader trainFile = new FileReader("src/test/resources/FD01_Train_RUL.arff");
-        Instances trainData  = new Instances(trainFile);
+        Instances  trainData = new Instances(trainFile);
         trainData.setClassIndex(trainData.numAttributes() - 1);
 
-        Classifier smoReg = new SMOreg();
-        assertEquals("Should Return SMOreg Model", smoReg.getClass(), modelsController.trainModel(trainData).getClass());
-
+        Classifier mlp = new MultilayerPerceptron();
+        assertEquals("Should Return Multilayer Perceptron Model", mlp.getClass(),
+                     modelsController.trainModel(trainData).getClass());
     }
 }

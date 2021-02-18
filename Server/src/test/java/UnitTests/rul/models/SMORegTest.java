@@ -1,22 +1,25 @@
-package rul.models;
+package UnitTests.rul.models;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import rul.models.ModelsController;
+import rul.models.SMORegModelImpl;
 import weka.classifiers.Classifier;
-import weka.classifiers.meta.RandomSubSpace;
+import weka.classifiers.functions.SMOreg;
 import weka.core.Instances;
 
 import java.io.FileReader;
 
 import static org.junit.Assert.assertEquals;
 
-public class RandomSubSpaceTest {
+public class SMORegTest
+{
     private ModelsController modelsController;
 
     @Before
     public void setUp() {
-        modelsController = new ModelsController(new RandomSubSpaceModelImpl());
+        modelsController = new ModelsController(new SMORegModelImpl());
     }
 
     @After
@@ -27,11 +30,11 @@ public class RandomSubSpaceTest {
     @Test
     public void trainModel() throws Exception {
         FileReader trainFile = new FileReader("src/test/resources/FD01_Train_RUL.arff");
-        Instances  trainData = new Instances(trainFile);
+        Instances trainData  = new Instances(trainFile);
         trainData.setClassIndex(trainData.numAttributes() - 1);
 
-        Classifier randomSubSpace = new RandomSubSpace();
-        assertEquals("Should Return Random SubSpace Model", randomSubSpace.getClass(),
-                     modelsController.trainModel(trainData).getClass());
+        Classifier smoReg = new SMOreg();
+        assertEquals("Should Return SMOreg Model", smoReg.getClass(), modelsController.trainModel(trainData).getClass());
+
     }
 }

@@ -1,8 +1,11 @@
-package rul.models;
+package UnitTests.rul.models;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import rul.models.AdditiveRegressionModelImpl;
+import rul.models.ModelEvaluation;
+import rul.models.ModelStrategy;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.classifiers.meta.AdditiveRegression;

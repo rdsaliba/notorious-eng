@@ -1,22 +1,24 @@
-package rul.models;
+package UnitTests.rul.models;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import rul.models.ModelsController;
+import rul.models.RandomSubSpaceModelImpl;
 import weka.classifiers.Classifier;
-import weka.classifiers.meta.AdditiveRegression;
+import weka.classifiers.meta.RandomSubSpace;
 import weka.core.Instances;
 
 import java.io.FileReader;
 
 import static org.junit.Assert.assertEquals;
 
-public class AdditiveRegressionTest {
+public class RandomSubSpaceTest {
     private ModelsController modelsController;
 
     @Before
     public void setUp() {
-        modelsController = new ModelsController(new AdditiveRegressionModelImpl());
+        modelsController = new ModelsController(new RandomSubSpaceModelImpl());
     }
 
     @After
@@ -30,8 +32,8 @@ public class AdditiveRegressionTest {
         Instances  trainData = new Instances(trainFile);
         trainData.setClassIndex(trainData.numAttributes() - 1);
 
-        Classifier additiveRegression = new AdditiveRegression();
-        assertEquals("Should Return Additive Regression Model", additiveRegression.getClass(),
+        Classifier randomSubSpace = new RandomSubSpace();
+        assertEquals("Should Return Random SubSpace Model", randomSubSpace.getClass(),
                      modelsController.trainModel(trainData).getClass());
     }
 }
