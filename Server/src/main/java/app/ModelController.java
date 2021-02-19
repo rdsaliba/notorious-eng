@@ -160,14 +160,22 @@ public class ModelController {
     private ModelStrategy getModelStrategy(TrainedModel trainedModel) {
         String stratName = modelDAOImpl.getModelNameFromAssetTypeID(String.valueOf(trainedModel.getAssetTypeID()));
         switch (stratName) {
-            case "Linear":
+            case "Linear":                                  //1: Linear
                 return new LinearRegressionModelImpl();
-            case "LSTM":
+            case "LSTM":                                    //2: LSTM
                 return new LSTMModelImpl();
-            case "RandomForest":                            //To be entered in DB: RandomForest
+            case "RandomForest":                            //3: RandomForest
                 return new RandomForestModelImpl();
-            case "RandomCommittee":                    //To be entered in DB: RandomCommittee
+            case "RandomCommittee":                         //4: RandomCommittee
                 return new RandomCommitteeModelImpl();
+            case "RandomSubSpace":                          //5: RandomSubSpace
+                return new RandomSubSpaceModelImpl();
+            case "AdditiveRegression":                      //6: AdditiveRegression
+                return new AdditiveRegressionModelImpl();
+            case "SMOReg":                                  //7: SMOReg
+                return new SMORegModelImpl();
+            case "MultilayerPerceptron":                    //8: MultilayerPerceptron
+                return new MultilayerPerceptronModelImpl();
             default:
                 return null;
         }
