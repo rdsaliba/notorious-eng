@@ -8,6 +8,7 @@
  */
 package external;
 
+import app.item.Asset;
 import app.item.TrainedModel;
 import weka.classifiers.Classifier;
 
@@ -17,11 +18,13 @@ import java.io.ObjectInputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class ModelDAOImpl extends DAO implements ModelDAO {
     private static final String GET_MODEL_NAME_FROM_ID = "SELECT name from model where model_id = ?";
     private static final String GET_MODEL_FROM_ASSET_TYPE = "SELECT * FROM trained_model WHERE asset_type_id = ?";
-
+    private static final String GET_MODELS_LIST = "select * from model";
+    private static final String INSERT_RMSE = "update model set rmse = ? where model_id = ?";
     /**
      * Given a model id, this function will return the string corresponding
      * to the name of the model in the database
@@ -42,6 +45,23 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
             e.printStackTrace();
         }
         return name;
+    }
+
+    @Override
+    public ArrayList<String> getListOfModels(){
+        ArrayList<String> models=new ArrayList<String>();
+        String name="";
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_MODELS_LIST)) {
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next())
+                    name = rs.getString("name");
+                    models.add(name);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return models;
+
     }
 
 
@@ -91,4 +111,16 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
         }
         return tm;
     }
+
+    public void updateRMSE(Double rmse, int id) {
+        try (PreparedStatement ps = getConnection().prepareStatement(INSERT_RMSE)) {
+            ps.setDouble(1, rmse);
+            ps.setInt(2, id);
+            ps.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
+
+

@@ -3,15 +3,36 @@ package Controllers;
 import Utilities.SystemTypeList;
 import Utilities.TextConstants;
 import Utilities.UIUtilities;
+import app.ModelController;
+import app.item.Asset;
 import external.AssetTypeDAOImpl;
+import external.ModelDAOImpl;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.text.Text;
+import local.AssetDAOImpl;
+import preprocessing.DataPrePreprocessorController;
+import rul.models.*;
+import weka.classifiers.Classifier;
+import weka.classifiers.evaluation.Evaluation;
+import weka.classifiers.functions.Dl4jMlpClassifier;
+import weka.classifiers.functions.LinearRegression;
+import weka.core.Attribute;
+import weka.core.DenseInstance;
+import weka.core.Instance;
+import weka.core.Instances;
+import weka.dl4j.layers.LSTM;
 
+import java.io.Console;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -42,17 +63,42 @@ public class SystemTypeInfoController implements Initializable {
     private TextField thresholdFailed;
     @FXML
     private ImageView systemTypeImageView;
+    @FXML
+    private Slider trainSlider;
+    @FXML
+    private Slider testSlider;
+    @FXML
+    private Label trainValue;
+    @FXML
+    private Label testValue;
+    @FXML
+    private Button modelEvaluateBtn;
 
     private UIUtilities uiUtilities;
     private SystemTypeList assetType;
     private SystemTypeList originalAssetType;
     private AssetTypeDAOImpl assetTypeDAO;
+    private ModelDAOImpl modelDAO;
+    private AssetDAOImpl assetDAO;
+    private ModelController modelController;
+    private Instances trainDataset;
+    private DataPrePreprocessorController prePreprocessorController;
+    private int trainSize = 0;
+    private int testSize = 0;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         uiUtilities = new UIUtilities();
         assetTypeDAO = new AssetTypeDAOImpl();
-        attachEvents();
+        modelDAO = new ModelDAOImpl();
+        assetDAO = new AssetDAOImpl();
+        prePreprocessorController = new DataPrePreprocessorController();
+
+        try {
+            attachEvents();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
     }
 
     /**
@@ -62,11 +108,12 @@ public class SystemTypeInfoController implements Initializable {
      * @param assetType represents the asset type we want to get info on
      * @author Najim, Paul
      */
-    public void initData(SystemTypeList assetType) {
+    public void initData(SystemTypeList assetType) throws Exception {
         this.assetType = assetType;
         this.originalAssetType = new SystemTypeList(assetType);
         systemTypeName.setText(assetType.getAssetType().getName());
         systemTypeDesc.setText(assetType.getAssetType().getDescription());
+
         try {
             thresholdOK.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueOk())));
             thresholdAdvisory.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueAdvisory())));
@@ -84,7 +131,51 @@ public class SystemTypeInfoController implements Initializable {
      * @author Najim, Paul
      * Edit: added all the text proprety listeners and text formaters for all the fields
      */
-    public void attachEvents() {
+    public void attachEvents() throws Exception {
+
+        //        ---------------------------- F10 --------------------------
+        try {
+            trainDataset  = DataPrePreprocessorController.getInstance().addRULCol(createInstancesFromAssets(assetDAO.getAssetsFromAssetTypeID(1)));
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        trainSlider.setMax(trainDataset.size());
+        trainValue.setText(Integer.toString(trainDataset.size()));
+        testSlider.setMax(trainDataset.size());
+        testValue.setText(Integer.toString(trainDataset.size() ));
+
+        trainSlider.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                trainValue.setText(Integer.toString((int)trainSlider.getValue()));
+                testValue.setText(Integer.toString(trainDataset.size() - (int)trainSlider.getValue()));
+                testSlider.setMax(trainDataset.size() - (int)trainSlider.getValue());
+                trainSize = (int)trainSlider.getValue();
+            }
+        });
+        testSlider.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                testValue.setText(Integer.toString((int)testSlider.getValue()));
+                trainValue.setText(Integer.toString(trainDataset.size() - (int)testSlider.getValue()));
+                trainSlider.setMax(trainDataset.size() - (int)testSlider.getValue());
+                testSize = (int)testSlider.getValue();
+            }
+        });
+
+        try{
+            modelEvaluateBtn.setOnMouseClicked(mouseEvent -> {
+                try {
+                    evaluateModels(mouseEvent);
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+            });
+        }
+        catch (Exception e){}
+
+        //        ---------------------------- F10 --------------------------
+
         // Change scenes to Systems.fxml
         systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
         //Attach link to systemTypeMenuBtn to go to Utilities.SystemTypeList.fxml
@@ -203,6 +294,93 @@ public class SystemTypeInfoController implements Initializable {
             deleteAssetType();
             uiUtilities.changeScene(mouseEvent, SYSTEM_TYPE_LIST);
         }
+    }
+
+    private void evaluateModels(MouseEvent mouseEvent)  {
+        try {
+            ArrayList<String> models = modelDAO.getListOfModels();
+            trainDataset.setClassIndex(trainDataset.numAttributes() - 1);
+            Instances trainSet = populateDataset(trainSize);
+            Instances testSet = populateDataset(testSize);
+            LinearRegression lr = new LinearRegression();
+            double ratio = (trainSize/trainDataset.size())*100;
+            int id=0;
+//            Classifier model = null;
+            Evaluation ev = new Evaluation(trainSet);
+            LSTMModelImpl impl = new LSTMModelImpl();
+            double rmse = 0.0;
+            for(int i=0;i<models.size();i++){
+            switch (models.get(i)) {
+                case "Linear":
+                    Classifier model =  new LinearRegression();
+                    id=1;
+                    model.buildClassifier(trainSet);
+                    ev.evaluateModel(model,testSet);
+                    rmse = ev.rootMeanSquaredError();
+                    modelDAO.updateRMSE(rmse, id);
+                    trainValue.setText(Double.toString(rmse));
+                case "LSTM":
+                    ModelStrategy lstmm = new LSTMModelImpl();
+                    Classifier lstm = lstmm.trainModel(trainSet);
+                    id=2;
+                    ev.evaluateModel(lstm,testSet);
+                    rmse = ev.rootMeanSquaredError();
+                    modelDAO.updateRMSE(rmse, id);
+                    trainValue.setText(Double.toString(rmse));
+//                case "RandomForest":                            //To be entered in DB: RandomForest
+//                    model =  new RandomForestModelImpl();
+//                case "RandomCommittee":                    //To be entered in DB: RandomCommittee
+//                    return new RandomCommitteeModelImpl();
+                default:
+                    model = null;
+            }
+            }
+            }
+//        }
+        catch (Exception e){trainValue.setText(e.getMessage());}
+    }
+
+    private Instances populateDataset(int size){
+        Instances set = trainDataset;
+        for(int i=size;i<=trainDataset.size()-1;i++){
+            set.delete(i);
+        }
+        for(int j=0;j<=size;j++){
+            trainDataset.delete(j);
+        }
+        return set;
+    }
+
+    public Instances createInstancesFromAssets(List<Asset> assets) {
+        ArrayList<Attribute> attributesVector;
+        Instances data;
+        double[] values;
+        ArrayList<String> attributeNames = assetDAO.getAttributesNameFromAssetID(assets.get(0).getId());
+        String assetTypeName = assetDAO.getAssetTypeNameFromID(assets.get(0).getAssetTypeID());
+
+        // 1. set up attributes
+        attributesVector = new ArrayList<>();
+        // - numeric
+        attributesVector.add(new Attribute("Asset_id"));
+        attributesVector.add(new Attribute("Time_Cycle"));
+        for (String attributeName : attributeNames) {
+            attributesVector.add(new Attribute(attributeName));
+        }
+        // 2. create Instances object
+        data = new Instances(assetTypeName, attributesVector, 0);
+
+        for (Asset asset : assets) {
+            for (int timeCycle = 1; timeCycle <= asset.getAssetInfo().getAssetAttributes().get(1).getMeasurements().size(); timeCycle++) {
+                values = new double[data.numAttributes()];
+                values[0] = asset.getId();
+                values[1] = timeCycle;
+                for (int i = 0; i < asset.getAssetInfo().getAssetAttributes().size(); i++) {
+                    values[i + 2] = asset.getAssetInfo().getAssetAttributes().get(i).getMeasurements(timeCycle);
+                }
+                data.add(new DenseInstance(1.0, values));       //changed from Instance to DenseInstance
+            }
+        }
+        return data;
     }
 
     /**

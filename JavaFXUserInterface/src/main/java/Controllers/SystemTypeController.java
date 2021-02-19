@@ -9,10 +9,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.net.URL;
@@ -40,6 +37,8 @@ public class SystemTypeController implements Initializable {
     private TableColumn<SystemTypeList, Double> columnWarning;
     @FXML
     private TableColumn<SystemTypeList, Double> columnFailed;
+
+
 
     //Configure buttons
     @FXML

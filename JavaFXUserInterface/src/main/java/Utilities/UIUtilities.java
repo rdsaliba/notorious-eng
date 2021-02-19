@@ -126,6 +126,8 @@ public class UIUtilities {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
     }
 

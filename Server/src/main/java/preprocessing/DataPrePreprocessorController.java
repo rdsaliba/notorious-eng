@@ -15,7 +15,7 @@ public class DataPrePreprocessorController {
     private static DataPrePreprocessorController instance = null;
     private DataPreProcessorImpl dataPreProcessorImpl = null;
 
-    private DataPrePreprocessorController() {
+    public DataPrePreprocessorController() {
     }
 
     public static DataPrePreprocessorController getInstance() {
