@@ -24,7 +24,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     private static final String GET_MODEL_NAME_FROM_ID = "SELECT name from model where model_id = ?";
     private static final String GET_MODEL_FROM_ASSET_TYPE = "SELECT * FROM trained_model WHERE asset_type_id = ?";
     private static final String GET_MODELS_LIST = "select * from model";
-    private static final String INSERT_RMSE = "update model set rmse = ? where model_id = ?";
+    private static final String INSERT_RMSE = "update model_evaluation set rmse = ? where model_id=? and asset_type_id =?";
     /**
      * Given a model id, this function will return the string corresponding
      * to the name of the model in the database
@@ -112,10 +112,12 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
         return tm;
     }
 
-    public void updateRMSE(Double rmse, int id) {
+    public void updateRMSE(Double rmse, int modelId, int assetTypeId) {
         try (PreparedStatement ps = getConnection().prepareStatement(INSERT_RMSE)) {
             ps.setDouble(1, rmse);
-            ps.setInt(2, id);
+            ps.setInt(2, modelId);
+            ps.setInt(3, assetTypeId);
+
             ps.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();

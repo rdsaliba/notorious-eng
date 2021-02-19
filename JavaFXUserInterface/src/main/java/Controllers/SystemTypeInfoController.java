@@ -135,7 +135,7 @@ public class SystemTypeInfoController implements Initializable {
 
         //        ---------------------------- F10 --------------------------
         try {
-            trainDataset  = DataPrePreprocessorController.getInstance().addRULCol(createInstancesFromAssets(assetDAO.getAssetsFromAssetTypeID(1)));
+            trainDataset  = DataPrePreprocessorController.getInstance().addRULCol(createInstancesFromAssets(assetDAO.getAssetsFromAssetTypeID(Integer.parseInt(assetType.getId()))));
         } catch (Exception exception) {
             exception.printStackTrace();
         }
@@ -310,23 +310,25 @@ public class SystemTypeInfoController implements Initializable {
             LSTMModelImpl impl = new LSTMModelImpl();
             double rmse = 0.0;
             for(int i=0;i<models.size();i++){
+                trainValue.setText(assetType.getId());
             switch (models.get(i)) {
                 case "Linear":
+
                     Classifier model =  new LinearRegression();
                     id=1;
                     model.buildClassifier(trainSet);
                     ev.evaluateModel(model,testSet);
                     rmse = ev.rootMeanSquaredError();
-                    modelDAO.updateRMSE(rmse, id);
-                    trainValue.setText(Double.toString(rmse));
-                case "LSTM":
-                    ModelStrategy lstmm = new LSTMModelImpl();
-                    Classifier lstm = lstmm.trainModel(trainSet);
-                    id=2;
-                    ev.evaluateModel(lstm,testSet);
-                    rmse = ev.rootMeanSquaredError();
-                    modelDAO.updateRMSE(rmse, id);
-                    trainValue.setText(Double.toString(rmse));
+                    modelDAO.updateRMSE(rmse, 1 , Integer.parseInt(assetType.getId()));
+
+//                case "LSTM":
+//                    ModelStrategy lstmm = new LSTMModelImpl();
+//                    Classifier lstm = lstmm.trainModel(trainSet);
+//                    id=2;
+//                    ev.evaluateModel(lstm,testSet);
+//                    rmse = ev.rootMeanSquaredError();
+//                    modelDAO.updateRMSE(rmse, 2 , Integer.parseInt(assetType.getId()));
+//                    testValue.setText(Double.toString(rmse));
 //                case "RandomForest":                            //To be entered in DB: RandomForest
 //                    model =  new RandomForestModelImpl();
 //                case "RandomCommittee":                    //To be entered in DB: RandomCommittee
@@ -342,13 +344,19 @@ public class SystemTypeInfoController implements Initializable {
 
     private Instances populateDataset(int size){
         Instances set = trainDataset;
-        for(int i=size;i<=trainDataset.size()-1;i++){
-            set.delete(i);
-        }
-        for(int j=0;j<=size;j++){
-            trainDataset.delete(j);
+        if(set.size()==size) return set;
+        for(int i=size+1;i<trainDataset.size();i++){
+            trainDataset.delete(i);
         }
         return set;
+//        Instances set = trainDataset;
+//        for(int i=size;i<=trainDataset.size()-1;i++){
+//            set.delete(i);
+//        }
+//        for(int j=0;j<=size;j++){
+//            trainDataset.delete(j);
+//        }
+//        return set;
     }
 
     public Instances createInstancesFromAssets(List<Asset> assets) {
