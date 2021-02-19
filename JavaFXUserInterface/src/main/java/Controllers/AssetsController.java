@@ -112,13 +112,14 @@ public class AssetsController implements Initializable {
      */
     public void updateRULs() {
         rulTimeline =
-                new Timeline(new KeyFrame(Duration.millis(3000), e ->
-                {
-                    for (Asset asset:systems) {
-                        asset.setRul(String.valueOf(TextConstants.RULValueFormat.format(AssessmentController.getLatestEstimate(asset.getId()))));
-                    }
-                    table.refresh();
-                }));
+            new Timeline(new KeyFrame(Duration.millis(3000), e ->
+            {
+                for (Asset asset:assets) {
+                    asset.setRul(String.valueOf(TextConstants.RULValueFormat.format(AssessmentController.getLatestEstimate(asset.getId()))));
+                    System.out.println(asset.getRul() + "::" + asset.getId());
+                }
+                table.refresh();
+            }));
 
         rulTimeline.setCycleCount(Animation.INDEFINITE); // loop forever
         rulTimeline.play();
@@ -141,13 +142,13 @@ public class AssetsController implements Initializable {
         });
 
         //Attach link to assetMenuButton to go to Assets.fxml
-        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE));
+        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(rulTimeline, mouseEvent, TextConstants.ASSETS_SCENE));
 
         //Attach link to assetTypeMenuBtn to go to Utilities.AssetTypeList.fxml
-        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
+        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(rulTimeline, mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
 
         //Attach link to addAssetButton to go to AddAsset.fxml
-        addAssetBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, dsafl;ksad;l));
+        addAssetBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(rulTimeline, mouseEvent, TextConstants.ADD_ASSETS));
 
         //Adding items to the choiceBox (drop down list)
         sortAsset.getItems().add(DEFAULT_SORT);
@@ -207,7 +208,7 @@ public class AssetsController implements Initializable {
             Text recommendation = new Text(asset.getRecommendation());
 
             Text linearRUL = new Text();
-            SimpleStringProperty s = system.getRul();
+            SimpleStringProperty s = asset.getRul();
             linearRUL.textProperty().bind(s);
 
             assetName.setId("assetName");

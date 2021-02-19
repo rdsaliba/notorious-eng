@@ -16,6 +16,7 @@ public class TextConstants {
     public static final String FAILED_THRESHOLD = "Failed";
 
     public static final String ASSETS_SCENE = "/Assets";
+    public static final String ADD_ASSETS = "/AddAsset";
     public static final String ASSET_TYPE_LIST_SCENE = "/AssetTypeList";
     public static final String ALERT_TITLE_DIALOG = "Confirmation Dialog";
     public static final DecimalFormat RULValueFormat = new DecimalFormat("#.##");
