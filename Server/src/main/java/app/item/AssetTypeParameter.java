@@ -1,3 +1,10 @@
+/*
+  The asset type parameter class contains all the details of the asset type parameter (thresholds).
+  This includes the name of the asset type parameter and its value.
+
+  @author
+  @last_edit 02/7/2020
+ */
 package app.item;
 
 public class AssetTypeParameter {
