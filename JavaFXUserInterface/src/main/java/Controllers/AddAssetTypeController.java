@@ -16,6 +16,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -45,10 +47,14 @@ public class AddAssetTypeController implements Initializable {
     private TextField thresholdWarningValue;
     @FXML
     private TextField thresholdFailedValue;
+    @FXML
+    private AnchorPane inputError;
 
     private UIUtilities uiUtilities;
     private AssetTypeDAOImpl db;
     private ArrayList<AssetTypeParameter> assetTypeParameters;
+    private Text[] errorMessages = new Text[7];
+    private boolean[] validInput = new boolean[7];
 
     /**
      * Initialize runs before the scene is displayed.
@@ -79,8 +85,10 @@ public class AddAssetTypeController implements Initializable {
         // Change scenes to Assets.fxml
         cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
         saveBtn.setOnMouseClicked(mouseEvent -> {
-            if (saveAssetType(assembleAssetType()))
-                uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE);
+            if (formInputValidation()) {
+                if (saveAssetType(assembleAssetType()))
+                    uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE);
+            }
         });
 
 
@@ -95,13 +103,16 @@ public class AddAssetTypeController implements Initializable {
     /**
      * Create an asset type object from the user's input
      *
-     * @author Jeff , Paul
+     * @author Jeff , Paul, Najim
      */
     public AssetType assembleAssetType() {
-        if (assetTypeName.getText().length() > 0 && assetTypeDescription.getText().length() > 0) {
+        if (assetTypeName.getText().length() > 0) {
             AssetType assetType = new AssetType(assetTypeName.getText());
-            assetType.setDescription(assetTypeDescription.getText());
-
+            if (assetTypeDescription.getText().length() > 0) {
+                assetType.setDescription(assetTypeDescription.getText());
+            } else {
+                assetType.setDescription(null);
+            }
             Double okValue = thresholdOKValue.getText().isEmpty() ? null : Double.parseDouble(thresholdOKValue.getText());
             assetTypeParameters.add(new AssetTypeParameter(TextConstants.OK_THRESHOLD, okValue));
 
@@ -134,5 +145,90 @@ public class AddAssetTypeController implements Initializable {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Displays an error for a field when the validation criteria are not respected.
+     *
+     * @author Najim
+     */
+    public boolean formInputValidation() {
+        String assetTypeNameValue = assetTypeName.getText();
+        String assetTypeDescValue = assetTypeDescription.getText();
+        double thresholdAdvisoryNumber;
+        double thresholdCautionNumber;
+        double thresholdWarningNumber;
+        double thresholdFailedNumber;
+        boolean validForm = true;
+
+        if (assetTypeNameValue.trim().isEmpty() || assetTypeNameValue.length() > 50) {
+            validForm = false;
+            validInput[0] = false;
+            UIUtilities.createInputError(inputError, errorMessages, assetTypeName, TextConstants.EMPTY_FIELD_ERROR + " and/or \n" + TextConstants.MAX_50_CHARACTERS_ERROR, 68.0, 374.0, 0);
+        } else {
+            validInput[0] = true;
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, assetTypeName, 0);
+        }
+        if (assetTypeDescValue.length() > 300) {
+            validForm = false;
+            validInput[1] = false;
+            UIUtilities.createInputError(inputError, errorMessages, assetTypeDescription, TextConstants.MAX_300_CHARACTERS_ERROR, 127.0, 374.0, 1);
+        } else {
+            validInput[1] = true;
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, assetTypeDescription, 1);
+        }
+
+        if (!thresholdAdvisoryValue.getText().isEmpty() && !thresholdCautionValue.getText().isEmpty()) {
+            thresholdAdvisoryNumber = Double.parseDouble(thresholdAdvisoryValue.getText());
+            thresholdCautionNumber = Double.parseDouble(thresholdCautionValue.getText());
+
+            if (thresholdAdvisoryNumber <= thresholdCautionNumber) {
+                validForm = false;
+                validInput[3] = false;
+                validInput[4] = false;
+                UIUtilities.createInputError(inputError, errorMessages, thresholdAdvisoryValue, TextConstants.ADIVSORY_CAUTION, 245.0, 0, 3);
+                UIUtilities.createInputError(inputError, errorMessages, thresholdCautionValue, "", 0, 0, 4);
+            } else {
+                validInput[3] = true;
+                validInput[4] = true;
+                UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdAdvisoryValue, 3);
+                UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdCautionValue, 4);
+            }
+        }
+        if (!thresholdCautionValue.getText().isEmpty() && !thresholdWarningValue.getText().isEmpty()) {
+            thresholdCautionNumber = Double.parseDouble(thresholdCautionValue.getText());
+            thresholdWarningNumber = Double.parseDouble(thresholdWarningValue.getText());
+
+            if (thresholdCautionNumber <= thresholdWarningNumber) {
+                validForm = false;
+                validInput[4] = false;
+                validInput[5] = false;
+                UIUtilities.createInputError(inputError, errorMessages, thresholdCautionValue, TextConstants.CAUTION_WARNING, 275.0, 0, 4);
+                UIUtilities.createInputError(inputError, errorMessages, thresholdWarningValue, "", 0, 0, 5);
+            } else {
+                validInput[4] = true;
+                validInput[5] = true;
+                UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdCautionValue, 4);
+                UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdWarningValue, 5);
+            }
+        }
+        if (!thresholdWarningValue.getText().isEmpty() && !thresholdFailedValue.getText().isEmpty()) {
+            thresholdWarningNumber = Double.parseDouble(thresholdWarningValue.getText());
+            thresholdFailedNumber = Double.parseDouble(thresholdFailedValue.getText());
+
+            if (thresholdWarningNumber <= thresholdFailedNumber) {
+                validForm = false;
+                validInput[5] = false;
+                validInput[6] = false;
+                UIUtilities.createInputError(inputError, errorMessages, thresholdWarningValue, TextConstants.WARNING_FAILED, 305.0, 0, 5);
+                UIUtilities.createInputError(inputError, errorMessages, thresholdFailedValue, "", 0, 0, 6);
+            } else {
+                validInput[5] = true;
+                validInput[6] = true;
+                UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdWarningValue, 5);
+                UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdFailedValue, 6);
+            }
+        }
+        return validForm;
     }
 }

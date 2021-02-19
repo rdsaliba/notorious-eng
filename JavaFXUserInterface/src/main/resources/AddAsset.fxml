@@ -12,9 +12,9 @@
     <VBox layoutY="169.0" prefHeight="543.0" prefWidth="74.0" style="-fx-background-color: #0C072E;"
           AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="169.0">
         <children>
-            <Button fx:id="assetMenuBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0"
-                    prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css" text="Assets"
-                    textAlignment="CENTER" textFill="#f0f0f0">
+            <Button fx:id="assetMenuBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0" prefWidth="74.0"
+                    style="-fx-background-radius: 0;" stylesheets="@css/style.css" text="Assets" textAlignment="CENTER"
+                    textFill="#f0f0f0">
                 <font>
                     <Font name="Segoe UI Bold" size="14.0"/>
                 </font>
@@ -60,6 +60,28 @@
     <AnchorPane layoutX="75.0" prefHeight="712.0" prefWidth="951.0" style="-fx-background-color: #F8F8F8;"
                 AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="75.0" AnchorPane.rightAnchor="0.0"
                 AnchorPane.topAnchor="0.0">
+        <AnchorPane layoutX="42.0" layoutY="496.0" prefHeight="148.0" prefWidth="867.0"
+                    style="-fx-background-color: #FFFFFF; -fx-border-color: #F0F0F0;" AnchorPane.bottomAnchor="68.0"
+                    AnchorPane.leftAnchor="42.0" AnchorPane.rightAnchor="42.0" AnchorPane.topAnchor="496.0">
+            <Text fill="#0c072e" layoutX="30.0" layoutY="24.0" strokeType="OUTSIDE" strokeWidth="0.0"
+                  text="Asset Location">
+                <font>
+                    <Font name="Segoe UI Bold" size="16.0"/>
+                </font>
+            </Text>
+            <Text fill="#0c072e" layoutX="129.0" layoutY="54.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Site">
+                <font>
+                    <Font name="Segoe UI Bold" size="14.0"/>
+                </font>
+            </Text>
+            <TextField fx:id="siteInput" layoutX="184.0" layoutY="36.0" prefHeight="40.0" prefWidth="350.0"/>
+            <Text fill="#0c072e" layoutX="98.0" layoutY="106.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Location">
+                <font>
+                    <Font name="Segoe UI Bold" size="14.0"/>
+                </font>
+            </Text>
+            <TextField fx:id="locationInput" layoutX="184.0" layoutY="88.0" prefHeight="40.0" prefWidth="350.0"/>
+        </AnchorPane>
         <AnchorPane layoutX="-1.0" prefHeight="42.0" prefWidth="952.0" style="-fx-background-color: #FFFFFF;"
                     AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="0.0">
             <Text fx:id="addAssetTitle" fill="#0c072e" layoutX="14.0" layoutY="26.0" strokeType="OUTSIDE"
@@ -69,7 +91,9 @@
                 </font>
             </Text>
         </AnchorPane>
-        <AnchorPane layoutX="41.0" layoutY="61.0" prefHeight="422.0" prefWidth="867.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #F0F0F0;" AnchorPane.leftAnchor="41.0" AnchorPane.rightAnchor="43.0">
+        <AnchorPane layoutX="41.0" layoutY="61.0" prefHeight="422.0" prefWidth="867.0"
+                    style="-fx-background-color: #FFFFFF; -fx-border-color: #F0F0F0;" AnchorPane.leftAnchor="41.0"
+                    AnchorPane.rightAnchor="43.0">
             <Text fill="#0c072e" layoutX="6.0" layoutY="24.0" strokeType="OUTSIDE" strokeWidth="0.0"
                   text="Asset Information">
                 <font>
@@ -105,7 +129,8 @@
                 </font>
             </Text>
             <TextField fx:id="serialNumberInput" layoutX="180.0" layoutY="263.0" prefHeight="40.0" prefWidth="350.0"/>
-            <Text fill="#0c072e" layoutX="65.0" layoutY="340.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Manufacturer">
+            <Text fill="#0c072e" layoutX="65.0" layoutY="340.0" strokeType="OUTSIDE" strokeWidth="0.0"
+                  text="Manufacturer">
                 <font>
                     <Font name="Segoe UI Bold" size="14.0"/>
                 </font>
@@ -119,35 +144,9 @@
             </Text>
             <TextField fx:id="categoryInput" layoutX="180.0" layoutY="367.0" prefHeight="40.0" prefWidth="350.0"
                        AnchorPane.leftAnchor="177.0"/>
-            <AnchorPane fx:id="inputError" layoutX="540.0" layoutY="-6.0" prefHeight="422.0" prefWidth="326.0"
-                        AnchorPane.leftAnchor="540.0">
-                <Text fill="#0c072e" layoutY="180.0" strokeType="OUTSIDE" strokeWidth="0.0"
-                      text="Please Enter a Value blah blah blah">
-                    <font>
-                        <Font name="Segoe UI Bold" size="14.0"/>
-                    </font>
-                </Text>
-            </AnchorPane>
         </AnchorPane>
-        <AnchorPane layoutX="42.0" layoutY="496.0" prefHeight="148.0" prefWidth="867.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #F0F0F0;" AnchorPane.bottomAnchor="68.0" AnchorPane.leftAnchor="42.0" AnchorPane.rightAnchor="42.0" AnchorPane.topAnchor="496.0">
-            <Text fill="#0c072e" layoutX="30.0" layoutY="24.0" strokeType="OUTSIDE" strokeWidth="0.0"
-                  text="Asset Location">
-                <font>
-                    <Font name="Segoe UI Bold" size="16.0"/>
-                </font>
-            </Text>
-            <Text fill="#0c072e" layoutX="129.0" layoutY="54.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Site">
-                <font>
-                    <Font name="Segoe UI Bold" size="14.0" />
-                </font>
-            </Text>
-            <TextField fx:id="siteInput" layoutX="184.0" layoutY="36.0" prefHeight="40.0" prefWidth="350.0"/>
-            <Text fill="#0c072e" layoutX="98.0" layoutY="106.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Location">
-                <font>
-                    <Font name="Segoe UI Bold" size="14.0" />
-                </font>
-            </Text>
-            <TextField fx:id="locationInput" layoutX="184.0" layoutY="88.0" prefHeight="40.0" prefWidth="350.0"/>
+        <AnchorPane fx:id="inputError" layoutY="63.0" prefHeight="565.0" prefWidth="326.0"
+                    AnchorPane.leftAnchor="581.0">
         </AnchorPane>
         <Button fx:id="saveBtn" layoutX="702.0" layoutY="653.0" mnemonicParsing="false" stylesheets="@css/style.css"
                 text="Save" textFill="WHITE" AnchorPane.bottomAnchor="23.799999999999955"
@@ -159,9 +158,11 @@
                 <Insets bottom="10.0" left="30.0" right="30.0" top="10.0"/>
             </padding>
         </Button>
-        <Button fx:id="cancelBtn" layoutX="810.0" layoutY="653.0" mnemonicParsing="false" stylesheets="@css/style.css" text="Cancel" textFill="WHITE" AnchorPane.bottomAnchor="23.799999999999955" AnchorPane.rightAnchor="43.39999999999998">
+        <Button fx:id="cancelBtn" layoutX="810.0" layoutY="653.0" mnemonicParsing="false" stylesheets="@css/style.css"
+                text="Cancel" textFill="WHITE" AnchorPane.bottomAnchor="23.799999999999955"
+                AnchorPane.rightAnchor="43.39999999999998">
             <padding>
-                <Insets bottom="10.0" left="30.0" right="30.0" top="10.0" />
+                <Insets bottom="10.0" left="30.0" right="30.0" top="10.0"/>
             </padding>
             <font>
                 <Font name="Segoe UI Bold" size="12.0" />

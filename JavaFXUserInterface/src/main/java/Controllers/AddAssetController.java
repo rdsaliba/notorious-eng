@@ -29,9 +29,9 @@ public class AddAssetController implements Initializable {
 
     private static final String SAVE_DIALOG = "Save Dialog";
     private static final String SAVE_HEADER = "Asset has been saved to the database.";
-    private static final String ERROR_DIALOG = "Error Dialog";
-    private static final String ERROR_HEADER = "Please enter values for all text fields.";
-    private static final String SYSTEM_NAME_ERROR = "Please Enter a Value";
+//    private static final String ERROR_DIALOG = "Error Dialog";
+//    private static final String ERROR_HEADER = "Please enter values for all text fields.";
+
     @FXML
     public Button assetMenuBtn;
     @FXML
@@ -63,6 +63,8 @@ public class AddAssetController implements Initializable {
     private AssetTypeDAOImpl assetTypeDAOImpl;
     private UIUtilities uiUtilities;
     private AssetType selectedAssetType;
+    private Text[] errorMessages = new Text[7];
+    private boolean[] validInput = new boolean[7];
 
     /**
      * Initialize runs before the scene is displayed.
@@ -99,8 +101,6 @@ public class AddAssetController implements Initializable {
                 if (!isAssetEmpty(newAsset)) {
                     saveAsset(newAsset);
                     saveDialog(mouseEvent);
-                } else {
-                    errorDialog();
                 }
             }
         });
@@ -180,34 +180,36 @@ public class AddAssetController implements Initializable {
         }
     }
 
-    /**
-     * Creates a dialog to inform the user that there was an error in the user input
-     *
-     */
-    void errorDialog() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(ERROR_DIALOG);
-        alert.setHeaderText(ERROR_HEADER);
+//    /**
+//     * Creates a dialog to inform the user that there was an error in the user input
+//     *
+//     */
+//    void errorDialog() {
+//        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+//        alert.setTitle(ERROR_DIALOG);
+//        alert.setHeaderText(ERROR_HEADER);
+//
+//        alert.showAndWait();
+//    }
 
-        alert.showAndWait();
-    }
-
     /**
-     * Checks to see if values of the asset are filled.
+     * Checks to see if mandatory values of the asset are filled.
      *
      * @param asset os an asset object
      * @return whether or not the asset object passed is empty (no info or attributes) or not
      */
     public boolean isAssetEmpty(Asset asset) {
-        return asset.getName().equals("") || asset.getAssetTypeID().equals("") || asset.getDescription().equals("") ||
-                asset.getSerialNo().equals("") || asset.getManufacturer().equals("") || asset.getCategory().equals("") || asset.getSite().equals("") || asset.getLocation().equals("");
+        return asset.getName().equals("") || asset.getAssetTypeID().equals("") || asset.getSerialNo().equals("");
     }
 
+    /**
+     * Displays an error for a field when the validation criteria are not respected.
+     *
+     * @author Najim
+     */
     public boolean formInputValidation() {
-        String systemNameValue = systemNameInput.getText();
-        Text systemNameError = new Text(SYSTEM_NAME_ERROR);
-        AnchorPane.setLeftAnchor(systemNameError, 540.0);
-        String systemDescriptionValue = systemDescriptionTextArea.getText();
+        String assetNameValue = assetNameInput.getText();
+        String assetDescriptionValue = assetDescriptionTextArea.getText();
         String serialNumberValue = serialNumberInput.getText();
         String manufacturerValue = manufacturerInput.getText();
         String categoryValue = categoryInput.getText();
@@ -215,52 +217,66 @@ public class AddAssetController implements Initializable {
         String locationValue = locationInput.getText();
         String regexWordAndHyphen = "(?=\\S*[-])([a-zA-Z0-9-]*)|([a-zA-Z0-9]*)"; //Any word containing letters, numbers and hyphens
         String regexLettersAndHyphen = "(?=\\S*[-])([a-zA-Z-]*)|([a-zA-Z]*)"; //Any word containing letters and hyphens
-        boolean valid = true;
+        double horizontalPosition = 0;
+        boolean validForm = true;
 
-        if (systemNameValue.trim().isEmpty() || systemNameValue.length() > 50) {
-            valid = false;
-            systemNameInput.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
-            inputError.getChildren().add(systemNameError);
+        if (assetNameValue.trim().isEmpty() || assetNameValue.length() > 50) {
+            validForm = false;
+            validInput[0] = false;
+            UIUtilities.createInputError(inputError, errorMessages, assetNameInput, TextConstants.EMPTY_FIELD_ERROR + " and/or \n" + TextConstants.MAX_50_CHARACTERS_ERROR, 65.0, horizontalPosition, 0);
         } else {
-            systemNameInput.setStyle(null);
+            validInput[0] = true;
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, assetNameInput, 0);
         }
-        if (systemDescriptionValue.length() > 300) {
-            valid = false;
-            systemDescriptionTextArea.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+        if (assetDescriptionValue.length() > 300) {
+            validForm = false;
+            validInput[1] = false;
+            UIUtilities.createInputError(inputError, errorMessages, assetDescriptionTextArea, TextConstants.MAX_300_CHARACTERS_ERROR, 210.0, horizontalPosition, 1);
         } else {
-            systemDescriptionTextArea.setStyle(null);
+            validInput[1] = true;
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, assetDescriptionTextArea, 1);
         }
         if (serialNumberValue.trim().isEmpty() || serialNumberValue.length() > 20 || !serialNumberValue.trim().matches(regexWordAndHyphen)) {
-            valid = false;
-            serialNumberInput.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+            validForm = false;
+            validInput[2] = false;
+            UIUtilities.createInputError(inputError, errorMessages, serialNumberInput, TextConstants.EMPTY_FIELD_ERROR + " and/or \n" + TextConstants.MAX_20_CHARACTERS_ERROR + " and/or \n" + TextConstants.WORD_HYPHEN_ERROR, 276.5, horizontalPosition, 2);
         } else {
-            serialNumberInput.setStyle(null);
+            validInput[2] = true;
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, serialNumberInput, 2);
         }
         if (manufacturerValue.length() > 20 || !manufacturerValue.trim().matches(regexWordAndHyphen)) {
-            valid = false;
-            manufacturerInput.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+            validForm = false;
+            validInput[3] = false;
+            UIUtilities.createInputError(inputError, errorMessages, manufacturerInput, TextConstants.MAX_20_CHARACTERS_ERROR + " and/or \n" + TextConstants.WORD_HYPHEN_ERROR, 331.0, horizontalPosition, 3);
         } else {
-            manufacturerInput.setStyle(null);
+            validInput[3] = true;
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, manufacturerInput, 3);
         }
         if (categoryValue.length() > 20 || !categoryValue.trim().matches(regexLettersAndHyphen)) {
-            valid = false;
-            categoryInput.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+            validForm = false;
+            validInput[4] = false;
+            UIUtilities.createInputError(inputError, errorMessages, categoryInput, TextConstants.MAX_20_CHARACTERS_ERROR + " and/or \n" + TextConstants.LETTER_NUMBER_ERROR, 384.0, horizontalPosition, 4);
         } else {
-            categoryInput.setStyle(null);
+            validInput[4] = true;
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, categoryInput, 4);
         }
         if (siteValue.length() > 20 || !siteValue.trim().matches(regexWordAndHyphen)) {
-            valid = false;
-            siteInput.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+            validForm = false;
+            validInput[5] = false;
+            UIUtilities.createInputError(inputError, errorMessages, siteInput, TextConstants.MAX_20_CHARACTERS_ERROR + " and/or \n" + TextConstants.WORD_HYPHEN_ERROR, 482.0, horizontalPosition, 5);
         } else {
-            siteInput.setStyle(null);
+            validInput[5] = true;
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, siteInput, 5);
         }
         if (locationValue.length() > 20 || !locationValue.trim().matches(regexWordAndHyphen)) {
-            valid = false;
-            locationInput.setStyle("-fx-border-color: red; -fx-border-width: 2px;");
+            validForm = false;
+            validInput[6] = false;
+            UIUtilities.createInputError(inputError, errorMessages, locationInput, TextConstants.MAX_20_CHARACTERS_ERROR + " and/or \n" + TextConstants.WORD_HYPHEN_ERROR, 533.0, horizontalPosition, 6);
         } else {
-            locationInput.setStyle(null);
+            validInput[6] = true;
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, locationInput, 6);
         }
-
-        return valid;
+        return validForm;
     }
+
 }
