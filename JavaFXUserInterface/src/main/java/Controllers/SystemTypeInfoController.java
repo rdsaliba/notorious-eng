@@ -23,6 +23,8 @@ import weka.classifiers.Classifier;
 import weka.classifiers.evaluation.Evaluation;
 import weka.classifiers.functions.Dl4jMlpClassifier;
 import weka.classifiers.functions.LinearRegression;
+import weka.classifiers.meta.RandomCommittee;
+import weka.classifiers.trees.RandomForest;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instance;
@@ -73,6 +75,8 @@ public class SystemTypeInfoController implements Initializable {
     private Label testValue;
     @FXML
     private Button modelEvaluateBtn;
+    @FXML
+    Tab modelTab;
 
     private UIUtilities uiUtilities;
     private SystemTypeList assetType;
@@ -133,46 +137,43 @@ public class SystemTypeInfoController implements Initializable {
      */
     public void attachEvents() throws Exception {
 
+        modelTab.setOnSelectionChanged(event -> modelsPressed());
         //        ---------------------------- F10 --------------------------
-        try {
-            trainDataset  = DataPrePreprocessorController.getInstance().addRULCol(createInstancesFromAssets(assetDAO.getAssetsFromAssetTypeID(Integer.parseInt(assetType.getId()))));
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-        trainSlider.setMax(trainDataset.size());
-        trainValue.setText(Integer.toString(trainDataset.size()));
-        testSlider.setMax(trainDataset.size());
-        testValue.setText(Integer.toString(trainDataset.size() ));
 
-        trainSlider.valueProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
-                trainValue.setText(Integer.toString((int)trainSlider.getValue()));
-                testValue.setText(Integer.toString(trainDataset.size() - (int)trainSlider.getValue()));
-                testSlider.setMax(trainDataset.size() - (int)trainSlider.getValue());
-                trainSize = (int)trainSlider.getValue();
-            }
-        });
-        testSlider.valueProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
-                testValue.setText(Integer.toString((int)testSlider.getValue()));
-                trainValue.setText(Integer.toString(trainDataset.size() - (int)testSlider.getValue()));
-                trainSlider.setMax(trainDataset.size() - (int)testSlider.getValue());
-                testSize = (int)testSlider.getValue();
-            }
-        });
-
-        try{
-            modelEvaluateBtn.setOnMouseClicked(mouseEvent -> {
-                try {
-                    evaluateModels(mouseEvent);
-                } catch (Exception exception) {
-                    exception.printStackTrace();
-                }
-            });
-        }
-        catch (Exception e){}
+//        trainSlider.setMax(trainDataset.size());
+//        trainValue.setText(Integer.toString(trainDataset.size()));
+//        testSlider.setMax(trainDataset.size());
+//        testValue.setText(Integer.toString(trainDataset.size() ));
+//
+//        trainSlider.valueProperty().addListener(new ChangeListener<Number>() {
+//            @Override
+//            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+//                trainValue.setText(Integer.toString((int)trainSlider.getValue()));
+//                testValue.setText(Integer.toString(trainDataset.size() - (int)trainSlider.getValue()));
+//                testSlider.setMax(trainDataset.size() - (int)trainSlider.getValue());
+//                trainSize = (int)trainSlider.getValue();
+//            }
+//        });
+//        testSlider.valueProperty().addListener(new ChangeListener<Number>() {
+//            @Override
+//            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+//                testValue.setText(Integer.toString((int)testSlider.getValue()));
+//                trainValue.setText(Integer.toString(trainDataset.size() - (int)testSlider.getValue()));
+//                trainSlider.setMax(trainDataset.size() - (int)testSlider.getValue());
+//                testSize = (int)testSlider.getValue();
+//            }
+//        });
+//
+//        try{
+//            modelEvaluateBtn.setOnMouseClicked(mouseEvent -> {
+//                try {
+//                    evaluateModels(mouseEvent);
+//                } catch (Exception exception) {
+//                    exception.printStackTrace();
+//                }
+//            });
+//        }
+//        catch (Exception e){}
 
         //        ---------------------------- F10 --------------------------
 
@@ -227,6 +228,51 @@ public class SystemTypeInfoController implements Initializable {
         });
         thresholdFailed.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
 
+    }
+
+
+    private void modelsPressed(){
+        if(modelTab.getId().equals("modelTab")){
+            try {
+                trainDataset  = DataPrePreprocessorController.getInstance().addRULCol(createInstancesFromAssets(assetDAO.getAssetsFromAssetTypeID(Integer.parseInt(assetType.getId()))));
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+            trainSlider.setMax(trainDataset.size());
+            trainValue.setText(Integer.toString(trainDataset.size()));
+            testSlider.setMax(trainDataset.size());
+            testValue.setText(Integer.toString(trainDataset.size() ));
+
+            trainSlider.valueProperty().addListener(new ChangeListener<Number>() {
+                @Override
+                public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                    trainValue.setText(Integer.toString((int)trainSlider.getValue()));
+                    testValue.setText(Integer.toString(trainDataset.size() - (int)trainSlider.getValue()));
+                    testSlider.setMax(trainDataset.size() - (int)trainSlider.getValue());
+                    trainSize = (int)trainSlider.getValue();
+                }
+            });
+            testSlider.valueProperty().addListener(new ChangeListener<Number>() {
+                @Override
+                public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                    testValue.setText(Integer.toString((int)testSlider.getValue()));
+                    trainValue.setText(Integer.toString(trainDataset.size() - (int)testSlider.getValue()));
+                    trainSlider.setMax(trainDataset.size() - (int)testSlider.getValue());
+                    testSize = (int)testSlider.getValue();
+                }
+            });
+
+            try{
+                modelEvaluateBtn.setOnMouseClicked(mouseEvent -> {
+                    try {
+                        evaluateModels(mouseEvent);
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
+                });
+            }
+            catch (Exception e){}
+        }
     }
 
     /**
@@ -302,37 +348,27 @@ public class SystemTypeInfoController implements Initializable {
             trainDataset.setClassIndex(trainDataset.numAttributes() - 1);
             Instances trainSet = populateDataset(trainSize);
             Instances testSet = populateDataset(testSize);
-            LinearRegression lr = new LinearRegression();
-            double ratio = (trainSize/trainDataset.size())*100;
-            int id=0;
-//            Classifier model = null;
-            Evaluation ev = new Evaluation(trainSet);
-            LSTMModelImpl impl = new LSTMModelImpl();
+
             double rmse = 0.0;
             for(int i=0;i<models.size();i++){
-                trainValue.setText(assetType.getId());
             switch (models.get(i)) {
                 case "Linear":
-
                     Classifier model =  new LinearRegression();
-                    id=1;
-                    model.buildClassifier(trainSet);
-                    ev.evaluateModel(model,testSet);
-                    rmse = ev.rootMeanSquaredError();
-                    modelDAO.updateRMSE(rmse, 1 , Integer.parseInt(assetType.getId()));
+                    calculateEvaluation(model,trainSet,testSet,1);
 
-//                case "LSTM":
-//                    ModelStrategy lstmm = new LSTMModelImpl();
-//                    Classifier lstm = lstmm.trainModel(trainSet);
-//                    id=2;
-//                    ev.evaluateModel(lstm,testSet);
-//                    rmse = ev.rootMeanSquaredError();
-//                    modelDAO.updateRMSE(rmse, 2 , Integer.parseInt(assetType.getId()));
-//                    testValue.setText(Double.toString(rmse));
-//                case "RandomForest":                            //To be entered in DB: RandomForest
-//                    model =  new RandomForestModelImpl();
-//                case "RandomCommittee":                    //To be entered in DB: RandomCommittee
-//                    return new RandomCommitteeModelImpl();
+                case "LSTM":
+                    ModelStrategy lstmm = new LSTMModelImpl();
+                    Classifier lstm = lstmm.trainModel(trainSet);
+                    calculateEvaluation(lstm,trainSet,testSet,2);
+
+                case "RandomForest":
+                    Classifier forestModel =  new RandomForest();
+                    calculateEvaluation(forestModel,trainSet,testSet,3);
+
+                case "RandomCommittee":
+                    Classifier randomCommittee = new RandomCommittee();
+                    calculateEvaluation(randomCommittee,trainSet,testSet, 4);
+
                 default:
                     model = null;
             }
@@ -340,6 +376,15 @@ public class SystemTypeInfoController implements Initializable {
             }
 //        }
         catch (Exception e){trainValue.setText(e.getMessage());}
+    }
+
+    public void calculateEvaluation(Classifier model, Instances train, Instances test, int modelId) throws Exception {
+        Evaluation ev = new Evaluation(train);
+        model.buildClassifier(train);
+        ev.evaluateModel(model,test);
+        double rmse = ev.rootMeanSquaredError();
+        modelDAO.updateRMSE(rmse, modelId , Integer.parseInt(assetType.getId()));
+
     }
 
     private Instances populateDataset(int size){
