@@ -15,23 +15,22 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.text.Text;
 import local.AssetDAOImpl;
 import preprocessing.DataPrePreprocessorController;
 import rul.models.*;
 import weka.classifiers.Classifier;
 import weka.classifiers.evaluation.Evaluation;
-import weka.classifiers.functions.Dl4jMlpClassifier;
 import weka.classifiers.functions.LinearRegression;
+import weka.classifiers.functions.MultilayerPerceptron;
+import weka.classifiers.functions.SMOreg;
+import weka.classifiers.meta.AdditiveRegression;
 import weka.classifiers.meta.RandomCommittee;
+import weka.classifiers.meta.RandomSubSpace;
 import weka.classifiers.trees.RandomForest;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
-import weka.core.Instance;
 import weka.core.Instances;
-import weka.dl4j.layers.LSTM;
 
-import java.io.Console;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -137,45 +136,7 @@ public class SystemTypeInfoController implements Initializable {
      */
     public void attachEvents() throws Exception {
 
-        modelTab.setOnSelectionChanged(event -> modelsPressed());
-        //        ---------------------------- F10 --------------------------
-
-//        trainSlider.setMax(trainDataset.size());
-//        trainValue.setText(Integer.toString(trainDataset.size()));
-//        testSlider.setMax(trainDataset.size());
-//        testValue.setText(Integer.toString(trainDataset.size() ));
-//
-//        trainSlider.valueProperty().addListener(new ChangeListener<Number>() {
-//            @Override
-//            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
-//                trainValue.setText(Integer.toString((int)trainSlider.getValue()));
-//                testValue.setText(Integer.toString(trainDataset.size() - (int)trainSlider.getValue()));
-//                testSlider.setMax(trainDataset.size() - (int)trainSlider.getValue());
-//                trainSize = (int)trainSlider.getValue();
-//            }
-//        });
-//        testSlider.valueProperty().addListener(new ChangeListener<Number>() {
-//            @Override
-//            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
-//                testValue.setText(Integer.toString((int)testSlider.getValue()));
-//                trainValue.setText(Integer.toString(trainDataset.size() - (int)testSlider.getValue()));
-//                trainSlider.setMax(trainDataset.size() - (int)testSlider.getValue());
-//                testSize = (int)testSlider.getValue();
-//            }
-//        });
-//
-//        try{
-//            modelEvaluateBtn.setOnMouseClicked(mouseEvent -> {
-//                try {
-//                    evaluateModels(mouseEvent);
-//                } catch (Exception exception) {
-//                    exception.printStackTrace();
-//                }
-//            });
-//        }
-//        catch (Exception e){}
-
-        //        ---------------------------- F10 --------------------------
+        modelTab.setOnSelectionChanged(event -> modelsButtonPressed());
 
         // Change scenes to Systems.fxml
         systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
@@ -231,7 +192,7 @@ public class SystemTypeInfoController implements Initializable {
     }
 
 
-    private void modelsPressed(){
+    private void modelsButtonPressed(){
         if(modelTab.getId().equals("modelTab")){
             try {
                 trainDataset  = DataPrePreprocessorController.getInstance().addRULCol(createInstancesFromAssets(assetDAO.getAssetsFromAssetTypeID(Integer.parseInt(assetType.getId()))));
@@ -239,15 +200,14 @@ public class SystemTypeInfoController implements Initializable {
                 exception.printStackTrace();
             }
             trainSlider.setMax(trainDataset.size());
-            trainValue.setText(Integer.toString(trainDataset.size()));
+            trainValue.setText(String.valueOf(trainSlider.getValue()));
             testSlider.setMax(trainDataset.size());
-            testValue.setText(Integer.toString(trainDataset.size() ));
+            testValue.setText(String.valueOf(testSlider.getValue()));
 
             trainSlider.valueProperty().addListener(new ChangeListener<Number>() {
                 @Override
                 public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
                     trainValue.setText(Integer.toString((int)trainSlider.getValue()));
-                    testValue.setText(Integer.toString(trainDataset.size() - (int)trainSlider.getValue()));
                     testSlider.setMax(trainDataset.size() - (int)trainSlider.getValue());
                     trainSize = (int)trainSlider.getValue();
                 }
@@ -256,7 +216,6 @@ public class SystemTypeInfoController implements Initializable {
                 @Override
                 public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
                     testValue.setText(Integer.toString((int)testSlider.getValue()));
-                    trainValue.setText(Integer.toString(trainDataset.size() - (int)testSlider.getValue()));
                     trainSlider.setMax(trainDataset.size() - (int)testSlider.getValue());
                     testSize = (int)testSlider.getValue();
                 }
@@ -342,6 +301,12 @@ public class SystemTypeInfoController implements Initializable {
         }
     }
 
+    /**
+     * Evaluates all models of a specific Asset Type
+     *
+     * @param mouseEvent is an event trigger to evlauate models
+     * @author Talal
+     */
     private void evaluateModels(MouseEvent mouseEvent)  {
         try {
             ArrayList<String> models = modelDAO.getListOfModels();
@@ -349,44 +314,77 @@ public class SystemTypeInfoController implements Initializable {
             Instances trainSet = populateDataset(trainSize);
             Instances testSet = populateDataset(testSize);
 
-            double rmse = 0.0;
             for(int i=0;i<models.size();i++){
-            switch (models.get(i)) {
-                case "Linear":
-                    Classifier model =  new LinearRegression();
-                    calculateEvaluation(model,trainSet,testSet,1);
+                switch (models.get(i)) {
+                    case "Linear":
+                        LinearRegressionModelImpl linearRegressionModelImpl = new LinearRegressionModelImpl();
+                        Classifier model =  linearRegressionModelImpl.trainModel(trainSet);
+                        calculateEvaluation(model,trainSet,testSet,1);
 
-                case "LSTM":
-                    ModelStrategy lstmm = new LSTMModelImpl();
-                    Classifier lstm = lstmm.trainModel(trainSet);
-                    calculateEvaluation(lstm,trainSet,testSet,2);
+                    case "LSTM":
+                        ModelStrategy lstmm = new LSTMModelImpl();
+                        Classifier lstm = lstmm.trainModel(trainSet);
+                        calculateEvaluation(lstm,trainSet,testSet,2);
 
-                case "RandomForest":
-                    Classifier forestModel =  new RandomForest();
-                    calculateEvaluation(forestModel,trainSet,testSet,3);
+    //                    -------------------------------------------------------------------------------------------
+    //                    --------------- this part is commented until the rest of the models are added -------------
+    //                    -------------------------------------------------------------------------------------------
+    //
+    //                case "RandomForest":
+    //                    Classifier forestModel =  new RandomForest();
+    //                    calculateEvaluation(forestModel,trainSet,testSet,3);
+    //
+    //                case "RandomCommittee":
+    //                    Classifier randomCommittee = new RandomCommittee();
+    //                    calculateEvaluation(randomCommittee,trainSet,testSet, 4);
+    //
+    //                case "RandomSubSpace":
+    //                    Classifier randomSubSpace = new RandomSubSpace();
+    //                    calculateEvaluation(randomSubSpace,trainSet,testSet, 5);
+    //
+    //                case "AdditiveRegression":
+    //                    Classifier additiveRegression = new AdditiveRegression();
+    //                    calculateEvaluation(additiveRegression,trainSet,testSet, 6);
+    //
+    //                case "SMOReg":
+    //                    Classifier smOreg = new SMOreg();
+    //                    calculateEvaluation(smOreg,trainSet,testSet, 7);
+    //
+    //                case "MultilayerPerceptron":
+    //                    Classifier multilayerPerceptron = new MultilayerPerceptron();
+    //                    calculateEvaluation(multilayerPerceptron,trainSet,testSet, 8);
 
-                case "RandomCommittee":
-                    Classifier randomCommittee = new RandomCommittee();
-                    calculateEvaluation(randomCommittee,trainSet,testSet, 4);
-
-                default:
-                    model = null;
-            }
-            }
+                    default:
+                        model = null;
+                }
+                }
             }
 //        }
         catch (Exception e){trainValue.setText(e.getMessage());}
     }
 
+    /**
+     * Calculates the rmse for a model and and the value to be stored in the databse
+     *
+     * @param model to be evaluated,
+     * @param train training dataset,
+     * @param test testing dataset,
+     * @param modelId model id in the database
+     * @author Talal
+     */
     public void calculateEvaluation(Classifier model, Instances train, Instances test, int modelId) throws Exception {
-        Evaluation ev = new Evaluation(train);
-        model.buildClassifier(train);
-        ev.evaluateModel(model,test);
-        double rmse = ev.rootMeanSquaredError();
+        ModelEvaluation modelEvaluation = new ModelEvaluation(model, train, test);
+        double rmse =modelEvaluation.evaluateTrainWithTest();
         modelDAO.updateRMSE(rmse, modelId , Integer.parseInt(assetType.getId()));
 
     }
 
+    /**
+     * Creates and Instances object based on the passed size
+     *
+     * @param size of the Instances object to be created.
+     * @author Talal
+     */
     private Instances populateDataset(int size){
         Instances set = trainDataset;
         if(set.size()==size) return set;
@@ -394,14 +392,6 @@ public class SystemTypeInfoController implements Initializable {
             trainDataset.delete(i);
         }
         return set;
-//        Instances set = trainDataset;
-//        for(int i=size;i<=trainDataset.size()-1;i++){
-//            set.delete(i);
-//        }
-//        for(int j=0;j<=size;j++){
-//            trainDataset.delete(j);
-//        }
-//        return set;
     }
 
     public Instances createInstancesFromAssets(List<Asset> assets) {

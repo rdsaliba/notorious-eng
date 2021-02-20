@@ -24,7 +24,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     private static final String GET_MODEL_NAME_FROM_ID = "SELECT name from model where model_id = ?";
     private static final String GET_MODEL_FROM_ASSET_TYPE = "SELECT * FROM trained_model WHERE asset_type_id = ?";
     private static final String GET_MODELS_LIST = "select * from model";
-    private static final String INSERT_RMSE = "INSERT IGNORE INTO model_evaluation SET rmse = ?,model_id = ?, asset_type_id = ?";
+    private static final String INSERT_RMSE = "REPLACE INTO model_evaluation SET rmse = ?,model_id = ?, asset_type_id = ? ";
 
     /**
      * Given a model id, this function will return the string corresponding
