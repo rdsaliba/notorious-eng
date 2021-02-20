@@ -121,11 +121,11 @@ public class AssetTypeInfoController implements Initializable {
      * @param assetType represents the asset type we want to get info on
      * @author Najim, Paul
      */
-    public void initData(SystemTypeList assetType) throws Exception {
+    public void initData(AssetTypeList assetType) throws Exception {
         this.assetType = assetType;
-        this.originalAssetType = new SystemTypeList(assetType);
-        systemTypeName.setText(assetType.getAssetType().getName());
-        systemTypeDesc.setText(assetType.getAssetType().getDescription());
+        this.originalAssetType = new AssetTypeList(assetType);
+        assetTypeName.setText(assetType.getAssetType().getName());
+        assetTypeDesc.setText(assetType.getAssetType().getDescription());
 
         try {
             thresholdOK.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueOk())));
@@ -149,9 +149,9 @@ public class AssetTypeInfoController implements Initializable {
         modelTab.setOnSelectionChanged(event -> modelsButtonPressed());
 
         // Change scenes to Systems.fxml
-        systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/Systems"));
+        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE));
         //Attach link to systemTypeMenuBtn to go to Utilities.SystemTypeList.fxml
-        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, SYSTEM_TYPE_LIST));
+        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
         infoDeleteBtn.setOnMouseClicked(this::deleteDialog);
 
         infoSaveBtn.setDisable(true);
