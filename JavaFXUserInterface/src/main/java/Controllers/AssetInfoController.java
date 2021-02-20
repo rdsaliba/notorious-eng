@@ -212,15 +212,12 @@ public class AssetInfoController implements Initializable {
      * @author Jeff
      */
     public void attachEvents() {
-        systemMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(timelines, mouseEvent, "/Systems"));
-        //Attach link to systemTypeMenuBtn to go to SystemTypeList.fxml
-        systemTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(timelines, mouseEvent, "/SystemTypeList"));
         assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(timelines, mouseEvent, TextConstants.ASSETS_SCENE));
         //Attach link to assetTypeMenuBtn to go to AssetTypeList.fxml
         assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(timelines, mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
         deleteBtn.setOnMouseClicked(mouseEvent -> {
             timelines.forEach(Timeline::stop);
-            CustomDialog.systemInfoController(mouseEvent, system.getId());
+            CustomDialog.systemInfoController(mouseEvent, asset.getId());
             });
 
         rawDataTab.setOnSelectionChanged(event -> {

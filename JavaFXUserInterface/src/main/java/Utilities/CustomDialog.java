@@ -1,9 +1,6 @@
 package Utilities;
 
-import Controllers.AddSystemController;
-import Controllers.SystemInfoController;
-import Utilities.UIUtilities;
-import Controllers.SystemTypeInfoController;
+
 import external.AssetDAOImpl;
 import external.AssetTypeDAO;
 import external.AssetTypeDAOImpl;
@@ -88,7 +85,7 @@ public class CustomDialog extends Stage {
         CustomDialog dialog = new CustomDialog(textConstants.ALERT_HEADER, textConstants.ALERT_CONTENT, mouseEvent);
         dialog.getOkButton().setOnAction(e -> {
             assetTypeDAO.deleteAssetTypeByID(systemID);
-            uiUtilities.changeScene(mouseEvent, textConstants.SYSTEM_TYPE_LIST);
+            uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE);
             dialog.closeDialog();
         });
         dialog.openDialog();
@@ -100,7 +97,7 @@ public class CustomDialog extends Stage {
         //Set the functionality of the btn
         dialog.getOkButton().setOnAction(e -> {
             assetDAOImpl.deleteAssetByID(systemID);
-            uiUtilities.changeScene(mouseEvent, "/Systems");
+            uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE);
             dialog.closeDialog();
         });
         dialog.openDialog();
@@ -110,7 +107,7 @@ public class CustomDialog extends Stage {
         CustomDialog dialog = new CustomDialog(textConstants.SAVE_DIALOG, textConstants.SAVE_HEADER, mouseEvent);
         dialog.getRoot().getChildren().remove(dialog.getCancelBtn());
         dialog.getOkButton().setOnAction(e -> {
-            uiUtilities.changeScene(mouseEvent, textConstants.SYSTEMS);
+            uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE);
             dialog.closeDialog();
         });
         dialog.openDialog();
