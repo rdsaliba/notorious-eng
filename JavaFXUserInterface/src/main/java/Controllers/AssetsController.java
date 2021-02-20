@@ -111,12 +111,14 @@ public class AssetsController implements Initializable {
      * @author Jeff
      */
     public void updateRULs() {
+        for (Asset asset:assets) {
+            asset.setRul(String.valueOf(TextConstants.RULValueFormat.format(AssessmentController.getLatestEstimate(asset.getId()))));
+        }
         rulTimeline =
             new Timeline(new KeyFrame(Duration.millis(3000), e ->
             {
                 for (Asset asset:assets) {
                     asset.setRul(String.valueOf(TextConstants.RULValueFormat.format(AssessmentController.getLatestEstimate(asset.getId()))));
-                    System.out.println(asset.getRul() + "::" + asset.getId());
                 }
                 table.refresh();
             }));
