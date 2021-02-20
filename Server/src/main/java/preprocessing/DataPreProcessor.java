@@ -3,7 +3,6 @@
   the Process function will reduce the data and store it in the reducedDataSet variable
 
   @author      Paul Micu
-  @version     1.0
   @last_edit   11/01/2020
  */
 package preprocessing;

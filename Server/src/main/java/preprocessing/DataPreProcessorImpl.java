@@ -3,7 +3,6 @@
   the Process function will reduce the data and store it in the reducedDataSet variable
 
   @author Paul Micu
-  @version 1.0
   @last_edit 11/01/2020
  */
 package preprocessing;
@@ -144,6 +143,10 @@ public class DataPreProcessorImpl implements DataPreProcessor {
         return Filter.useFilter(testDataset, remove);
     }
 
+    /*
+        Helper method for removeAttributes to check if the attributes are contained in the
+        dataset.
+     */
     private static boolean setContains(Instances dataset, Attribute att) {
         for (int i = 0; i < dataset.numAttributes(); i++) {
             if (att.name().equals(dataset.attribute(i).name())) {
@@ -217,6 +220,9 @@ public class DataPreProcessorImpl implements DataPreProcessor {
         return minimallyReducedDataset;
     }
 
+    /*
+        Returns the remove filter after applying the indices that should be deleted.
+     */
     @Override
     public Remove getRemovedIndexList() throws Exception {
         Remove remove = new Remove();
