@@ -124,6 +124,7 @@ public class AssetInfoController implements Initializable {
      */
     public void initData(Asset asset) {
         this.asset = asset;
+        this.asset.setAssetInfo(assetDAOImpl.createAssetInfo(asset.getId()));
         String assetTypeName = assetTypeDAOImpl.getNameFromID(asset.getAssetTypeID());
         assetName.setText(assetTypeName + " - " + asset.getSerialNo());
         assetNameOutput.setText(asset.getName());

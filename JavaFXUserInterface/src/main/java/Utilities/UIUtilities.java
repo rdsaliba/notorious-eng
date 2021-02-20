@@ -168,4 +168,9 @@ public class UIUtilities {
         timelines.forEach(Timeline::stop);
         changeScene(mouseEvent,s);
     }
+
+    public void changeScene(Timeline timeline, MouseEvent mouseEvent, String s) {
+        timeline.stop();
+        changeScene(mouseEvent,s);
+    }
 }
