@@ -3,7 +3,6 @@
     this object only gets the active connection and kills it
 
   @author Paul Micu
-  @version 1.0
   @last_edit 12/27/2020
  */
 package local;
@@ -24,6 +23,10 @@ public class DAO {
         return DatabaseConnection.getConnection();
     }
 
+    /** This will run the query in the parameter and return its corresponding ResultSet
+     *
+     * @author Paul
+     */
     public ResultSet nonParamQuery(String query) {
         ResultSet rs = null;
         try (PreparedStatement ps = getConnection().prepareStatement(query)) {

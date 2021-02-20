@@ -8,7 +8,7 @@ public interface AssetTypeDAO {
 
     int getAssetTypeIdCount(String assetTypeID, boolean isLive);
 
-    String getAssetTypeBoundary(String assetTypeId, String boundaryType);
+    String getAssetTypeThreshold(String assetTypeId, String thresholdType);
 
     int insertAssetType(AssetType assetType);
 
