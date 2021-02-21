@@ -28,7 +28,7 @@ public class CustomDialog extends Stage {
     private Rectangle bg;
     private Button cancelBtn;
 
-    CustomDialog(String header, String content, MouseEvent mouseEvent) {
+    public CustomDialog(String header, String content, MouseEvent mouseEvent) {
         root = new Pane();
 
         initStyle(StageStyle.TRANSPARENT);
