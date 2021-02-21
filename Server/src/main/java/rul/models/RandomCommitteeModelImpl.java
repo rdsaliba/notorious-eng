@@ -2,7 +2,7 @@
  * This class is to be used for the model RandomCommittee
  *
  * @author Khaled
- * @last_edit 02/14/2021
+ * @last_edit 02/07/2021
  */
 
 package rul.models;
@@ -21,7 +21,7 @@ public class RandomCommitteeModelImpl implements ModelStrategy {
 
     @Override
     public Classifier trainModel(Instances dataToTrain) {
-        Classifier randomCommittee = new RandomCommittee();
+        RandomCommittee randomCommittee = new RandomCommittee();
         dataToTrain.setClassIndex(dataToTrain.numAttributes() - 1);
 
         try {

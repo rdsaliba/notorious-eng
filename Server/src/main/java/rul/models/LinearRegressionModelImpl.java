@@ -25,8 +25,7 @@ public class LinearRegressionModelImpl implements ModelStrategy {
     public Classifier trainModel(Instances firstTrain) {
         firstTrain.setClassIndex(firstTrain.numAttributes() - 1);
         //removeInstances(firstTrain);
-        Classifier lr = new LinearRegression();
-
+        LinearRegression lr = new LinearRegression();
         try {
             lr.buildClassifier(firstTrain);
         } catch (Exception e) {

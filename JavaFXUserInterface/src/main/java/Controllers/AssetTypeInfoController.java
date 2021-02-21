@@ -8,7 +8,6 @@
  */
 package Controllers;
 
-import Utilities.CustomDialog;
 import Utilities.AssetTypeList;
 import Utilities.TextConstants;
 import Utilities.UIUtilities;
@@ -21,9 +20,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -43,7 +39,6 @@ import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instances;
 
-import java.awt.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -157,7 +152,7 @@ public class AssetTypeInfoController implements Initializable {
         assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE));
         //Attach link to systemTypeMenuBtn to go to Utilities.SystemTypeList.fxml
         assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
-        infoDeleteBtn.setOnMouseClicked(mouseEvent -> CustomDialog.systemTypeInfoControllerDialog(mouseEvent, assetType.getId()));
+        infoDeleteBtn.setOnMouseClicked(this::deleteDialog);
 
         infoSaveBtn.setDisable(true);
         infoSaveBtn.setOnMouseClicked(mouseEvent -> {
@@ -442,7 +437,7 @@ public class AssetTypeInfoController implements Initializable {
      *
      * @author Paul
      */
-    public void deleteAssetType() {
+    private void deleteAssetType() {
         assetTypeDAO.deleteAssetTypeByID(assetType.getId());
     }
 }
