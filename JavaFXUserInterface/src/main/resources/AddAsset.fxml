@@ -146,7 +146,7 @@
                        AnchorPane.leftAnchor="177.0"/>
         </AnchorPane>
         <AnchorPane fx:id="inputError" layoutY="63.0" prefHeight="565.0" prefWidth="326.0"
-                    AnchorPane.leftAnchor="581.0">
+                    AnchorPane.leftAnchor="581.0" stylesheets="@css/style.css">
         </AnchorPane>
         <Button fx:id="saveBtn" layoutX="702.0" layoutY="653.0" mnemonicParsing="false" stylesheets="@css/style.css"
                 text="Save" textFill="WHITE" AnchorPane.bottomAnchor="23.799999999999955"

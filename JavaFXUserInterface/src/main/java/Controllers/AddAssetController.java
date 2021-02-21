@@ -29,8 +29,6 @@ public class AddAssetController implements Initializable {
 
     private static final String SAVE_DIALOG = "Save Dialog";
     private static final String SAVE_HEADER = "Asset has been saved to the database.";
-//    private static final String ERROR_DIALOG = "Error Dialog";
-//    private static final String ERROR_HEADER = "Please enter values for all text fields.";
 
     @FXML
     public Button assetMenuBtn;
@@ -180,18 +178,6 @@ public class AddAssetController implements Initializable {
         }
     }
 
-//    /**
-//     * Creates a dialog to inform the user that there was an error in the user input
-//     *
-//     */
-//    void errorDialog() {
-//        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-//        alert.setTitle(ERROR_DIALOG);
-//        alert.setHeaderText(ERROR_HEADER);
-//
-//        alert.showAndWait();
-//    }
-
     /**
      * Checks to see if mandatory values of the asset are filled.
      *
@@ -220,14 +206,19 @@ public class AddAssetController implements Initializable {
         double horizontalPosition = 0;
         boolean validForm = true;
 
-        if (assetNameValue.trim().isEmpty() || assetNameValue.length() > 50) {
+        if (assetNameValue.trim().isEmpty()) {
             validForm = false;
             validInput[0] = false;
-            UIUtilities.createInputError(inputError, errorMessages, assetNameInput, TextConstants.EMPTY_FIELD_ERROR + " and/or \n" + TextConstants.MAX_50_CHARACTERS_ERROR, 65.0, horizontalPosition, 0);
+            UIUtilities.createInputError(inputError, errorMessages, assetNameInput, TextConstants.EMPTY_FIELD_ERROR, 66.0, horizontalPosition, 0);
+        } else if (assetNameValue.length() > 50) {
+            validForm = false;
+            validInput[0] = false;
+            UIUtilities.createInputError(inputError, errorMessages, assetNameInput, TextConstants.MAX_50_CHARACTERS_ERROR, 66.0, horizontalPosition, 0);
         } else {
             validInput[0] = true;
             UIUtilities.removeInputError(inputError, errorMessages, validInput, assetNameInput, 0);
         }
+
         if (assetDescriptionValue.length() > 300) {
             validForm = false;
             validInput[1] = false;

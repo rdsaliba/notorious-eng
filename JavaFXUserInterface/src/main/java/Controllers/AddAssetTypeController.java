@@ -161,10 +161,14 @@ public class AddAssetTypeController implements Initializable {
         double thresholdFailedNumber;
         boolean validForm = true;
 
-        if (assetTypeNameValue.trim().isEmpty() || assetTypeNameValue.length() > 50) {
+        if (assetTypeNameValue.trim().isEmpty()) {
             validForm = false;
             validInput[0] = false;
-            UIUtilities.createInputError(inputError, errorMessages, assetTypeName, TextConstants.EMPTY_FIELD_ERROR + " and/or \n" + TextConstants.MAX_50_CHARACTERS_ERROR, 68.0, 374.0, 0);
+            UIUtilities.createInputError(inputError, errorMessages, assetTypeName, TextConstants.EMPTY_FIELD_ERROR, 72.0, 374.0, 0);
+        } else if (assetTypeNameValue.length() > 50) {
+            validForm = false;
+            validInput[0] = false;
+            UIUtilities.createInputError(inputError, errorMessages, assetTypeName, TextConstants.MAX_50_CHARACTERS_ERROR, 72.0, 374.0, 0);
         } else {
             validInput[0] = true;
             UIUtilities.removeInputError(inputError, errorMessages, validInput, assetTypeName, 0);

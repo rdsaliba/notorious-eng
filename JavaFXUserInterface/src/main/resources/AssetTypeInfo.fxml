@@ -6,8 +6,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.*?>
+<?import java.net.URL?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="712.0"
-            prefWidth="1026.0" stylesheets="@css/assetTypeInfo.css" xmlns="http://javafx.com/javafx/11.0.1"
+            prefWidth="1026.0" xmlns="http://javafx.com/javafx/11.0.1"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AssetTypeInfoController">
     <VBox layoutY="169.0" prefHeight="543.0" prefWidth="74.0" style="-fx-background-color: #0C072E;"
           AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="169.0">
@@ -212,9 +213,13 @@
                     </tabs>
                 </TabPane>
                 <AnchorPane fx:id="inputError" layoutX="656.0" layoutY="85.0" prefHeight="318.0" prefWidth="295.0"
-                            AnchorPane.leftAnchor="655.0">
+                            AnchorPane.leftAnchor="655.0" stylesheets="@css/style.css">
                 </AnchorPane>
             </children>
         </AnchorPane>
     </AnchorPane>
+    <stylesheets>
+        <URL value="@css/assetTypeInfo.css"/>
+        <URL value="@css/style.css"/>
+    </stylesheets>
 </AnchorPane>

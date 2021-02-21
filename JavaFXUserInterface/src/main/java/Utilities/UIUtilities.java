@@ -14,7 +14,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.TableRow;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextFormatter;
+import javafx.scene.control.TextInputControl;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
@@ -169,7 +172,7 @@ public class UIUtilities {
     }
 
     /**
-     * Creates an error message to be displayed next to the TextField
+     * Creates an error message to be displayed next to the TextField or TextArea
      * and makes the border of the TextField red
      *
      * @param inputError         The AnchorPane where error messages will be displayed in
@@ -181,7 +184,7 @@ public class UIUtilities {
      * @param i                  The field number/position (starting from 0)
      * @author Najim
      */
-    public static void createInputError(AnchorPane inputError, Text[] errorMessages, TextField field, String msg, double verticalPosition, double horizontalPosition, int i) {
+    public static void createInputError(AnchorPane inputError, Text[] errorMessages, TextInputControl field, String msg, double verticalPosition, double horizontalPosition, int i) {
         if (errorMessages[i] == null) {
             errorMessages[i] = new Text(msg);
             errorMessages[i].setLayoutY(verticalPosition);
@@ -205,70 +208,16 @@ public class UIUtilities {
     }
 
     /**
-     * Creates an error message to be displayed next to the TextArea
-     * and makes the border of the TextArea red
-     *
-     * @param inputError         The AnchorPane where error messages will be displayed in
-     * @param errorMessages      An array keeping track of error messages
-     * @param field              The field being validated
-     * @param msg                The error message
-     * @param verticalPosition   The vertical position of the error message
-     * @param horizontalPosition The horizontal position of the message
-     * @param i                  The field number/position (starting from 0)
-     * @author Najim
-     */
-    public static void createInputError(AnchorPane inputError, Text[] errorMessages, TextArea field, String msg, double verticalPosition, double horizontalPosition, int i) {
-        if (errorMessages[i] == null || errorMessages[i].getText().equals("")) {
-            errorMessages[i] = new Text(msg);
-            errorMessages[i].setLayoutY(verticalPosition);
-            errorMessages[i].setLayoutX(horizontalPosition);
-            errorMessages[i].getStyleClass().add("error-message");
-
-            inputError.getChildren().add(errorMessages[i]);
-            field.getStyleClass().add("input-error");
-        } else if (errorMessages[i].getText().equals("")) {
-            errorMessages[i].getStyleClass().remove("error-message");
-            field.getStyleClass().remove("input-error");
-
-            errorMessages[i] = new Text(msg);
-            errorMessages[i].setLayoutY(verticalPosition);
-            errorMessages[i].setLayoutX(horizontalPosition);
-            errorMessages[i].getStyleClass().add("error-message");
-
-            inputError.getChildren().add(errorMessages[i]);
-            field.getStyleClass().add("input-error");
-        }
-    }
-
-    /**
      * Removes the error message from the AnchorPane and the styling added on the field being validated.
      *
      * @param inputError    The AnchorPane where error messages will be displayed in
      * @param errorMessages An array keeping track of error messages
      * @param validInput    An array keeping track of fields which are valid or invalid
-     * @param field         The TextField field being validated
+     * @param field         The field being validated
      * @param i             The field number/position (starting from 0)
      * @author Najim
      */
-    public static void removeInputError(AnchorPane inputError, Text[] errorMessages, boolean[] validInput, TextField field, int i) {
-        if (errorMessages[i] != null && validInput[i]) {
-            field.getStyleClass().remove("input-error");
-            inputError.getChildren().remove(errorMessages[i]);
-            errorMessages[i] = null;
-        }
-    }
-
-    /**
-     * Removes the error message from the AnchorPane and the styling added on the field being validated.
-     *
-     * @param inputError    The AnchorPane where error messages will be displayed in
-     * @param errorMessages An array keeping track of error messages
-     * @param validInput    An array keeping track of fields which are valid or invalid
-     * @param field         The TextArea field being validated
-     * @param i             The field number/position (starting from 0)
-     * @author Najim
-     */
-    public static void removeInputError(AnchorPane inputError, Text[] errorMessages, boolean[] validInput, TextArea field, int i) {
+    public static void removeInputError(AnchorPane inputError, Text[] errorMessages, boolean[] validInput, TextInputControl field, int i) {
         if (errorMessages[i] != null && validInput[i]) {
             field.getStyleClass().remove("input-error");
             inputError.getChildren().remove(errorMessages[i]);
