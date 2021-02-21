@@ -8,6 +8,7 @@
  */
 package Controllers;
 
+import Utilities.CustomDialog;
 import Utilities.AssetTypeList;
 import Utilities.TextConstants;
 import Utilities.UIUtilities;
@@ -15,10 +16,13 @@ import external.AssetTypeDAOImpl;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 
+import java.awt.*;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -99,7 +103,7 @@ public class AssetTypeInfoController implements Initializable {
         assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE));
         //Attach link to assetTypeMenuBtn to go to Utilities.AssetTypeList.fxml
         assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
-        infoDeleteBtn.setOnMouseClicked(this::deleteDialog);
+        infoDeleteBtn.setOnMouseClicked(mouseEvent -> CustomDialog.systemTypeInfoControllerDialog(mouseEvent, assetType.getId()));
 
         infoSaveBtn.setDisable(true);
         infoSaveBtn.setOnMouseClicked(mouseEvent -> {
@@ -193,30 +197,11 @@ public class AssetTypeInfoController implements Initializable {
     }
 
     /**
-     * Creates a dialog box that asks user if they want to delete an assetType.
-     *
-     * @param mouseEvent is an event trigger for this delete dialog
-     * @author Paul
-     */
-    private void deleteDialog(MouseEvent mouseEvent) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle(TextConstants.ALERT_TITLE_DIALOG);
-        alert.setHeaderText(ALERT_HEADER);
-        alert.setContentText(ALERT_CONTENT);
-
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            deleteAssetType();
-            uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE);
-        }
-    }
-
-    /**
      * Send the asset ID to the Database class in order for it to be deleted.
      *
      * @author Paul
      */
-    private void deleteAssetType() {
+    public void deleteAssetType() {
         assetTypeDAO.deleteAssetTypeByID(assetType.getId());
     }
 }
