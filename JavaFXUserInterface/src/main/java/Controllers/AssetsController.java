@@ -138,54 +138,54 @@ public class AssetsController implements Initializable {
             generateThumbnails();
         });
 
-        listTab.setOnSelectionChanged(event -> {
-            assetsListPane.getChildren().clear();
-            generateList();
-        });
+//        listTab.setOnSelectionChanged(event -> {
+//            assetsListPane.getChildren().clear();
+//            generateList();
+//        });
 
-        //Attach link to assetMenuButton to go to Assets.fxml
-        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(rulTimeline, mouseEvent, TextConstants.ASSETS_SCENE));
-
-        //Attach link to assetTypeMenuBtn to go to Utilities.AssetTypeList.fxml
-        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(rulTimeline, mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
+//        //Attach link to assetMenuButton to go to Assets.fxml
+//        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(rulTimeline, mouseEvent, TextConstants.ASSETS_SCENE));
+//
+//        //Attach link to assetTypeMenuBtn to go to Utilities.AssetTypeList.fxml
+//        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(rulTimeline, mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
 
         //Attach link to addAssetButton to go to AddAsset.fxml
         addAssetBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(rulTimeline, mouseEvent, TextConstants.ADD_ASSETS));
 
         //Adding items to the choiceBox (drop down list)
-        sortAsset.getItems().add(DEFAULT_SORT);
-        sortAsset.getItems().add(ASCENDING_RUL_SORT);
-        sortAsset.getItems().add(DESCENDING_RUL_SORT);
-        //Default Value
-        sortAsset.setValue(DEFAULT_SORT);
-        //Listener on the sort ChoiceBox. Depending on the sort selected, all assets panes are cleared and generated again
-        //with the appropriate sort applied.
-        sortAsset.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
-            switch (newValue) {
-                case ASCENDING_RUL_SORT:
-                    if (thumbnailTab.isSelected()) {
-                        assetsThumbPane.getChildren().clear();
-                        assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssetsDes());
-                        Collections.reverse(assets);
-                        generateThumbnails();
-                    }
-                    break;
-                case DESCENDING_RUL_SORT:
-                    if (thumbnailTab.isSelected()) {
-                        assetsThumbPane.getChildren().clear();
-                        assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssetsDes());
-                        generateThumbnails();
-                    }
-                    break;
-                default:
-                    if (thumbnailTab.isSelected()) {
-                        assetsThumbPane.getChildren().clear();
-                        assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
-                        generateThumbnails();
-                    }
-                    break;
-            }
-        });
+//        sortAsset.getItems().add(DEFAULT_SORT);
+//        sortAsset.getItems().add(ASCENDING_RUL_SORT);
+//        sortAsset.getItems().add(DESCENDING_RUL_SORT);
+//        //Default Value
+//        sortAsset.setValue(DEFAULT_SORT);
+//        //Listener on the sort ChoiceBox. Depending on the sort selected, all assets panes are cleared and generated again
+//        //with the appropriate sort applied.
+//        sortAsset.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
+//            switch (newValue) {
+//                case ASCENDING_RUL_SORT:
+//                    if (thumbnailTab.isSelected()) {
+//                        assetsThumbPane.getChildren().clear();
+//                        assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssetsDes());
+//                        Collections.reverse(assets);
+//                        generateThumbnails();
+//                    }
+//                    break;
+//                case DESCENDING_RUL_SORT:
+//                    if (thumbnailTab.isSelected()) {
+//                        assetsThumbPane.getChildren().clear();
+//                        assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssetsDes());
+//                        generateThumbnails();
+//                    }
+//                    break;
+//                default:
+//                    if (thumbnailTab.isSelected()) {
+//                        assetsThumbPane.getChildren().clear();
+//                        assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
+//                        generateThumbnails();
+//                    }
+//                    break;
+//            }
+//        });
     }
 
     /**
@@ -200,45 +200,64 @@ public class AssetsController implements Initializable {
 
             Pane pane = new Pane();
             pane.setOnMouseClicked(event -> uiUtilities.changeScene(event, "/AssetInfo", asset));
-
             pane.getStyleClass().add("assetPane");
+
+            Pane rulPane = new Pane();
+            rulPane.getStyleClass().add("rulPane");
+
+            Pane statusPane = new Pane();
+            statusPane.getStyleClass().add("statusPane");
+
             Text assetName = new Text(asset.getSerialNo());
             Text assetType = new Text(assetTypeDAO.getNameFromID(asset.getAssetTypeID()));
 
-            Text linearLabel = new Text(LINEAR_RUL + ": ");
-            Text recommendationLabel = new Text(RECOMMENDATION + ": ");
+            Text rulLabel = new Text("RUL");
+            Text recommendationLabel = new Text("Status");
             Text recommendation = new Text(asset.getRecommendation());
 
-            Text linearRUL = new Text();
+            Text rulValue = new Text();
             SimpleStringProperty s = asset.getRul();
-            linearRUL.textProperty().bind(s);
+            rulValue.textProperty().bind(s);
 
-            assetName.setId("assetName");
-            assetType.setId("assetType");
-            linearLabel.setId("linearLabel");
-            linearRUL.setId("linearRUL");
-            recommendationLabel.setId("recommendationLabel");
-            recommendation.setId("recommendation");
+            assetName.getStyleClass().add("assetName");
+            assetType.getStyleClass().add("assetType");
+            rulLabel.getStyleClass().add("rulLabel");
+            rulValue.getStyleClass().add("rulValue");
+            recommendationLabel.getStyleClass().add("statusLabel");
+            recommendation.getStyleClass().add("statusValue");
+            statusPane.getStyleClass().add("statusPane");
+            rulPane.getStyleClass().add("rulPane");
 
-            assetName.setLayoutX(14.0);
-            assetName.setLayoutY(28.0);
-            assetType.setLayoutX(14.0);
-            assetType.setLayoutY(60.0);
-            recommendationLabel.setLayoutX(14.0);
-            recommendationLabel.setLayoutY(100.0);
-            recommendation.setLayoutX(230.0);
-            recommendation.setLayoutY(100.0);
-            linearLabel.setLayoutX(14.0);
-            linearLabel.setLayoutY(121.0);
-            linearRUL.setLayoutX(230.0);
-            linearRUL.setLayoutY(120.0);
+            //recommendation.layoutXProperty().bind(statusPane.widthProperty().subtract(recommendation.wrappingWidthProperty()).divide(2));
+            //rulValue.layoutXProperty().bind(rulPane.widthProperty().subtract(rulValue.prefWidth(-1)).divide(2));
+
+            recommendation.layoutXProperty().bind(statusPane.widthProperty().subtract(recommendation.wrappingWidthProperty()).divide(3));
+            rulValue.layoutXProperty().bind(rulPane.widthProperty().subtract(rulValue.wrappingWidthProperty()).divide(3));
+
+
+            assetName.setLayoutX(15.0);
+            assetName.setLayoutY(35.0);
+            assetType.setLayoutX(15.0);
+            assetType.setLayoutY(63.0);
+            rulLabel.setLayoutX(52.0);
+            rulLabel.setLayoutY(239.0);
+            rulPane.setLayoutX(15.0);
+            rulPane.setLayoutY(243.0);
+            rulValue.setLayoutY(21.0);
+            recommendationLabel.setLayoutX(164.0);
+            recommendationLabel.setLayoutY(238.0);
+            statusPane.setLayoutX(133.0);
+            statusPane.setLayoutY(243.0);
+            recommendation.setLayoutY(21.0);
 
             pane.getChildren().add(assetName);
             pane.getChildren().add(assetType);
-            pane.getChildren().add(linearLabel);
-            pane.getChildren().add(linearRUL);
+            pane.getChildren().add(rulLabel);
+            rulPane.getChildren().add(rulValue);
+            pane.getChildren().add(rulPane);
             pane.getChildren().add(recommendationLabel);
-            pane.getChildren().add(recommendation);
+            statusPane.getChildren().add(recommendation);
+            pane.getChildren().add(statusPane);
 
             boxes.add(pane);
         }
