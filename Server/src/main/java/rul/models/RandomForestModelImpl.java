@@ -2,7 +2,7 @@
  * This class is to be used for the model RandomForest
  *
  * @author Khaled
- * @last_edit 02/14/2021
+ * @last_edit 02/07/2021
  */
 
 package rul.models;
@@ -22,7 +22,7 @@ public class RandomForestModelImpl implements ModelStrategy
     @Override
     public Classifier trainModel(Instances dataToTrain)
     {
-        Classifier randomForest = new RandomForest();
+        RandomForest randomForest = new RandomForest();
         dataToTrain.setClassIndex(dataToTrain.numAttributes() - 1);
 
         try {
