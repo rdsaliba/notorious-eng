@@ -5,6 +5,7 @@
  */
 package Controllers;
 
+import Utilities.CustomDialog;
 import Utilities.TextConstants;
 import Utilities.UIUtilities;
 import app.item.Asset;
@@ -16,7 +17,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
 import javafx.util.StringConverter;
 
 import java.net.URL;
@@ -92,9 +92,9 @@ public class AddAssetController implements Initializable {
             Asset newAsset = assembleAsset();
             if (!isAssetEmpty(newAsset)) {
                 saveAsset(newAsset);
-                saveDialog(mouseEvent);
+                CustomDialog.addSystemControllerSaveDialog(mouseEvent);
             } else {
-                errorDialog();
+                CustomDialog.addSystemControllerErrorDialog(mouseEvent);
             }
         });
         // Change scenes to Assets.fxml
@@ -157,33 +157,6 @@ public class AddAssetController implements Initializable {
         assetDAOImpl.insertAsset(newAsset);
     }
 
-    /**
-     * Creates a dialog to alert the user that an asset was saved to the database
-     *
-     * @param mouseEvent is the event that triggers the dialog
-     */
-    void saveDialog(MouseEvent mouseEvent) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(SAVE_DIALOG);
-        alert.setHeaderText(SAVE_HEADER);
-
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE);
-        }
-    }
-
-    /**
-     * Creates a dialog to inform the user that there was an error in the user input
-     *
-     */
-    void errorDialog() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(ERROR_DIALOG);
-        alert.setHeaderText(ERROR_HEADER);
-
-        alert.showAndWait();
-    }
 
     /**
      * Checks to see if values of the asset are filled.
