@@ -1,15 +1,8 @@
-/*
-  This class contains methods which are often reused withing the UI.
-
-  @author
-  @last_edit 02/7/2020
- */
 package Utilities;
 
-import Controllers.AssetInfoController;
-import Controllers.AssetTypeInfoController;
+import Controllers.SystemInfoController;
+import Controllers.SystemTypeInfoController;
 import app.item.Asset;
-import javafx.animation.Timeline;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -24,7 +17,6 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.ParsePosition;
-import java.util.ArrayList;
 
 public class UIUtilities {
 
@@ -77,12 +69,12 @@ public class UIUtilities {
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource(fxmlFileName + ".fxml"));
-            Parent assetsParent = loader.load();
-            Scene assetInfo = new Scene(assetsParent);
+            Parent systemsParent = loader.load();
+            Scene systemInfo = new Scene(systemsParent);
 
             Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
 
-            window.setScene(assetInfo);
+            window.setScene(systemInfo);
             window.show();
 
         } catch (IOException e) {
@@ -103,6 +95,7 @@ public class UIUtilities {
         if (!row.isEmpty()) {
             changeScene(mouseEvent, fxmlFileName, asset);
         }
+
     }
 
     /**
@@ -115,18 +108,18 @@ public class UIUtilities {
      * @param assetType
      * @author Najim
      */
-    public void changeScene(MouseEvent mouseEvent, TableRow<AssetTypeList> row, String fxmlFileName, AssetTypeList assetType) {
+    public void changeScene(MouseEvent mouseEvent, TableRow<SystemTypeList> row, String fxmlFileName, SystemTypeList assetType) {
         row.getScene().getWindow();
         try {
             if (!row.isEmpty()) {
                 FXMLLoader loader = new FXMLLoader();
                 loader.setLocation(getClass().getResource(fxmlFileName + ".fxml"));
-                Parent assetTypeParent = loader.load();
-                Scene assetTypeInfo = new Scene(assetTypeParent);
+                Parent systemTypeParent = loader.load();
+                Scene systemTypeInfo = new Scene(systemTypeParent);
 
                 Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-                window.setScene(assetTypeInfo);
-                AssetTypeInfoController controller = loader.getController();
+                window.setScene(systemTypeInfo);
+                SystemTypeInfoController controller = loader.getController();
                 controller.initData(assetType);
                 controller.setImage(assetType.getAssetType().getName());
                 window.show();
@@ -152,27 +145,17 @@ public class UIUtilities {
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource(fxmlFileName + ".fxml"));
-            Parent assetTypeParent = loader.load();
-            Scene assetTypeInfo = new Scene(assetTypeParent);
+            Parent systemTypeParent = loader.load();
+            Scene systemTypeInfo = new Scene(systemTypeParent);
 
             Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-            window.setScene(assetTypeInfo);
-            AssetInfoController controller = loader.getController();
+            window.setScene(systemTypeInfo);
+            SystemInfoController controller = loader.getController();
             controller.initData(asset);
             window.show();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public void changeScene(ArrayList<Timeline> timelines, MouseEvent mouseEvent, String s) {
-        timelines.forEach(Timeline::stop);
-        changeScene(mouseEvent,s);
-    }
-
-    public void changeScene(Timeline timeline, MouseEvent mouseEvent, String s) {
-        timeline.stop();
-        changeScene(mouseEvent,s);
     }
 }

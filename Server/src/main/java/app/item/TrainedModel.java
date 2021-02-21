@@ -2,6 +2,7 @@
   This object holds the information regarding a trained model, including a copy of the trained Classifier object
 
   @author Paul Micu
+  @version 1.0
   @last_edit 12/27/2020
  */
 package app.item;

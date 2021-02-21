@@ -24,7 +24,6 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
     private static final String GET_ALL_LIVE_ASSETS = "SELECT * FROM asset, asset_type WHERE asset.asset_type_id=asset_type.asset_type_id AND archived = false";
     private static final String INSERT_ASSET = "INSERT INTO asset (name, asset_type_id, description, sn, manufacturer, category, site, location, unit_nb) values(?,?,?,?,?,?,?,?,?)";
     private static final String GET_ASSETS_FROM_ASSET_TYPE_ID = "SELECT * FROM asset a WHERE a.archived = true AND a.asset_type_id = ?";
-    private static final String GET_ATTRIBUTE_DETAILS_FROM_ASSET_ID = "SELECT att.* FROM attribute_measurements am, attribute att WHERE att.attribute_id=am.attribute_id AND am.asset_id = ? GROUP by attribute_id";
 
 
     /**
@@ -158,48 +157,5 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
             e.printStackTrace();
         }
         return null;
-    }
-
-    /** this function returns the measurements for a given asset and cycle in a table format
-     *  this means that the data comes pre arranged in the ResultSet to simplify adding it to the
-     *  table in the UI
-     *
-     * @param assetID the id of the asset we want the measurement for
-     * @param fromTime this represents from what time cycle we want to start retrieving information
-     * @author Paul
-     */
-    public ResultSet createMeasurementsFromAssetIdAndTime(int assetID, int fromTime) {
-        StringBuilder preparedStatementPart1 = new StringBuilder();
-        StringBuilder preparedStatementPart2 = new StringBuilder();
-        ResultSet returned = null;
-        try (PreparedStatement ps = getConnection().prepareStatement(GET_ATTRIBUTE_DETAILS_FROM_ASSET_ID)) {
-            ps.setInt(1, assetID);
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-                preparedStatementPart1.append(", Coalesce(Sum(`");
-                preparedStatementPart1.append(rs.getString("attribute_name"));
-                preparedStatementPart1.append("`), 0) AS '");
-                preparedStatementPart1.append(rs.getString("attribute_name"));
-                preparedStatementPart1.append("'");
-
-                preparedStatementPart2.append(", CASE WHEN tab.attribute_id = ");
-                preparedStatementPart2.append(rs.getString("attribute_id"));
-                preparedStatementPart2.append(" THEN tab.value end AS `");
-                preparedStatementPart2.append(rs.getString("attribute_name"));
-                preparedStatementPart2.append("`");
-            }
-
-            // i'm unsure why but i cannot do setString on the prepared statement, it keeps failing the query.
-            // This way is the same in terms of usage and speed and security.
-            try (PreparedStatement measurementStatement = getConnection().prepareStatement("SELECT `Cycle` " + preparedStatementPart1 + " FROM (SELECT tab.`time` as 'Cycle'" + preparedStatementPart2 + " FROM (SELECT am.attribute_id, am.`time`, am.value FROM attribute_measurements am WHERE asset_id = ? AND time > ? ORDER BY attribute_id, time) tab) tab2 GROUP BY `CYCLE` asc;")) {
-                measurementStatement.setInt(1, assetID);
-                measurementStatement.setInt(2, fromTime);
-                returned = measurementStatement.executeQuery();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return returned;
     }
 }

@@ -1,9 +1,3 @@
-/*
-  Model for the asset types.
-
-  @author
-  @last_edit 02/7/2020
- */
 package app.item;
 
 import java.util.ArrayList;

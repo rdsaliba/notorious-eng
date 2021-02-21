@@ -1,9 +1,10 @@
 /*
-  The asset Attribute class contains all the details of the asset attribute (attributes, operational settings, etc).
+  The asset Attribute class contains all the details of the asset attribute (sensors, operational settings, etc).
   This includes the id of the asset, its name and all the measurements we have for it.
 
   @author Paul Micu, Jeremie Chouteau
-  @last_edit 02/7/2020
+  @version 2.0
+  @last_edit 24/12/2020
  */
 package app.item;
 

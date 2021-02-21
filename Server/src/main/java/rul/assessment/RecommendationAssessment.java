@@ -1,9 +1,3 @@
-/*
-  The RecommendationAssessment class is responsible to handle any assessment requests coming from the assessment Controller
-
-  @author Paul Micu
-  @last_edit 11/08/2020
- */
 package rul.assessment;
 
 
@@ -24,20 +18,20 @@ public class RecommendationAssessment {
     }
 
     public String getRecommendation(Double rulEstimation, String assetTypeID) {
-        HashMap<String, Double> thresholds = getAssetTypeThresholds(assetTypeID);
-        return calculateThresholds(rulEstimation, thresholds);
+        HashMap<String, Double> boundaries = getAssetTypeBoundaries(assetTypeID);
+        return calculateBoundaries(rulEstimation, boundaries);
     }
 
-    private HashMap<String, Double> getAssetTypeThresholds(String assetTypeID) {
-        return assetTypeDAO.getAssetTypeThresholds(assetTypeID);
+    private HashMap<String, Double> getAssetTypeBoundaries(String assetTypeID) {
+        return assetTypeDAO.getAssetTypeBoundaries(assetTypeID);
     }
 
-    private String calculateThresholds(Double rulEstimation, HashMap<String, Double> thresholds) {
+    private String calculateBoundaries(Double rulEstimation, HashMap<String, Double> boundaries) {
         AtomicReference<String> recommendation = new AtomicReference<>(OK_THRESHOLD);
-        String[] thresholdValues = {ADVISORY_THRESHOLD, CAUTION_THRESHOLD, WARNING_THRESHOLD, FAILED_THRESHOLD};
+        String[] thresholds = {ADVISORY_THRESHOLD, CAUTION_THRESHOLD, WARNING_THRESHOLD, FAILED_THRESHOLD};
 
-        Arrays.stream(thresholdValues).forEach(t -> {
-            if (thresholds.containsKey(t) && rulEstimation != null && rulEstimation <= thresholds.get(t))
+        Arrays.stream(thresholds).forEach(t -> {
+            if (boundaries.containsKey(t) && rulEstimation != null && rulEstimation <= boundaries.get(t))
                 recommendation.set(t);
         });
         return recommendation.get();

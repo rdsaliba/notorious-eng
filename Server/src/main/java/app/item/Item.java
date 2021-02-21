@@ -2,6 +2,7 @@
   All assets to be create must be registered as Items
 
   @author Roy Saliba
+  @version 1.0
   @last_edit 11/07/2020
  */
 package app.item;

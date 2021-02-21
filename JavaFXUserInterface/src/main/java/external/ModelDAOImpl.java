@@ -21,23 +21,23 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class ModelDAOImpl extends DAO implements ModelDAO {
-    private static final String GET_MODEL_NAME_FROM_ID = "SELECT name from trained_model, model where trained_model.model_id = model.model_id and asset_type_id = ?";
+    private static final String GET_MODEL_NAME_FROM_ID = "SELECT name from model where model_id = ?";
     private static final String GET_MODEL_FROM_ASSET_TYPE = "SELECT * FROM trained_model WHERE asset_type_id = ?";
     private static final String GET_MODELS_LIST = "select * from model";
     private static final String INSERT_RMSE = "REPLACE INTO model_evaluation SET rmse = ?,model_id = ?, asset_type_id = ? ";
 
     /**
-     * Given a asset type id, this function will return the string corresponding
-     * to the name of the model in the database associated with the asset type
+     * Given a model id, this function will return the string corresponding
+     * to the name of the model in the database
      *
-     * @param assetTypeID represents a asset type id
+     * @param modelID represents a model's id
      * @author Paul
      */
     @Override
-    public String getModelNameFromAssetTypeID(String assetTypeID) {
+    public String getModelNameFromModelID(int modelID) {
         String name = null;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_NAME_FROM_ID)) {
-            ps.setString(1, assetTypeID);
+            ps.setInt(1, modelID);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next())
                     name = rs.getString("name");
@@ -82,7 +82,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
             ps.setString(1, assetTypeID);
             try (ResultSet queryResult = ps.executeQuery()) {
                 while (queryResult.next()) {
-                    tm = createTrainedModelFromResultSet(queryResult, false);
+                    tm = createTrainedModelFromResultSet(queryResult, true);
                 }
             }
         } catch (SQLException e) {

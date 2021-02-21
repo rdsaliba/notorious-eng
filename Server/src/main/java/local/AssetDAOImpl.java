@@ -3,7 +3,8 @@
   This class extends the general DAO object and implements the AssetDAO interface
 
   @author      Paul Micu
-  @last_edit   02/7/2020
+  @version     1.0
+  @last_edit   12/27/2020
  */
 package local;
 
@@ -208,11 +209,6 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         }
     }
 
-    /**This method changes the update indicator of the assert in the database to true
-     *
-     * @param assetID the specific id of the asset
-     * @author Paul
-     */
     @Override
     public void setAssetUpdate(int assetID) {
         try (PreparedStatement ps = getConnection().prepareStatement(SET_UPDATED_TRUE)) {

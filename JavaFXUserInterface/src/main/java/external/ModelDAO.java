@@ -17,7 +17,7 @@ public interface ModelDAO {
 
     TrainedModel getModelsByAssetTypeID(String assetTypeID);
 
-    String getModelNameFromAssetTypeID(String assetTypeId);
+    String getModelNameFromModelID(int modelID);
 
     TrainedModel createTrainedModelFromResultSet(ResultSet rs, boolean withModel) throws SQLException;
     ArrayList<String> getListOfModels();

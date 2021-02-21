@@ -23,7 +23,7 @@
     -fx-background-color: #FB3860;
 }
 
-#addAssetBtn {
+#addSystemBtn {
     -fx-background-color: #48C774;
 }
 
@@ -35,22 +35,22 @@
     -fx-background-color: #48C774;
 }
 
-#sortAsset {
+#sortSystem {
     -fx-background-color: #48C774;
     -fx-mark-color: white;
     -fx-pref-width: 117;
     -fx-pref-height: 27;
 }
 
-#sortAsset .menu-item:focused {
+#sortSystem .menu-item:focused {
     -fx-background-color: #48C774;
 }
 
-#sortAsset .menu-item:focused > .label {
+#sortSystem .menu-item:focused > .label {
     -fx-text-fill: white;
 }
 
-#sortAsset > .label {
+#sortSystem > .label {
     -fx-text-fill: white;
 }
 

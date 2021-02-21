@@ -18,7 +18,7 @@ public class ConfigProperties {
 
             inputStream = getClass().getClassLoader().getResourceAsStream(file);
 
-            if (inputStream != null) {
+            if(inputStream != null) {
                 config.load(inputStream);
             } else {
                 throw new FileNotFoundException("Property file not found in the classpath.");
@@ -26,7 +26,7 @@ public class ConfigProperties {
 
             result = config.getProperty(key);
 
-        } catch (Exception e) {
+        } catch (Exception e){
             System.out.println("Exception: " + e);
         } finally {
             inputStream.close();
