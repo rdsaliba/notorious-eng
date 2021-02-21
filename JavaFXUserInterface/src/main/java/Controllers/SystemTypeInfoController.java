@@ -95,6 +95,7 @@ public class SystemTypeInfoController implements Initializable {
         assetTypeDAO = new AssetTypeDAOImpl();
         modelDAO = new ModelDAOImpl();
         assetDAO = new AssetDAOImpl();
+        modelController = new ModelController();
         prePreprocessorController = new DataPrePreprocessorController();
 
         try {
@@ -193,9 +194,10 @@ public class SystemTypeInfoController implements Initializable {
 
 
     private void modelsButtonPressed(){
+
         if(modelTab.getId().equals("modelTab")){
             try {
-                trainDataset  = DataPrePreprocessorController.getInstance().addRULCol(createInstancesFromAssets(assetDAO.getAssetsFromAssetTypeID(Integer.parseInt(assetType.getId()))));
+                trainDataset  = DataPrePreprocessorController.getInstance().addRULCol(modelController.createInstancesFromAssets(assetDAO.getAssetsFromAssetTypeID(Integer.parseInt(assetType.getId()))));
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
@@ -394,37 +396,6 @@ public class SystemTypeInfoController implements Initializable {
         return set;
     }
 
-    public Instances createInstancesFromAssets(List<Asset> assets) {
-        ArrayList<Attribute> attributesVector;
-        Instances data;
-        double[] values;
-        ArrayList<String> attributeNames = assetDAO.getAttributesNameFromAssetID(assets.get(0).getId());
-        String assetTypeName = assetDAO.getAssetTypeNameFromID(assets.get(0).getAssetTypeID());
-
-        // 1. set up attributes
-        attributesVector = new ArrayList<>();
-        // - numeric
-        attributesVector.add(new Attribute("Asset_id"));
-        attributesVector.add(new Attribute("Time_Cycle"));
-        for (String attributeName : attributeNames) {
-            attributesVector.add(new Attribute(attributeName));
-        }
-        // 2. create Instances object
-        data = new Instances(assetTypeName, attributesVector, 0);
-
-        for (Asset asset : assets) {
-            for (int timeCycle = 1; timeCycle <= asset.getAssetInfo().getAssetAttributes().get(1).getMeasurements().size(); timeCycle++) {
-                values = new double[data.numAttributes()];
-                values[0] = asset.getId();
-                values[1] = timeCycle;
-                for (int i = 0; i < asset.getAssetInfo().getAssetAttributes().size(); i++) {
-                    values[i + 2] = asset.getAssetInfo().getAssetAttributes().get(i).getMeasurements(timeCycle);
-                }
-                data.add(new DenseInstance(1.0, values));       //changed from Instance to DenseInstance
-            }
-        }
-        return data;
-    }
 
     /**
      * Send the asset ID to the Database class in order for it to be deleted.

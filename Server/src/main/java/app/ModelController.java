@@ -27,7 +27,7 @@ public class ModelController {
     private final AssetDAOImpl assetDaoImpl;
     private final ModelDAOImpl modelDAOImpl;
 
-    private ModelController() {
+    public ModelController() {
         assetDaoImpl = new AssetDAOImpl();
         modelDAOImpl = new ModelDAOImpl();
     }
@@ -171,7 +171,9 @@ public class ModelController {
                 return new RandomCommitteeModelImpl();
             default:
                 return null;
-        }
+
+    }
+
     }
 
 
@@ -231,4 +233,6 @@ public class ModelController {
         }
         return data;
     }
+
 }
+
