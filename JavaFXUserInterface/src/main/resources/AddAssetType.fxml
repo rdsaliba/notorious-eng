@@ -5,15 +5,16 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
+<?import java.net.URL?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="712.0"
-            prefWidth="1026.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="Controllers.AddAssetTypeController">
+            prefWidth="1026.0" xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AddAssetTypeController">
     <VBox layoutY="169.0" prefHeight="543.0" prefWidth="74.0" style="-fx-background-color: #0C072E;"
           AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="169.0">
         <children>
-            <Button fx:id="assetMenuBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0"
-                    prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css" text="Assets"
-                    textAlignment="CENTER" textFill="#f0f0f0">
+            <Button fx:id="assetMenuBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0" prefWidth="74.0"
+                    style="-fx-background-radius: 0;" stylesheets="@css/style.css" text="Assets" textAlignment="CENTER"
+                    textFill="#f0f0f0">
                 <font>
                     <Font name="Segoe UI Bold" size="14.0"/>
                 </font>
@@ -71,6 +72,9 @@
         <AnchorPane fx:id="assetTypeInformation" layoutX="42.0" layoutY="79.0" prefHeight="350.0" prefWidth="867.0"
                     style="-fx-background-color: #FFFFFF; -fx-border-color: #F0F0F0;" AnchorPane.leftAnchor="42.0"
                     AnchorPane.rightAnchor="42.0">
+            <AnchorPane fx:id="inputError" layoutX="198.0" layoutY="1.0" prefHeight="354.0" prefWidth="669.0"
+                        AnchorPane.leftAnchor="200.0" stylesheets="@css/style.css">
+            </AnchorPane>
             <Text fill="#0c072e" layoutX="24.0" layoutY="25.0" strokeType="OUTSIDE" strokeWidth="0.0"
                   text="Asset Type Information">
                 <font>
@@ -107,19 +111,22 @@
                     <Font name="Segoe UI Bold" size="14.0" />
                 </font>
             </Text>
-            <TextField fx:id="thresholdAdvisoryValue" layoutX="100.0" layoutY="235.0" prefHeight="25.0" prefWidth="97.0"/>
+            <TextField fx:id="thresholdAdvisoryValue" layoutX="100.0" layoutY="235.0" prefHeight="25.0"
+                       prefWidth="97.0"/>
             <Text fill="#0c072e" layoutX="20.0" layoutY="282.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Caution">
                 <font>
                     <Font name="Segoe UI Bold" size="14.0" />
                 </font>
             </Text>
-            <TextField fx:id="thresholdCautionValue" layoutX="100.0" layoutY="265.0" prefHeight="25.0" prefWidth="97.0"/>
+            <TextField fx:id="thresholdCautionValue" layoutX="100.0" layoutY="265.0" prefHeight="25.0"
+                       prefWidth="97.0"/>
             <Text fill="#0c072e" layoutX="20.0" layoutY="312.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Warning">
                 <font>
                     <Font name="Segoe UI Bold" size="14.0" />
                 </font>
             </Text>
-            <TextField fx:id="thresholdWarningValue" layoutX="100.0" layoutY="295.0" prefHeight="25.0" prefWidth="97.0"/>
+            <TextField fx:id="thresholdWarningValue" layoutX="100.0" layoutY="295.0" prefHeight="25.0"
+                       prefWidth="97.0"/>
             <Text fill="#0c072e" layoutX="20.0" layoutY="342.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Failed ">
                 <font>
                     <Font name="Segoe UI Bold" size="14.0" />
@@ -135,13 +142,17 @@
                 <Insets bottom="10.0" left="30.0" right="30.0" top="10.0" />
             </padding>
         </Button>
-        <Button fx:id="cancelBtn" layoutX="812.0" layoutY="645.0" mnemonicParsing="false" stylesheets="@css/style.css" text="Cancel" textFill="#4a4a4a" AnchorPane.bottomAnchor="31.0" AnchorPane.rightAnchor="43.0">
+        <Button fx:id="cancelBtn" layoutX="812.0" layoutY="645.0" mnemonicParsing="false" stylesheets="@css/style.css"
+                text="Cancel" textFill="#4a4a4a" AnchorPane.bottomAnchor="31.0" AnchorPane.rightAnchor="43.0">
             <padding>
-                <Insets bottom="10.0" left="30.0" right="30.0" top="10.0" />
+                <Insets bottom="10.0" left="30.0" right="30.0" top="10.0"/>
             </padding>
             <font>
-                <Font name="Segoe UI Bold" size="12.0" />
+                <Font name="Segoe UI Bold" size="12.0"/>
             </font>
         </Button>
     </AnchorPane>
+    <stylesheets>
+        <URL value="@css/style.css"/>
+    </stylesheets>
 </AnchorPane>

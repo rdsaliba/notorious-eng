@@ -14,10 +14,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextFormatter;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -166,7 +165,80 @@ public class UIUtilities {
 
     public void changeScene(ArrayList<Timeline> timelines, MouseEvent mouseEvent, String s) {
         timelines.forEach(Timeline::stop);
-        changeScene(mouseEvent,s);
+        changeScene(mouseEvent, s);
+    }
+
+    /**
+     * Creates an error message to be displayed next to the TextField or TextArea
+     * and makes the border of the TextField red
+     *
+     * @param inputError         The AnchorPane where error messages will be displayed in
+     * @param errorMessages      An array keeping track of error messages
+     * @param field              The field being validated
+     * @param msg                The error message
+     * @param verticalPosition   The vertical position of the error message
+     * @param horizontalPosition The horizontal position of the message
+     * @param i                  The field number/position (starting from 0)
+     * @author Najim
+     */
+    public static void createInputError(AnchorPane inputError, Text[] errorMessages, TextInputControl field, String msg, double verticalPosition, double horizontalPosition, int i) {
+        if (errorMessages[i] == null) {
+            errorMessages[i] = new Text(msg);
+            errorMessages[i].setLayoutY(verticalPosition);
+            errorMessages[i].setLayoutX(horizontalPosition);
+            errorMessages[i].getStyleClass().add("error-message");
+
+            inputError.getChildren().add(errorMessages[i]);
+            field.getStyleClass().add("input-error");
+        } else if (errorMessages[i].getText().equals("")) {
+            errorMessages[i].getStyleClass().remove("error-message");
+            field.getStyleClass().remove("input-error");
+
+            errorMessages[i] = new Text(msg);
+            errorMessages[i].setLayoutY(verticalPosition);
+            errorMessages[i].setLayoutX(horizontalPosition);
+            errorMessages[i].getStyleClass().add("error-message");
+
+            inputError.getChildren().add(errorMessages[i]);
+            field.getStyleClass().add("input-error");
+        }
+    }
+
+    /**
+     * Removes the error message from the AnchorPane and the styling added on the field being validated.
+     *
+     * @param inputError    The AnchorPane where error messages will be displayed in
+     * @param errorMessages An array keeping track of error messages
+     * @param validInput    An array keeping track of fields which are valid or invalid
+     * @param field         The field being validated
+     * @param i             The field number/position (starting from 0)
+     * @author Najim
+     */
+    public static void removeInputError(AnchorPane inputError, Text[] errorMessages, boolean[] validInput, TextInputControl field, int i) {
+        if (errorMessages[i] != null && validInput[i]) {
+            field.getStyleClass().remove("input-error");
+            inputError.getChildren().remove(errorMessages[i]);
+            errorMessages[i] = null;
+        }
+    }
+
+    /**
+     * Compares two thresholds and determines if the previous threshold is larger than the next.
+     *
+     * @param previousThreshold The Threshold preceding
+     * @param nextThreshold     The Threshold succeeding
+     * @author Najim
+     */
+    public static boolean compareThresholds(TextField previousThreshold, TextField nextThreshold) {
+        boolean valid = true;
+        if (!previousThreshold.getText().isEmpty() && !nextThreshold.getText().isEmpty()) {
+            double previousThresholdValue = Double.parseDouble(previousThreshold.getText());
+            double nextThresholdValue = Double.parseDouble(nextThreshold.getText());
+            if (previousThresholdValue <= nextThresholdValue) {
+                valid = false;
+            }
+        }
+        return valid;
     }
 
     public void changeScene(Timeline timeline, MouseEvent mouseEvent, String s) {

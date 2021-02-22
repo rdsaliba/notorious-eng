@@ -21,6 +21,9 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
 
 import java.awt.*;
 import java.net.URL;
@@ -56,11 +59,15 @@ public class AssetTypeInfoController implements Initializable {
     private TextField thresholdFailed;
     @FXML
     private ImageView assetTypeImageView;
+    @FXML
+    private AnchorPane inputError;
 
     private UIUtilities uiUtilities;
     private AssetTypeList assetType;
     private AssetTypeList originalAssetType;
     private AssetTypeDAOImpl assetTypeDAO;
+    private Text[] errorMessages = new Text[7];
+    private boolean[] validInput = new boolean[7];
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -107,8 +114,10 @@ public class AssetTypeInfoController implements Initializable {
 
         infoSaveBtn.setDisable(true);
         infoSaveBtn.setOnMouseClicked(mouseEvent -> {
-            assetTypeDAO.updateAssetType(assetType.toAssetType());
-            uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE);
+            if (formInputValidation()) {
+                assetTypeDAO.updateAssetType(assetType.toAssetType());
+                uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE);
+            }
         });
 
         assetTypeName.textProperty().addListener((obs, oldText, newText) -> {
@@ -203,5 +212,116 @@ public class AssetTypeInfoController implements Initializable {
      */
     public void deleteAssetType() {
         assetTypeDAO.deleteAssetTypeByID(assetType.getId());
+    }
+
+    /**
+     * Displays an error for a field when the validation criteria are not respected.
+     *
+     * @author Najim
+     */
+    public boolean formInputValidation() {
+        String assetTypeNameValue = assetTypeName.getText();
+        String assetTypeDescValue = assetTypeDesc.getText();
+        double horizontalPosition = 0;
+        boolean validForm = true;
+
+        if (assetTypeNameValue.trim().isEmpty()) {
+            validForm = false;
+            validInput[0] = false;
+            UIUtilities.createInputError(inputError, errorMessages, assetTypeName, TextConstants.EMPTY_FIELD_ERROR, 28.0, horizontalPosition, 0);
+        } else if (assetTypeNameValue.length() > 50) {
+            validForm = false;
+            validInput[0] = false;
+            UIUtilities.createInputError(inputError, errorMessages, assetTypeName, TextConstants.MAX_50_CHARACTERS_ERROR, 28.0, horizontalPosition, 0);
+        } else {
+            validInput[0] = true;
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, assetTypeName, 0);
+        }
+
+        if (assetTypeDescValue.length() > 300) {
+            validForm = false;
+            validInput[1] = false;
+            UIUtilities.createInputError(inputError, errorMessages, assetTypeDesc, TextConstants.MAX_300_CHARACTERS_ERROR, 85.0, horizontalPosition, 1);
+        } else {
+            validInput[1] = true;
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, assetTypeDesc, 1);
+        }
+
+        if (UIUtilities.compareThresholds(thresholdAdvisory, thresholdCaution)) {
+            validInput[3] = true;
+            validInput[4] = true;
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdAdvisory, 3);
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdCaution, 4);
+        } else {
+            validForm = false;
+            validInput[3] = false;
+            validInput[4] = false;
+            UIUtilities.createInputError(inputError, errorMessages, thresholdAdvisory, TextConstants.ADVISORY_CAUTION, 178.0, horizontalPosition, 3);
+            UIUtilities.createInputError(inputError, errorMessages, thresholdCaution, "", 0, 0, 4);
+        }
+
+        if (UIUtilities.compareThresholds(thresholdAdvisory, thresholdWarning)) {
+            validInput[3] = true;
+            validInput[5] = true;
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdAdvisory, 3);
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdWarning, 5);
+        } else {
+            validForm = false;
+            validInput[3] = false;
+            validInput[5] = false;
+            UIUtilities.createInputError(inputError, errorMessages, thresholdAdvisory, TextConstants.ADVISORY_WARNING, 178.0, 0, 3);
+            UIUtilities.createInputError(inputError, errorMessages, thresholdWarning, "", 0, 0, 5);
+        }
+
+        if (UIUtilities.compareThresholds(thresholdCaution, thresholdWarning)) {
+            validInput[4] = true;
+            validInput[5] = true;
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdCaution, 4);
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdWarning, 5);
+        } else {
+            validForm = false;
+            validInput[4] = false;
+            validInput[5] = false;
+            UIUtilities.createInputError(inputError, errorMessages, thresholdCaution, TextConstants.CAUTION_WARNING, 218.0, horizontalPosition, 4);
+            UIUtilities.createInputError(inputError, errorMessages, thresholdWarning, "", 0, 0, 5);
+        }
+
+        if (UIUtilities.compareThresholds(thresholdAdvisory, thresholdFailed)) {
+            validInput[3] = true;
+            validInput[6] = true;
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdAdvisory, 3);
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdFailed, 6);
+        } else {
+            validForm = false;
+            validInput[3] = false;
+            validInput[6] = false;
+            UIUtilities.createInputError(inputError, errorMessages, thresholdAdvisory, TextConstants.ADVISORY_FAILED, 178.0, horizontalPosition, 3);
+            UIUtilities.createInputError(inputError, errorMessages, thresholdFailed, "", 0, 0, 6);
+        }
+        if (UIUtilities.compareThresholds(thresholdCaution, thresholdFailed)) {
+            validInput[4] = true;
+            validInput[6] = true;
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdCaution, 4);
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdFailed, 6);
+        } else {
+            validForm = false;
+            validInput[4] = false;
+            validInput[6] = false;
+            UIUtilities.createInputError(inputError, errorMessages, thresholdCaution, TextConstants.CAUTION_FAILED, 218.0, horizontalPosition, 4);
+            UIUtilities.createInputError(inputError, errorMessages, thresholdFailed, "", 0, 0, 6);
+        }
+        if (UIUtilities.compareThresholds(thresholdWarning, thresholdFailed)) {
+            validInput[5] = true;
+            validInput[6] = true;
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdWarning, 5);
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdFailed, 6);
+        } else {
+            validForm = false;
+            validInput[5] = false;
+            validInput[6] = false;
+            UIUtilities.createInputError(inputError, errorMessages, thresholdWarning, TextConstants.WARNING_FAILED, 258.0, horizontalPosition, 5);
+            UIUtilities.createInputError(inputError, errorMessages, thresholdFailed, "", 0, 0, 6);
+        }
+        return validForm;
     }
 }

@@ -36,6 +36,20 @@ public class TextConstants {
     public static final DecimalFormat RULValueFormat = new DecimalFormat("#.##");
     public static final DecimalFormat ThresholdValueFormat = new DecimalFormat("#.00");
 
+    //Input Validation Constants
+    public static final String EMPTY_FIELD_ERROR = "Please enter a value";
+    public static final String MAX_20_CHARACTERS_ERROR = "Number of characters has to not exceed 20";
+    public static final String MAX_50_CHARACTERS_ERROR = "Number of characters has to not exceed 50";
+    public static final String MAX_300_CHARACTERS_ERROR = "Number of characters has to not exceed 300";
+    public static final String WORD_HYPHEN_ERROR = "Value can only contain letters, numbers or hyphens";
+    public static final String LETTER_NUMBER_ERROR = "Value can only contain letters or numbers";
+    public static final String ADVISORY_CAUTION = "The Advisory Threshold needs to be larger \nthan the Caution Threshold";
+    public static final String ADVISORY_WARNING = "The Advisory Threshold needs to be larger \nthan the Warning Threshold";
+    public static final String CAUTION_WARNING = "The Caution Threshold needs to be larger \nthan the Warning Threshold";
+    public static final String ADVISORY_FAILED = "The Advisory Threshold needs to be larger \nthan the Failed Threshold";
+    public static final String CAUTION_FAILED = "The Caution Threshold needs to be larger \nthan the Failed Threshold";
+    public static final String WARNING_FAILED = "The Warning Threshold needs to be larger \nthan the Failed Threshold";
+
     private TextConstants() {
         throw new IllegalStateException("Utility class");
     }
