@@ -1,42 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 <?import java.net.URL?>
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="712.0"
-            prefWidth="1026.0" stylesheets="@css/assetinfo.css" xmlns="http://javafx.com/javafx/11.0.1"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AssetInfoController">
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="712.0" prefWidth="1026.0" stylesheets="@css/assetinfo.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AssetInfoController">
     <children>
-        <VBox layoutY="169.0" prefHeight="543.0" prefWidth="74.0" style="-fx-background-color: #0C072E;"
-              AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="169.0">
+        <VBox layoutY="169.0" prefHeight="543.0" prefWidth="74.0" style="-fx-background-color: #0C072E;" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="169.0">
             <children>
-                <Button fx:id="assetMenuBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0"
-                        prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css" text="Assets"
-                        textAlignment="CENTER" textFill="#f0f0f0">
+                <Button fx:id="assetMenuBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0" prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css" text="Assets" textAlignment="CENTER" textFill="#f0f0f0">
                     <font>
-                        <Font name="Segoe UI Bold" size="14.0"/>
+                        <Font name="Segoe UI Bold" size="14.0" />
                     </font>
                     <graphic>
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@imgs/outline_dvr_white_18dp.png"/>
+                                <Image url="@imgs/outline_dvr_white_18dp.png" />
                             </image>
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button fx:id="assetTypeMenuBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0"
-                        prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css"
-                        text="Asset&#10;Types" textAlignment="CENTER" textFill="#f0f0f0" translateY="15.0">
+                <Button fx:id="assetTypeMenuBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0" prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css" text="Asset&#10;Types" textAlignment="CENTER" textFill="#f0f0f0" translateY="15.0">
                     <font>
-                        <Font name="Segoe UI Bold" size="14.0"/>
+                        <Font name="Segoe UI Bold" size="14.0" />
                     </font>
                     <graphic>
                         <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@imgs/outline_type_white.png"/>
+                                <Image url="@imgs/outline_type_white.png" />
                             </image>
                         </ImageView>
                     </graphic>
@@ -55,13 +56,26 @@
                 </Button>
             </children>
         </VBox>
-        <VBox prefHeight="169.0" prefWidth="74.0" style="-fx-background-color: #0C072E;" AnchorPane.topAnchor="0.0" />
+        <VBox prefHeight="169.0" prefWidth="74.0" style="-fx-background-color: #0C072E;" AnchorPane.topAnchor="0.0">
+         <children>
+            <Button fx:id="backBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="41.0" prefWidth="77.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css" textAlignment="CENTER" textFill="#f0f0f0">
+               <font>
+                  <Font name="Segoe UI Bold" size="14.0" />
+               </font>
+               <graphic>
+                  <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@imgs/outline_back_white_18dp.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+         </children></VBox>
         <AnchorPane layoutX="74.0" prefHeight="42.0" prefWidth="952.0" style="-fx-border-style: hidden hidden solid hidden; -fx-border-color: F0F0F0;" AnchorPane.leftAnchor="74.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
-                <Text fx:id="assetName" fill="#0c072e" layoutX="14.0" layoutY="26.0" strokeType="OUTSIDE"
-                      strokeWidth="0.0" text="Asset Name">
+                <Text fx:id="assetName" fill="#0c072e" layoutX="14.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Asset Name">
                     <font>
-                        <Font name="Segoe UI Bold" size="18.0"/>
+                        <Font name="Segoe UI Bold" size="18.0" />
                     </font>
                 </Text>
                 <Button fx:id="deleteBtn" layoutX="871.0" layoutY="9.0" mnemonicParsing="false" stylesheets="@css/style.css" text="Delete" textFill="WHITE" AnchorPane.rightAnchor="14.0">
@@ -82,66 +96,35 @@
                             <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="382.0" prefWidth="945.0">
                                     <children>
-                                        <AnchorPane fx:id="assetInfoPane" layoutX="6.0" maxHeight="258.0"
-                                                    prefHeight="258.0" prefWidth="928.0"
-                                                    style="-fx-background-color: FFFFFF;"
-                                                    AnchorPane.bottomAnchor="383.0" AnchorPane.leftAnchor="6.0"
-                                                    AnchorPane.rightAnchor="18.0" AnchorPane.topAnchor="0.0">
+                                        <AnchorPane fx:id="assetInfoPane" layoutX="6.0" maxHeight="258.0" prefHeight="258.0" prefWidth="928.0" style="-fx-background-color: FFFFFF;" AnchorPane.bottomAnchor="383.0" AnchorPane.leftAnchor="6.0" AnchorPane.rightAnchor="18.0" AnchorPane.topAnchor="0.0">
                                             <children>
-                                                <Text fx:id="assetTypeLabel" fill="#0c072e" layoutX="14.0"
-                                                      layoutY="85.0" strokeType="OUTSIDE" strokeWidth="0.0"
-                                                      text="Asset Type:"/>
-                                                <Text fx:id="serialNumber" fill="#0c072e" layoutX="14.0" layoutY="56.0"
-                                                      strokeType="OUTSIDE" strokeWidth="0.0" text="Serial Number:"/>
-                                                <Text fx:id="manufacturer" fill="#0c072e" layoutX="394.0" layoutY="26.0"
-                                                      strokeType="OUTSIDE" strokeWidth="0.0" text="Manufacturer:"/>
-                                                <Text fx:id="assetLocation" fill="#0c072e" layoutX="14.0"
-                                                      layoutY="113.0" strokeType="OUTSIDE" strokeWidth="0.0"
-                                                      text="Location:"/>
-                                                <Text fill="#0c072e" layoutX="14.0" layoutY="141.0" strokeType="OUTSIDE"
-                                                      strokeWidth="0.0" text="Site:"/>
-                                                <Text fx:id="description" fill="#0c072e" layoutX="394.0" layoutY="83.0"
-                                                      strokeType="OUTSIDE" strokeWidth="0.0" text="Description:"/>
-                                                <Text fx:id="assetTypeOutput" fill="#0c072e" layoutX="159.0"
-                                                      layoutY="84.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T"/>
-                                                <Text fx:id="serialNumberOutput" fill="#0c072e" layoutX="159.0"
-                                                      layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T"/>
-                                                <Text fx:id="manufacturerOutput" fill="#0c072e" layoutX="533.0"
-                                                      layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T"/>
-                                                <Text fx:id="locationOutput" fill="#0c072e" layoutX="159.0"
-                                                      layoutY="113.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T"/>
-                                                <Text fx:id="siteOutput" fill="#0c072e" layoutX="159.0" layoutY="140.0"
-                                                      strokeType="OUTSIDE" strokeWidth="0.0" text="T"/>
-                                                <Text fx:id="descriptionOutput" fill="#0c072e" layoutX="533.0"
-                                                      layoutY="84.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T"
-                                                      wrappingWidth="380.3828125"/>
-                                                <Text fill="#0c072e" layoutX="14.0" layoutY="170.0" strokeType="OUTSIDE"
-                                                      strokeWidth="0.0" text="Model:"/>
-                                                <Text fill="#0c072e" layoutX="14.0" layoutY="199.0" strokeType="OUTSIDE"
-                                                      strokeWidth="0.0" text="RUL:"/>
-                                                <Text fx:id="modelOutput" fill="#0c072e" layoutX="159.0" layoutY="170.0"
-                                                      strokeType="OUTSIDE" strokeWidth="0.0" text="T"/>
-                                                <Text fx:id="rulOutput" fill="#0c072e" layoutX="159.0" layoutY="199.0"
-                                                      strokeType="OUTSIDE" strokeWidth="0.0" text="T"/>
-                                                <Text fill="#0c072e" layoutX="394.0" layoutY="54.0" strokeType="OUTSIDE"
-                                                      strokeWidth="0.0" text="Category:"/>
-                                                <Text fx:id="categoryOutput" fill="#0c072e" layoutX="533.0"
-                                                      layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T"/>
-                                                <Text fx:id="assetNameLabel" fill="#0c072e" layoutX="14.0"
-                                                      layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0"
-                                                      text="Asset Name:"/>
-                                                <Text fx:id="assetNameOutput" fill="#0c072e" layoutX="159.0"
-                                                      layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T"/>
-                                                <Text fill="#0c072e" layoutX="13.0" layoutY="227.0" strokeType="OUTSIDE"
-                                                      strokeWidth="0.0" text="Recommendation:"/>
-                                                <Text fx:id="recommendationOutput" fill="#0c072e" layoutX="159.0"
-                                                      layoutY="227.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T"/>
+                                                <Text fx:id="assetTypeLabel" fill="#0c072e" layoutX="14.0" layoutY="85.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Asset Type:" />
+                                                <Text fx:id="serialNumber" fill="#0c072e" layoutX="14.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Serial Number:" />
+                                                <Text fx:id="manufacturer" fill="#0c072e" layoutX="394.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Manufacturer:" />
+                                                <Text fx:id="assetLocation" fill="#0c072e" layoutX="14.0" layoutY="113.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Location:" />
+                                                <Text fill="#0c072e" layoutX="14.0" layoutY="141.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Site:" />
+                                                <Text fx:id="description" fill="#0c072e" layoutX="394.0" layoutY="83.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Description:" />
+                                                <Text fx:id="assetTypeOutput" fill="#0c072e" layoutX="159.0" layoutY="84.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
+                                                <Text fx:id="serialNumberOutput" fill="#0c072e" layoutX="159.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
+                                                <Text fx:id="manufacturerOutput" fill="#0c072e" layoutX="533.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
+                                                <Text fx:id="locationOutput" fill="#0c072e" layoutX="159.0" layoutY="113.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
+                                                <Text fx:id="siteOutput" fill="#0c072e" layoutX="159.0" layoutY="140.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
+                                                <Text fx:id="descriptionOutput" fill="#0c072e" layoutX="533.0" layoutY="84.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" wrappingWidth="380.3828125" />
+                                                <Text fill="#0c072e" layoutX="14.0" layoutY="170.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Model:" />
+                                                <Text fill="#0c072e" layoutX="14.0" layoutY="199.0" strokeType="OUTSIDE" strokeWidth="0.0" text="RUL:" />
+                                                <Text fx:id="modelOutput" fill="#0c072e" layoutX="159.0" layoutY="170.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
+                                                <Text fx:id="rulOutput" fill="#0c072e" layoutX="159.0" layoutY="199.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
+                                                <Text fill="#0c072e" layoutX="394.0" layoutY="54.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Category:" />
+                                                <Text fx:id="categoryOutput" fill="#0c072e" layoutX="533.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
+                                                <Text fx:id="assetNameLabel" fill="#0c072e" layoutX="14.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Asset Name:" />
+                                                <Text fx:id="assetNameOutput" fill="#0c072e" layoutX="159.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
+                                                <Text fill="#0c072e" layoutX="13.0" layoutY="227.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Recommendation:" />
+                                                <Text fx:id="recommendationOutput" fill="#0c072e" layoutX="159.0" layoutY="227.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
                                             </children>
                                         </AnchorPane>
                                         <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" layoutX="-7.0" layoutY="252.0" prefHeight="400.0" prefWidth="962.0" vbarPolicy="NEVER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-7.0" AnchorPane.rightAnchor="-3.0" AnchorPane.topAnchor="252.0">
                                             <content>
-                                                <FlowPane fx:id="attributeFlowPane" hgap="10.0" prefHeight="400.0"
-                                                          prefWidth="954.0" style="-fx-padding: 10;" vgap="10.0"/>
+                                                <FlowPane fx:id="attributeFlowPane" hgap="10.0" prefHeight="400.0" prefWidth="954.0" style="-fx-padding: 10;" vgap="10.0" />
                                             </content>
                                         </ScrollPane>
                                     </children></AnchorPane>
@@ -158,7 +141,7 @@
         </AnchorPane>
     </children>
     <stylesheets>
-        <URL value="@css/assetinfo.css"/>
-        <URL value="@css/assets.css"/>
+        <URL value="@css/assetinfo.css" />
+        <URL value="@css/assets.css" />
     </stylesheets>
 </AnchorPane>

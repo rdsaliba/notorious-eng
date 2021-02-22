@@ -13,6 +13,7 @@ import Utilities.AssetTypeList;
 import Utilities.TextConstants;
 import Utilities.UIUtilities;
 import external.AssetTypeDAOImpl;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -43,6 +44,10 @@ public class AssetTypeInfoController implements Initializable {
     private Button infoSaveBtn;
     @FXML
     private Button infoDeleteBtn;
+    @FXML
+    private Button backBtn;
+    @FXML
+    private Button exitMenuBtn;
     @FXML
     private TextField assetTypeName;
     @FXML
@@ -106,6 +111,10 @@ public class AssetTypeInfoController implements Initializable {
      * Edit: added all the text proprety listeners and text formaters for all the fields
      */
     public void attachEvents() {
+        // Change scenes to Assets.fxml
+        backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
+        //Attach ability to close program
+        exitMenuBtn.setOnMouseClicked(mouseEvent -> Platform.exit());
         // Change scenes to Assets.fxml
         assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE));
         //Attach link to assetTypeMenuBtn to go to Utilities.AssetTypeList.fxml

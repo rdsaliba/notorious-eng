@@ -17,6 +17,7 @@ import external.ModelDAOImpl;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -59,6 +60,8 @@ public class AssetsController implements Initializable {
     private Button assetTypeMenuBtn;
     @FXML
     private Button addAssetBtn;
+    @FXML
+    private Button exitMenuBtn;
     @FXML
     private FlowPane assetsThumbPane;
     @FXML
@@ -140,6 +143,8 @@ public class AssetsController implements Initializable {
             assetsListPane.getChildren().clear();
             generateList();
         });
+        //Attach ability to close program
+        exitMenuBtn.setOnMouseClicked(mouseEvent -> Platform.exit());
 
         //Attach link to assetMenuButton to go to Assets.fxml
         assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(rulTimeline, mouseEvent, TextConstants.ASSETS_SCENE));

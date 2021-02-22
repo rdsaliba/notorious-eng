@@ -20,6 +20,7 @@ import external.ModelDAOImpl;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -61,6 +62,10 @@ public class AssetInfoController implements Initializable {
     private Button assetTypeMenuBtn;
     @FXML
     private Button deleteBtn;
+    @FXML
+    private Button backBtn;
+    @FXML
+    private Button exitMenuBtn;
     @FXML
     private Text assetName;
     @FXML
@@ -220,6 +225,10 @@ public class AssetInfoController implements Initializable {
      * @author Jeff
      */
     public void attachEvents() {
+        // Change scenes to Assets.fxml
+        backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE));
+        //Attach ability to close program
+        exitMenuBtn.setOnMouseClicked(mouseEvent -> Platform.exit());
         assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(timelines, mouseEvent, TextConstants.ASSETS_SCENE));
         //Attach link to assetTypeMenuBtn to go to AssetTypeList.fxml
         assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(timelines, mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
