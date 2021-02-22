@@ -28,6 +28,9 @@
             <groupId>nz.ac.waikato.cms.weka</groupId>
             <artifactId>wekaDeeplearning4j</artifactId>
             <version>1.7.0</version>
+            <scope>system</scope>
+            <systemPath>${pom.basedir}\local-maven-repo\nz\ac\waikato\cms\weka\wekaDeeplearning4j\1.7.0\wekaDeeplearning4j-1.7.0.jar
+            </systemPath>
         </dependency>
         <dependency>
             <groupId>nz.ac.waikato.cms.weka</groupId>

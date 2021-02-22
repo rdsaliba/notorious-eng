@@ -1,17 +1,22 @@
+/*
+  This class contains methods which are often reused withing the UI.
+
+  @author
+  @last_edit 02/7/2020
+ */
 package Utilities;
 
-import Controllers.SystemInfoController;
-import Controllers.SystemTypeInfoController;
+import Controllers.AssetInfoController;
+import Controllers.AssetTypeInfoController;
 import app.item.Asset;
 import javafx.animation.Timeline;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextFormatter;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -71,12 +76,12 @@ public class UIUtilities {
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource(fxmlFileName + ".fxml"));
-            Parent systemsParent = loader.load();
-            Scene systemInfo = new Scene(systemsParent);
+            Parent assetsParent = loader.load();
+            Scene assetInfo = new Scene(assetsParent);
 
             Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
 
-            window.setScene(systemInfo);
+            window.setScene(assetInfo);
             window.show();
 
         } catch (IOException e) {
@@ -97,7 +102,6 @@ public class UIUtilities {
         if (!row.isEmpty()) {
             changeScene(mouseEvent, fxmlFileName, asset);
         }
-
     }
 
     /**
@@ -110,18 +114,18 @@ public class UIUtilities {
      * @param assetType
      * @author Najim
      */
-    public void changeScene(MouseEvent mouseEvent, TableRow<SystemTypeList> row, String fxmlFileName, SystemTypeList assetType) {
+    public void changeScene(MouseEvent mouseEvent, TableRow<AssetTypeList> row, String fxmlFileName, AssetTypeList assetType) {
         row.getScene().getWindow();
         try {
             if (!row.isEmpty()) {
                 FXMLLoader loader = new FXMLLoader();
                 loader.setLocation(getClass().getResource(fxmlFileName + ".fxml"));
-                Parent systemTypeParent = loader.load();
-                Scene systemTypeInfo = new Scene(systemTypeParent);
+                Parent assetTypeParent = loader.load();
+                Scene assetTypeInfo = new Scene(assetTypeParent);
 
                 Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-                window.setScene(systemTypeInfo);
-                SystemTypeInfoController controller = loader.getController();
+                window.setScene(assetTypeInfo);
+                AssetTypeInfoController controller = loader.getController();
                 controller.initData(assetType);
                 controller.setImage(assetType.getAssetType().getName());
                 window.show();
@@ -145,12 +149,12 @@ public class UIUtilities {
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource(fxmlFileName + ".fxml"));
-            Parent systemTypeParent = loader.load();
-            Scene systemTypeInfo = new Scene(systemTypeParent);
+            Parent assetTypeParent = loader.load();
+            Scene assetTypeInfo = new Scene(assetTypeParent);
 
             Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-            window.setScene(systemTypeInfo);
-            SystemInfoController controller = loader.getController();
+            window.setScene(assetTypeInfo);
+            AssetInfoController controller = loader.getController();
             controller.initData(asset);
             window.show();
 
@@ -161,6 +165,84 @@ public class UIUtilities {
 
     public void changeScene(ArrayList<Timeline> timelines, MouseEvent mouseEvent, String s) {
         timelines.forEach(Timeline::stop);
+        changeScene(mouseEvent, s);
+    }
+
+    /**
+     * Creates an error message to be displayed next to the TextField or TextArea
+     * and makes the border of the TextField red
+     *
+     * @param inputError         The AnchorPane where error messages will be displayed in
+     * @param errorMessages      An array keeping track of error messages
+     * @param field              The field being validated
+     * @param msg                The error message
+     * @param verticalPosition   The vertical position of the error message
+     * @param horizontalPosition The horizontal position of the message
+     * @param i                  The field number/position (starting from 0)
+     * @author Najim
+     */
+    public static void createInputError(AnchorPane inputError, Text[] errorMessages, TextInputControl field, String msg, double verticalPosition, double horizontalPosition, int i) {
+        if (errorMessages[i] == null) {
+            errorMessages[i] = new Text(msg);
+            errorMessages[i].setLayoutY(verticalPosition);
+            errorMessages[i].setLayoutX(horizontalPosition);
+            errorMessages[i].getStyleClass().add("error-message");
+
+            inputError.getChildren().add(errorMessages[i]);
+            field.getStyleClass().add("input-error");
+        } else if (errorMessages[i].getText().equals("")) {
+            errorMessages[i].getStyleClass().remove("error-message");
+            field.getStyleClass().remove("input-error");
+
+            errorMessages[i] = new Text(msg);
+            errorMessages[i].setLayoutY(verticalPosition);
+            errorMessages[i].setLayoutX(horizontalPosition);
+            errorMessages[i].getStyleClass().add("error-message");
+
+            inputError.getChildren().add(errorMessages[i]);
+            field.getStyleClass().add("input-error");
+        }
+    }
+
+    /**
+     * Removes the error message from the AnchorPane and the styling added on the field being validated.
+     *
+     * @param inputError    The AnchorPane where error messages will be displayed in
+     * @param errorMessages An array keeping track of error messages
+     * @param validInput    An array keeping track of fields which are valid or invalid
+     * @param field         The field being validated
+     * @param i             The field number/position (starting from 0)
+     * @author Najim
+     */
+    public static void removeInputError(AnchorPane inputError, Text[] errorMessages, boolean[] validInput, TextInputControl field, int i) {
+        if (errorMessages[i] != null && validInput[i]) {
+            field.getStyleClass().remove("input-error");
+            inputError.getChildren().remove(errorMessages[i]);
+            errorMessages[i] = null;
+        }
+    }
+
+    /**
+     * Compares two thresholds and determines if the previous threshold is larger than the next.
+     *
+     * @param previousThreshold The Threshold preceding
+     * @param nextThreshold     The Threshold succeeding
+     * @author Najim
+     */
+    public static boolean compareThresholds(TextField previousThreshold, TextField nextThreshold) {
+        boolean valid = true;
+        if (!previousThreshold.getText().isEmpty() && !nextThreshold.getText().isEmpty()) {
+            double previousThresholdValue = Double.parseDouble(previousThreshold.getText());
+            double nextThresholdValue = Double.parseDouble(nextThreshold.getText());
+            if (previousThresholdValue <= nextThresholdValue) {
+                valid = false;
+            }
+        }
+        return valid;
+    }
+
+    public void changeScene(Timeline timeline, MouseEvent mouseEvent, String s) {
+        timeline.stop();
         changeScene(mouseEvent,s);
     }
 }

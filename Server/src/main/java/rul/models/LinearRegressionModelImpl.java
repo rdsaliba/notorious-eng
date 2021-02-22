@@ -4,7 +4,6 @@
   and cannot provide useful information
 
   @author      Paul Micu
-  @version     1.0
   @last_edit   11/01/2020
  */
 package rul.models;
@@ -26,7 +25,8 @@ public class LinearRegressionModelImpl implements ModelStrategy {
     public Classifier trainModel(Instances firstTrain) {
         firstTrain.setClassIndex(firstTrain.numAttributes() - 1);
         //removeInstances(firstTrain);
-        LinearRegression lr = new LinearRegression();
+        Classifier lr = new LinearRegression();
+
         try {
             lr.buildClassifier(firstTrain);
         } catch (Exception e) {

@@ -22,7 +22,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
     private static final String DELETE_ASSET = "DELETE FROM asset WHERE asset_id = ?";
     private static final String GET_ASSET_INFO_FROM_ASSET_ID = "SELECT DISTINCT att.* FROM attribute_measurements am, attribute att WHERE att.attribute_id=am.attribute_id AND am.asset_id = ?";
     private static final String GET_ALL_LIVE_ASSETS = "SELECT * FROM asset, asset_type WHERE asset.asset_type_id=asset_type.asset_type_id AND archived = false";
-    private static final String INSERT_ASSET = "INSERT INTO asset (name, asset_type_id, description, sn, manufacturer, category, site, location, unit_nb) values(?,?,?,?,?,?,?,?,?)";
+    private static final String INSERT_ASSET = "INSERT INTO asset (name, asset_type_id, description, sn, manufacturer, category, site, location) values(?,?,?,?,?,?,?,?)";
     private static final String GET_ATTRIBUTE_DETAILS_FROM_ASSET_ID = "SELECT att.* FROM attribute_measurements am, attribute att WHERE att.attribute_id=am.attribute_id AND am.asset_id = ? GROUP by attribute_id";
 
 
@@ -79,7 +79,6 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
             ps.setString(6, asset.getCategory());
             ps.setString(7, asset.getSite());
             ps.setString(8, asset.getLocation());
-            ps.setString(9, asset.getSerialNo());
             ps.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();
