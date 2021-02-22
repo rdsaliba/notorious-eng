@@ -6,6 +6,8 @@
  */
 package app.item;
 
+import javafx.beans.property.SimpleStringProperty;
+
 public class Asset extends Item {
 
     private String serialNo;
@@ -17,7 +19,13 @@ public class Asset extends Item {
     private String manufacturer;
     private String category;
     private String site;
+    private String assetTypeName;
+    private SimpleStringProperty rul;
     private AssetInfo assetInfo;
+
+    public Asset() {
+        rul = new SimpleStringProperty();
+    }
 
     public String getSerialNo() {
         return serialNo;
@@ -89,6 +97,22 @@ public class Asset extends Item {
 
     public void setSite(String site) {
         this.site = site;
+    }
+
+    public SimpleStringProperty getRul() {
+        return rul;
+    }
+
+    public void setRul(String rul) {
+        this.rul.setValue(rul);
+    }
+
+    public String getAssetTypeName() {
+        return assetTypeName;
+    }
+
+    public void setAssetTypeName(String assetTypeName) {
+        this.assetTypeName = assetTypeName;
     }
 
     @Override

@@ -240,4 +240,9 @@ public class UIUtilities {
         }
         return valid;
     }
+
+    public void changeScene(Timeline timeline, MouseEvent mouseEvent, String s) {
+        timeline.stop();
+        changeScene(mouseEvent,s);
+    }
 }

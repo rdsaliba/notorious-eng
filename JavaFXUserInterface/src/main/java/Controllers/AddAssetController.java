@@ -5,6 +5,7 @@
  */
 package Controllers;
 
+import Utilities.CustomDialog;
 import Utilities.TextConstants;
 import Utilities.UIUtilities;
 import app.item.Asset;
@@ -95,10 +96,10 @@ public class AddAssetController implements Initializable {
 
         saveBtn.setOnMouseClicked(mouseEvent -> {
             Asset newAsset = assembleAsset();
-            if (formInputValidation()) {
+            if (formInputValidation()){
                 if (!isAssetEmpty(newAsset)) {
                     saveAsset(newAsset);
-                    saveDialog(mouseEvent);
+                    CustomDialog.addSystemControllerSaveDialog(mouseEvent);
                 }
             }
         });
@@ -162,21 +163,6 @@ public class AddAssetController implements Initializable {
         assetDAOImpl.insertAsset(newAsset);
     }
 
-    /**
-     * Creates a dialog to alert the user that an asset was saved to the database
-     *
-     * @param mouseEvent is the event that triggers the dialog
-     */
-    void saveDialog(MouseEvent mouseEvent) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(SAVE_DIALOG);
-        alert.setHeaderText(SAVE_HEADER);
-
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE);
-        }
-    }
 
     /**
      * Checks to see if mandatory values of the asset are filled.

@@ -73,17 +73,19 @@ public class AssetsController implements Initializable {
     private ChoiceBox<String> sortAsset;
     private UIUtilities uiUtilities;
     private ObservableList<Asset> assets;
+    private Timeline rulTimeline;
+    private TableView<Asset> table;
 
     public AssetsController() {
         assetTypeDAO = new AssetTypeDAOImpl();
         modelDAO = new ModelDAOImpl();
+        table = new TableView<>();
 
         try {
             assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets().subList(0, 50));
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     /**
@@ -99,8 +101,30 @@ public class AssetsController implements Initializable {
         uiUtilities = new UIUtilities();
 
         attachEvents();
+        updateRULs();
         generateThumbnails();
+    }
 
+    /**
+     * Updates the RUL values of all systems.
+     *
+     * @author Jeff
+     */
+    public void updateRULs() {
+        for (Asset asset:assets) {
+            asset.setRul(String.valueOf(TextConstants.RULValueFormat.format(AssessmentController.getLatestEstimate(asset.getId()))));
+        }
+        rulTimeline =
+            new Timeline(new KeyFrame(Duration.millis(3000), e ->
+            {
+                for (Asset asset:assets) {
+                    asset.setRul(String.valueOf(TextConstants.RULValueFormat.format(AssessmentController.getLatestEstimate(asset.getId()))));
+                }
+                table.refresh();
+            }));
+
+        rulTimeline.setCycleCount(Animation.INDEFINITE); // loop forever
+        rulTimeline.play();
     }
 
     /**
@@ -120,13 +144,13 @@ public class AssetsController implements Initializable {
         });
 
         //Attach link to assetMenuButton to go to Assets.fxml
-        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE));
+        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(rulTimeline, mouseEvent, TextConstants.ASSETS_SCENE));
 
         //Attach link to assetTypeMenuBtn to go to Utilities.AssetTypeList.fxml
-        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
+        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(rulTimeline, mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
 
         //Attach link to addAssetButton to go to AddAsset.fxml
-        addAssetBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/AddAsset"));
+        addAssetBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(rulTimeline, mouseEvent, TextConstants.ADD_ASSETS));
 
         //Adding items to the choiceBox (drop down list)
         sortAsset.getItems().add(DEFAULT_SORT);
@@ -182,16 +206,12 @@ public class AssetsController implements Initializable {
             Text assetType = new Text(assetTypeDAO.getNameFromID(asset.getAssetTypeID()));
 
             Text linearLabel = new Text(LINEAR_RUL + ": ");
-            Text linearRUL = new Text(String.valueOf(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(asset.getId()))));
             Text recommendationLabel = new Text(RECOMMENDATION + ": ");
             Text recommendation = new Text(asset.getRecommendation());
 
-            Timeline timeline =
-                    new Timeline(new KeyFrame(Duration.millis(1000), e -> linearRUL.setText(String.valueOf(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(asset.getId()))))));
-
-            timeline.setCycleCount(Animation.INDEFINITE); // loop forever
-            timeline.play();
-
+            Text linearRUL = new Text();
+            SimpleStringProperty s = asset.getRul();
+            linearRUL.textProperty().bind(s);
 
             assetName.setId("assetName");
             assetType.setId("assetType");
@@ -224,7 +244,6 @@ public class AssetsController implements Initializable {
         }
 
         assetsThumbPane.getChildren().addAll(boxes);
-
     }
 
 
@@ -234,7 +253,6 @@ public class AssetsController implements Initializable {
      * @author Jeff
      */
     public void generateList() {
-        TableView<Asset> table = new TableView<>();
 
         // When TableRow is clicked, send data to AssetInfo scene.
         table.setRowFactory(tv -> {
@@ -243,10 +261,10 @@ public class AssetsController implements Initializable {
             return row;
         });
 
+        String TYPE_COL = "Type";
         TableColumn<Asset, String> assetTypeCol = new TableColumn<>(TYPE_COL);
         assetTypeCol.setCellValueFactory(cellData -> new SimpleStringProperty(
-                assetTypeDAO.getNameFromID(cellData.getValue().getAssetTypeID())));
-
+                cellData.getValue().getAssetTypeName()));
 
         TableColumn<Asset, String> serialNoCol = new TableColumn<>(SERIAL_NO_COL);
         serialNoCol.setCellValueFactory(
@@ -256,9 +274,9 @@ public class AssetsController implements Initializable {
         modelCol.setCellValueFactory(cellData -> new SimpleStringProperty(
                 modelDAO.getModelNameFromAssetTypeID(cellData.getValue().getAssetTypeID())));
 
-        TableColumn<Asset, Double> modelRULCol = new TableColumn<>(RUL_COL);
+        TableColumn<Asset, Number> modelRULCol = new TableColumn<>(RUL_COL);
         modelRULCol.setCellValueFactory(cellData -> new SimpleDoubleProperty(
-                Double.parseDouble(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(cellData.getValue().getId())))).asObject());
+                Double.parseDouble(TextConstants.ThresholdValueFormat.format(Double.parseDouble(cellData.getValue().getRul().getValue())))));
 
         TableColumn<Asset, String> recommendationCol = new TableColumn<>(RECOMMENDATION);
         recommendationCol.setCellValueFactory(
@@ -292,7 +310,14 @@ public class AssetsController implements Initializable {
         AnchorPane.setRightAnchor(table, 0.0);
         AnchorPane.setLeftAnchor(table, 0.0);
         assetsListPane.getChildren().addAll(table);
-
     }
 
+    /**
+     * Stops the timeline
+     *
+     */
+    private void closeTimeline() {
+        if(rulTimeline != null)
+            rulTimeline.stop();
+    }
 }
