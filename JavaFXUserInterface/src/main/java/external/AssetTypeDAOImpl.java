@@ -16,6 +16,7 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
     private static final String DELETE_ASSET_TYPE = "DELETE FROM asset_type where asset_type_id = ?";
     private static final String UPDATE_ASSET_TYPE = "UPDATE asset_type set name =?, description = ? where asset_type_id = ?";
     private static final String UPDATE_ASSET_TYPE_PARAMETER = "UPDATE asset_type_parameters set boundary = ? where asset_type_id = ? and parameter_name =?";
+    private static final String COUNT_ASSETS_FOR_ASSET_TYPE_BOUNDARY = "SELECT COUNT(*) as count from asset where asset_type_id = ? and recommendation = ?";
 
     /**
      * This will return an arraylist of the count for all the asset type ids from the
@@ -39,6 +40,7 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
         }
         return 0;
     }
+
 
     @Override
     public String getAssetTypeThreshold(String assetTypeId, String thresholdType) {
@@ -160,5 +162,26 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    /** Given an asset type id and boundary string value, this method will return the count of asset that match that asset type id
+     * and has as current recommendation the given threshold
+     *
+     * @author Paul
+     */
+    public int getAssetTypeBoundaryCount(String id, String thresholdString) {
+        int count = -1;
+        try (PreparedStatement ps = getConnection().prepareStatement(COUNT_ASSETS_FOR_ASSET_TYPE_BOUNDARY)) {
+            ps.setString(1, id);
+            ps.setString(2, thresholdString);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()){
+                    count = rs.getInt("count");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return count;
     }
 }

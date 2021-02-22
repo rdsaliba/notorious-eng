@@ -88,26 +88,31 @@ public class AssetTypeController implements Initializable {
      * so this methode was rewrote
      */
     private ObservableList<AssetTypeList> getAssetList() {
-        ObservableList<AssetTypeList> assettypelist = FXCollections.observableArrayList();
+        ObservableList<AssetTypeList> assetTypeList = FXCollections.observableArrayList();
 
         AssetTypeDAOImpl assetTypeDOA = new AssetTypeDAOImpl();
 
-        ArrayList<AssetType> assetTypeList = assetTypeDOA.getAssetTypeList();
+        ArrayList<AssetType> assetTypes = assetTypeDOA.getAssetTypeList();
 
-        for (AssetType assetType : assetTypeList) {
-            assettypelist.add(new AssetTypeList(
+        for (AssetType assetType : assetTypes) {
+            assetTypeList.add(new AssetTypeList(
                     assetType,
                     assetTypeDOA.getAssetTypeIdCount(assetType.getId(), true),
                     assetTypeDOA.getAssetTypeIdCount(assetType.getId(), false),
                     assetTypeDOA.getAssetTypeThreshold(assetType.getId(), TextConstants.OK_THRESHOLD),
+                    assetTypeDOA.getAssetTypeBoundaryCount(assetType.getId(), TextConstants.OK_THRESHOLD),
                     assetTypeDOA.getAssetTypeThreshold(assetType.getId(), TextConstants.CAUTION_THRESHOLD),
+                    assetTypeDOA.getAssetTypeBoundaryCount(assetType.getId(), TextConstants.CAUTION_THRESHOLD),
                     assetTypeDOA.getAssetTypeThreshold(assetType.getId(), TextConstants.ADVISORY_THRESHOLD),
+                    assetTypeDOA.getAssetTypeBoundaryCount(assetType.getId(), TextConstants.ADVISORY_THRESHOLD),
                     assetTypeDOA.getAssetTypeThreshold(assetType.getId(), TextConstants.WARNING_THRESHOLD),
-                    assetTypeDOA.getAssetTypeThreshold(assetType.getId(), TextConstants.FAILED_THRESHOLD)
+                    assetTypeDOA.getAssetTypeBoundaryCount(assetType.getId(), TextConstants.WARNING_THRESHOLD),
+                    assetTypeDOA.getAssetTypeThreshold(assetType.getId(), TextConstants.FAILED_THRESHOLD),
+                    assetTypeDOA.getAssetTypeBoundaryCount(assetType.getId(), TextConstants.FAILED_THRESHOLD)
 
             ));
         }
-        return assettypelist;
+        return assetTypeList;
     }
 
     /**
@@ -139,10 +144,10 @@ public class AssetTypeController implements Initializable {
         columnName.setCellValueFactory(new PropertyValueFactory<>("name"));
         columnLiveAssets.setCellValueFactory(new PropertyValueFactory<>("liveAssets"));
         columnArchivedAssets.setCellValueFactory(new PropertyValueFactory<>("archivedAssets"));
-        columnOk.setCellValueFactory(new PropertyValueFactory<>("valueOk"));
-        columnAdvisory.setCellValueFactory(new PropertyValueFactory<>("valueAdvisory"));
-        columnCaution.setCellValueFactory(new PropertyValueFactory<>("valueCaution"));
-        columnWarning.setCellValueFactory(new PropertyValueFactory<>("valueWarning"));
-        columnFailed.setCellValueFactory(new PropertyValueFactory<>("valueFailed"));
+        columnOk.setCellValueFactory(new PropertyValueFactory<>("countOk"));
+        columnAdvisory.setCellValueFactory(new PropertyValueFactory<>("countAdvisory"));
+        columnCaution.setCellValueFactory(new PropertyValueFactory<>("countCaution"));
+        columnWarning.setCellValueFactory(new PropertyValueFactory<>("countWarning"));
+        columnFailed.setCellValueFactory(new PropertyValueFactory<>("countFailed"));
     }
 }
