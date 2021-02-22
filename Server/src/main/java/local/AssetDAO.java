@@ -2,8 +2,7 @@
   Interface for the assetDAO object
 
   @author Paul Micu
-  @version 1.0
-  @last_edit 12/27/2020
+  @last_edit 02/7/2020
  */
 package local;
 
@@ -35,6 +34,8 @@ public interface AssetDAO {
     void setAssetUpdate(int assetID);
 
     Asset createAssetFromQueryResult(ResultSet assetsQuery) throws SQLException;
+
+    Asset createFullAssetFromQueryResult(ResultSet assetsQuery) throws SQLException;
 
     AssetInfo createAssetInfo(int assetID);
 

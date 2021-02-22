@@ -11,7 +11,7 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
     private static final String INSERT_ASSET_TYPE_PARAMETERS = "INSERT INTO asset_type_parameters (asset_type_id, parameter_name, boundary) values(?, ?, ?)";
     private static final String GET_ASSET_TYPES = "SELECT * FROM asset_type";
     private static final String GET_ASSET_TYPE_NAME_FROM_ID = "SELECT name FROM asset_type where asset_type_id = ?";
-    private static final String GET_ASSET_TYPE_BOUNDARY = "SELECT *  FROM asset_type_parameters WHERE parameter_name = ? AND asset_type_id = ?";
+    private static final String GET_ASSET_TYPE_THRESHOLD = "SELECT *  FROM asset_type_parameters WHERE parameter_name = ? AND asset_type_id = ?";
     private static final String GET_ASSET_TYPE_ID_COUNT = "SELECT asset_type_id, COUNT(*) as 'count' FROM asset WHERE archived = ? AND asset_type_id = ?";
     private static final String DELETE_ASSET_TYPE = "DELETE FROM asset_type where asset_type_id = ?";
     private static final String UPDATE_ASSET_TYPE = "UPDATE asset_type set name =?, description = ? where asset_type_id = ?";
@@ -43,22 +43,22 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
 
 
     @Override
-    public String getAssetTypeBoundary(String assetTypeId, String boundaryType) {
-        String boundary = "null";
-        try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_TYPE_BOUNDARY)) {
-            ps.setString(1, boundaryType);
+    public String getAssetTypeThreshold(String assetTypeId, String thresholdType) {
+        String threshold = "null";
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_TYPE_THRESHOLD)) {
+            ps.setString(1, thresholdType);
             ps.setString(2, assetTypeId);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    boundary = rs.getString("boundary");
+                    threshold = rs.getString("boundary");
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        if (boundary == null || boundary.equals("null"))
-            boundary = "-";
-        return boundary;
+        if (threshold == null || threshold.equals("null"))
+            threshold = "-";
+        return threshold;
     }
 
 
