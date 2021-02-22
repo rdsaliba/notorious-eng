@@ -14,10 +14,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextFormatter;
-import javafx.scene.control.TextInputControl;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
@@ -225,4 +222,22 @@ public class UIUtilities {
         }
     }
 
+    /**
+     * Compares two thresholds and determines if the previous threshold is larger than the next.
+     *
+     * @param previousThreshold The Threshold preceding
+     * @param nextThreshold     The Threshold succeeding
+     * @author Najim
+     */
+    public static boolean compareThresholds(TextField previousThreshold, TextField nextThreshold) {
+        boolean valid = true;
+        if (!previousThreshold.getText().isEmpty() && !nextThreshold.getText().isEmpty()) {
+            double previousThresholdValue = Double.parseDouble(previousThreshold.getText());
+            double nextThresholdValue = Double.parseDouble(nextThreshold.getText());
+            if (previousThresholdValue <= nextThresholdValue) {
+                valid = false;
+            }
+        }
+        return valid;
+    }
 }

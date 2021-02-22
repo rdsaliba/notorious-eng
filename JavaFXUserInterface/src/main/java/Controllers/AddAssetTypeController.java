@@ -155,10 +155,6 @@ public class AddAssetTypeController implements Initializable {
     public boolean formInputValidation() {
         String assetTypeNameValue = assetTypeName.getText();
         String assetTypeDescValue = assetTypeDescription.getText();
-        double thresholdAdvisoryNumber;
-        double thresholdCautionNumber;
-        double thresholdWarningNumber;
-        double thresholdFailedNumber;
         boolean validForm = true;
 
         if (assetTypeNameValue.trim().isEmpty()) {
@@ -182,56 +178,80 @@ public class AddAssetTypeController implements Initializable {
             UIUtilities.removeInputError(inputError, errorMessages, validInput, assetTypeDescription, 1);
         }
 
-        if (!thresholdAdvisoryValue.getText().isEmpty() && !thresholdCautionValue.getText().isEmpty()) {
-            thresholdAdvisoryNumber = Double.parseDouble(thresholdAdvisoryValue.getText());
-            thresholdCautionNumber = Double.parseDouble(thresholdCautionValue.getText());
-
-            if (thresholdAdvisoryNumber <= thresholdCautionNumber) {
-                validForm = false;
-                validInput[3] = false;
-                validInput[4] = false;
-                UIUtilities.createInputError(inputError, errorMessages, thresholdAdvisoryValue, TextConstants.ADIVSORY_CAUTION, 245.0, 0, 3);
-                UIUtilities.createInputError(inputError, errorMessages, thresholdCautionValue, "", 0, 0, 4);
-            } else {
-                validInput[3] = true;
-                validInput[4] = true;
-                UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdAdvisoryValue, 3);
-                UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdCautionValue, 4);
-            }
+        if (UIUtilities.compareThresholds(thresholdAdvisoryValue, thresholdCautionValue)) {
+            validInput[3] = true;
+            validInput[4] = true;
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdAdvisoryValue, 3);
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdCautionValue, 4);
+        } else {
+            validForm = false;
+            validInput[3] = false;
+            validInput[4] = false;
+            UIUtilities.createInputError(inputError, errorMessages, thresholdAdvisoryValue, TextConstants.ADVISORY_CAUTION, 245.0, 0, 3);
+            UIUtilities.createInputError(inputError, errorMessages, thresholdCautionValue, "", 0, 0, 4);
         }
-        if (!thresholdCautionValue.getText().isEmpty() && !thresholdWarningValue.getText().isEmpty()) {
-            thresholdCautionNumber = Double.parseDouble(thresholdCautionValue.getText());
-            thresholdWarningNumber = Double.parseDouble(thresholdWarningValue.getText());
 
-            if (thresholdCautionNumber <= thresholdWarningNumber) {
-                validForm = false;
-                validInput[4] = false;
-                validInput[5] = false;
-                UIUtilities.createInputError(inputError, errorMessages, thresholdCautionValue, TextConstants.CAUTION_WARNING, 275.0, 0, 4);
-                UIUtilities.createInputError(inputError, errorMessages, thresholdWarningValue, "", 0, 0, 5);
-            } else {
-                validInput[4] = true;
-                validInput[5] = true;
-                UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdCautionValue, 4);
-                UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdWarningValue, 5);
-            }
+        if (UIUtilities.compareThresholds(thresholdAdvisoryValue, thresholdWarningValue)) {
+            validInput[3] = true;
+            validInput[5] = true;
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdAdvisoryValue, 3);
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdWarningValue, 5);
+        } else {
+            validForm = false;
+            validInput[3] = false;
+            validInput[5] = false;
+            UIUtilities.createInputError(inputError, errorMessages, thresholdAdvisoryValue, TextConstants.ADVISORY_WARNING, 245.0, 0, 3);
+            UIUtilities.createInputError(inputError, errorMessages, thresholdWarningValue, "", 0, 0, 5);
         }
-        if (!thresholdWarningValue.getText().isEmpty() && !thresholdFailedValue.getText().isEmpty()) {
-            thresholdWarningNumber = Double.parseDouble(thresholdWarningValue.getText());
-            thresholdFailedNumber = Double.parseDouble(thresholdFailedValue.getText());
 
-            if (thresholdWarningNumber <= thresholdFailedNumber) {
-                validForm = false;
-                validInput[5] = false;
-                validInput[6] = false;
-                UIUtilities.createInputError(inputError, errorMessages, thresholdWarningValue, TextConstants.WARNING_FAILED, 305.0, 0, 5);
-                UIUtilities.createInputError(inputError, errorMessages, thresholdFailedValue, "", 0, 0, 6);
-            } else {
-                validInput[5] = true;
-                validInput[6] = true;
-                UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdWarningValue, 5);
-                UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdFailedValue, 6);
-            }
+        if (UIUtilities.compareThresholds(thresholdCautionValue, thresholdWarningValue)) {
+            validInput[4] = true;
+            validInput[5] = true;
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdCautionValue, 4);
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdWarningValue, 5);
+        } else {
+            validForm = false;
+            validInput[4] = false;
+            validInput[5] = false;
+            UIUtilities.createInputError(inputError, errorMessages, thresholdCautionValue, TextConstants.CAUTION_WARNING, 275.0, 0, 4);
+            UIUtilities.createInputError(inputError, errorMessages, thresholdWarningValue, "", 0, 0, 5);
+        }
+
+        if (UIUtilities.compareThresholds(thresholdAdvisoryValue, thresholdFailedValue)) {
+            validInput[3] = true;
+            validInput[6] = true;
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdAdvisoryValue, 3);
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdFailedValue, 6);
+        } else {
+            validForm = false;
+            validInput[3] = false;
+            validInput[6] = false;
+            UIUtilities.createInputError(inputError, errorMessages, thresholdAdvisoryValue, TextConstants.ADVISORY_FAILED, 245.0, 0, 3);
+            UIUtilities.createInputError(inputError, errorMessages, thresholdFailedValue, "", 0, 0, 6);
+        }
+        if (UIUtilities.compareThresholds(thresholdCautionValue, thresholdFailedValue)) {
+            validInput[4] = true;
+            validInput[6] = true;
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdCautionValue, 4);
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdFailedValue, 6);
+        } else {
+            validForm = false;
+            validInput[4] = false;
+            validInput[6] = false;
+            UIUtilities.createInputError(inputError, errorMessages, thresholdCautionValue, TextConstants.CAUTION_FAILED, 275.0, 0, 4);
+            UIUtilities.createInputError(inputError, errorMessages, thresholdFailedValue, "", 0, 0, 6);
+        }
+        if (UIUtilities.compareThresholds(thresholdWarningValue, thresholdFailedValue)) {
+            validInput[5] = true;
+            validInput[6] = true;
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdWarningValue, 5);
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdFailedValue, 6);
+        } else {
+            validForm = false;
+            validInput[5] = false;
+            validInput[6] = false;
+            UIUtilities.createInputError(inputError, errorMessages, thresholdWarningValue, TextConstants.WARNING_FAILED, 305.0, 0, 5);
+            UIUtilities.createInputError(inputError, errorMessages, thresholdFailedValue, "", 0, 0, 6);
         }
         return validForm;
     }
