@@ -12,6 +12,7 @@ import Utilities.CustomDialog;
 import Utilities.AssetTypeList;
 import Utilities.TextConstants;
 import Utilities.UIUtilities;
+import app.item.Asset;
 import external.AssetTypeDAOImpl;
 import external.ModelDAOImpl;
 import local.AssetDAOImpl;
@@ -96,6 +97,7 @@ public class AssetTypeInfoController implements Initializable {
     private AssetDAOImpl assetDAO;
     private ModelController modelController;
     private Instances trainDataset;
+    private Instances testDataset;
     private DataPrePreprocessorController prePreprocessorController;
     private int trainSize = 0;
     private int testSize = 0;
@@ -108,8 +110,8 @@ public class AssetTypeInfoController implements Initializable {
         assetTypeDAO = new AssetTypeDAOImpl();
         modelDAO = new ModelDAOImpl();
         assetDAO = new AssetDAOImpl();
-        modelController = new ModelController();
-        prePreprocessorController = new DataPrePreprocessorController();
+        modelController = ModelController.getInstance();
+        prePreprocessorController = DataPrePreprocessorController.getInstance();
         try {
             attachEvents();
         } catch (Exception exception) {
@@ -207,21 +209,17 @@ public class AssetTypeInfoController implements Initializable {
     private void modelsButtonPressed(){
 
         if(modelTab.getId().equals("modelTab")){
-            try {
-                trainDataset  = DataPrePreprocessorController.getInstance().addRULCol(modelController.createInstancesFromAssets(assetDAO.getAssetsFromAssetTypeID(Integer.parseInt(assetType.getId()))));
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
-            trainSlider.setMax(trainDataset.size());
+            int nbOfAssets = assetDAO.getAssetsFromAssetTypeID(Integer.parseInt(assetType.getId())).size();
+            trainSlider.setMax(nbOfAssets);
             trainValue.setText(String.valueOf(trainSlider.getValue()));
-            testSlider.setMax(trainDataset.size());
+            testSlider.setMax(nbOfAssets);
             testValue.setText(String.valueOf(testSlider.getValue()));
 
             trainSlider.valueProperty().addListener(new ChangeListener<Number>() {
                 @Override
                 public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
                     trainValue.setText(Integer.toString((int)trainSlider.getValue()));
-                    testSlider.setMax(trainDataset.size() - (int)trainSlider.getValue());
+                    testSlider.setMax(nbOfAssets - (int)trainSlider.getValue());
                     trainSize = (int)trainSlider.getValue();
                 }
             });
@@ -229,13 +227,21 @@ public class AssetTypeInfoController implements Initializable {
                 @Override
                 public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
                     testValue.setText(Integer.toString((int)testSlider.getValue()));
-                    trainSlider.setMax(trainDataset.size() - (int)testSlider.getValue());
+                    trainSlider.setMax(nbOfAssets - (int)testSlider.getValue());
                     testSize = (int)testSlider.getValue();
                 }
             });
 
             try{
                 modelEvaluateBtn.setOnMouseClicked(mouseEvent -> {
+                    try {
+                        int from = (int) trainSlider.getValue()+1;
+                        int to = (int) trainSlider.getValue()+1+(int) testSlider.getValue();
+                        trainDataset  = DataPrePreprocessorController.getInstance().addRULCol(modelController.createInstancesFromAssets(assetDAO.getAssetsFromAssetTypeID(Integer.parseInt(assetType.getId())).subList(0, (int) trainSlider.getValue()-1)));
+                        testDataset = DataPrePreprocessorController.getInstance().addRULCol(modelController.createInstancesFromAssets(assetDAO.getAssetsFromAssetTypeID(Integer.parseInt(assetType.getId())).subList(from, to-1)));
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
                     try {
                         evaluateModels(mouseEvent);
                     } catch (Exception exception) {
@@ -256,6 +262,7 @@ public class AssetTypeInfoController implements Initializable {
         try {
             ArrayList<String> models = modelDAO.getListOfModels();
             trainDataset.setClassIndex(trainDataset.numAttributes() - 1);
+            testDataset.setClassIndex(testDataset.numAttributes() - 1);
             Instances trainSet = populateDataset(trainSize);
             Instances testSet = populateDataset(testSize);
 
@@ -263,13 +270,13 @@ public class AssetTypeInfoController implements Initializable {
                 switch (models.get(i)) {
                     case "Linear":
                         LinearRegressionModelImpl linearRegressionModelImpl = new LinearRegressionModelImpl();
-                        Classifier model =  linearRegressionModelImpl.trainModel(trainSet);
-                        calculateEvaluation(model,trainSet,testSet,1);
+                        Classifier model =  linearRegressionModelImpl.trainModel(trainDataset);
+                        calculateEvaluation(model,trainDataset,testDataset,1);
 
                     case "LSTM":
                         ModelStrategy lstmm = new LSTMModelImpl();
-                        Classifier lstm = lstmm.trainModel(trainSet);
-                        calculateEvaluation(lstm,trainSet,testSet,2);
+                        Classifier lstm = lstmm.trainModel(trainDataset);
+                        calculateEvaluation(lstm,trainSet,testDataset,2);
 
                         //                    -------------------------------------------------------------------------------------------
                         //                    --------------- this part is commented until the rest of the models are added -------------
