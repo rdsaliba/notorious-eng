@@ -30,10 +30,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import preprocessing.DataPrePreprocessorController;
-import rul.models.LSTMModelImpl;
-import rul.models.LinearRegressionModelImpl;
-import rul.models.ModelEvaluation;
-import rul.models.ModelStrategy;
+import rul.models.*;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 
@@ -277,33 +274,35 @@ public class AssetTypeInfoController implements Initializable {
                         Classifier lstm = lstmm.trainModel(trainDataset);
                         calculateEvaluation(lstm,trainDataset,testDataset,2);
 
-                        //                    -------------------------------------------------------------------------------------------
-                        //                    --------------- this part is commented until the rest of the models are added -------------
-                        //                    -------------------------------------------------------------------------------------------
-                        //
-                        //                case "RandomForest":
-                        //                    Classifier forestModel =  new RandomForest();
-                        //                    calculateEvaluation(forestModel,trainSet,testSet,3);
-                        //
-                        //                case "RandomCommittee":
-                        //                    Classifier randomCommittee = new RandomCommittee();
-                        //                    calculateEvaluation(randomCommittee,trainSet,testSet, 4);
-                        //
-                        //                case "RandomSubSpace":
-                        //                    Classifier randomSubSpace = new RandomSubSpace();
-                        //                    calculateEvaluation(randomSubSpace,trainSet,testSet, 5);
-                        //
-                        //                case "AdditiveRegression":
-                        //                    Classifier additiveRegression = new AdditiveRegression();
-                        //                    calculateEvaluation(additiveRegression,trainSet,testSet, 6);
-                        //
-                        //                case "SMOReg":
-                        //                    Classifier smOreg = new SMOreg();
-                        //                    calculateEvaluation(smOreg,trainSet,testSet, 7);
-                        //
-                        //                case "MultilayerPerceptron":
-                        //                    Classifier multilayerPerceptron = new MultilayerPerceptron();
-                        //                    calculateEvaluation(multilayerPerceptron,trainSet,testSet, 8);
+                    case "RandomForest":
+                        RandomForestModelImpl randomForestModel = new RandomForestModelImpl();
+                        Classifier forestModel = randomForestModel.trainModel(trainDataset);
+                        calculateEvaluation(forestModel,trainDataset,testDataset,3);
+
+                    case "RandomCommittee":
+                        RandomCommitteeModelImpl randomCommitteeModel = new RandomCommitteeModelImpl();
+                        Classifier randomCommittee = randomCommitteeModel.trainModel(trainDataset);
+                        calculateEvaluation(randomCommittee,trainDataset,testDataset, 4);
+
+                    case "RandomSubSpace":
+                        RandomSubSpaceModelImpl randomSubSpaceModel = new RandomSubSpaceModelImpl();
+                        Classifier randomSubSpace = randomSubSpaceModel.trainModel(trainDataset);
+                        calculateEvaluation(randomSubSpace,trainDataset,testDataset, 5);
+
+                    case "AdditiveRegression":
+                        AdditiveRegressionModelImpl additiveRegressionModel = new AdditiveRegressionModelImpl();
+                        Classifier additiveRegression = additiveRegressionModel.trainModel(trainDataset);
+                        calculateEvaluation(additiveRegression,trainDataset,testDataset, 6);
+
+                    case "SMOReg":
+                        SMORegModelImpl smoRegModel = new SMORegModelImpl();
+                        Classifier smOreg = smoRegModel.trainModel(trainDataset);
+                        calculateEvaluation(smOreg,trainDataset,testDataset, 7);
+
+                    case "MultilayerPerceptron":
+                        MultilayerPerceptronModelImpl multilayerPerceptronModel = new MultilayerPerceptronModelImpl();
+                        Classifier multilayerPerceptron = multilayerPerceptronModel.trainModel(trainDataset);
+                        calculateEvaluation(multilayerPerceptron,trainDataset,testDataset, 8);
 
                     default:
                         model = null;
