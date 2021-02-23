@@ -15,20 +15,30 @@ public class AssetTypeList {
     private int liveAssets;
     private int archivedAssets;
     private String valueOk;
+    private int countOk;
     private String valueCaution;
+    private int countCaution;
     private String valueAdvisory;
+    private int countAdvisory;
     private String valueWarning;
+    private int countWarning;
     private String valueFailed;
+    private int countFailed;
 
-    public AssetTypeList(AssetType assetType, int liveAssets, int archivedAssets, String valueOk, String valueCaution, String valueAdvisory, String valueWarning, String valueFailed) {
+    public AssetTypeList(AssetType assetType, int liveAssets, int archivedAssets, String valueOk, int countOk, String valueCaution, int countCaution, String valueAdvisory, int countAdvisory, String valueWarning, int countWarning, String valueFailed, int countFailed) {
         this.assetType = assetType;
         this.liveAssets = liveAssets;
         this.archivedAssets = archivedAssets;
         this.valueOk = valueOk;
+        this.countOk = countOk;
         this.valueCaution = valueCaution;
+        this.countCaution = countCaution;
         this.valueAdvisory = valueAdvisory;
+        this.countAdvisory = countAdvisory;
         this.valueWarning = valueWarning;
+        this.countWarning = countWarning;
         this.valueFailed = valueFailed;
+        this.countFailed = countFailed;
     }
 
     public AssetTypeList(AssetTypeList copy) {
@@ -40,6 +50,11 @@ public class AssetTypeList {
         this.valueAdvisory = copy.getValueAdvisory();
         this.valueWarning = copy.getValueWarning();
         this.valueFailed = copy.getValueFailed();
+        this.countOk = copy.getCountOk();
+        this.countCaution = copy.getCountCaution();
+        this.countAdvisory = copy.getCountAdvisory();
+        this.countWarning = copy.getCountWarning();
+        this.countFailed = copy.getCountFailed();
     }
 
     public AssetType getAssetType() {
@@ -54,16 +69,8 @@ public class AssetTypeList {
         return liveAssets;
     }
 
-    public void setLiveAssets(int liveAssets) {
-        this.liveAssets = liveAssets;
-    }
-
     public int getArchivedAssets() {
         return archivedAssets;
-    }
-
-    public void setArchivedAssets(int archivedAssets) {
-        this.archivedAssets = archivedAssets;
     }
 
     public String getValueOk() {
@@ -121,6 +128,31 @@ public class AssetTypeList {
     public String getDescription() {
         return assetType.getDescription();
     }
+
+    public int getCountOk() {
+        return countOk;
+    }
+
+
+    public int getCountCaution() {
+        return countCaution;
+    }
+
+
+    public int getCountAdvisory() {
+        return countAdvisory;
+    }
+
+
+    public int getCountWarning() {
+        return countWarning;
+    }
+
+
+    public int getCountFailed() {
+        return countFailed;
+    }
+
 
     /** This methode generates an AssetType object given the values of the current object
      *

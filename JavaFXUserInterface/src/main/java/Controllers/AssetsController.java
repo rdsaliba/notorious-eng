@@ -33,14 +33,12 @@ import javafx.util.Duration;
 import rul.assessment.AssessmentController;
 
 import java.net.URL;
-import java.text.DecimalFormat;
-import java.util.Collections;
 import java.util.ResourceBundle;
 
 public class AssetsController implements Initializable {
-    private static final String DEFAULT_SORT = "Order";
-    private static final String ASCENDING_RUL_SORT = "Ascending RUL";
-    private static final String DESCENDING_RUL_SORT = "Descending RUL";
+    private static final String SORT_DEFAULT = "Order";
+    private static final String SORT_RUL_ASC = "Ascending RUL";
+    private static final String SORT_RUL_DESC = "Descending RUL";
     private static final String RECOMMENDATION = "Recommendation";
     private static final String LINEAR_RUL = "Linear RUL";
     private static final String TYPE_COL = "Type";
@@ -108,17 +106,17 @@ public class AssetsController implements Initializable {
      * @author Jeff
      */
     public void updateRULs() {
-        for (Asset asset:assets) {
+        for (Asset asset : assets) {
             asset.setRul(String.valueOf(TextConstants.RULValueFormat.format(AssessmentController.getLatestEstimate(asset.getId()))));
         }
         rulTimeline =
-            new Timeline(new KeyFrame(Duration.millis(3000), e ->
-            {
-                for (Asset asset:assets) {
-                    asset.setRul(String.valueOf(TextConstants.RULValueFormat.format(AssessmentController.getLatestEstimate(asset.getId()))));
-                }
-                table.refresh();
-            }));
+                new Timeline(new KeyFrame(Duration.millis(3000), e ->
+                {
+                    for (Asset asset : assets) {
+                        asset.setRul(String.valueOf(TextConstants.RULValueFormat.format(AssessmentController.getLatestEstimate(asset.getId()))));
+                    }
+                    table.refresh();
+                }));
 
         rulTimeline.setCycleCount(Animation.INDEFINITE); // loop forever
         rulTimeline.play();
@@ -144,37 +142,25 @@ public class AssetsController implements Initializable {
         addAssetBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(rulTimeline, mouseEvent, TextConstants.ADD_ASSETS));
 
         //Adding items to the choiceBox (drop down list)
-        sortAsset.getItems().add(DEFAULT_SORT);
-        sortAsset.getItems().add(ASCENDING_RUL_SORT);
-        sortAsset.getItems().add(DESCENDING_RUL_SORT);
+        sortAsset.getItems().add(SORT_DEFAULT);
+        sortAsset.getItems().add(SORT_RUL_ASC);
+        sortAsset.getItems().add(SORT_RUL_DESC);
         //Default Value
-        sortAsset.setValue(DEFAULT_SORT);
-        //Listener on the sort ChoiceBox. Depending on the sort selected, all assets panes are cleared and generated again
+        sortAsset.setValue(SORT_DEFAULT);
+        //Listener on the sort ChoiceBox. Depending on the sort selected, all systems panes are cleared and generated again
         //with the appropriate sort applied.
         sortAsset.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
-            switch (newValue) {
-                case ASCENDING_RUL_SORT:
-                    if (thumbnailTab.isSelected()) {
-                        assetsThumbPane.getChildren().clear();
-                        assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssetsDes());
-                        Collections.reverse(assets);
-                        generateThumbnails();
-                    }
-                    break;
-                case DESCENDING_RUL_SORT:
-                    if (thumbnailTab.isSelected()) {
-                        assetsThumbPane.getChildren().clear();
-                        assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssetsDes());
-                        generateThumbnails();
-                    }
-                    break;
-                default:
-                    if (thumbnailTab.isSelected()) {
-                        assetsThumbPane.getChildren().clear();
-                        assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
-                        generateThumbnails();
-                    }
-                    break;
+            if (!oldValue.equals(newValue)) {
+                if (newValue.equals(SORT_DEFAULT)) {
+                    FXCollections.sort(assets, (asset, t1) -> asset.getId() - t1.getId());
+                } else if (newValue.equals(SORT_RUL_ASC)) {
+                    FXCollections.sort(assets, (asset, t1) -> Double.valueOf(asset.getRul().getValue()).compareTo(Double.valueOf(t1.getRul().getValue())));
+                } else if (newValue.equals(SORT_RUL_DESC)) {
+                    FXCollections.sort(assets, (asset, t1) -> Double.valueOf(t1.getRul().getValue()).compareTo(Double.valueOf(asset.getRul().getValue())));
+                }
+                assetsThumbPane.getChildren().clear();
+                generateThumbnails();
+
             }
         });
     }
@@ -324,10 +310,9 @@ public class AssetsController implements Initializable {
 
     /**
      * Stops the timeline
-     *
      */
     private void closeTimeline() {
-        if(rulTimeline != null)
+        if (rulTimeline != null)
             rulTimeline.stop();
     }
 }

@@ -48,10 +48,10 @@ public class AssetTypeInfoTest extends ApplicationTest {
         assetType.setDescription("This is a description");
         assetType.setName("Asset Type Name");
 
-        AssetTypeList AssetTypeList = new AssetTypeList(assetType, 34, 67,
-                "Ok", "Caution", "Advisory", "Warning", "Failed");
+        AssetTypeList assetTypeList = new AssetTypeList(assetType, 34, 67,
+                "Ok",0, "Caution",0, "Advisory",0, "Warning",0, "Failed",0);
 
-        AssetTypeInfoController.initData(AssetTypeList);
+        AssetTypeInfoController.initData(assetTypeList);
 
         stage.setTitle("CBMS");
         stage.setScene(scene);

@@ -73,10 +73,6 @@ public class ModelController {
         return assetDaoImpl.getAllLiveAssets();
     }
 
-    public List<Asset> getAllLiveAssetsDes() {
-        return assetDaoImpl.getAllLiveAssetsDes();
-    }
-
 
     /**
      * this function checks all Assets for updated status

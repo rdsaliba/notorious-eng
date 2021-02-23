@@ -7,6 +7,7 @@
  */
 package Controllers;
 
+import Utilities.CustomDialog;
 import Utilities.TextConstants;
 import Utilities.UIUtilities;
 import app.item.Asset;
@@ -24,14 +25,16 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import rul.assessment.AssessmentController;
@@ -155,6 +158,12 @@ public class AssetInfoController implements Initializable {
      * @author Jeff, Paul
      */
     public void constructAttributePanes() {
+        if (asset.getAssetInfo().getAssetAttributes().isEmpty()) {
+            Text noSensorsText = new Text("No sensor readings to display");
+            noSensorsText.setFont(new Font("Segoe UI Bold", 14));
+            attributeFlowPane.getChildren().add(noSensorsText);
+
+        }
         for (AssetAttribute attribute : asset.getAssetInfo().getAssetAttributes()) {
             Pane pane = new Pane();
             pane.getStyleClass().add("attributePane");
@@ -214,7 +223,10 @@ public class AssetInfoController implements Initializable {
         assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(timelines, mouseEvent, TextConstants.ASSETS_SCENE));
         //Attach link to assetTypeMenuBtn to go to AssetTypeList.fxml
         assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(timelines, mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
-        deleteBtn.setOnMouseClicked(this::deleteDialog);
+        deleteBtn.setOnMouseClicked(mouseEvent -> {
+            timelines.forEach(Timeline::stop);
+            CustomDialog.systemInfoController(mouseEvent, asset.getId());
+            });
 
         rawDataTab.setOnSelectionChanged(event -> {
             rawDataListPane.getChildren().clear();
@@ -229,24 +241,6 @@ public class AssetInfoController implements Initializable {
      */
     public void deleteAsset() {
         assetDAOImpl.deleteAssetByID(asset.getId());
-    }
-
-    /**
-     * Creates a dialog box that asks user if they want to delete an asset.
-     *
-     * @param mouseEvent is an event trigger for this delete dialog
-     */
-    void deleteDialog(MouseEvent mouseEvent) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle(TextConstants.ALERT_TITLE_DIALOG);
-        alert.setHeaderText(ALERT_HEADER);
-        alert.setContentText(ALERT_CONTENT);
-
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            deleteAsset();
-            uiUtilities.changeScene(timelines, mouseEvent, TextConstants.ASSETS_SCENE);
-        }
     }
 
     /**
