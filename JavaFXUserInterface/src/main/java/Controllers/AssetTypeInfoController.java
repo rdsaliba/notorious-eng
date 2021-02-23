@@ -8,33 +8,40 @@
  */
 package Controllers;
 
-import Utilities.CustomDialog;
 import Utilities.AssetTypeList;
+import Utilities.CustomDialog;
 import Utilities.TextConstants;
 import Utilities.UIUtilities;
+import app.ModelController;
+import app.item.Model;
 import external.AssetTypeDAOImpl;
+import external.ModelDAOImpl;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
+import local.AssetDAOImpl;
+import preprocessing.DataPrePreprocessorController;
+import weka.core.Instances;
 
-import java.awt.*;
 import java.net.URL;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class AssetTypeInfoController implements Initializable {
+    private static final String RMSE = "RMSE";
     private static final String ALERT_HEADER = "Confirmation of asset type deletion";
     private static final String ALERT_CONTENT = "Are you sure you want to delete this asset type? \n " +
             "this will delete all the assets of this type";
-
+    @FXML
+    Tab modelTab;
     @FXML
     private Button assetMenuBtn;
     @FXML
@@ -61,11 +68,32 @@ public class AssetTypeInfoController implements Initializable {
     private ImageView assetTypeImageView;
     @FXML
     private AnchorPane inputError;
-
+    @FXML
+    private Slider trainSlider;
+    @FXML
+    private Slider testSlider;
+    @FXML
+    private Label trainValue;
+    @FXML
+    private Label testValue;
+    @FXML
+    private Button modelEvaluateBtn;
+    private Button selectBtn;
+    @FXML
+    private Button modelSaveBtn;
+    private ObservableList<Model> models;
     private UIUtilities uiUtilities;
     private AssetTypeList assetType;
     private AssetTypeList originalAssetType;
     private AssetTypeDAOImpl assetTypeDAO;
+    private ModelDAOImpl modelDAO;
+    private AssetDAOImpl assetDAO;
+    private ModelController modelController;
+    private Instances trainDataset;
+    private Instances testDataset;
+    private DataPrePreprocessorController prePreprocessorController;
+    private int trainSize = 0;
+    private int testSize = 0;
     private Text[] errorMessages = new Text[7];
     private boolean[] validInput = new boolean[7];
 
@@ -73,7 +101,15 @@ public class AssetTypeInfoController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         uiUtilities = new UIUtilities();
         assetTypeDAO = new AssetTypeDAOImpl();
-        attachEvents();
+        modelDAO = new ModelDAOImpl();
+        assetDAO = new AssetDAOImpl();
+        modelController = ModelController.getInstance();
+        prePreprocessorController = DataPrePreprocessorController.getInstance();
+        try {
+            attachEvents();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
     }
 
     /**
@@ -106,6 +142,8 @@ public class AssetTypeInfoController implements Initializable {
      * Edit: added all the text proprety listeners and text formaters for all the fields
      */
     public void attachEvents() {
+        modelTab.setOnSelectionChanged(event -> modelsButtonPressed());
+
         // Change scenes to Assets.fxml
         assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE));
         //Attach link to assetTypeMenuBtn to go to Utilities.AssetTypeList.fxml
@@ -159,6 +197,59 @@ public class AssetTypeInfoController implements Initializable {
         });
         thresholdFailed.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
 
+    }
+
+    private void modelsButtonPressed() {
+
+        if (modelTab.getId().equals("modelTab")) {
+            int nbOfAssets = assetDAO.getAssetsFromAssetTypeID(Integer.parseInt(assetType.getId())).size();
+            trainSlider.setMax(nbOfAssets);
+            trainValue.setText(String.valueOf(trainSlider.getValue()));
+            testSlider.setMax(nbOfAssets);
+            testValue.setText(String.valueOf(testSlider.getValue()));
+
+            trainSlider.valueProperty().addListener(new ChangeListener<Number>() {
+                @Override
+                public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                    trainValue.setText(Integer.toString((int) trainSlider.getValue()));
+                    testSlider.setMax(nbOfAssets - (int) trainSlider.getValue());
+                    trainSize = (int) trainSlider.getValue();
+                }
+            });
+            testSlider.valueProperty().addListener(new ChangeListener<Number>() {
+                @Override
+                public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                    testValue.setText(Integer.toString((int) testSlider.getValue()));
+                    trainSlider.setMax(nbOfAssets - (int) testSlider.getValue());
+                    testSize = (int) testSlider.getValue();
+                }
+            });
+
+            try {
+                modelEvaluateBtn.setOnMouseClicked(mouseEvent -> {
+                    try {
+                        int from = (int) trainSlider.getValue() + 1;
+                        int to = (int) trainSlider.getValue() + 1 + (int) testSlider.getValue();
+                        trainDataset = DataPrePreprocessorController.getInstance().addRULCol(modelController.createInstancesFromAssets(assetDAO.getAssetsFromAssetTypeID(Integer.parseInt(assetType.getId())).subList(0, (int) trainSlider.getValue() - 1)));
+                        testDataset = DataPrePreprocessorController.getInstance().addRULCol(modelController.createInstancesFromAssets(assetDAO.getAssetsFromAssetTypeID(Integer.parseInt(assetType.getId())).subList(from, to - 1)));
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
+                    try {
+//                        evaluateModels(mouseEvent);
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
+                });
+            } catch (Exception e) {
+            }
+        }
+        try {
+            models = FXCollections.observableArrayList(modelDAO.getAllModels());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        generateThumbnails();
     }
 
     /**
@@ -323,5 +414,45 @@ public class AssetTypeInfoController implements Initializable {
             UIUtilities.createInputError(inputError, errorMessages, thresholdFailed, "", 0, 0, 6);
         }
         return validForm;
+    }
+
+    public void generateThumbnails() {
+        ObservableList<Pane> boxes = FXCollections.observableArrayList();
+
+        for (Model model : models) {
+
+            Pane pane = new Pane();
+
+            pane.getStyleClass().add("modelPane");
+            Text modelNameText = new Text(model.getModelName());
+            Text modelDescriptionText = new Text(model.getDescription());
+            Text RMSEText = new Text(RMSE + ": ");
+
+            modelNameText.setId("modelNameText");
+            modelDescriptionText.setId("modelDescriptionText");
+            RMSEText.setId("RMSEText");
+
+
+            modelNameText.setLayoutX(14.0);
+            modelNameText.setLayoutY(28.0);
+            modelDescriptionText.setLayoutX(14.0);
+            modelDescriptionText.setLayoutY(60.0);
+            RMSEText.setLayoutX(14.0);
+            RMSEText.setLayoutY(100.0);
+
+            pane.getChildren().add(modelNameText);
+            pane.getChildren().add(modelDescriptionText);
+            pane.getChildren().add(RMSEText);
+
+            boxes.add(pane);
+        }
+    }
+
+    public void selectModel() {
+//        selectBtn.setOnMouseClicked(mouseEvent -> modelDAO.updateModelForAssetType(modelID, assetType.getId());
+    }
+
+    public void saveSelection() {
+//        modelSaveBtn.setOnMouseClicked(mouseEvent -> modelDAOImpl.);
     }
 }

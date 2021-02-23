@@ -25,3 +25,10 @@
     -fx-pref-height: 60;
     -fx-max-height: 60;
 }
+
+.modelPane
+{
+    -fx-background-color: #FFFFFF;
+    -fx-pref-height: 131.0;
+    -fx-pref-width: 298.0;
+}

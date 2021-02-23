@@ -8,7 +8,10 @@
  */
 package external;
 
+import app.item.AssetType;
+import app.item.Model;
 import app.item.TrainedModel;
+import javafx.scene.input.MouseEvent;
 import weka.classifiers.Classifier;
 
 import java.io.ByteArrayInputStream;
@@ -17,10 +20,13 @@ import java.io.ObjectInputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class ModelDAOImpl extends DAO implements ModelDAO {
     private static final String GET_MODEL_NAME_FROM_ID = "SELECT name from trained_model, model where trained_model.model_id = model.model_id and asset_type_id = ?";
     private static final String GET_MODEL_FROM_ASSET_TYPE = "SELECT * FROM trained_model WHERE asset_type_id = ?";
+    private static final String UPDATE_MODEL_FOR_ASSET_TYPE = "UPDATE trained_model set model_id = ? where asset_type_id = ?";
+    private static final String GET_MODELS = "Select * from model";
 
     /**
      * Given a asset type id, this function will return the string corresponding
@@ -89,5 +95,32 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
             return null;
         }
         return tm;
+    }
+
+    public ArrayList<Model> getAllModels() {
+        ArrayList<Model> modelList = new ArrayList<>();
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_MODELS)) {
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Model newModel = new Model();
+                    newModel.setModelID(rs.getString("model_id"));
+                    newModel.setModelName(rs.getString("name"));
+                    newModel.setDescription(rs.getString("description"));
+                    modelList.add(newModel);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return modelList;
+    }
+    public void updateModelForAssetType(String modelID, String assetTypeID){
+        try (PreparedStatement ps = getConnection().prepareStatement(UPDATE_MODEL_FOR_ASSET_TYPE)) {
+            ps.setString(1, modelID);
+            ps.setString(2, assetTypeID);
+            ps.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
