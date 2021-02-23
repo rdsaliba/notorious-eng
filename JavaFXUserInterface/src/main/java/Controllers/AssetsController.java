@@ -38,7 +38,7 @@ import java.util.Collections;
 import java.util.ResourceBundle;
 
 public class AssetsController implements Initializable {
-    private static final String DEFAULT_SORT = "Default";
+    private static final String DEFAULT_SORT = "Order";
     private static final String ASCENDING_RUL_SORT = "Ascending RUL";
     private static final String DESCENDING_RUL_SORT = "Descending RUL";
     private static final String RECOMMENDATION = "Recommendation";
@@ -55,10 +55,7 @@ public class AssetsController implements Initializable {
 
     private final AssetTypeDAOImpl assetTypeDAO;
     private final ModelDAOImpl modelDAO;
-    @FXML
-    private Button assetMenuBtn;
-    @FXML
-    private Button assetTypeMenuBtn;
+
     @FXML
     private Button addAssetBtn;
     @FXML
@@ -138,54 +135,48 @@ public class AssetsController implements Initializable {
             generateThumbnails();
         });
 
-//        listTab.setOnSelectionChanged(event -> {
-//            assetsListPane.getChildren().clear();
-//            generateList();
-//        });
-
-//        //Attach link to assetMenuButton to go to Assets.fxml
-//        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(rulTimeline, mouseEvent, TextConstants.ASSETS_SCENE));
-//
-//        //Attach link to assetTypeMenuBtn to go to Utilities.AssetTypeList.fxml
-//        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(rulTimeline, mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
+        listTab.setOnSelectionChanged(event -> {
+            assetsListPane.getChildren().clear();
+            generateList();
+        });
 
         //Attach link to addAssetButton to go to AddAsset.fxml
         addAssetBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(rulTimeline, mouseEvent, TextConstants.ADD_ASSETS));
 
         //Adding items to the choiceBox (drop down list)
-//        sortAsset.getItems().add(DEFAULT_SORT);
-//        sortAsset.getItems().add(ASCENDING_RUL_SORT);
-//        sortAsset.getItems().add(DESCENDING_RUL_SORT);
-//        //Default Value
-//        sortAsset.setValue(DEFAULT_SORT);
-//        //Listener on the sort ChoiceBox. Depending on the sort selected, all assets panes are cleared and generated again
-//        //with the appropriate sort applied.
-//        sortAsset.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
-//            switch (newValue) {
-//                case ASCENDING_RUL_SORT:
-//                    if (thumbnailTab.isSelected()) {
-//                        assetsThumbPane.getChildren().clear();
-//                        assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssetsDes());
-//                        Collections.reverse(assets);
-//                        generateThumbnails();
-//                    }
-//                    break;
-//                case DESCENDING_RUL_SORT:
-//                    if (thumbnailTab.isSelected()) {
-//                        assetsThumbPane.getChildren().clear();
-//                        assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssetsDes());
-//                        generateThumbnails();
-//                    }
-//                    break;
-//                default:
-//                    if (thumbnailTab.isSelected()) {
-//                        assetsThumbPane.getChildren().clear();
-//                        assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
-//                        generateThumbnails();
-//                    }
-//                    break;
-//            }
-//        });
+        sortAsset.getItems().add(DEFAULT_SORT);
+        sortAsset.getItems().add(ASCENDING_RUL_SORT);
+        sortAsset.getItems().add(DESCENDING_RUL_SORT);
+        //Default Value
+        sortAsset.setValue(DEFAULT_SORT);
+        //Listener on the sort ChoiceBox. Depending on the sort selected, all assets panes are cleared and generated again
+        //with the appropriate sort applied.
+        sortAsset.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
+            switch (newValue) {
+                case ASCENDING_RUL_SORT:
+                    if (thumbnailTab.isSelected()) {
+                        assetsThumbPane.getChildren().clear();
+                        assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssetsDes());
+                        Collections.reverse(assets);
+                        generateThumbnails();
+                    }
+                    break;
+                case DESCENDING_RUL_SORT:
+                    if (thumbnailTab.isSelected()) {
+                        assetsThumbPane.getChildren().clear();
+                        assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssetsDes());
+                        generateThumbnails();
+                    }
+                    break;
+                default:
+                    if (thumbnailTab.isSelected()) {
+                        assetsThumbPane.getChildren().clear();
+                        assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
+                        generateThumbnails();
+                    }
+                    break;
+            }
+        });
     }
 
     /**

@@ -2,6 +2,7 @@
 
 <?import java.net.URL?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
@@ -14,8 +15,10 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="834.0" prefWidth="1194.0" stylesheets="@css/revamp/style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AssetsController">
    <children>
+       <fx:include source="Navigation.fxml" />
       <AnchorPane layoutX="315.0" layoutY="180.0" prefHeight="200.0" prefWidth="808.0" styleClass="container" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="59.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
+            <ChoiceBox layoutX="996.0" layoutY="147.0" prefWidth="150.0" styleClass="dropdown" />
             <Button id="addAssetBtn" fx:id="addAssetBtn" layoutX="860.0" layoutY="25.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="247.0" text="Add System">
                <font>
                   <Font name="Segoe UI Semibold" size="20.0" />
@@ -62,11 +65,13 @@
                 </Tab>
                 <Tab fx:id="listTab" text="List">
                   <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                      <AnchorPane fx:id="assetsListPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                      </AnchorPane>
                   </content>
                 </Tab>
               </tabs>
             </TabPane>
+            <ChoiceBox fx:id="sortAsset" layoutX="860.0" layoutY="147.0" prefWidth="150.0" styleClass="dropdown" />
          </children>
       </AnchorPane>
    </children>

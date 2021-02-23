@@ -1,167 +1,102 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 <?import java.net.URL?>
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="712.0"
-            prefWidth="1026.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="Controllers.AddAssetController">
-    <VBox layoutY="169.0" prefHeight="543.0" prefWidth="74.0" style="-fx-background-color: #0C072E;"
-          AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="169.0">
-        <children>
-            <Button fx:id="assetMenuBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0"
-                    prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css" text="Assets"
-                    textAlignment="CENTER" textFill="#f0f0f0">
-                <font>
-                    <Font name="Segoe UI Bold" size="14.0"/>
-                </font>
-                <graphic>
-                    <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                        <image>
-                            <Image url="@imgs/outline_dvr_white_18dp.png"/>
-                        </image>
-                    </ImageView>
-                </graphic>
-            </Button>
-            <Button fx:id="assetTypeMenuBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0"
-                    prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css"
-                    text="Asset&#10;Types" textAlignment="CENTER" textFill="#f0f0f0" translateY="15.0">
-                <font>
-                    <Font name="Segoe UI Bold" size="14.0"/>
-                </font>
-                <graphic>
-                    <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                        <image>
-                            <Image url="@imgs/outline_type_white.png"/>
-                        </image>
-                    </ImageView>
-                </graphic>
-            </Button>
-            <Button fx:id="exitMenuBtn" contentDisplay="TOP" layoutX="10.0" layoutY="10.0" mnemonicParsing="false"
-                    prefHeight="74.0" prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css"
-                    text="Exit" textAlignment="CENTER" textFill="#f0f0f0" translateY="290.0">
-                <font>
-                    <Font name="Segoe UI Bold" size="14.0"/>
-                </font>
-                <graphic>
-                    <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                        <image>
-                            <Image url="@imgs/outline_exit_to_app_white_18dp.png"/>
-                        </image>
-                    </ImageView>
-                </graphic>
-            </Button>
-        </children>
-    </VBox>
-    <VBox prefHeight="169.0" prefWidth="74.0" style="-fx-background-color: #0C072E;" AnchorPane.topAnchor="0.0"/>
-    <AnchorPane layoutX="75.0" prefHeight="712.0" prefWidth="951.0" style="-fx-background-color: #F8F8F8;"
-                AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="75.0" AnchorPane.rightAnchor="0.0"
-                AnchorPane.topAnchor="0.0">
-        <AnchorPane layoutX="-1.0" prefHeight="42.0" prefWidth="952.0" style="-fx-background-color: #FFFFFF;"
-                    AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="0.0">
-            <Text fx:id="addAssetTitle" fill="#0c072e" layoutX="14.0" layoutY="26.0" strokeType="OUTSIDE"
-                  strokeWidth="0.0" text="Add Asset">
-                <font>
-                    <Font name="Segoe UI Bold" size="18.0"/>
-                </font>
-            </Text>
-        </AnchorPane>
-        <AnchorPane layoutX="41.0" layoutY="61.0" prefHeight="422.0" prefWidth="867.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #F0F0F0;" AnchorPane.leftAnchor="41.0" AnchorPane.rightAnchor="43.0">
-            <Text fill="#0c072e" layoutX="6.0" layoutY="24.0" strokeType="OUTSIDE" strokeWidth="0.0"
-                  text="Asset Information">
-                <font>
-                    <Font name="Segoe UI Bold" size="16.0"/>
-                </font>
-            </Text>
-            <Text fill="#0c072e" layoutX="63.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Asset Name">
-                <font>
-                    <Font name="Segoe UI Bold" size="14.0"/>
-                </font>
-            </Text>
-            <TextField fx:id="assetNameInput" layoutX="180.0" layoutY="46.0" prefHeight="40.0" prefWidth="350.0"/>
-            <Text fill="#0c072e" layoutX="69.0" layoutY="123.0" strokeType="OUTSIDE" strokeWidth="0.0"
-                  text="Asset Type">
-                <font>
-                    <Font name="Segoe UI Bold" size="14.0"/>
-                </font>
-            </Text>
-            <ChoiceBox fx:id="assetTypeChoiceBox" layoutX="180.0" layoutY="97.0" prefHeight="40.0" prefWidth="350.0"
-                       stylesheets="@css/style.css"/>
-            <Text fill="#0c072e" layoutX="25.0" layoutY="166.0" strokeType="OUTSIDE" strokeWidth="0.0"
-                  text="Asset Description">
-                <font>
-                    <Font name="Segoe UI Bold" size="14.0"/>
-                </font>
-            </Text>
-            <TextArea fx:id="assetDescriptionTextArea" layoutX="180.0" layoutY="148.0" prefHeight="105.0"
-                      prefWidth="350.0"/>
-            <Text fill="#0c072e" layoutX="61.0" layoutY="288.0" strokeType="OUTSIDE" strokeWidth="0.0"
-                  text="Serial Number">
-                <font>
-                    <Font name="Segoe UI Bold" size="14.0"/>
-                </font>
-            </Text>
-            <TextField fx:id="serialNumberInput" layoutX="180.0" layoutY="263.0" prefHeight="40.0" prefWidth="350.0"/>
-            <Text fill="#0c072e" layoutX="65.0" layoutY="340.0" strokeType="OUTSIDE" strokeWidth="0.0"
-                  text="Manufacturer">
-                <font>
-                    <Font name="Segoe UI Bold" size="14.0"/>
-                </font>
-            </Text>
-            <TextField fx:id="manufacturerInput" layoutX="180.0" layoutY="315.0" prefHeight="40.0" prefWidth="350.0"/>
-            <Text fill="#0c072e" layoutX="88.0" layoutY="392.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Category"
-                  AnchorPane.leftAnchor="88.0">
-                <font>
-                    <Font name="Segoe UI Bold" size="14.0"/>
-                </font>
-            </Text>
-            <TextField fx:id="categoryInput" layoutX="180.0" layoutY="367.0" prefHeight="40.0" prefWidth="350.0"
-                       AnchorPane.leftAnchor="177.0"/>
-        </AnchorPane>
-        <AnchorPane layoutX="42.0" layoutY="496.0" prefHeight="148.0" prefWidth="867.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #F0F0F0;" AnchorPane.bottomAnchor="68.0" AnchorPane.leftAnchor="42.0" AnchorPane.rightAnchor="42.0" AnchorPane.topAnchor="496.0">
-            <Text fill="#0c072e" layoutX="30.0" layoutY="24.0" strokeType="OUTSIDE" strokeWidth="0.0"
-                  text="Asset Location">
-                <font>
-                    <Font name="Segoe UI Bold" size="16.0"/>
-                </font>
-            </Text>
-            <Text fill="#0c072e" layoutX="129.0" layoutY="54.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Site">
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="834.0" prefWidth="1194.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AddAssetController">
+    <fx:include source="Navigation.fxml" />
+    <AnchorPane layoutX="75.0" prefHeight="712.0" prefWidth="951.0" style="-fx-background-color: #F8F8F8;" styleClass="background" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="59.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <AnchorPane prefHeight="80.0" prefWidth="1135.0" styleClass="titleBar" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <children>
+               <Text fx:id="addAssetTitle" fill="#0c072e" layoutX="26.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="header" text="Add Asset">
+                   <font>
+                       <Font name="Segoe UI Bold" size="18.0" />
+                   </font>
+               </Text>
+         </children>
+      </AnchorPane>
+        <AnchorPane layoutX="26.0" layoutY="111.0" prefHeight="615.0" prefWidth="1083.0" styleClass="panel" AnchorPane.bottomAnchor="108.0" AnchorPane.leftAnchor="26.0" AnchorPane.rightAnchor="26.0" AnchorPane.topAnchor="111.0">
+         <AnchorPane prefHeight="49.0" prefWidth="1083.0" styleClass="panelTitleBar" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+            <children>
+                  <Text fill="#0c072e" layoutX="26.0" layoutY="32.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="panelTitle" text="Asset Information">
+                      <font>
+                          <Font name="Segoe UI Bold" size="16.0" />
+                      </font>
+                  </Text>
+            </children>
+         </AnchorPane>
+            <Text layoutX="63.0" layoutY="120.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Asset Name">
                 <font>
                     <Font name="Segoe UI Bold" size="14.0" />
                 </font>
             </Text>
-            <TextField fx:id="siteInput" layoutX="184.0" layoutY="36.0" prefHeight="40.0" prefWidth="350.0"/>
-            <Text fill="#0c072e" layoutX="98.0" layoutY="106.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Location">
+            <TextField fx:id="assetNameInput" layoutX="180.0" layoutY="97.0" prefHeight="40.0" prefWidth="350.0" />
+            <Text fill="#0c072e" layoutX="69.0" layoutY="174.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Asset Type">
                 <font>
                     <Font name="Segoe UI Bold" size="14.0" />
                 </font>
             </Text>
-            <TextField fx:id="locationInput" layoutX="184.0" layoutY="88.0" prefHeight="40.0" prefWidth="350.0"/>
+            <ChoiceBox fx:id="assetTypeChoiceBox" layoutX="180.0" layoutY="148.0" prefHeight="40.0" prefWidth="350.0" />
+            <Text fill="#0c072e" layoutX="25.0" layoutY="217.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Asset Description">
+                <font>
+                    <Font name="Segoe UI Bold" size="14.0" />
+                </font>
+            </Text>
+            <TextArea fx:id="assetDescriptionTextArea" layoutX="180.0" layoutY="199.0" prefHeight="105.0" prefWidth="350.0" />
+            <Text fill="#0c072e" layoutX="61.0" layoutY="339.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Serial Number">
+                <font>
+                    <Font name="Segoe UI Bold" size="14.0" />
+                </font>
+            </Text>
+            <TextField fx:id="serialNumberInput" layoutX="180.0" layoutY="314.0" prefHeight="40.0" prefWidth="350.0" />
+            <Text fill="#0c072e" layoutX="65.0" layoutY="391.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Manufacturer">
+                <font>
+                    <Font name="Segoe UI Bold" size="14.0" />
+                </font>
+            </Text>
+            <TextField fx:id="manufacturerInput" layoutX="180.0" layoutY="366.0" prefHeight="40.0" prefWidth="350.0" />
+            <Text fill="#0c072e" layoutX="89.0" layoutY="443.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Category" AnchorPane.leftAnchor="89.0">
+                <font>
+                    <Font name="Segoe UI Bold" size="14.0" />
+                </font>
+            </Text>
+            <TextField fx:id="categoryInput" layoutX="181.0" layoutY="417.0" prefHeight="40.0" prefWidth="350.0" AnchorPane.leftAnchor="181.0" />
+            <TextField fx:id="siteInput" layoutX="180.0" layoutY="473.0" prefHeight="40.0" prefWidth="350.0" />
+            <TextField fx:id="locationInput" layoutX="180.0" layoutY="532.0" prefHeight="40.0" prefWidth="350.0" />
+            <Text fill="#0c072e" layoutX="103.0" layoutY="497.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Site">
+                <font>
+                    <Font name="Segoe UI Bold" size="14.0" />
+                </font>
+            </Text>
+            <Text fill="#0c072e" layoutX="82.0" layoutY="558.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Location">
+                <font>
+                    <Font name="Segoe UI Bold" size="14.0" />
+                </font>
+            </Text>
         </AnchorPane>
-        <Button fx:id="saveBtn" layoutX="702.0" layoutY="653.0" mnemonicParsing="false" stylesheets="@css/style.css"
-                text="Save" textFill="WHITE" AnchorPane.bottomAnchor="23.799999999999955"
-                AnchorPane.rightAnchor="162.60000000000002">
-            <font>
-                <Font name="Segoe UI Bold" size="12.0"/>
-            </font>
-            <padding>
-                <Insets bottom="10.0" left="30.0" right="30.0" top="10.0"/>
-            </padding>
-        </Button>
-        <Button fx:id="cancelBtn" layoutX="810.0" layoutY="653.0" mnemonicParsing="false" stylesheets="@css/style.css" text="Cancel" textFill="WHITE" AnchorPane.bottomAnchor="23.799999999999955" AnchorPane.rightAnchor="43.39999999999998">
-            <padding>
-                <Insets bottom="10.0" left="30.0" right="30.0" top="10.0" />
-            </padding>
-            <font>
-                <Font name="Segoe UI Bold" size="12.0" />
-            </font>
-        </Button>
+      <AnchorPane layoutY="753.0" prefHeight="80.0" prefWidth="1135.0" styleClass="footerBar" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <children>
+              <Button fx:id="saveBtn" layoutX="799.0" layoutY="15.0" mnemonicParsing="false" styleClass="saveBtn" text="Save" textFill="WHITE" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="194.0">
+                  <font>
+                      <Font name="Segoe UI Semibold" size="20.0" />
+                  </font>
+              </Button>
+              <Button fx:id="cancelBtn" layoutX="963.0" layoutY="14.0" mnemonicParsing="false" styleClass="cancelBtn" text="Cancel" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="26.0">
+                  <font>
+                      <Font name="Segoe UI Semibold" size="20.0" />
+                  </font>
+              </Button>
+         </children>
+      </AnchorPane>
     </AnchorPane>
     <stylesheets>
-        <URL value="@css/addAsset.css"/>
-        <URL value="@css/style.css" />
+        <URL value="@css/revamp/addAsset.css" />
+        <URL value="@css/revamp/style.css" />
     </stylesheets>
 </AnchorPane>
