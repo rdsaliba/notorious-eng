@@ -56,10 +56,6 @@ public class AssetInfoController implements Initializable {
 
     private static final int ATTRIBUTE_GRAPH_SIZE = 5;
     @FXML
-    private Button assetMenuBtn;
-    @FXML
-    private Button assetTypeMenuBtn;
-    @FXML
     private Button deleteBtn;
     @FXML
     private Text assetName;
@@ -172,7 +168,7 @@ public class AssetInfoController implements Initializable {
             xAxis.setLabel(CYCLE);
             xAxis.setAnimated(false);
             final LineChart<String, String> attributeChart = new LineChart<>(xAxis, yAxis);
-            attributeChart.setTitle(ATTRIBUTE_VALUES);
+            //attributeChart.setTitle(ATTRIBUTE_VALUES);
             attributeChart.setAnimated(false);
 
             XYChart.Series<String, String> series = new XYChart.Series<>();
@@ -199,14 +195,14 @@ public class AssetInfoController implements Initializable {
 
             series.setData(data);
             attributeChart.getData().add(series);
-            attributeChart.setPrefWidth(275.0);
-            attributeChart.setPrefHeight(163.0);
-            attributeChart.setLayoutX(12.0);
+            attributeChart.setPrefWidth(217.0);
+            attributeChart.setPrefHeight(133.0);
+            attributeChart.setLayoutX(5.0);
             attributeChart.setLayoutY(50.0);
             pane.getChildren().add(attributeChart);
             Text attributeName = new Text(attribute.getName());
-            attributeName.setId("attributeType");
-            attributeName.setLayoutX(35.0);
+            attributeName.getStyleClass().add("attributeName");
+            attributeName.setLayoutX(16.0);
             attributeName.setLayoutY(30.0);
             pane.getChildren().add(attributeName);
 
@@ -220,9 +216,6 @@ public class AssetInfoController implements Initializable {
      * @author Jeff
      */
     public void attachEvents() {
-        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(timelines, mouseEvent, TextConstants.ASSETS_SCENE));
-        //Attach link to assetTypeMenuBtn to go to AssetTypeList.fxml
-        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(timelines, mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
         deleteBtn.setOnMouseClicked(mouseEvent -> {
             timelines.forEach(Timeline::stop);
             CustomDialog.systemInfoController(mouseEvent, asset.getId());
