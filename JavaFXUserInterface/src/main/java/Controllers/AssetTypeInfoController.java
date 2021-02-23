@@ -327,20 +327,7 @@ public class AssetTypeInfoController implements Initializable {
         modelDAO.updateRMSE(rmse, modelId , Integer.parseInt(assetType.getId()));
 
     }
-    /**
-     * Creates and Instances object based on the passed size
-     *
-     * @param size of the Instances object to be created.
-     * @author Talal
-     */
-    private Instances populateDataset(int size){
-        Instances set = trainDataset;
-        if(set.size()==size) return set;
-        for(int i=size+1;i<trainDataset.size();i++){
-            trainDataset.delete(i);
-        }
-        return set;
-    }
+
 
     /**
      * Handle the text change of the user fields to turn on or off the save functionality
