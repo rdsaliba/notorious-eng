@@ -25,6 +25,8 @@ import java.util.ArrayList;
 public class ModelDAOImpl extends DAO implements ModelDAO {
     private static final String GET_MODEL_NAME_FROM_ID = "SELECT name from trained_model, model where trained_model.model_id = model.model_id and asset_type_id = ?";
     private static final String GET_MODEL_FROM_ASSET_TYPE = "SELECT * FROM trained_model WHERE asset_type_id = ?";
+    private static final String GET_MODELS_LIST = "select * from model";
+    private static final String INSERT_RMSE = "REPLACE INTO model_evaluation SET rmse = ?,model_id = ?, asset_type_id = ? ";
     private static final String UPDATE_MODEL_FOR_ASSET_TYPE = "UPDATE trained_model set model_id = ? where asset_type_id = ?";
     private static final String GET_MODELS = "Select * from model";
 
@@ -95,6 +97,36 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
             return null;
         }
         return tm;
+    }
+
+
+    @Override
+    public ArrayList<String> getListOfModels(){
+        ArrayList<String> models=new ArrayList<String>();
+        String name="";
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_MODELS_LIST)) {
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()){
+                    name = rs.getString("name");
+                    models.add(name);
+                    models.size();}
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return models;
+
+    }
+    public void updateRMSE(Double rmse, int modelId, int assetTypeId) {
+        try (PreparedStatement ps = getConnection().prepareStatement(INSERT_RMSE)) {
+            ps.setDouble(1, rmse);
+            ps.setInt(2, modelId);
+            ps.setInt(3, assetTypeId);
+
+            ps.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public ArrayList<Model> getAllModels() {

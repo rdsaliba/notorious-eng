@@ -14,15 +14,24 @@ import Utilities.TextConstants;
 import Utilities.UIUtilities;
 import app.ModelController;
 import app.item.Model;
+import app.item.Asset;
 import external.AssetTypeDAOImpl;
 import external.ModelDAOImpl;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import external.ModelDAOImpl;
+import javafx.scene.input.MouseEvent;
+import local.AssetDAOImpl;
+import app.ModelController;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -31,8 +40,17 @@ import javafx.scene.text.Text;
 import local.AssetDAOImpl;
 import preprocessing.DataPrePreprocessorController;
 import weka.core.Instances;
+import preprocessing.DataPrePreprocessorController;
+import rul.models.*;
+import weka.classifiers.Classifier;
+import weka.core.Instances;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import java.awt.*;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class AssetTypeInfoController implements Initializable {
@@ -236,7 +254,7 @@ public class AssetTypeInfoController implements Initializable {
                         exception.printStackTrace();
                     }
                     try {
-//                        evaluateModels(mouseEvent);
+                        evaluateModels(mouseEvent);
                     } catch (Exception exception) {
                         exception.printStackTrace();
                     }
@@ -250,6 +268,85 @@ public class AssetTypeInfoController implements Initializable {
             e.printStackTrace();
         }
         generateThumbnails();
+    }
+
+    /**
+     * Evaluates all models of a specific Asset Type
+     *
+     * @param mouseEvent is an event trigger to evlauate models
+     * @author Talal
+     */
+    private void evaluateModels(MouseEvent mouseEvent)  {
+        try {
+            ArrayList<String> models = modelDAO.getListOfModels();
+            trainDataset.setClassIndex(trainDataset.numAttributes() - 1);
+            testDataset.setClassIndex(testDataset.numAttributes() - 1);
+
+
+            for(int i=0;i<models.size();i++){
+                switch (models.get(i)) {
+                    case "Linear":
+                        LinearRegressionModelImpl linearRegressionModelImpl = new LinearRegressionModelImpl();
+                        Classifier model =  linearRegressionModelImpl.trainModel(trainDataset);
+                        calculateEvaluation(model,trainDataset,testDataset,1);
+
+                    case "LSTM":
+                        ModelStrategy lstmm = new LSTMModelImpl();
+                        Classifier lstm = lstmm.trainModel(trainDataset);
+                        calculateEvaluation(lstm,trainDataset,testDataset,2);
+
+                    case "RandomForest":
+                        RandomForestModelImpl randomForestModel = new RandomForestModelImpl();
+                        Classifier forestModel = randomForestModel.trainModel(trainDataset);
+                        calculateEvaluation(forestModel,trainDataset,testDataset,3);
+
+                    case "RandomCommittee":
+                        RandomCommitteeModelImpl randomCommitteeModel = new RandomCommitteeModelImpl();
+                        Classifier randomCommittee = randomCommitteeModel.trainModel(trainDataset);
+                        calculateEvaluation(randomCommittee,trainDataset,testDataset, 4);
+
+                    case "RandomSubSpace":
+                        RandomSubSpaceModelImpl randomSubSpaceModel = new RandomSubSpaceModelImpl();
+                        Classifier randomSubSpace = randomSubSpaceModel.trainModel(trainDataset);
+                        calculateEvaluation(randomSubSpace,trainDataset,testDataset, 5);
+
+                    case "AdditiveRegression":
+                        AdditiveRegressionModelImpl additiveRegressionModel = new AdditiveRegressionModelImpl();
+                        Classifier additiveRegression = additiveRegressionModel.trainModel(trainDataset);
+                        calculateEvaluation(additiveRegression,trainDataset,testDataset, 6);
+
+                    case "SMOReg":
+                        SMORegModelImpl smoRegModel = new SMORegModelImpl();
+                        Classifier smOreg = smoRegModel.trainModel(trainDataset);
+                        calculateEvaluation(smOreg,trainDataset,testDataset, 7);
+
+                    case "MultilayerPerceptron":
+                        MultilayerPerceptronModelImpl multilayerPerceptronModel = new MultilayerPerceptronModelImpl();
+                        Classifier multilayerPerceptron = multilayerPerceptronModel.trainModel(trainDataset);
+                        calculateEvaluation(multilayerPerceptron,trainDataset,testDataset, 8);
+
+                    default:
+                        model = null;
+                }
+            }
+        }
+        catch (Exception e){trainValue.setText(e.getMessage());}
+    }
+
+    /**
+     * Calculates the rmse for a model and and the value to be stored in the databse
+     *
+     * @param model to be evaluated,
+     * @param train training dataset,
+     * @param test testing dataset,
+     * @param modelId model id in the database
+     * @author Talal
+     */
+    public void calculateEvaluation(Classifier model, Instances train, Instances test, int modelId) throws Exception {
+        ModelEvaluation modelEvaluation = new ModelEvaluation(model, train, test);
+        double rmse =modelEvaluation.evaluateTrainWithTest();
+        modelDAO.updateRMSE(rmse, modelId , Integer.parseInt(assetType.getId()));
+
     }
 
     /**
