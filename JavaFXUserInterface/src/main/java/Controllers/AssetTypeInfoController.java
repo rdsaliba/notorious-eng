@@ -263,8 +263,7 @@ public class AssetTypeInfoController implements Initializable {
             ArrayList<String> models = modelDAO.getListOfModels();
             trainDataset.setClassIndex(trainDataset.numAttributes() - 1);
             testDataset.setClassIndex(testDataset.numAttributes() - 1);
-            Instances trainSet = populateDataset(trainSize);
-            Instances testSet = populateDataset(testSize);
+
 
             for(int i=0;i<models.size();i++){
                 switch (models.get(i)) {
@@ -276,7 +275,7 @@ public class AssetTypeInfoController implements Initializable {
                     case "LSTM":
                         ModelStrategy lstmm = new LSTMModelImpl();
                         Classifier lstm = lstmm.trainModel(trainDataset);
-                        calculateEvaluation(lstm,trainSet,testDataset,2);
+                        calculateEvaluation(lstm,trainDataset,testDataset,2);
 
                         //                    -------------------------------------------------------------------------------------------
                         //                    --------------- this part is commented until the rest of the models are added -------------
