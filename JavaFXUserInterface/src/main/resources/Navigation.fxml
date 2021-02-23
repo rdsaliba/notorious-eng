@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="834.0" prefWidth="58.0" styleClass="nav" stylesheets="@css/revamp/navigation.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.NavigationController">
+   <children>
+      <VBox prefHeight="251.0" prefWidth="58.0" />
+      <VBox layoutY="256.0" prefHeight="306.0" prefWidth="58.0">
+         <children>
+             <Button fx:id="assetMenuBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="58.0" prefWidth="58.0" style="-fx-background-radius: 0;" styleClass="navBtn" textAlignment="CENTER" textFill="#f0f0f0" translateY="15.0">
+                 <font>
+                     <Font name="Segoe UI Bold" size="14.0" />
+                 </font>
+                 <graphic>
+                     <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                         <image>
+                             <Image url="@imgs/outline_dvr_white_18dp.png" />
+                         </image>
+                     </ImageView>
+                 </graphic>
+             </Button>
+             <Button fx:id="assetTypeMenuBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="58.0" prefWidth="58.0" style="-fx-background-radius: 0;" styleClass="navBtn" textAlignment="CENTER" textFill="#f0f0f0" translateY="15.0">
+                 <font>
+                     <Font name="Segoe UI Bold" size="14.0" />
+                 </font>
+                 <graphic>
+                     <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
+                         <image>
+                             <Image url="@imgs/outline_type_white.png" />
+                         </image>
+                     </ImageView>
+                 </graphic>
+             </Button>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

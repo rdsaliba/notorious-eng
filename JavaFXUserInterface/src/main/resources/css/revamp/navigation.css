@@ -1,0 +1,12 @@
+.navBtn {
+    -fx-background-color: #013E69;
+    color: #F0F0F0;
+}
+
+.navBtn:hover {
+    -fx-background-color: #226B9E;
+}
+
+.nav {
+    -fx-background-color: #013E69;
+}
