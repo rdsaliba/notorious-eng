@@ -12,6 +12,7 @@ import app.item.Asset;
 import app.item.AssetType;
 import external.AssetDAOImpl;
 import external.AssetTypeDAOImpl;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -39,6 +40,10 @@ public class AddAssetController implements Initializable {
     private Button cancelBtn;
     @FXML
     private Button saveBtn;
+    @FXML
+    private Button backBtn;
+    @FXML
+    private Button exitMenuBtn;
     @FXML
     private ChoiceBox<AssetType> assetTypeChoiceBox;
     @FXML
@@ -103,6 +108,10 @@ public class AddAssetController implements Initializable {
                 }
             }
         });
+        // Change scenes to Assets.fxml
+        backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE));
+        //Attach ability to close program
+        exitMenuBtn.setOnMouseClicked(mouseEvent -> Platform.exit());
         // Change scenes to Assets.fxml
         assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE));
         //Attach link to assetTypeMenuBtn to go to Utilities.AssetTypeList.fxml

@@ -10,6 +10,7 @@ import Utilities.TextConstants;
 import Utilities.UIUtilities;
 import app.item.AssetType;
 import external.AssetTypeDAOImpl;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -53,6 +54,8 @@ public class AssetTypeController implements Initializable {
     private Button assetTypeMenuBtn;
     @FXML
     private Button addTypeBtn;
+    @FXML
+    private Button exitMenuBtn;
 
     private UIUtilities uiUtilities;
 
@@ -124,7 +127,8 @@ public class AssetTypeController implements Initializable {
     public void attachEvents() {
         //set up the columns in the table
         attachColumnEvents();
-
+        //Attach ability to close program
+        exitMenuBtn.setOnMouseClicked(mouseEvent -> Platform.exit());
         //Attach link to assetMenuButton to go to Assets.fxml
         assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE));
 
