@@ -26,7 +26,7 @@ public class ModelController {
     private final AssetDAOImpl assetDaoImpl;
     private final ModelDAOImpl modelDAOImpl;
 
-    private ModelController() {
+    public ModelController() {
         assetDaoImpl = new AssetDAOImpl();
         modelDAOImpl = new ModelDAOImpl();
     }
