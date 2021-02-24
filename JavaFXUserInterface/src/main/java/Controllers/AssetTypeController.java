@@ -55,8 +55,6 @@ public class AssetTypeController implements Initializable {
     @FXML
     private Button addTypeBtn;
     @FXML
-    private Button backBtn;
-    @FXML
     private Button exitMenuBtn;
 
     private UIUtilities uiUtilities;
@@ -129,8 +127,6 @@ public class AssetTypeController implements Initializable {
     public void attachEvents() {
         //set up the columns in the table
         attachColumnEvents();
-        // Change scenes to Assets.fxml
-        backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE));
         //Attach ability to close program
         exitMenuBtn.setOnMouseClicked(mouseEvent -> Platform.exit());
         //Attach link to assetMenuButton to go to Assets.fxml

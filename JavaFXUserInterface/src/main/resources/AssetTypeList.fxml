@@ -54,21 +54,7 @@
                 </Button>
             </children>
         </VBox>
-        <VBox prefHeight="169.0" prefWidth="74.0" style="-fx-background-color: #0C072E;" AnchorPane.topAnchor="0.0">
-         <children>
-            <Button fx:id="backBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="41.0" prefWidth="77.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css" textAlignment="CENTER" textFill="#f0f0f0">
-               <font>
-                  <Font name="Segoe UI Bold" size="14.0" />
-               </font>
-               <graphic>
-                  <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@imgs/outline_back_white_18dp.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
-         </children></VBox>
+        <VBox prefHeight="169.0" prefWidth="74.0" style="-fx-background-color: #0C072E;" AnchorPane.topAnchor="0.0" />
         <AnchorPane layoutX="74.0" maxHeight="42.0" prefHeight="42.0" prefWidth="952.0" AnchorPane.leftAnchor="74.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
                 <Text fx:id="assetTypesTitle" fill="#0c072e" layoutX="14.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Asset Types">
