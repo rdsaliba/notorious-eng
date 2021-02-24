@@ -8,6 +8,7 @@
  */
 package Controllers;
 
+import Utilities.CustomDialog;
 import Utilities.AssetTypeList;
 import Utilities.CustomDialog;
 import Utilities.TextConstants;
@@ -41,8 +42,12 @@ import weka.core.Instances;
 import rul.models.*;
 import weka.classifiers.Classifier;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import java.awt.*;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class AssetTypeInfoController implements Initializable {
@@ -62,6 +67,10 @@ public class AssetTypeInfoController implements Initializable {
     private Button infoSaveBtn;
     @FXML
     private Button infoDeleteBtn;
+    @FXML
+    private Button backBtn;
+    @FXML
+    private Button exitMenuBtn;
     @FXML
     private TextField assetTypeName;
     @FXML
@@ -107,8 +116,8 @@ public class AssetTypeInfoController implements Initializable {
     private DataPrePreprocessorController prePreprocessorController;
     private int trainSize = 0;
     private int testSize = 0;
-    private Text[] errorMessages = new Text[7];
-    private boolean[] validInput = new boolean[7];
+    private final Text[] errorMessages = new Text[7];
+    private final boolean[] validInput = new boolean[7];
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -156,6 +165,11 @@ public class AssetTypeInfoController implements Initializable {
      * Edit: added all the text proprety listeners and text formaters for all the fields
      */
     public void attachEvents() {
+        // Change scenes to Assets.fxml
+        backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
+        //Attach ability to close program
+        exitMenuBtn.setOnMouseClicked(mouseEvent -> Platform.exit());
+
         modelTab.setOnSelectionChanged(event -> modelsButtonPressed());
         modelSaveBtn.setOnMouseClicked(mouseEvent -> saveSelectedModelAssociation());
 
@@ -274,77 +288,78 @@ public class AssetTypeInfoController implements Initializable {
      * @param mouseEvent is an event trigger to evlauate models
      * @author Talal
      */
-    private void evaluateModels(MouseEvent mouseEvent)  {
+    private void evaluateModels(MouseEvent mouseEvent) {
         try {
             ArrayList<String> models = modelDAO.getListOfModels();
             trainDataset.setClassIndex(trainDataset.numAttributes() - 1);
             testDataset.setClassIndex(testDataset.numAttributes() - 1);
 
 
-            for(int i=0;i<models.size();i++){
+            for (int i = 0; i < models.size(); i++) {
                 switch (models.get(i)) {
                     case "Linear":
                         LinearRegressionModelImpl linearRegressionModelImpl = new LinearRegressionModelImpl();
-                        Classifier model =  linearRegressionModelImpl.trainModel(trainDataset);
-                        calculateEvaluation(model,trainDataset,testDataset,1);
+                        Classifier model = linearRegressionModelImpl.trainModel(trainDataset);
+                        calculateEvaluation(model, trainDataset, testDataset, 1);
 
                     case "LSTM":
                         ModelStrategy lstmm = new LSTMModelImpl();
                         Classifier lstm = lstmm.trainModel(trainDataset);
-                        calculateEvaluation(lstm,trainDataset,testDataset,2);
+                        calculateEvaluation(lstm, trainDataset, testDataset, 2);
 
                     case "RandomForest":
                         RandomForestModelImpl randomForestModel = new RandomForestModelImpl();
                         Classifier forestModel = randomForestModel.trainModel(trainDataset);
-                        calculateEvaluation(forestModel,trainDataset,testDataset,3);
+                        calculateEvaluation(forestModel, trainDataset, testDataset, 3);
 
                     case "RandomCommittee":
                         RandomCommitteeModelImpl randomCommitteeModel = new RandomCommitteeModelImpl();
                         Classifier randomCommittee = randomCommitteeModel.trainModel(trainDataset);
-                        calculateEvaluation(randomCommittee,trainDataset,testDataset, 4);
+                        calculateEvaluation(randomCommittee, trainDataset, testDataset, 4);
 
                     case "RandomSubSpace":
                         RandomSubSpaceModelImpl randomSubSpaceModel = new RandomSubSpaceModelImpl();
                         Classifier randomSubSpace = randomSubSpaceModel.trainModel(trainDataset);
-                        calculateEvaluation(randomSubSpace,trainDataset,testDataset, 5);
+                        calculateEvaluation(randomSubSpace, trainDataset, testDataset, 5);
 
                     case "AdditiveRegression":
                         AdditiveRegressionModelImpl additiveRegressionModel = new AdditiveRegressionModelImpl();
                         Classifier additiveRegression = additiveRegressionModel.trainModel(trainDataset);
-                        calculateEvaluation(additiveRegression,trainDataset,testDataset, 6);
+                        calculateEvaluation(additiveRegression, trainDataset, testDataset, 6);
 
                     case "SMOReg":
                         SMORegModelImpl smoRegModel = new SMORegModelImpl();
                         Classifier smOreg = smoRegModel.trainModel(trainDataset);
-                        calculateEvaluation(smOreg,trainDataset,testDataset, 7);
+                        calculateEvaluation(smOreg, trainDataset, testDataset, 7);
 
                     case "MultilayerPerceptron":
                         MultilayerPerceptronModelImpl multilayerPerceptronModel = new MultilayerPerceptronModelImpl();
                         Classifier multilayerPerceptron = multilayerPerceptronModel.trainModel(trainDataset);
-                        calculateEvaluation(multilayerPerceptron,trainDataset,testDataset, 8);
+                        calculateEvaluation(multilayerPerceptron, trainDataset, testDataset, 8);
 
                     default:
                         model = null;
                 }
             }
         }
-        catch (Exception e){trainValue.setText(e.getMessage());}
+        catch (Exception e){
+            trainValue.setText(e.getMessage());
+        }
     }
 
     /**
      * Calculates the rmse for a model and and the value to be stored in the databse
      *
-     * @param model to be evaluated,
-     * @param train training dataset,
-     * @param test testing dataset,
+     * @param model   to be evaluated,
+     * @param train   training dataset,
+     * @param test    testing dataset,
      * @param modelId model id in the database
      * @author Talal
      */
     public void calculateEvaluation(Classifier model, Instances train, Instances test, int modelId) throws Exception {
         ModelEvaluation modelEvaluation = new ModelEvaluation(model, train, test);
-        double rmse =modelEvaluation.evaluateTrainWithTest();
-        modelDAO.updateRMSE(rmse, modelId , Integer.parseInt(assetType.getId()));
-
+        double rmse = modelEvaluation.evaluateTrainWithTest();
+        modelDAO.updateRMSE(rmse, modelId, Integer.parseInt(assetType.getId()));
     }
 
     /**
