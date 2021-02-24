@@ -8,10 +8,8 @@
  */
 package external;
 
-import app.item.AssetType;
 import app.item.Model;
 import app.item.TrainedModel;
-import javafx.scene.input.MouseEvent;
 import weka.classifiers.Classifier;
 
 import java.io.ByteArrayInputStream;
@@ -23,6 +21,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class ModelDAOImpl extends DAO implements ModelDAO {
+    private static final String UPDATE_RETRAIN = "UPDATE trained_model SET retrain = true WHERE asset_type_id = ?";
     private static final String GET_MODEL_NAME_FROM_ID = "SELECT name from trained_model, model where trained_model.model_id = model.model_id and asset_type_id = ?";
     private static final String GET_MODEL_FROM_ASSET_TYPE = "SELECT * FROM trained_model WHERE asset_type_id = ?";
     private static final String GET_MODELS_LIST = "select * from model";
@@ -117,6 +116,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
         return models;
 
     }
+
     public void updateRMSE(Double rmse, int modelId, int assetTypeId) {
         try (PreparedStatement ps = getConnection().prepareStatement(INSERT_RMSE)) {
             ps.setDouble(1, rmse);
@@ -151,6 +151,15 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
             ps.setString(1, modelID);
             ps.setString(2, assetTypeID);
             ps.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setModelToTrain(String assetTypeID) {
+        try (PreparedStatement ps = getConnection().prepareStatement(UPDATE_RETRAIN)) {
+            ps.setString(1, assetTypeID);
+            ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }

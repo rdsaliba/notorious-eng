@@ -26,4 +26,11 @@ public interface AssetDAO {
 
     AssetInfo createAssetInfo(int assetID);
 
+    ArrayList<Asset> getLiveAssetsFromAssetTypeID(String assetTypeID);
+
+    Asset createFullAssetFromQueryResult(ResultSet assetsQuery) throws SQLException;
+
+    ArrayList<Asset> getAssetsFromAssetTypeID(int assetTypeID);
+
+    void setAssetToBeUpdated(int assetID);
 }
