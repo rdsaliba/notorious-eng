@@ -19,15 +19,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ModelDAOImpl extends DAO implements ModelDAO {
-    private static final String UPDATE_RETRAIN = "UPDATE trained_model SET retrain = true WHERE asset_type_id = ?";
     private static final String GET_MODEL_NAME_FROM_ID = "SELECT name from trained_model, model where trained_model.model_id = model.model_id and asset_type_id = ?";
-    private static final String GET_MODEL_FROM_ASSET_TYPE = "SELECT * FROM trained_model WHERE asset_type_id = ?";
-    private static final String GET_MODELS_LIST = "select * from model";
+    private static final String GET_MODEL_ASSOCIATED_WITH_ASSET_TYPE = "SELECT * FROM trained_model WHERE asset_type_id = ?";
+    private static final String GET_ALL_MODELS = "SELECT * from model";
     private static final String INSERT_RMSE = "REPLACE INTO model_evaluation SET rmse = ?,model_id = ?, asset_type_id = ? ";
     private static final String UPDATE_MODEL_FOR_ASSET_TYPE = "UPDATE trained_model set model_id = ? where asset_type_id = ?";
-    private static final String GET_MODELS = "Select * from model";
+    private static final String UPDATE_RETRAIN = "UPDATE trained_model SET retrain = true WHERE asset_type_id = ?";
+
 
     /**
      * Given a asset type id, this function will return the string corresponding
@@ -62,7 +63,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     @Override
     public TrainedModel getModelsByAssetTypeID(String assetTypeID) {
         TrainedModel tm = null;
-        try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_FROM_ASSET_TYPE)) {
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_ASSOCIATED_WITH_ASSET_TYPE)) {
             ps.setString(1, assetTypeID);
             try (ResultSet queryResult = ps.executeQuery()) {
                 while (queryResult.next()) {
@@ -98,25 +99,16 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
         return tm;
     }
 
-
+    /**
+     * Given a RMSE model evaluation value for a specific model applied to a specific asset type,
+     * this function will updated the RMSE value in the database in the model evaluation table
+     *
+     * @param rmse        is the value of the model evaluation (root mean square error)
+     * @param modelId     is the model ID of the specific model
+     * @param assetTypeId is the asset type ID of the specific asset type
+     * @author Talal
+     */
     @Override
-    public ArrayList<String> getListOfModels(){
-        ArrayList<String> models=new ArrayList<String>();
-        String name="";
-        try (PreparedStatement ps = getConnection().prepareStatement(GET_MODELS_LIST)) {
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()){
-                    name = rs.getString("name");
-                    models.add(name);
-                    models.size();}
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return models;
-
-    }
-
     public void updateRMSE(Double rmse, int modelId, int assetTypeId) {
         try (PreparedStatement ps = getConnection().prepareStatement(INSERT_RMSE)) {
             ps.setDouble(1, rmse);
@@ -129,9 +121,16 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
         }
     }
 
-    public ArrayList<Model> getAllModels() {
+    /**
+     * This function will return a list of all the models that exist in the database and create
+     * model objects for each of the model existing in the database
+     *
+     * @author Jeremie
+     */
+    @Override
+    public List<Model> getAllModels() {
         ArrayList<Model> modelList = new ArrayList<>();
-        try (PreparedStatement ps = getConnection().prepareStatement(GET_MODELS)) {
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_ALL_MODELS)) {
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Model newModel = new Model();
@@ -146,7 +145,17 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
         }
         return modelList;
     }
-    public void updateModelForAssetType(String modelID, String assetTypeID){
+
+    /**
+     * This function updates which model is associated with the specified asset type
+     * to match the selection chosen by the user.
+     *
+     * @param modelID     is the model ID of the selected model
+     * @param assetTypeID is the asset type ID of the specified asset type
+     * @author Jeremie
+     */
+    @Override
+    public void updateModelAssociatedWithAssetType(String modelID, String assetTypeID) {
         try (PreparedStatement ps = getConnection().prepareStatement(UPDATE_MODEL_FOR_ASSET_TYPE)) {
             ps.setString(1, modelID);
             ps.setString(2, assetTypeID);
@@ -156,6 +165,14 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
         }
     }
 
+    /**
+     * This function sets the model associated with the specified asset type to be retrained. It changes
+     * the retrain attribute to true.
+     *
+     * @param assetTypeID is the asset type ID of the specified asset type
+     * @author Jeremie
+     */
+    @Override
     public void setModelToTrain(String assetTypeID) {
         try (PreparedStatement ps = getConnection().prepareStatement(UPDATE_RETRAIN)) {
             ps.setString(1, assetTypeID);

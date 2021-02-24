@@ -8,53 +8,41 @@
  */
 package Controllers;
 
-import Utilities.CustomDialog;
 import Utilities.AssetTypeList;
 import Utilities.CustomDialog;
 import Utilities.TextConstants;
 import Utilities.UIUtilities;
 import app.ModelController;
-import app.item.Model;
 import app.item.Asset;
+import app.item.Model;
+import external.AssetDAOImpl;
 import external.AssetTypeDAOImpl;
 import external.ModelDAOImpl;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.FlowPane;
-import external.AssetDAOImpl;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import preprocessing.DataPrePreprocessorController;
-import weka.core.Instances;
 import rul.models.*;
 import weka.classifiers.Classifier;
+import weka.core.Instances;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import java.awt.*;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class AssetTypeInfoController implements Initializable {
     private static final String RMSE = "RMSE";
-    private static final String ALERT_HEADER = "Confirmation of asset type deletion";
-    private static final String ALERT_CONTENT = "Are you sure you want to delete this asset type? \n " +
-            "this will delete all the assets of this type";
+    private final Text[] errorMessages = new Text[7];
+    private final boolean[] validInput = new boolean[7];
     @FXML
     Tab modelTab;
     @FXML
@@ -101,7 +89,7 @@ public class AssetTypeInfoController implements Initializable {
     private Button generateAllModelsBtn;
     @FXML
     private Button modelSaveBtn;
-    private ObservableList<Model> models;
+    private ObservableList<Model> modelObservableList;
     private Model selectedModel;
     private UIUtilities uiUtilities;
     private AssetTypeList assetType;
@@ -113,11 +101,8 @@ public class AssetTypeInfoController implements Initializable {
     private ModelController modelController;
     private Instances trainDataset;
     private Instances testDataset;
-    private DataPrePreprocessorController prePreprocessorController;
     private int trainSize = 0;
     private int testSize = 0;
-    private final Text[] errorMessages = new Text[7];
-    private final boolean[] validInput = new boolean[7];
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -126,7 +111,6 @@ public class AssetTypeInfoController implements Initializable {
         modelDAO = new ModelDAOImpl();
         assetDAO = new AssetDAOImpl();
         modelController = ModelController.getInstance();
-        prePreprocessorController = DataPrePreprocessorController.getInstance();
         assetsList = new ArrayList<>();
         try {
             attachEvents();
@@ -170,7 +154,7 @@ public class AssetTypeInfoController implements Initializable {
         //Attach ability to close program
         exitMenuBtn.setOnMouseClicked(mouseEvent -> Platform.exit());
 
-        modelTab.setOnSelectionChanged(event -> modelsButtonPressed());
+        modelTab.setOnSelectionChanged(event -> attachEventsModelTab());
         modelSaveBtn.setOnMouseClicked(mouseEvent -> saveSelectedModelAssociation());
 
         // Change scenes to Assets.fxml
@@ -228,7 +212,7 @@ public class AssetTypeInfoController implements Initializable {
 
     }
 
-    private void modelsButtonPressed() {
+    private void attachEventsModelTab() {
 
         if (modelTab.getId().equals("modelTab")) {
             int nbOfAssets = assetDAO.getAssetsFromAssetTypeID(Integer.parseInt(assetType.getId())).size();
@@ -237,21 +221,15 @@ public class AssetTypeInfoController implements Initializable {
             testSlider.setMax(nbOfAssets);
             testValue.setText(String.valueOf(testSlider.getValue()));
 
-            trainSlider.valueProperty().addListener(new ChangeListener<Number>() {
-                @Override
-                public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
-                    trainValue.setText(Integer.toString((int) trainSlider.getValue()));
-                    testSlider.setMax(nbOfAssets - (int) trainSlider.getValue());
-                    trainSize = (int) trainSlider.getValue();
-                }
+            trainSlider.valueProperty().addListener((observableValue, number, t1) -> {
+                trainValue.setText(Integer.toString((int) trainSlider.getValue()));
+                testSlider.setMax(nbOfAssets - (int) trainSlider.getValue());
+                trainSize = (int) trainSlider.getValue();
             });
-            testSlider.valueProperty().addListener(new ChangeListener<Number>() {
-                @Override
-                public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
-                    testValue.setText(Integer.toString((int) testSlider.getValue()));
-                    trainSlider.setMax(nbOfAssets - (int) testSlider.getValue());
-                    testSize = (int) testSlider.getValue();
-                }
+            testSlider.valueProperty().addListener((observableValue, number, t1) -> {
+                testValue.setText(Integer.toString((int) testSlider.getValue()));
+                trainSlider.setMax(nbOfAssets - (int) testSlider.getValue());
+                testSize = (int) testSlider.getValue();
             });
 
             try {
@@ -265,16 +243,17 @@ public class AssetTypeInfoController implements Initializable {
                         exception.printStackTrace();
                     }
                     try {
-                        evaluateModels(mouseEvent);
+                        evaluateModels();
                     } catch (Exception exception) {
                         exception.printStackTrace();
                     }
                 });
             } catch (Exception e) {
+                e.printStackTrace();
             }
         }
         try {
-            models = FXCollections.observableArrayList(modelDAO.getAllModels());
+            modelObservableList = FXCollections.observableArrayList(modelDAO.getAllModels());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -285,70 +264,65 @@ public class AssetTypeInfoController implements Initializable {
     /**
      * Evaluates all models of a specific Asset Type
      *
-     * @param mouseEvent is an event trigger to evlauate models
      * @author Talal
      */
-    private void evaluateModels(MouseEvent mouseEvent) {
+    private void evaluateModels() {
         try {
-            ArrayList<String> models = modelDAO.getListOfModels();
             trainDataset.setClassIndex(trainDataset.numAttributes() - 1);
             testDataset.setClassIndex(testDataset.numAttributes() - 1);
 
-
-            for (int i = 0; i < models.size(); i++) {
-                switch (models.get(i)) {
+            for (Model model : modelObservableList) {
+                switch (model.getModelName()) {
                     case "Linear":
                         LinearRegressionModelImpl linearRegressionModelImpl = new LinearRegressionModelImpl();
-                        Classifier model = linearRegressionModelImpl.trainModel(trainDataset);
-                        calculateEvaluation(model, trainDataset, testDataset, 1);
+                        Classifier linearClf = linearRegressionModelImpl.trainModel(trainDataset);
+                        calculateEvaluation(linearClf, trainDataset, testDataset, 1);
 
                     case "LSTM":
-                        ModelStrategy lstmm = new LSTMModelImpl();
-                        Classifier lstm = lstmm.trainModel(trainDataset);
-                        calculateEvaluation(lstm, trainDataset, testDataset, 2);
+                        ModelStrategy lstmModel = new LSTMModelImpl();
+                        Classifier lstmClf = lstmModel.trainModel(trainDataset);
+                        calculateEvaluation(lstmClf, trainDataset, testDataset, 2);
 
                     case "RandomForest":
                         RandomForestModelImpl randomForestModel = new RandomForestModelImpl();
-                        Classifier forestModel = randomForestModel.trainModel(trainDataset);
-                        calculateEvaluation(forestModel, trainDataset, testDataset, 3);
+                        Classifier randomForestClf = randomForestModel.trainModel(trainDataset);
+                        calculateEvaluation(randomForestClf, trainDataset, testDataset, 3);
 
                     case "RandomCommittee":
                         RandomCommitteeModelImpl randomCommitteeModel = new RandomCommitteeModelImpl();
-                        Classifier randomCommittee = randomCommitteeModel.trainModel(trainDataset);
-                        calculateEvaluation(randomCommittee, trainDataset, testDataset, 4);
+                        Classifier randomCommitteeClf = randomCommitteeModel.trainModel(trainDataset);
+                        calculateEvaluation(randomCommitteeClf, trainDataset, testDataset, 4);
 
                     case "RandomSubSpace":
                         RandomSubSpaceModelImpl randomSubSpaceModel = new RandomSubSpaceModelImpl();
-                        Classifier randomSubSpace = randomSubSpaceModel.trainModel(trainDataset);
-                        calculateEvaluation(randomSubSpace, trainDataset, testDataset, 5);
+                        Classifier randomSubSpaceClf = randomSubSpaceModel.trainModel(trainDataset);
+                        calculateEvaluation(randomSubSpaceClf, trainDataset, testDataset, 5);
 
                     case "AdditiveRegression":
                         AdditiveRegressionModelImpl additiveRegressionModel = new AdditiveRegressionModelImpl();
-                        Classifier additiveRegression = additiveRegressionModel.trainModel(trainDataset);
-                        calculateEvaluation(additiveRegression, trainDataset, testDataset, 6);
+                        Classifier additiveRegressionClf = additiveRegressionModel.trainModel(trainDataset);
+                        calculateEvaluation(additiveRegressionClf, trainDataset, testDataset, 6);
 
                     case "SMOReg":
                         SMORegModelImpl smoRegModel = new SMORegModelImpl();
-                        Classifier smOreg = smoRegModel.trainModel(trainDataset);
-                        calculateEvaluation(smOreg, trainDataset, testDataset, 7);
+                        Classifier Clf = smoRegModel.trainModel(trainDataset);
+                        calculateEvaluation(Clf, trainDataset, testDataset, 7);
 
                     case "MultilayerPerceptron":
                         MultilayerPerceptronModelImpl multilayerPerceptronModel = new MultilayerPerceptronModelImpl();
-                        Classifier multilayerPerceptron = multilayerPerceptronModel.trainModel(trainDataset);
-                        calculateEvaluation(multilayerPerceptron, trainDataset, testDataset, 8);
+                        Classifier multilayerPerceptronClf = multilayerPerceptronModel.trainModel(trainDataset);
+                        calculateEvaluation(multilayerPerceptronClf, trainDataset, testDataset, 8);
 
                     default:
-                        model = null;
                 }
             }
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             trainValue.setText(e.getMessage());
         }
     }
 
     /**
-     * Calculates the rmse for a model and and the value to be stored in the databse
+     * Calculates the rmse for a model and and the value to be stored in the database
      *
      * @param model   to be evaluated,
      * @param train   training dataset,
@@ -404,15 +378,6 @@ public class AssetTypeInfoController implements Initializable {
         } else {
             assetTypeImageView.setImage(new Image("imgs/unknown_asset_type.png"));
         }
-    }
-
-    /**
-     * Send the asset ID to the Database class in order for it to be deleted.
-     *
-     * @author Paul
-     */
-    public void deleteAssetType() {
-        assetTypeDAO.deleteAssetTypeByID(assetType.getId());
     }
 
     /**
@@ -526,10 +491,17 @@ public class AssetTypeInfoController implements Initializable {
         return validForm;
     }
 
+    /**
+     * Generates the thumbnails for each model that exist in the database. This function will display
+     * on each thumbnail: the name of the model, its description, a button to generate the evaluation
+     * of the model for that asset type as well as the the RMSE value generated from the evaluation.
+     *
+     * @author Jeremie
+     */
     public void generateThumbnails() {
         ObservableList<Pane> boxes = FXCollections.observableArrayList();
 
-        for (Model model : models) {
+        for (Model model : modelObservableList) {
 
             Pane pane = new Pane();
 
@@ -539,15 +511,15 @@ public class AssetTypeInfoController implements Initializable {
             Text RMSEText = new Text(RMSE + ": ");
 
             pane.setOnMouseClicked(mouseEvent -> selectedModel = model);
-            Button generateModelBtn = new Button();
-            generateModelBtn.setText("Generate");
+            Button evaluateModelBtn = new Button();
+            evaluateModelBtn.setText("Evaluate");
 //            TODO: Generate an evaluation for a single model
-//            generateModelBtn.setOnMouseClicked(mouseEvent -> modelDAO.updateModelForAssetType(model.getModelID(), assetType.getId()));
+//            evaluateModelBtn.setOnMouseClicked(mouseEvent -> modelDAO.updateModelForAssetType(model.getModelID(), assetType.getId()));
 
             modelNameText.setId("modelNameText");
             modelDescriptionText.setId("modelDescriptionText");
             RMSEText.setId("RMSEText");
-            generateModelBtn.setId("SelectBtn");
+            evaluateModelBtn.setId("SelectBtn");
 
             modelNameText.setLayoutX(14.0);
             modelNameText.setLayoutY(28.0);
@@ -555,25 +527,39 @@ public class AssetTypeInfoController implements Initializable {
             modelDescriptionText.setLayoutY(60.0);
             RMSEText.setLayoutX(14.0);
             RMSEText.setLayoutY(100.0);
-            generateModelBtn.setLayoutX(28.0);
-            generateModelBtn.setLayoutY(100.0);
+            evaluateModelBtn.setLayoutX(28.0);
+            evaluateModelBtn.setLayoutY(100.0);
 
             pane.getChildren().add(modelNameText);
             pane.getChildren().add(modelDescriptionText);
             pane.getChildren().add(RMSEText);
-            pane.getChildren().add(generateModelBtn);
+            pane.getChildren().add(evaluateModelBtn);
 
             boxes.add(pane);
         }
         modelsThumbPane.getChildren().addAll(boxes);
     }
 
+    /**
+     * Saves the association between the selected model and the current asset type in the database.
+     * This function also set the retrain tag to true to indicate that the model chosen for the asset
+     * type needs to be retrain. Finally, it labels all live assets of that asset type as updated.
+     *
+     * @author Jeremie
+     */
     public void saveSelectedModelAssociation() {
-        modelDAO.updateModelForAssetType(selectedModel.getModelID(),assetType.getId());
+        modelDAO.updateModelAssociatedWithAssetType(selectedModel.getModelID(), assetType.getId());
         modelDAO.setModelToTrain(assetType.getId());
         updateAssetsForSelectedModelAssociation(assetType.getId());
     }
 
+    /**
+     * This function updates all live assets for the current asset type by setting their status as
+     * updated. This means that their RUl needs to be re-evaluated.
+     *
+     * @param AssetTypeID Is the Asset type ID of the current AssetType
+     * @author Jeremie
+     */
     public void updateAssetsForSelectedModelAssociation(String AssetTypeID) {
         assetsList = assetDAO.getLiveAssetsFromAssetTypeID(AssetTypeID);
         for (Asset asset : assetsList) {
