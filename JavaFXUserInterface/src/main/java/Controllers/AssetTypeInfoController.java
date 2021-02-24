@@ -12,11 +12,16 @@ import Utilities.CustomDialog;
 import Utilities.AssetTypeList;
 import Utilities.TextConstants;
 import Utilities.UIUtilities;
+import app.item.Asset;
 import external.AssetTypeDAOImpl;
+import external.ModelDAOImpl;
+import local.AssetDAOImpl;
+import app.ModelController;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -24,9 +29,16 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
+import preprocessing.DataPrePreprocessorController;
+import rul.models.*;
+import weka.classifiers.Classifier;
+import weka.core.Instances;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import java.awt.*;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -61,11 +73,31 @@ public class AssetTypeInfoController implements Initializable {
     private ImageView assetTypeImageView;
     @FXML
     private AnchorPane inputError;
+    @FXML
+    private Slider trainSlider;
+    @FXML
+    private Slider testSlider;
+    @FXML
+    private Label trainValue;
+    @FXML
+    private Label testValue;
+    @FXML
+    private Button modelEvaluateBtn;
+    @FXML
+    Tab modelTab;
 
     private UIUtilities uiUtilities;
     private AssetTypeList assetType;
     private AssetTypeList originalAssetType;
     private AssetTypeDAOImpl assetTypeDAO;
+    private ModelDAOImpl modelDAO;
+    private AssetDAOImpl assetDAO;
+    private ModelController modelController;
+    private Instances trainDataset;
+    private Instances testDataset;
+    private DataPrePreprocessorController prePreprocessorController;
+    private int trainSize = 0;
+    private int testSize = 0;
     private Text[] errorMessages = new Text[7];
     private boolean[] validInput = new boolean[7];
 
@@ -73,8 +105,15 @@ public class AssetTypeInfoController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         uiUtilities = new UIUtilities();
         assetTypeDAO = new AssetTypeDAOImpl();
-        attachEvents();
-    }
+        modelDAO = new ModelDAOImpl();
+        assetDAO = new AssetDAOImpl();
+        modelController = ModelController.getInstance();
+        prePreprocessorController = DataPrePreprocessorController.getInstance();
+        try {
+            attachEvents();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }    }
 
     /**
      * initData receives the Asset Type data that was selected from Utilities.AssetTypeList.FXML
@@ -106,6 +145,9 @@ public class AssetTypeInfoController implements Initializable {
      * Edit: added all the text proprety listeners and text formaters for all the fields
      */
     public void attachEvents() {
+
+        modelTab.setOnSelectionChanged(event -> modelsButtonPressed());
+
         // Change scenes to Assets.fxml
         assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE));
         //Attach link to assetTypeMenuBtn to go to Utilities.AssetTypeList.fxml
@@ -160,6 +202,132 @@ public class AssetTypeInfoController implements Initializable {
         thresholdFailed.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
 
     }
+
+    private void modelsButtonPressed(){
+
+        if(modelTab.getId().equals("modelTab")){
+            int nbOfAssets = assetDAO.getAssetsFromAssetTypeID(Integer.parseInt(assetType.getId())).size();
+            trainSlider.setMax(nbOfAssets);
+            trainValue.setText(String.valueOf(trainSlider.getValue()));
+            testSlider.setMax(nbOfAssets);
+            testValue.setText(String.valueOf(testSlider.getValue()));
+
+            trainSlider.valueProperty().addListener(new ChangeListener<Number>() {
+                @Override
+                public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                    trainValue.setText(Integer.toString((int)trainSlider.getValue()));
+                    testSlider.setMax(nbOfAssets - (int)trainSlider.getValue());
+                    trainSize = (int)trainSlider.getValue();
+                }
+            });
+            testSlider.valueProperty().addListener(new ChangeListener<Number>() {
+                @Override
+                public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                    testValue.setText(Integer.toString((int)testSlider.getValue()));
+                    trainSlider.setMax(nbOfAssets - (int)testSlider.getValue());
+                    testSize = (int)testSlider.getValue();
+                }
+            });
+
+            try{
+                modelEvaluateBtn.setOnMouseClicked(mouseEvent -> {
+                    try {
+                        int from = (int) trainSlider.getValue()+1;
+                        int to = (int) trainSlider.getValue()+1+(int) testSlider.getValue();
+                        trainDataset  = DataPrePreprocessorController.getInstance().addRULCol(modelController.createInstancesFromAssets(assetDAO.getAssetsFromAssetTypeID(Integer.parseInt(assetType.getId())).subList(0, (int) trainSlider.getValue()-1)));
+                        testDataset = DataPrePreprocessorController.getInstance().addRULCol(modelController.createInstancesFromAssets(assetDAO.getAssetsFromAssetTypeID(Integer.parseInt(assetType.getId())).subList(from, to-1)));
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
+                    try {
+                        evaluateModels(mouseEvent);
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
+                });
+            }
+            catch (Exception e){}
+        }
+    }
+    /**
+     * Evaluates all models of a specific Asset Type
+     *
+     * @param mouseEvent is an event trigger to evlauate models
+     * @author Talal
+     */
+    private void evaluateModels(MouseEvent mouseEvent)  {
+        try {
+            ArrayList<String> models = modelDAO.getListOfModels();
+            trainDataset.setClassIndex(trainDataset.numAttributes() - 1);
+            testDataset.setClassIndex(testDataset.numAttributes() - 1);
+
+
+            for(int i=0;i<models.size();i++){
+                switch (models.get(i)) {
+                    case "Linear":
+                        LinearRegressionModelImpl linearRegressionModelImpl = new LinearRegressionModelImpl();
+                        Classifier model =  linearRegressionModelImpl.trainModel(trainDataset);
+                        calculateEvaluation(model,trainDataset,testDataset,1);
+
+                    case "LSTM":
+                        ModelStrategy lstmm = new LSTMModelImpl();
+                        Classifier lstm = lstmm.trainModel(trainDataset);
+                        calculateEvaluation(lstm,trainDataset,testDataset,2);
+
+                    case "RandomForest":
+                        RandomForestModelImpl randomForestModel = new RandomForestModelImpl();
+                        Classifier forestModel = randomForestModel.trainModel(trainDataset);
+                        calculateEvaluation(forestModel,trainDataset,testDataset,3);
+
+                    case "RandomCommittee":
+                        RandomCommitteeModelImpl randomCommitteeModel = new RandomCommitteeModelImpl();
+                        Classifier randomCommittee = randomCommitteeModel.trainModel(trainDataset);
+                        calculateEvaluation(randomCommittee,trainDataset,testDataset, 4);
+
+                    case "RandomSubSpace":
+                        RandomSubSpaceModelImpl randomSubSpaceModel = new RandomSubSpaceModelImpl();
+                        Classifier randomSubSpace = randomSubSpaceModel.trainModel(trainDataset);
+                        calculateEvaluation(randomSubSpace,trainDataset,testDataset, 5);
+
+                    case "AdditiveRegression":
+                        AdditiveRegressionModelImpl additiveRegressionModel = new AdditiveRegressionModelImpl();
+                        Classifier additiveRegression = additiveRegressionModel.trainModel(trainDataset);
+                        calculateEvaluation(additiveRegression,trainDataset,testDataset, 6);
+
+                    case "SMOReg":
+                        SMORegModelImpl smoRegModel = new SMORegModelImpl();
+                        Classifier smOreg = smoRegModel.trainModel(trainDataset);
+                        calculateEvaluation(smOreg,trainDataset,testDataset, 7);
+
+                    case "MultilayerPerceptron":
+                        MultilayerPerceptronModelImpl multilayerPerceptronModel = new MultilayerPerceptronModelImpl();
+                        Classifier multilayerPerceptron = multilayerPerceptronModel.trainModel(trainDataset);
+                        calculateEvaluation(multilayerPerceptron,trainDataset,testDataset, 8);
+
+                    default:
+                        model = null;
+                }
+            }
+        }
+        catch (Exception e){trainValue.setText(e.getMessage());}
+    }
+
+    /**
+     * Calculates the rmse for a model and and the value to be stored in the databse
+     *
+     * @param model to be evaluated,
+     * @param train training dataset,
+     * @param test testing dataset,
+     * @param modelId model id in the database
+     * @author Talal
+     */
+    public void calculateEvaluation(Classifier model, Instances train, Instances test, int modelId) throws Exception {
+        ModelEvaluation modelEvaluation = new ModelEvaluation(model, train, test);
+        double rmse =modelEvaluation.evaluateTrainWithTest();
+        modelDAO.updateRMSE(rmse, modelId , Integer.parseInt(assetType.getId()));
+
+    }
+
 
     /**
      * Handle the text change of the user fields to turn on or off the save functionality
