@@ -7,6 +7,7 @@
  */
 package local;
 
+import app.item.EvaluateModel;
 import app.item.TrainedModel;
 import weka.classifiers.Classifier;
 
@@ -23,7 +24,9 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     private static final String GET_SERIALIZE_OBJECT = "SELECT * FROM trained_model WHERE retrain = true";
     private static final String GET_MODEL_NAME_FROM_ID = "SELECT name from trained_model, model where trained_model.model_id = model.model_id and asset_type_id = ?";
     private static final String GET_MODEL_FROM_ASSET_TYPE = "SELECT * FROM trained_model WHERE asset_type_id = ?";
-
+    private static final String INSERT_RMSE = "REPLACE INTO model_evaluation SET rmse = ?,model_id = ?, asset_type_id = ? ";
+    private static final String GET_MODELS_TO_EVALUATE = "SELECT * from model_to_evlaute";
+    private static final String REMOVE_INFO_FROM_EVALUATE_TABLE = "delete from model_to_evlaute";
     /**
      * Given a asset type id, this function will return the string corresponding
      * to the name of the model in the database associated with the asset type
@@ -137,4 +140,58 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
         }
         return tm;
     }
+
+
+    /**
+     * Given a RMSE model evaluation value for a specific model applied to a specific asset type,
+     * this function will updated the RMSE value in the database in the model evaluation table
+     *
+     * @param rmse        is the value of the model evaluation (root mean square error)
+     * @param modelId     is the model ID of the specific model
+     * @param assetTypeId is the asset type ID of the specific asset type
+     * @author Talal
+     */
+    @Override
+    public void updateRMSE(Double rmse, int modelId, int assetTypeId) {
+        try (PreparedStatement ps = getConnection().prepareStatement(INSERT_RMSE)) {
+            ps.setDouble(1, rmse);
+            ps.setInt(2, modelId);
+            ps.setInt(3, assetTypeId);
+
+            ps.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public EvaluateModel createEvaluateModelFromResultSet(ResultSet rs) throws SQLException {
+        EvaluateModel em = new EvaluateModel();
+        em.setModelName(rs.getString("model_name"));
+        em.setAssetTypeID(rs.getInt("asset_type_id"));
+        em.setFrom(rs.getInt("train_value"));
+        em.setTo(rs.getInt("test_value"));
+        return em;
+    }
+
+    public ArrayList<EvaluateModel> getModelsToEvaluate() {
+
+        ArrayList<EvaluateModel> ems = new ArrayList<>();
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_MODELS_TO_EVALUATE)) {
+            try (ResultSet queryResult = ps.executeQuery()) {
+                while (queryResult.next()) {
+                    ems.add(createEvaluateModelFromResultSet(queryResult));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return ems;
+    }
+
+    public void deleteToEvaluateTable(){
+        try (PreparedStatement ps = getConnection().prepareStatement(REMOVE_INFO_FROM_EVALUATE_TABLE))  {ps.executeQuery();} catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
 }

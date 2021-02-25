@@ -22,8 +22,6 @@ public interface ModelDAO {
 
     TrainedModel createTrainedModelFromResultSet(ResultSet rs, boolean withModel) throws SQLException;
 
-    void updateRMSE(Double rmse, int modelId, int assetTypeId);
-
     List<Model> getAllModels();
 
     void updateModelAssociatedWithAssetType(String modelID, String assetTypeID);

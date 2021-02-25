@@ -25,9 +25,9 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     private static final String GET_MODEL_NAME_FROM_ID = "SELECT name from trained_model, model where trained_model.model_id = model.model_id and asset_type_id = ?";
     private static final String GET_MODEL_ASSOCIATED_WITH_ASSET_TYPE = "SELECT * FROM trained_model WHERE asset_type_id = ?";
     private static final String GET_ALL_MODELS = "SELECT * from model";
-    private static final String INSERT_RMSE = "REPLACE INTO model_evaluation SET rmse = ?,model_id = ?, asset_type_id = ? ";
     private static final String UPDATE_MODEL_FOR_ASSET_TYPE = "UPDATE trained_model set model_id = ? where asset_type_id = ?";
     private static final String UPDATE_RETRAIN = "UPDATE trained_model SET retrain = true WHERE asset_type_id = ?";
+    private static final String INSERT_To_EVALUATE = "REPLACE INTO model_to_evlaute SET model_name = ?,asset_type_id = ?, train_value = ?, test_value = ?";
 
 
     /**
@@ -100,28 +100,6 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     }
 
     /**
-     * Given a RMSE model evaluation value for a specific model applied to a specific asset type,
-     * this function will updated the RMSE value in the database in the model evaluation table
-     *
-     * @param rmse        is the value of the model evaluation (root mean square error)
-     * @param modelId     is the model ID of the specific model
-     * @param assetTypeId is the asset type ID of the specific asset type
-     * @author Talal
-     */
-    @Override
-    public void updateRMSE(Double rmse, int modelId, int assetTypeId) {
-        try (PreparedStatement ps = getConnection().prepareStatement(INSERT_RMSE)) {
-            ps.setDouble(1, rmse);
-            ps.setInt(2, modelId);
-            ps.setInt(3, assetTypeId);
-
-            ps.executeQuery();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
      * This function will return a list of all the models that exist in the database and create
      * model objects for each of the model existing in the database
      *
@@ -177,6 +155,19 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
         try (PreparedStatement ps = getConnection().prepareStatement(UPDATE_RETRAIN)) {
             ps.setString(1, assetTypeID);
             ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void insertToEvaluate(String modelName, int assetTypeId, int trainvalue, int testValue) {
+        try (PreparedStatement ps = getConnection().prepareStatement(INSERT_To_EVALUATE)) {
+
+            ps.setString(1, modelName);
+            ps.setInt(2, assetTypeId);
+            ps.setInt(3, trainvalue);
+            ps.setInt(4, testValue);
+            ps.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();
         }
