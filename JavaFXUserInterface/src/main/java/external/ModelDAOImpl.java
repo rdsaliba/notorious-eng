@@ -9,12 +9,7 @@
 package external;
 
 import app.item.Model;
-import app.item.TrainedModel;
-import weka.classifiers.Classifier;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -22,8 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ModelDAOImpl extends DAO implements ModelDAO {
-    private static final String GET_MODEL_NAME_FROM_ID = "SELECT name from trained_model, model where trained_model.model_id = model.model_id and asset_type_id = ?";
-    private static final String GET_MODEL_ASSOCIATED_WITH_ASSET_TYPE = "SELECT * FROM trained_model WHERE asset_type_id = ?";
+    private static final String GET_MODEL_NAME_FROM_ID = "SELECT name from trained_model, model WHERE trained_model.model_id = model.model_id AND trained_model.asset_type_id = ?";
     private static final String GET_ALL_MODELS = "SELECT * from model";
     private static final String GET_MODEL_EVALUATION = "SELECT rmse FROM model_evaluation WHERE model_id = ? AND asset_type_id = ?";
     private static final String INSERT_RMSE = "REPLACE INTO model_evaluation SET rmse = ?,model_id = ?, asset_type_id = ? ";
@@ -50,53 +44,6 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
             e.printStackTrace();
         }
         return name;
-    }
-
-    /**
-     * Given the id of an asset type, this function will return the trained model
-     * corresponding the that asset type. Since only one model can be associated to
-     * an asset type at a time only one TrainedModel object is returned
-     *
-     * @param assetTypeID represents a the id of an asset type
-     * @author Paul
-     */
-    @Override
-    public TrainedModel getModelsByAssetTypeID(String assetTypeID) {
-        TrainedModel tm = null;
-        try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_ASSOCIATED_WITH_ASSET_TYPE)) {
-            ps.setString(1, assetTypeID);
-            try (ResultSet queryResult = ps.executeQuery()) {
-                while (queryResult.next()) {
-                    tm = createTrainedModelFromResultSet(queryResult, false);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return tm;
-    }
-
-    /**
-     * Given a result set object, this function will create the corresponding trained model object
-     *
-     * @param rs represents the result from a trained model query
-     * @author Paul
-     */
-    @Override
-    public TrainedModel createTrainedModelFromResultSet(ResultSet rs, boolean withModel) throws SQLException {
-        TrainedModel tm = new TrainedModel();
-        tm.setModelID(rs.getInt("model_id"));
-        tm.setAssetTypeID(rs.getInt("asset_type_id"));
-        tm.setRetrain(rs.getBoolean("retrain"));
-        try {
-            if (withModel) {
-                tm.setModelClassifier((Classifier) new ObjectInputStream(new ByteArrayInputStream(rs.getBytes("serialized_model"))).readObject());
-            }
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return tm;
     }
 
     /**
@@ -187,8 +134,8 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
      * the retrain attribute to true.
      *
      * @param assetTypeID is the asset type ID of the specified asset type
+     * @return The value of the RMSE under a String format
      * @author Jeremie
-     * @return
      */
     @Override
     public String getGetModelEvaluation(String modelID, String assetTypeID) {

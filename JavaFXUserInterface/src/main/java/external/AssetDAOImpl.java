@@ -268,7 +268,8 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         return assets;
     }
 
-    /**This method changes the update indicator of the assert in the database to true
+    /**
+     * This method changes the update indicator of the assert in the database to true
      *
      * @param assetID the specific id of the asset
      * @author Paul

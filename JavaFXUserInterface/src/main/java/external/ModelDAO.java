@@ -8,19 +8,12 @@
 package external;
 
 import app.item.Model;
-import app.item.TrainedModel;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 public interface ModelDAO {
 
-    TrainedModel getModelsByAssetTypeID(String assetTypeID);
-
     String getModelNameFromAssetTypeID(String assetTypeId);
-
-    TrainedModel createTrainedModelFromResultSet(ResultSet rs, boolean withModel) throws SQLException;
 
     void updateRMSE(Double rmse, int modelId, int assetTypeId);
 

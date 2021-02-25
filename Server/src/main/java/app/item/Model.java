@@ -1,7 +1,5 @@
 package app.item;
 
-import weka.classifiers.Classifier;
-
 public class Model {
     private String modelName;
     private String modelID;

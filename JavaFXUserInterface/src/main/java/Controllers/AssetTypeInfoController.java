@@ -92,6 +92,7 @@ public class AssetTypeInfoController implements Initializable {
     private Button modelSaveBtn;
     @FXML
     private ArrayList<Button> evaluateButtons;
+    @FXML
     private Label associatedModelLabel;
     private ObservableList<Model> modelObservableList;
     private Model selectedModel;
@@ -257,12 +258,19 @@ public class AssetTypeInfoController implements Initializable {
         testSlider.setOnMouseClicked(mouseEvent -> enableEvaluation(evaluateButtons));
     }
 
+    /**
+     * Enables or disables evaluate model buttons depending on the train slider and test slider
+     * values. It enables the buttons when both slider values are higher than 0.
+     *
+     * @param enableBtnList The list of model evaluation buttons, including the evaluation for all models
+     *                      and the individual evaluation model buttons.
+     * @author Jeremie
+     */
     private void enableEvaluation(ArrayList<Button> enableBtnList) {
         for (Button enableButton : enableBtnList) {
             if (trainSize > 0 && testSize > 0) {
                 enableButton.setDisable(false);
-            }
-            else if(trainSize == 0 || testSize == 0) {
+            } else if (trainSize == 0 || testSize == 0) {
                 enableButton.setDisable(true);
             }
         }
