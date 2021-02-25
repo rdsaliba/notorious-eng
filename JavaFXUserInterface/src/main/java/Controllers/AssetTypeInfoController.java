@@ -14,6 +14,8 @@ import Utilities.TextConstants;
 import Utilities.UIUtilities;
 import app.ModelController;
 import app.item.Asset;
+import app.item.EvaluateModel;
+import app.item.EvaluationList;
 import app.item.Model;
 import external.AssetDAOImpl;
 import external.AssetTypeDAOImpl;
@@ -98,6 +100,7 @@ public class AssetTypeInfoController implements Initializable {
     private AssetTypeDAOImpl assetTypeDAO;
     private ModelDAOImpl modelDAO;
     private AssetDAOImpl assetDAO;
+    public static ArrayList<EvaluateModel> evaluateModels;
     private ModelController modelController;
     private Instances trainDataset;
     private Instances testDataset;
@@ -112,6 +115,7 @@ public class AssetTypeInfoController implements Initializable {
         assetDAO = new AssetDAOImpl();
         modelController = ModelController.getInstance();
         assetsList = new ArrayList<>();
+        evaluateModels = new ArrayList<EvaluateModel>();
         try {
             attachEvents();
         } catch (Exception exception) {
@@ -231,109 +235,37 @@ public class AssetTypeInfoController implements Initializable {
                 trainSlider.setMax(nbOfAssets - (int) testSlider.getValue());
                 testSize = (int) testSlider.getValue();
             });
+            try {
+                modelObservableList = FXCollections.observableArrayList(modelDAO.getAllModels());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             try {
                 generateAllModelsBtn.setOnMouseClicked(mouseEvent -> {
-                    try {
+                    ArrayList<EvaluateModel> modelList = new ArrayList<EvaluateModel>();
+                    for (Model model : modelObservableList){
+                        String modelName = model.getModelName();
+                        int assetTypeID = Integer.parseInt(assetType.getId());
                         int from = (int) trainSlider.getValue() + 1;
                         int to = (int) trainSlider.getValue() + 1 + (int) testSlider.getValue();
-                        trainDataset = DataPrePreprocessorController.getInstance().addRULCol(modelController.createInstancesFromAssets(assetDAO.getAssetsFromAssetTypeID(Integer.parseInt(assetType.getId())).subList(0, (int) trainSlider.getValue() - 1)));
-                        testDataset = DataPrePreprocessorController.getInstance().addRULCol(modelController.createInstancesFromAssets(assetDAO.getAssetsFromAssetTypeID(Integer.parseInt(assetType.getId())).subList(from, to - 1)));
-                    } catch (Exception exception) {
-                        exception.printStackTrace();
+                        EvaluateModel evaluateModel = new EvaluateModel();
+                        evaluateModel.setAssetTypeID(assetTypeID);
+                        evaluateModel.setModelName(modelName);
+                        evaluateModel.setFrom(from);
+                        evaluateModel.setTo(to);
+                        modelList.add(evaluateModel);
+                        modelDAO.insertToEvaluate(modelName, assetTypeID, (int) trainSlider.getValue(), (int) testSlider.getValue());
                     }
-                    try {
-                        evaluateModels();
-                    } catch (Exception exception) {
-                        exception.printStackTrace();
-                    }
+
                 });
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        try {
-            modelObservableList = FXCollections.observableArrayList(modelDAO.getAllModels());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
         modelsThumbPane.getChildren().clear();
         generateThumbnails();
-    }
-
-    /**
-     * Evaluates all models of a specific Asset Type
-     *
-     * @author Talal
-     */
-    private void evaluateModels() {
-        try {
-            trainDataset.setClassIndex(trainDataset.numAttributes() - 1);
-            testDataset.setClassIndex(testDataset.numAttributes() - 1);
-
-            for (Model model : modelObservableList) {
-                switch (model.getModelName()) {
-                    case "Linear":
-                        LinearRegressionModelImpl linearRegressionModelImpl = new LinearRegressionModelImpl();
-                        Classifier linearClf = linearRegressionModelImpl.trainModel(trainDataset);
-                        calculateEvaluation(linearClf, trainDataset, testDataset, 1);
-
-                    case "LSTM":
-                        ModelStrategy lstmModel = new LSTMModelImpl();
-                        Classifier lstmClf = lstmModel.trainModel(trainDataset);
-                        calculateEvaluation(lstmClf, trainDataset, testDataset, 2);
-
-                    case "RandomForest":
-                        RandomForestModelImpl randomForestModel = new RandomForestModelImpl();
-                        Classifier randomForestClf = randomForestModel.trainModel(trainDataset);
-                        calculateEvaluation(randomForestClf, trainDataset, testDataset, 3);
-
-                    case "RandomCommittee":
-                        RandomCommitteeModelImpl randomCommitteeModel = new RandomCommitteeModelImpl();
-                        Classifier randomCommitteeClf = randomCommitteeModel.trainModel(trainDataset);
-                        calculateEvaluation(randomCommitteeClf, trainDataset, testDataset, 4);
-
-                    case "RandomSubSpace":
-                        RandomSubSpaceModelImpl randomSubSpaceModel = new RandomSubSpaceModelImpl();
-                        Classifier randomSubSpaceClf = randomSubSpaceModel.trainModel(trainDataset);
-                        calculateEvaluation(randomSubSpaceClf, trainDataset, testDataset, 5);
-
-                    case "AdditiveRegression":
-                        AdditiveRegressionModelImpl additiveRegressionModel = new AdditiveRegressionModelImpl();
-                        Classifier additiveRegressionClf = additiveRegressionModel.trainModel(trainDataset);
-                        calculateEvaluation(additiveRegressionClf, trainDataset, testDataset, 6);
-
-                    case "SMOReg":
-                        SMORegModelImpl smoRegModel = new SMORegModelImpl();
-                        Classifier Clf = smoRegModel.trainModel(trainDataset);
-                        calculateEvaluation(Clf, trainDataset, testDataset, 7);
-
-                    case "MultilayerPerceptron":
-                        MultilayerPerceptronModelImpl multilayerPerceptronModel = new MultilayerPerceptronModelImpl();
-                        Classifier multilayerPerceptronClf = multilayerPerceptronModel.trainModel(trainDataset);
-                        calculateEvaluation(multilayerPerceptronClf, trainDataset, testDataset, 8);
-
-                    default:
-                }
-            }
-        } catch (Exception e) {
-            trainValue.setText(e.getMessage());
-        }
-    }
-
-    /**
-     * Calculates the rmse for a model and and the value to be stored in the database
-     *
-     * @param model   to be evaluated,
-     * @param train   training dataset,
-     * @param test    testing dataset,
-     * @param modelId model id in the database
-     * @author Talal
-     */
-    public void calculateEvaluation(Classifier model, Instances train, Instances test, int modelId) throws Exception {
-        ModelEvaluation modelEvaluation = new ModelEvaluation(model, train, test);
-        double rmse = modelEvaluation.evaluateTrainWithTest();
-        modelDAO.updateRMSE(rmse, modelId, Integer.parseInt(assetType.getId()));
     }
 
     /**

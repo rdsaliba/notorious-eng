@@ -7,10 +7,10 @@
  */
 package app;
 
-import app.item.Asset;
-import app.item.TrainedModel;
+import app.item.*;
 import local.AssetDAOImpl;
 import local.ModelDAOImpl;
+import org.nd4j.linalg.api.ops.impl.transforms.IdentityN;
 import preprocessing.DataPrePreprocessorController;
 import rul.assessment.AssessmentController;
 import rul.models.*;
@@ -25,10 +25,12 @@ public class ModelController {
     private static ModelController instance = null;
     private final AssetDAOImpl assetDaoImpl;
     private final ModelDAOImpl modelDAOImpl;
+    public static ArrayList<EvaluateModel> modelsToEvaluate;
 
     public ModelController() {
         assetDaoImpl = new AssetDAOImpl();
         modelDAOImpl = new ModelDAOImpl();
+        modelsToEvaluate = new ArrayList<EvaluateModel>();
     }
 
     public static ModelController getInstance() {
@@ -36,6 +38,10 @@ public class ModelController {
             instance = new ModelController();
         return instance;
     }
+
+    public void setModelsToEvaluate(ArrayList<EvaluateModel> list){
+        modelsToEvaluate = list;
+    };
 
     /**
      * This is the first thing that gets run when opening the application.
@@ -52,6 +58,13 @@ public class ModelController {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
+                System.out.println("ModelController - initialize - checkModelsToEvaluate - start");
+                try {
+                    checkModelsToEvaluate();
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+                System.out.println("ModelController - initialize - checkModelsToEvaluate - end");
                 System.out.println("ModelController - initialize - checkAsset - start");
                 checkAssets();
                 System.out.println("ModelController - initialize - checkAsset - end");
@@ -204,6 +217,7 @@ public class ModelController {
      * @author Paul
      */
     public Instances createInstancesFromAssets(List<Asset> assets) {
+        System.out.println("in create");
         ArrayList<Attribute> attributesVector;
         Instances data;
         double[] values;
@@ -234,4 +248,19 @@ public class ModelController {
         }
         return data;
     }
+
+//
+public void checkModelsToEvaluate() throws Exception {
+
+    for(EvaluateModel model: modelDAOImpl.getModelsToEvaluate()){
+        Instances trainDataset = DataPrePreprocessorController.getInstance().addRULCol(createInstancesFromAssets(assetDaoImpl.getAssetsFromAssetTypeID(model.getAssetTypeID()).subList(0, model.getFrom()-1)));
+        Instances testDataset = DataPrePreprocessorController.getInstance().addRULCol(createInstancesFromAssets(assetDaoImpl.getAssetsFromAssetTypeID(model.getAssetTypeID()).subList(model.getFrom(), model.getFrom()+model.getTom() - 1)));
+//        evaluateModel(model);
+            Evaluation evaluation = new Evaluation(model,trainDataset,testDataset);
+            Thread t = new Thread(evaluation);
+            t.start();
+    }
+    modelDAOImpl.deleteToEvaluateTable();
+    }
 }
+
