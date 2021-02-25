@@ -27,7 +27,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
@@ -91,6 +90,8 @@ public class AssetTypeInfoController implements Initializable {
     private Button evaluateAllModelsBtn;
     @FXML
     private Button modelSaveBtn;
+    @FXML
+    private Label associatedModelLabel;
     private ObservableList<Model> modelObservableList;
     private Model selectedModel;
     private int selectedModelIndex;
@@ -134,6 +135,7 @@ public class AssetTypeInfoController implements Initializable {
         this.originalAssetType = new AssetTypeList(assetType);
         assetTypeName.setText(assetType.getAssetType().getName());
         assetTypeDesc.setText(assetType.getAssetType().getDescription());
+        associatedModelLabel.setText(modelDAO.getModelNameFromAssetTypeID(assetType.getId()));
         try {
             thresholdOK.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueOk())));
             thresholdAdvisory.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueAdvisory())));
@@ -359,6 +361,7 @@ public class AssetTypeInfoController implements Initializable {
                         break;
                 }
             }
+            updateThumbnails();
         } catch (Exception e) {
             trainValue.setText(e.getMessage());
         }
@@ -555,7 +558,8 @@ public class AssetTypeInfoController implements Initializable {
             Text modelDescriptionText = new Text(model.getDescription());
             Text RMSELabel = new Text(RMSE + ": ");
             Text RMSEValue = new Text();
-            SimpleStringProperty observableRMSEValue = new SimpleStringProperty(modelDAO.getGetModelEvaluation(model.getModelID(), assetType.getId()));
+            String RMSEValueObject = modelDAO.getGetModelEvaluation(model.getModelID(), assetType.getId());
+            SimpleStringProperty observableRMSEValue = new SimpleStringProperty(RMSEValueObject);
             RMSEValue.textProperty().bind(observableRMSEValue);
 
             Button evaluateModelBtn = new Button();
@@ -611,6 +615,11 @@ public class AssetTypeInfoController implements Initializable {
         selectedModel = model;
         selectedModelIndex = Integer.parseInt(model.getModelID());
         modelSaveBtn.setDisable(false);
+    }
+
+    private void updateThumbnails() {
+        modelsThumbPane.getChildren().removeAll();
+        generateThumbnails();
     }
 
     /**
