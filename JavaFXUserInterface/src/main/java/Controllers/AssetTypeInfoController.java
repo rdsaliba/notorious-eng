@@ -27,6 +27,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
@@ -157,7 +158,6 @@ public class AssetTypeInfoController implements Initializable {
         exitMenuBtn.setOnMouseClicked(mouseEvent -> Platform.exit());
 
         modelTab.setOnSelectionChanged(event -> attachEventsModelTab());
-
         modelSaveBtn.setDisable(true);
         modelSaveBtn.setOnMouseClicked(mouseEvent -> saveSelectedModelAssociation());
 
@@ -542,13 +542,13 @@ public class AssetTypeInfoController implements Initializable {
      * @author Jeremie
      */
     private void generateThumbnails() {
-        ObservableList<Pane> boxes = FXCollections.observableArrayList();
+        ObservableList<Pane> modelPanes = FXCollections.observableArrayList();
 
         for (Model model : modelObservableList) {
             // Creating a Thumbnail element
-            Pane pane = new Pane();
-            pane.getStyleClass().add("modelPane");
-            pane.setOnMouseClicked(mouseEvent -> handleModelSelection(model, pane));
+            Pane modelPane = new Pane();
+            modelPane.getStyleClass().add("modelPane");
+            modelPane.setOnMouseClicked(mouseEvent -> handleModelSelection(model, modelPane));
 
             // Generating items to display for the Thumbnail
             Text modelNameLabel = new Text(model.getModelName());
@@ -581,27 +581,27 @@ public class AssetTypeInfoController implements Initializable {
             evaluateModelBtn.setLayoutX(150.0);
             evaluateModelBtn.setLayoutY(75.0);
 
-            pane.getChildren().add(modelNameLabel);
-            pane.getChildren().add(modelDescriptionText);
-            pane.getChildren().add(RMSELabel);
-            pane.getChildren().add(RMSEValue);
-            pane.getChildren().add(evaluateModelBtn);
+            modelPane.getChildren().add(modelNameLabel);
+            modelPane.getChildren().add(modelDescriptionText);
+            modelPane.getChildren().add(RMSELabel);
+            modelPane.getChildren().add(RMSEValue);
+            modelPane.getChildren().add(evaluateModelBtn);
 
-            boxes.add(pane);
+            modelPanes.add(modelPane);
         }
-        setModelThumbnailsPane(boxes);
+        setModelThumbnailsContainerPane(modelPanes);
     }
 
-    private void setModelThumbnailsPane(ObservableList<Pane> boxes) {
-        modelsThumbPane.setPrefWidth((300.0 + modelsThumbPane.getHgap()) * (boxes.size()) + (2 * modelsThumbPane.getHgap()));
-        modelsThumbPane.getChildren().addAll(boxes);
-        modelsThumbPane.setOnMouseClicked(mouseEvent -> handleModelSelectionChange(boxes));
+    private void setModelThumbnailsContainerPane(ObservableList<Pane> modelPanes) {
+        modelsThumbPane.setPrefWidth((300.0 + modelsThumbPane.getHgap()) * (modelPanes.size()) + (2 * modelsThumbPane.getHgap()));
+        modelsThumbPane.getChildren().addAll(modelPanes);
+        modelsThumbPane.setOnMouseClicked(mouseEvent -> handleModelSelectionChange(modelPanes));
     }
 
-    private void handleModelSelectionChange(ObservableList<Pane> boxes) {
-        for (int i = 0; i < boxes.size(); i++) {
+    private void handleModelSelectionChange(ObservableList<Pane> modelPanes) {
+        for (int i = 0; i < modelPanes.size(); i++) {
             if ((i + 1) != selectedModelIndex) {
-                boxes.get(i).setStyle("-fx-border-color: transparent");
+                modelPanes.get(i).setStyle("-fx-border-color: transparent");
             }
         }
     }
