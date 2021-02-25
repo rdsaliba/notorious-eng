@@ -237,7 +237,7 @@
                                     <Label layoutX="90.0" layoutY="134.0" text="Testing Assets"/>
                                     <Label fx:id="trainValue" layoutX="343.0" layoutY="90.0" text="Label"/>
                                     <Label fx:id="testValue" layoutX="343.0" layoutY="159.0" text="Label"/>
-                                    <Button fx:id="generateAllModelsBtn" layoutX="821.0" layoutY="150.0"
+                                    <Button fx:id="evaluateAllModelsBtn" layoutX="821.0" layoutY="150.0"
                                             mnemonicParsing="false" stylesheets="@css/style.css" text="Evaluate"
                                             textFill="WHITE" AnchorPane.rightAnchor="50.5" AnchorPane.topAnchor="150.0">
                                         <font>
