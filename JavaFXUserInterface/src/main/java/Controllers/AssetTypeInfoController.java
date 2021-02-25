@@ -91,6 +91,7 @@ public class AssetTypeInfoController implements Initializable {
     @FXML
     private Button modelSaveBtn;
     @FXML
+    private ArrayList<Button> evaluateButtons;
     private Label associatedModelLabel;
     private ObservableList<Model> modelObservableList;
     private Model selectedModel;
@@ -160,8 +161,6 @@ public class AssetTypeInfoController implements Initializable {
         exitMenuBtn.setOnMouseClicked(mouseEvent -> Platform.exit());
 
         modelTab.setOnSelectionChanged(event -> attachEventsModelTab());
-        modelSaveBtn.setDisable(true);
-        modelSaveBtn.setOnMouseClicked(mouseEvent -> saveSelectedModelAssociation());
 
         // Change scenes to Assets.fxml
         assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE));
@@ -219,6 +218,11 @@ public class AssetTypeInfoController implements Initializable {
     }
 
     private void attachEventsModelTab() {
+        modelSaveBtn.setDisable(true);
+        modelSaveBtn.setOnMouseClicked(mouseEvent -> saveSelectedModelAssociation());
+        evaluateAllModelsBtn.setDisable(true);
+        evaluateButtons = new ArrayList<>();
+        evaluateButtons.add(evaluateAllModelsBtn);
         if (modelTab.getId().equals("modelTab")) {
             int nbOfAssets = assetDAO.getAssetsFromAssetTypeID(Integer.parseInt(assetType.getId())).size();
             trainSlider.setMax(nbOfAssets);
@@ -236,7 +240,6 @@ public class AssetTypeInfoController implements Initializable {
                 trainSlider.setMax(nbOfAssets - (int) testSlider.getValue());
                 testSize = (int) testSlider.getValue();
             });
-
             try {
                 evaluateAllModelsBtn.setOnMouseClicked(mouseEvent -> evaluateAllModels());
             } catch (Exception e) {
@@ -250,6 +253,19 @@ public class AssetTypeInfoController implements Initializable {
         }
         modelsThumbPane.getChildren().clear();
         generateThumbnails();
+        trainSlider.setOnMouseClicked(mouseEvent -> enableEvaluation(evaluateButtons));
+        testSlider.setOnMouseClicked(mouseEvent -> enableEvaluation(evaluateButtons));
+    }
+
+    private void enableEvaluation(ArrayList<Button> enableBtnList) {
+        for (Button enableButton : enableBtnList) {
+            if (trainSize > 0 && testSize > 0) {
+                enableButton.setDisable(false);
+            }
+            else if(trainSize == 0 || testSize == 0) {
+                enableButton.setDisable(true);
+            }
+        }
     }
 
     /**
@@ -290,18 +306,13 @@ public class AssetTypeInfoController implements Initializable {
      * @author Talal, Jeremie
      */
     private void setTrainAndTestInstances() {
-        if (trainSlider.getValue() == 0 || testSlider.getValue() == 0) {
-            //TODO error message
-            System.out.print("The number of train and test assets as to be higher than 0");
-        } else {
-            try {
-                int from = trainSize + 1;
-                int to = trainSize + 1 + testSize;
-                trainDataset = DataPrePreprocessorController.getInstance().addRULCol(modelController.createInstancesFromAssets(assetDAO.getAssetsFromAssetTypeID(Integer.parseInt(assetType.getId())).subList(0, trainSize - 1)));
-                testDataset = DataPrePreprocessorController.getInstance().addRULCol(modelController.createInstancesFromAssets(assetDAO.getAssetsFromAssetTypeID(Integer.parseInt(assetType.getId())).subList(from, to - 1)));
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
+        try {
+            int from = trainSize + 1;
+            int to = trainSize + 1 + testSize;
+            trainDataset = DataPrePreprocessorController.getInstance().addRULCol(modelController.createInstancesFromAssets(assetDAO.getAssetsFromAssetTypeID(Integer.parseInt(assetType.getId())).subList(0, trainSize - 1)));
+            testDataset = DataPrePreprocessorController.getInstance().addRULCol(modelController.createInstancesFromAssets(assetDAO.getAssetsFromAssetTypeID(Integer.parseInt(assetType.getId())).subList(from, to - 1)));
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
     }
 
@@ -564,6 +575,8 @@ public class AssetTypeInfoController implements Initializable {
 
             Button evaluateModelBtn = new Button();
             evaluateModelBtn.setText("Evaluate");
+            evaluateModelBtn.setDisable(true);
+            evaluateButtons.add(evaluateModelBtn);
             evaluateModelBtn.setOnMouseClicked(mouseEvent -> evaluateSelectedModel(model));
 
             //Setting IDs for the elements
