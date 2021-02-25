@@ -25,10 +25,10 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     private static final String GET_MODEL_NAME_FROM_ID = "SELECT name from trained_model, model where trained_model.model_id = model.model_id and asset_type_id = ?";
     private static final String GET_MODEL_ASSOCIATED_WITH_ASSET_TYPE = "SELECT * FROM trained_model WHERE asset_type_id = ?";
     private static final String GET_ALL_MODELS = "SELECT * from model";
+    private static final String GET_MODEL_EVALUATION = "SELECT rmse FROM model_evaluation WHERE model_id = ? AND asset_type_id = ?";
     private static final String INSERT_RMSE = "REPLACE INTO model_evaluation SET rmse = ?,model_id = ?, asset_type_id = ? ";
     private static final String UPDATE_MODEL_FOR_ASSET_TYPE = "UPDATE trained_model set model_id = ? where asset_type_id = ?";
     private static final String UPDATE_RETRAIN = "UPDATE trained_model SET retrain = true WHERE asset_type_id = ?";
-
 
     /**
      * Given a asset type id, this function will return the string corresponding
@@ -180,5 +180,29 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * This function sets the model associated with the specified asset type to be retrained. It changes
+     * the retrain attribute to true.
+     *
+     * @param assetTypeID is the asset type ID of the specified asset type
+     * @author Jeremie
+     * @return
+     */
+    @Override
+    public String getGetModelEvaluation(String modelID, String assetTypeID) {
+        String rmseValue = null;
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_EVALUATION)) {
+            ps.setString(1, modelID);
+            ps.setString(2, assetTypeID);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next())
+                    rmseValue = rs.getString("rmse");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return rmseValue;
     }
 }

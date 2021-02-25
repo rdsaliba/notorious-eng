@@ -29,4 +29,6 @@ public interface ModelDAO {
     void updateModelAssociatedWithAssetType(String modelID, String assetTypeID);
 
     void setModelToTrain(String assetTypeID);
+
+    String getGetModelEvaluation(String modelID, String assetTypeID);
 }

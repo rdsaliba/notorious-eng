@@ -19,6 +19,7 @@ import external.AssetDAOImpl;
 import external.AssetTypeDAOImpl;
 import external.ModelDAOImpl;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -91,6 +92,7 @@ public class AssetTypeInfoController implements Initializable {
     private Button modelSaveBtn;
     private ObservableList<Model> modelObservableList;
     private Model selectedModel;
+    private int selectedModelIndex;
     private UIUtilities uiUtilities;
     private AssetTypeList assetType;
     private AssetTypeList originalAssetType;
@@ -155,6 +157,8 @@ public class AssetTypeInfoController implements Initializable {
         exitMenuBtn.setOnMouseClicked(mouseEvent -> Platform.exit());
 
         modelTab.setOnSelectionChanged(event -> attachEventsModelTab());
+
+        modelSaveBtn.setDisable(true);
         modelSaveBtn.setOnMouseClicked(mouseEvent -> saveSelectedModelAssociation());
 
         // Change scenes to Assets.fxml
@@ -245,6 +249,7 @@ public class AssetTypeInfoController implements Initializable {
         modelsThumbPane.getChildren().clear();
         generateThumbnails();
     }
+
     /**
      * This function evaluates all models for the current asset type
      *
@@ -258,6 +263,7 @@ public class AssetTypeInfoController implements Initializable {
             exception.printStackTrace();
         }
     }
+
     /**
      * This function evaluates a selected model for the current asset type
      *
@@ -282,13 +288,18 @@ public class AssetTypeInfoController implements Initializable {
      * @author Talal, Jeremie
      */
     private void setTrainAndTestInstances() {
-        try {
-            int from = (int) trainSlider.getValue() + 1;
-            int to = (int) trainSlider.getValue() + 1 + (int) testSlider.getValue();
-            trainDataset = DataPrePreprocessorController.getInstance().addRULCol(modelController.createInstancesFromAssets(assetDAO.getAssetsFromAssetTypeID(Integer.parseInt(assetType.getId())).subList(0, (int) trainSlider.getValue() - 1)));
-            testDataset = DataPrePreprocessorController.getInstance().addRULCol(modelController.createInstancesFromAssets(assetDAO.getAssetsFromAssetTypeID(Integer.parseInt(assetType.getId())).subList(from, to - 1)));
-        } catch (Exception exception) {
-            exception.printStackTrace();
+        if (trainSlider.getValue() == 0 || testSlider.getValue() == 0) {
+            //TODO error message
+            System.out.print("The number of train and test assets as to be higher than 0");
+        } else {
+            try {
+                int from = trainSize + 1;
+                int to = trainSize + 1 + testSize;
+                trainDataset = DataPrePreprocessorController.getInstance().addRULCol(modelController.createInstancesFromAssets(assetDAO.getAssetsFromAssetTypeID(Integer.parseInt(assetType.getId())).subList(0, trainSize - 1)));
+                testDataset = DataPrePreprocessorController.getInstance().addRULCol(modelController.createInstancesFromAssets(assetDAO.getAssetsFromAssetTypeID(Integer.parseInt(assetType.getId())).subList(from, to - 1)));
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
         }
     }
 
@@ -345,6 +356,7 @@ public class AssetTypeInfoController implements Initializable {
                         calculateRMSEEvaluation(multilayerPerceptronClf, trainDataset, testDataset, 8);
 
                     default:
+                        break;
                 }
             }
         } catch (Exception e) {
@@ -533,43 +545,72 @@ public class AssetTypeInfoController implements Initializable {
         ObservableList<Pane> boxes = FXCollections.observableArrayList();
 
         for (Model model : modelObservableList) {
-
-            // Creating a Thumbnail
+            // Creating a Thumbnail element
             Pane pane = new Pane();
             pane.getStyleClass().add("modelPane");
-            pane.setOnMouseClicked(mouseEvent -> selectedModel = model);
+            pane.setOnMouseClicked(mouseEvent -> handleModelSelection(model, pane));
 
             // Generating items to display for the Thumbnail
-            Text modelNameText = new Text(model.getModelName());
+            Text modelNameLabel = new Text(model.getModelName());
             Text modelDescriptionText = new Text(model.getDescription());
-            Text RMSEText = new Text(RMSE + ": ");
+            Text RMSELabel = new Text(RMSE + ": ");
+            Text RMSEValue = new Text();
+            SimpleStringProperty observableRMSEValue = new SimpleStringProperty(modelDAO.getGetModelEvaluation(model.getModelID(), assetType.getId()));
+            RMSEValue.textProperty().bind(observableRMSEValue);
 
             Button evaluateModelBtn = new Button();
             evaluateModelBtn.setText("Evaluate");
-            evaluateModelBtn.setOnMouseClicked(mouseEvent -> evaluateSelectedModel(selectedModel));
+            evaluateModelBtn.setOnMouseClicked(mouseEvent -> evaluateSelectedModel(model));
 
-            modelNameText.setId("modelNameText");
+            //Setting IDs for the elements
+            modelNameLabel.setId("modelNameLabel");
             modelDescriptionText.setId("modelDescriptionText");
-            RMSEText.setId("RMSEText");
+            RMSELabel.setId("RMSELabel");
+            RMSEValue.setId("RMSEValue");
             evaluateModelBtn.setId("SelectBtn");
 
-            modelNameText.setLayoutX(14.0);
-            modelNameText.setLayoutY(28.0);
+            //Setting the Layout of the elements
+            modelNameLabel.setLayoutX(14.0);
+            modelNameLabel.setLayoutY(28.0);
             modelDescriptionText.setLayoutX(14.0);
             modelDescriptionText.setLayoutY(60.0);
-            RMSEText.setLayoutX(14.0);
-            RMSEText.setLayoutY(100.0);
-            evaluateModelBtn.setLayoutX(28.0);
-            evaluateModelBtn.setLayoutY(100.0);
+            RMSELabel.setLayoutX(14.0);
+            RMSELabel.setLayoutY(100.0);
+            RMSEValue.setLayoutX(50.0);
+            RMSEValue.setLayoutY(100.0);
+            evaluateModelBtn.setLayoutX(150.0);
+            evaluateModelBtn.setLayoutY(75.0);
 
-            pane.getChildren().add(modelNameText);
+            pane.getChildren().add(modelNameLabel);
             pane.getChildren().add(modelDescriptionText);
-            pane.getChildren().add(RMSEText);
+            pane.getChildren().add(RMSELabel);
+            pane.getChildren().add(RMSEValue);
             pane.getChildren().add(evaluateModelBtn);
 
             boxes.add(pane);
         }
+        setModelThumbnailsPane(boxes);
+    }
+
+    private void setModelThumbnailsPane(ObservableList<Pane> boxes) {
+        modelsThumbPane.setPrefWidth((300.0 + modelsThumbPane.getHgap()) * (boxes.size()) + (2 * modelsThumbPane.getHgap()));
         modelsThumbPane.getChildren().addAll(boxes);
+        modelsThumbPane.setOnMouseClicked(mouseEvent -> handleModelSelectionChange(boxes));
+    }
+
+    private void handleModelSelectionChange(ObservableList<Pane> boxes) {
+        for (int i = 0; i < boxes.size(); i++) {
+            if ((i + 1) != selectedModelIndex) {
+                boxes.get(i).setStyle("-fx-border-color: transparent");
+            }
+        }
+    }
+
+    private void handleModelSelection(Model model, Pane pane) {
+        pane.setStyle("-fx-border-color: red");
+        selectedModel = model;
+        selectedModelIndex = Integer.parseInt(model.getModelID());
+        modelSaveBtn.setDisable(false);
     }
 
     /**

@@ -216,13 +216,13 @@
                                             <Insets bottom="10.0" left="30.0" right="30.0" top="10.0"/>
                                         </padding>
                                     </Button>
-                                    <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" layoutX="5.0"
+                                    <ScrollPane fitToHeight="true" fitToWidth="false" hbarPolicy="NEVER" layoutX="5.0"
                                                 layoutY="205.0" prefHeight="236.0" prefWidth="937.0" vbarPolicy="NEVER"
                                                 AnchorPane.bottomAnchor="197.0" AnchorPane.leftAnchor="4.0"
                                                 AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="204.0">
                                         <content>
-                                            <FlowPane fx:id="modelsThumbPane" hgap="10.0" prefHeight="199.0"
-                                                      prefWidth="935.0" style="-fx-padding: 10;" vgap="10.0"/>
+                                                <FlowPane fx:id="modelsThumbPane" hgap="10.0" prefHeight="236.0"
+                                                          prefWidth="937.0" style="-fx-padding: 10;" vgap="10.0"/>
                                         </content>
                                     </ScrollPane>
                                     <Slider fx:id="trainSlider" layoutX="90.0" layoutY="90.0" prefHeight="16.0"
