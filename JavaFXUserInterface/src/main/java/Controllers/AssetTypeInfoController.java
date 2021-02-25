@@ -321,32 +321,32 @@ public class AssetTypeInfoController implements Initializable {
                         LinearRegressionModelImpl linearRegressionModelImpl = new LinearRegressionModelImpl();
                         Classifier linearClf = linearRegressionModelImpl.trainModel(trainDataset);
                         calculateRMSEEvaluation(linearClf, trainDataset, testDataset, 1);
-
+                        break;
                     case "LSTM":
                         ModelStrategy lstmModel = new LSTMModelImpl();
                         Classifier lstmClf = lstmModel.trainModel(trainDataset);
                         calculateRMSEEvaluation(lstmClf, trainDataset, testDataset, 2);
-
+                        break;
                     case "RandomForest":
                         RandomForestModelImpl randomForestModel = new RandomForestModelImpl();
                         Classifier randomForestClf = randomForestModel.trainModel(trainDataset);
                         calculateRMSEEvaluation(randomForestClf, trainDataset, testDataset, 3);
-
+                        break;
                     case "RandomCommittee":
                         RandomCommitteeModelImpl randomCommitteeModel = new RandomCommitteeModelImpl();
                         Classifier randomCommitteeClf = randomCommitteeModel.trainModel(trainDataset);
                         calculateRMSEEvaluation(randomCommitteeClf, trainDataset, testDataset, 4);
-
+                        break;
                     case "RandomSubSpace":
                         RandomSubSpaceModelImpl randomSubSpaceModel = new RandomSubSpaceModelImpl();
                         Classifier randomSubSpaceClf = randomSubSpaceModel.trainModel(trainDataset);
                         calculateRMSEEvaluation(randomSubSpaceClf, trainDataset, testDataset, 5);
-
+                        break;
                     case "AdditiveRegression":
                         AdditiveRegressionModelImpl additiveRegressionModel = new AdditiveRegressionModelImpl();
                         Classifier additiveRegressionClf = additiveRegressionModel.trainModel(trainDataset);
                         calculateRMSEEvaluation(additiveRegressionClf, trainDataset, testDataset, 6);
-
+                        break;
                     case "SMOReg":
                         SMORegModelImpl smoRegModel = new SMORegModelImpl();
                         Classifier Clf = smoRegModel.trainModel(trainDataset);
@@ -356,7 +356,7 @@ public class AssetTypeInfoController implements Initializable {
                         MultilayerPerceptronModelImpl multilayerPerceptronModel = new MultilayerPerceptronModelImpl();
                         Classifier multilayerPerceptronClf = multilayerPerceptronModel.trainModel(trainDataset);
                         calculateRMSEEvaluation(multilayerPerceptronClf, trainDataset, testDataset, 8);
-
+                        break;
                     default:
                         break;
                 }
