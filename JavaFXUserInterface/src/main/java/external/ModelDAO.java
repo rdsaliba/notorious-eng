@@ -15,6 +15,8 @@ public interface ModelDAO {
 
     String getModelNameFromAssetTypeID(String assetTypeId);
 
+    int getModelIDFromAssetTypeID(String assetTypeID);
+
     void updateRMSE(Double rmse, int modelId, int assetTypeId);
 
     List<Model> getAllModels();

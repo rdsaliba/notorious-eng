@@ -615,22 +615,62 @@ public class AssetTypeInfoController implements Initializable {
             modelPanes.add(modelPane);
         }
         setModelThumbnailsContainerPane(modelPanes);
+        highlightAssociatedModel(modelPanes);
     }
 
+    /**
+     * This function highlights the pane of the currently associated model for the asset type.
+     *
+     * @param modelPanes is the observable list of panes that contain model information
+     * @author Jeremie
+     */
+    private void highlightAssociatedModel(ObservableList<Pane> modelPanes) {
+        int associatedModelID = modelDAO.getModelIDFromAssetTypeID(assetType.getId());
+        for (int i = 0; i < modelPanes.size(); i++) {
+            if ((i + 1) == associatedModelID) {
+                modelPanes.get(i).setStyle("-fx-border-color: red");
+            }
+            else if((i + 1) != associatedModelID) {
+                modelPanes.get(i).setStyle("-fx-background-color: #e0e0eb");
+            }
+        }
+    }
+
+    /**
+     * This function properly sets up the flow pane to scroll horizontally only and other
+     * settings
+     *
+     * @param modelPanes is the observable list of panes that contain model information
+     * @author Jeremie
+     */
     private void setModelThumbnailsContainerPane(ObservableList<Pane> modelPanes) {
         modelsThumbPane.setPrefWidth((300.0 + modelsThumbPane.getHgap()) * (modelPanes.size()) + (2 * modelsThumbPane.getHgap()));
         modelsThumbPane.getChildren().addAll(modelPanes);
         modelsThumbPane.setOnMouseClicked(mouseEvent -> handleModelSelectionChange(modelPanes));
     }
 
+    /**
+     * This function handles the UI display of changing the user selection from one model
+     * pane to another.
+     *
+     * @param modelPanes is the observable list of panes that contain model information
+     * @author Jeremie
+     */
     private void handleModelSelectionChange(ObservableList<Pane> modelPanes) {
         for (int i = 0; i < modelPanes.size(); i++) {
             if ((i + 1) != selectedModelIndex) {
-                modelPanes.get(i).setStyle("-fx-border-color: transparent");
+                modelPanes.get(i).setStyle("-fx-border-color: transparent; -fx-background-color: #e0e0eb");
             }
         }
     }
 
+    /**
+     * This function handles the selection of a model.
+     *
+     * @param model is the selected model
+     * @param pane is the pane containing the selected model
+     * @author Jeremie
+     */
     private void handleModelSelection(Model model, Pane pane) {
         pane.setStyle("-fx-border-color: red");
         selectedModel = model;

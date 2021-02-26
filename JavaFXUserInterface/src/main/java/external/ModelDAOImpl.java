@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ModelDAOImpl extends DAO implements ModelDAO {
-    private static final String GET_MODEL_NAME_FROM_ID = "SELECT name from trained_model, model WHERE trained_model.model_id = model.model_id AND trained_model.asset_type_id = ?";
+    private static final String GET_MODEL_FROM_ASSET_TYPE_ID = "SELECT * from trained_model, model WHERE trained_model.model_id = model.model_id AND trained_model.asset_type_id = ?";
     private static final String GET_ALL_MODELS = "SELECT * from model";
     private static final String GET_MODEL_EVALUATION = "SELECT rmse FROM model_evaluation WHERE model_id = ? AND asset_type_id = ?";
     private static final String INSERT_RMSE = "REPLACE INTO model_evaluation SET rmse = ?,model_id = ?, asset_type_id = ? ";
@@ -34,7 +34,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     @Override
     public String getModelNameFromAssetTypeID(String assetTypeID) {
         String name = null;
-        try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_NAME_FROM_ID)) {
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_FROM_ASSET_TYPE_ID)) {
             ps.setString(1, assetTypeID);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next())
@@ -44,6 +44,28 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
             e.printStackTrace();
         }
         return name;
+    }
+
+    /**
+     * Given a asset type id, this function will return the int corresponding
+     * to the ID of the model in the database associated with the asset type
+     *
+     * @param assetTypeID represents a asset type id
+     * @author Jeremie
+     */
+    @Override
+    public int getModelIDFromAssetTypeID(String assetTypeID) {
+        int ID = 0;
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_FROM_ASSET_TYPE_ID)) {
+            ps.setString(1, assetTypeID);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next())
+                    ID = rs.getInt("model_id");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return ID;
     }
 
     /**
