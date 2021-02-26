@@ -9,12 +9,7 @@
 package external;
 
 import app.item.Model;
-import app.item.TrainedModel;
-import weka.classifiers.Classifier;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -22,13 +17,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ModelDAOImpl extends DAO implements ModelDAO {
-    private static final String GET_MODEL_NAME_FROM_ID = "SELECT name from trained_model, model where trained_model.model_id = model.model_id and asset_type_id = ?";
-    private static final String GET_MODEL_ASSOCIATED_WITH_ASSET_TYPE = "SELECT * FROM trained_model WHERE asset_type_id = ?";
+    private static final String GET_MODEL_NAME_FROM_ID = "SELECT name from trained_model, model WHERE trained_model.model_id = model.model_id AND trained_model.asset_type_id = ?";
     private static final String GET_ALL_MODELS = "SELECT * from model";
-    private static final String UPDATE_MODEL_FOR_ASSET_TYPE = "UPDATE trained_model set model_id = ? where asset_type_id = ?";
-    private static final String UPDATE_RETRAIN = "UPDATE trained_model SET retrain = true WHERE asset_type_id = ?";
     private static final String INSERT_To_EVALUATE = "REPLACE INTO model_to_evlaute SET model_name = ?,asset_type_id = ?, train_value = ?, test_value = ?";
     private static final String GET_LATEST_RMSE = "select rmse from model_evaluation where model_id=? and asset_type_id=?";
+    private static final String GET_MODEL_EVALUATION = "SELECT rmse FROM model_evaluation WHERE model_id = ? AND asset_type_id = ?";
+    private static final String INSERT_RMSE = "REPLACE INTO model_evaluation SET rmse = ?,model_id = ?, asset_type_id = ? ";
+    private static final String UPDATE_MODEL_FOR_ASSET_TYPE = "UPDATE trained_model set model_id = ? where asset_type_id = ?";
+    private static final String UPDATE_RETRAIN = "UPDATE trained_model SET retrain = true WHERE asset_type_id = ?";
 
     /**
      * Given a asset type id, this function will return the string corresponding
@@ -182,9 +178,29 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
                 if (rs.next())
                     estimate = rs.getDouble("rmse");
             }
+        }
+    }
+    /**
+     * This function sets the model associated with the specified asset type to be retrained. It changes
+     * the retrain attribute to true.
+     *
+     * @param assetTypeID is the asset type ID of the specified asset type
+     * @return The value of the RMSE under a String format
+     * @author Jeremie
+     */
+    @Override
+    public String getGetModelEvaluation(String modelID, String assetTypeID) {
+        String rmseValue = null;
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_EVALUATION)) {
+            ps.setString(1, modelID);
+            ps.setString(2, assetTypeID);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next())
+                    rmseValue = rs.getString("rmse");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return estimate;
+        return rmseValue;
     }
-    }
+}

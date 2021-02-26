@@ -8,15 +8,10 @@
 package external;
 
 import app.item.Model;
-import app.item.TrainedModel;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 public interface ModelDAO {
-
-    TrainedModel getModelsByAssetTypeID(String assetTypeID);
 
     String getModelNameFromAssetTypeID(String assetTypeId);
 
@@ -27,4 +22,6 @@ public interface ModelDAO {
     void updateModelAssociatedWithAssetType(String modelID, String assetTypeID);
 
     void setModelToTrain(String assetTypeID);
+
+    String getGetModelEvaluation(String modelID, String assetTypeID);
 }

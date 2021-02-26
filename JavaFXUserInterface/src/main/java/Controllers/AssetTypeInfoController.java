@@ -94,11 +94,16 @@ public class AssetTypeInfoController implements Initializable {
     @FXML
     private Label testValue;
     @FXML
-    private Button generateAllModelsBtn;
+    private Button evaluateAllModelsBtn;
     @FXML
     private Button modelSaveBtn;
+    @FXML
+    private ArrayList<Button> evaluateButtons;
+    @FXML
+    private Label associatedModelLabel;
     private ObservableList<Model> modelObservableList;
     private Model selectedModel;
+    private int selectedModelIndex;
     private UIUtilities uiUtilities;
     private AssetTypeList assetType;
     private AssetTypeList originalAssetType;
@@ -142,6 +147,7 @@ public class AssetTypeInfoController implements Initializable {
         this.originalAssetType = new AssetTypeList(assetType);
         assetTypeName.setText(assetType.getAssetType().getName());
         assetTypeDesc.setText(assetType.getAssetType().getDescription());
+        associatedModelLabel.setText(modelDAO.getModelNameFromAssetTypeID(assetType.getId()));
         try {
             thresholdOK.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueOk())));
             thresholdAdvisory.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueAdvisory())));
@@ -172,7 +178,6 @@ public class AssetTypeInfoController implements Initializable {
         exitMenuBtn.setOnMouseClicked(mouseEvent -> Platform.exit());
 
         modelTab.setOnSelectionChanged(event -> attachEventsModelTab());
-        modelSaveBtn.setOnMouseClicked(mouseEvent -> saveSelectedModelAssociation());
 
         // Change scenes to Assets.fxml
         assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE));
@@ -230,7 +235,11 @@ public class AssetTypeInfoController implements Initializable {
     }
 
     private void attachEventsModelTab() {
-
+        modelSaveBtn.setDisable(true);
+        modelSaveBtn.setOnMouseClicked(mouseEvent -> saveSelectedModelAssociation());
+        evaluateAllModelsBtn.setDisable(true);
+        evaluateButtons = new ArrayList<>();
+        evaluateButtons.add(evaluateAllModelsBtn);
         if (modelTab.getId().equals("modelTab")) {
             int nbOfAssets = assetDAO.getAssetsFromAssetTypeID(Integer.parseInt(assetType.getId())).size();
             trainSlider.setMax(nbOfAssets);
@@ -275,6 +284,57 @@ public class AssetTypeInfoController implements Initializable {
 
         modelsThumbPane.getChildren().clear();
         generateThumbnails();
+        trainSlider.setOnMouseClicked(mouseEvent -> enableEvaluation(evaluateButtons));
+        testSlider.setOnMouseClicked(mouseEvent -> enableEvaluation(evaluateButtons));
+    }
+
+    /**
+     * Enables or disables evaluate model buttons depending on the train slider and test slider
+     * values. It enables the buttons when both slider values are higher than 0.
+     *
+     * @param enableBtnList The list of model evaluation buttons, including the evaluation for all models
+     *                      and the individual evaluation model buttons.
+     * @author Jeremie
+     */
+    private void enableEvaluation(ArrayList<Button> enableBtnList) {
+        for (Button enableButton : enableBtnList) {
+            if (trainSize > 0 && testSize > 0) {
+                enableButton.setDisable(false);
+            } else if (trainSize == 0 || testSize == 0) {
+                enableButton.setDisable(true);
+            }
+        }
+    }
+
+    /**
+     * This function evaluates all models for the current asset type
+     *
+     * @author Talal, Jeremie
+     */
+    private void evaluateAllModels() {
+        setTrainAndTestInstances();
+        try {
+            evaluateModelClassifiers(modelObservableList);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    /**
+     * This function evaluates a selected model for the current asset type
+     *
+     * @author Talal, Jeremie
+     */
+    private void evaluateSelectedModel(Model selectedModel) {
+        setTrainAndTestInstances();
+        ObservableList<Model> selectedModelToEvaluateList = FXCollections.observableArrayList();
+        selectedModelToEvaluateList.add(selectedModel);
+        try {
+            evaluateModelClassifiers(selectedModelToEvaluateList);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        selectedModelToEvaluateList.clear();
     }
 
     /**
@@ -439,49 +499,84 @@ public class AssetTypeInfoController implements Initializable {
      *
      * @author Jeremie
      */
-    public void generateThumbnails() {
-        ObservableList<Pane> boxes = FXCollections.observableArrayList();
+    private void generateThumbnails() {
+        ObservableList<Pane> modelPanes = FXCollections.observableArrayList();
 
         for (Model model : modelObservableList) {
+            // Creating a Thumbnail element
+            Pane modelPane = new Pane();
+            modelPane.getStyleClass().add("modelPane");
+            modelPane.setOnMouseClicked(mouseEvent -> handleModelSelection(model, modelPane));
 
-            Pane pane = new Pane();
-
-            pane.getStyleClass().add("modelPane");
-            Text modelNameText = new Text(model.getModelName());
+            // Generating items to display for the Thumbnail
+            Text modelNameLabel = new Text(model.getModelName());
             Text modelDescriptionText = new Text(model.getDescription());
-            Text RMSEText = new Text(RMSE + ": ");
+            Text RMSELabel = new Text(RMSE + ": ");
+            Text RMSEValue = new Text();
 
-            pane.setOnMouseClicked(mouseEvent -> selectedModel = model);
             Button evaluateModelBtn = new Button();
             evaluateModelBtn.setText("Evaluate");
-//            TODO: Generate an evaluation for a single model
-//            evaluateModelBtn.setOnMouseClicked(mouseEvent -> modelDAO.updateModelForAssetType(model.getModelID(), assetType.getId()));
+            evaluateModelBtn.setDisable(true);
+            evaluateButtons.add(evaluateModelBtn);
+            evaluateModelBtn.setOnMouseClicked(mouseEvent -> evaluateSelectedModel(model));
 
-            modelNameText.setId("modelNameText");
+            //Setting IDs for the elements
+            modelNameLabel.setId("modelNameLabel");
             modelDescriptionText.setId("modelDescriptionText");
-            RMSEText.setId("RMSEText");
+            RMSELabel.setId("RMSELabel");
+            RMSEValue.setId("RMSEValue");
+            RMSELabel.setId("RMSEText");
             SimpleStringProperty s = model.getRMSE();
-            RMSEText.textProperty().bind(s);
-
+            RMSELabel.textProperty().bind(s);
             evaluateModelBtn.setId("SelectBtn");
 
-            modelNameText.setLayoutX(14.0);
-            modelNameText.setLayoutY(28.0);
+            //Setting the Layout of the elements
+            modelNameLabel.setLayoutX(14.0);
+            modelNameLabel.setLayoutY(28.0);
             modelDescriptionText.setLayoutX(14.0);
             modelDescriptionText.setLayoutY(60.0);
-            RMSEText.setLayoutX(14.0);
-            RMSEText.setLayoutY(100.0);
-            evaluateModelBtn.setLayoutX(28.0);
-            evaluateModelBtn.setLayoutY(100.0);
+            RMSELabel.setLayoutX(14.0);
+            RMSELabel.setLayoutY(100.0);
+            RMSEValue.setLayoutX(50.0);
+            RMSEValue.setLayoutY(100.0);
+            evaluateModelBtn.setLayoutX(150.0);
+            evaluateModelBtn.setLayoutY(75.0);
 
-            pane.getChildren().add(modelNameText);
-            pane.getChildren().add(modelDescriptionText);
-            pane.getChildren().add(RMSEText);
-            pane.getChildren().add(evaluateModelBtn);
+            modelPane.getChildren().add(modelNameLabel);
+            modelPane.getChildren().add(modelDescriptionText);
+            modelPane.getChildren().add(RMSELabel);
+            modelPane.getChildren().add(RMSEValue);
+            modelPane.getChildren().add(evaluateModelBtn);
 
-            boxes.add(pane);
+            modelPanes.add(modelPane);
         }
-        modelsThumbPane.getChildren().addAll(boxes);
+        setModelThumbnailsContainerPane(modelPanes);
+    }
+
+    private void setModelThumbnailsContainerPane(ObservableList<Pane> modelPanes) {
+        modelsThumbPane.setPrefWidth((300.0 + modelsThumbPane.getHgap()) * (modelPanes.size()) + (2 * modelsThumbPane.getHgap()));
+        modelsThumbPane.getChildren().addAll(modelPanes);
+        modelsThumbPane.setOnMouseClicked(mouseEvent -> handleModelSelectionChange(modelPanes));
+    }
+
+    private void handleModelSelectionChange(ObservableList<Pane> modelPanes) {
+        for (int i = 0; i < modelPanes.size(); i++) {
+            if ((i + 1) != selectedModelIndex) {
+                modelPanes.get(i).setStyle("-fx-border-color: transparent");
+            }
+        }
+    }
+
+    private void handleModelSelection(Model model, Pane pane) {
+        pane.setStyle("-fx-border-color: red");
+        selectedModel = model;
+        selectedModelIndex = Integer.parseInt(model.getModelID());
+        modelSaveBtn.setDisable(false);
+    }
+
+    private void updateThumbnails() {
+        modelsThumbPane.getChildren().removeAll();
+        generateThumbnails();
     }
 
     /**
@@ -491,7 +586,7 @@ public class AssetTypeInfoController implements Initializable {
      *
      * @author Jeremie
      */
-    public void saveSelectedModelAssociation() {
+    private void saveSelectedModelAssociation() {
         modelDAO.updateModelAssociatedWithAssetType(selectedModel.getModelID(), assetType.getId());
         modelDAO.setModelToTrain(assetType.getId());
         updateAssetsForSelectedModelAssociation(assetType.getId());
@@ -504,7 +599,7 @@ public class AssetTypeInfoController implements Initializable {
      * @param AssetTypeID Is the Asset type ID of the current AssetType
      * @author Jeremie
      */
-    public void updateAssetsForSelectedModelAssociation(String AssetTypeID) {
+    private void updateAssetsForSelectedModelAssociation(String AssetTypeID) {
         assetsList = assetDAO.getLiveAssetsFromAssetTypeID(AssetTypeID);
         for (Asset asset : assetsList) {
             assetDAO.setAssetToBeUpdated(asset.getId());
