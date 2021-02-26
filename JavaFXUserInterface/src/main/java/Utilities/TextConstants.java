@@ -34,6 +34,7 @@ public class TextConstants {
     public static final String ASSET_TYPE_LIST_SCENE = "/AssetTypeList";
     public static final String ALERT_TITLE_DIALOG = "Confirmation Dialog";
     public static final DecimalFormat RULValueFormat = new DecimalFormat("#.##");
+    public static final DecimalFormat RMSEValueFormat = new DecimalFormat("#.##");
     public static final DecimalFormat ThresholdValueFormat = new DecimalFormat("#.00");
 
     //Input Validation Constants

@@ -28,7 +28,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     private static final String UPDATE_MODEL_FOR_ASSET_TYPE = "UPDATE trained_model set model_id = ? where asset_type_id = ?";
     private static final String UPDATE_RETRAIN = "UPDATE trained_model SET retrain = true WHERE asset_type_id = ?";
     private static final String INSERT_To_EVALUATE = "REPLACE INTO model_to_evlaute SET model_name = ?,asset_type_id = ?, train_value = ?, test_value = ?";
-
+    private static final String GET_LATEST_RMSE = "select rmse from model_evaluation where model_id=? and asset_type_id=?";
 
     /**
      * Given a asset type id, this function will return the string corresponding
@@ -172,4 +172,19 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
             e.printStackTrace();
         }
     }
-}
+
+    public double getLatestRMSE(int modelID,int assetTypeID){
+        double estimate = -100000;
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_LATEST_RMSE)) {
+            ps.setInt(1, modelID);
+            ps.setInt(2, assetTypeID);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next())
+                    estimate = rs.getDouble("rmse");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return estimate;
+    }
+    }

@@ -1,11 +1,19 @@
 package app.item;
 
+import javafx.beans.property.SimpleStringProperty;
 import weka.classifiers.Classifier;
 
 public class Model {
     private String modelName;
     private String modelID;
     private String description;
+    private SimpleStringProperty rmse;
+
+    public Model() { rmse = new SimpleStringProperty();}
+
+    public SimpleStringProperty getRMSE(){ return rmse;}
+
+    public void setRMSE(String rmse){ this.rmse.setValue(rmse);}
 
     public String getModelName() {
         return modelName;

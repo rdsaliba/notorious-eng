@@ -20,7 +20,11 @@ import app.item.Model;
 import external.AssetDAOImpl;
 import external.AssetTypeDAOImpl;
 import external.ModelDAOImpl;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -32,7 +36,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 import preprocessing.DataPrePreprocessorController;
+import rul.assessment.AssessmentController;
 import rul.models.*;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
@@ -102,6 +108,7 @@ public class AssetTypeInfoController implements Initializable {
     private AssetDAOImpl assetDAO;
     public static ArrayList<EvaluateModel> evaluateModels;
     private ModelController modelController;
+    private Timeline rmseTimeline;
     private Instances trainDataset;
     private Instances testDataset;
     private int trainSize = 0;
@@ -144,6 +151,7 @@ public class AssetTypeInfoController implements Initializable {
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
+        updateRMSE();
     }
 
     /**
@@ -153,6 +161,11 @@ public class AssetTypeInfoController implements Initializable {
      * Edit: added all the text proprety listeners and text formaters for all the fields
      */
     public void attachEvents() {
+        try {
+            modelObservableList = FXCollections.observableArrayList(modelDAO.getAllModels());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         // Change scenes to Assets.fxml
         backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
         //Attach ability to close program
@@ -235,11 +248,7 @@ public class AssetTypeInfoController implements Initializable {
                 trainSlider.setMax(nbOfAssets - (int) testSlider.getValue());
                 testSize = (int) testSlider.getValue();
             });
-            try {
-                modelObservableList = FXCollections.observableArrayList(modelDAO.getAllModels());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+
 
             try {
                 generateAllModelsBtn.setOnMouseClicked(mouseEvent -> {
@@ -451,6 +460,9 @@ public class AssetTypeInfoController implements Initializable {
             modelNameText.setId("modelNameText");
             modelDescriptionText.setId("modelDescriptionText");
             RMSEText.setId("RMSEText");
+            SimpleStringProperty s = model.getRMSE();
+            RMSEText.textProperty().bind(s);
+
             evaluateModelBtn.setId("SelectBtn");
 
             modelNameText.setLayoutX(14.0);
@@ -497,5 +509,20 @@ public class AssetTypeInfoController implements Initializable {
         for (Asset asset : assetsList) {
             assetDAO.setAssetToBeUpdated(asset.getId());
         }
+    }
+    public void updateRMSE(){
+        for (Model model : modelObservableList) {
+            model.setRMSE(String.valueOf(TextConstants.RMSEValueFormat.format(modelDAO.getLatestRMSE(Integer.valueOf(model.getModelID()),Integer.valueOf(assetType.getId())))));
+        }
+        rmseTimeline =
+                new Timeline(new KeyFrame(Duration.millis(3000), e ->
+                {
+                    for (Model model : modelObservableList) {
+                        model.setRMSE(String.valueOf(TextConstants.RMSEValueFormat.format(modelDAO.getLatestRMSE(Integer.valueOf(model.getModelID()),Integer.valueOf(assetType.getId())))));
+                    }
+                }));
+
+        rmseTimeline.setCycleCount(Animation.INDEFINITE); // loop forever
+        rmseTimeline.play();
     }
 }
