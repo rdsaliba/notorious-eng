@@ -9,7 +9,12 @@
 package external;
 
 import app.item.Model;
+import app.item.TrainedModel;
+import weka.classifiers.Classifier;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -48,29 +53,29 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
         return name;
     }
 
-    /**
-     * Given the id of an asset type, this function will return the trained model
-     * corresponding the that asset type. Since only one model can be associated to
-     * an asset type at a time only one TrainedModel object is returned
-     *
-     * @param assetTypeID represents a the id of an asset type
-     * @author Paul
-     */
-    @Override
-    public TrainedModel getModelsByAssetTypeID(String assetTypeID) {
-        TrainedModel tm = null;
-        try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_ASSOCIATED_WITH_ASSET_TYPE)) {
-            ps.setString(1, assetTypeID);
-            try (ResultSet queryResult = ps.executeQuery()) {
-                while (queryResult.next()) {
-                    tm = createTrainedModelFromResultSet(queryResult, false);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return tm;
-    }
+//    /**
+//     * Given the id of an asset type, this function will return the trained model
+//     * corresponding the that asset type. Since only one model can be associated to
+//     * an asset type at a time only one TrainedModel object is returned
+//     *
+//     * @param assetTypeID represents a the id of an asset type
+//     * @author Paul
+//     */
+//    @Override
+//    public TrainedModel getModelsByAssetTypeID(String assetTypeID) {
+//        TrainedModel tm = null;
+//        try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_ASSOCIATED_WITH_ASSET_TYPE)) {
+//            ps.setString(1, assetTypeID);
+//            try (ResultSet queryResult = ps.executeQuery()) {
+//                while (queryResult.next()) {
+//                    tm = createTrainedModelFromResultSet(queryResult, false);
+//                }
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return tm;
+//    }
 
     /**
      * Given a result set object, this function will create the corresponding trained model object
@@ -178,7 +183,10 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
                 if (rs.next())
                     estimate = rs.getDouble("rmse");
             }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
+        return estimate;
     }
     /**
      * This function sets the model associated with the specified asset type to be retrained. It changes

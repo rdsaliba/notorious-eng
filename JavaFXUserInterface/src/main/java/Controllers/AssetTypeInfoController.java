@@ -260,7 +260,7 @@ public class AssetTypeInfoController implements Initializable {
 
 
             try {
-                generateAllModelsBtn.setOnMouseClicked(mouseEvent -> {
+                evaluateAllModelsBtn.setOnMouseClicked(mouseEvent -> {
                     ArrayList<EvaluateModel> modelList = new ArrayList<EvaluateModel>();
                     for (Model model : modelObservableList){
                         String modelName = model.getModelName();
@@ -311,31 +311,31 @@ public class AssetTypeInfoController implements Initializable {
      *
      * @author Talal, Jeremie
      */
-    private void evaluateAllModels() {
-        setTrainAndTestInstances();
-        try {
-            evaluateModelClassifiers(modelObservableList);
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-    }
+//    private void evaluateAllModels() {
+//        setTrainAndTestInstances();
+//        try {
+//            evaluateModelClassifiers(modelObservableList);
+//        } catch (Exception exception) {
+//            exception.printStackTrace();
+//        }
+//    }
 
-    /**
-     * This function evaluates a selected model for the current asset type
-     *
-     * @author Talal, Jeremie
-     */
-    private void evaluateSelectedModel(Model selectedModel) {
-        setTrainAndTestInstances();
-        ObservableList<Model> selectedModelToEvaluateList = FXCollections.observableArrayList();
-        selectedModelToEvaluateList.add(selectedModel);
-        try {
-            evaluateModelClassifiers(selectedModelToEvaluateList);
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
-        selectedModelToEvaluateList.clear();
-    }
+//    /**
+//     * This function evaluates a selected model for the current asset type
+//     *
+//     * @author Talal, Jeremie
+//     */
+//    private void evaluateSelectedModel(Model selectedModel) {
+//        setTrainAndTestInstances();
+//        ObservableList<Model> selectedModelToEvaluateList = FXCollections.observableArrayList();
+//        selectedModelToEvaluateList.add(selectedModel);
+//        try {
+//            evaluateModelClassifiers(selectedModelToEvaluateList);
+//        } catch (Exception exception) {
+//            exception.printStackTrace();
+//        }
+//        selectedModelToEvaluateList.clear();
+//    }
 
     /**
      * Handle the text change of the user fields to turn on or off the save functionality
@@ -518,7 +518,21 @@ public class AssetTypeInfoController implements Initializable {
             evaluateModelBtn.setText("Evaluate");
             evaluateModelBtn.setDisable(true);
             evaluateButtons.add(evaluateModelBtn);
-            evaluateModelBtn.setOnMouseClicked(mouseEvent -> evaluateSelectedModel(model));
+            evaluateModelBtn.setOnMouseClicked(mouseEvent -> {
+                ArrayList<EvaluateModel> modelList = new ArrayList<EvaluateModel>();
+                    String modelName = model.getModelName();
+                    int assetTypeID = Integer.parseInt(assetType.getId());
+                    int from = (int) trainSlider.getValue() + 1;
+                    int to = (int) trainSlider.getValue() + 1 + (int) testSlider.getValue();
+                    EvaluateModel evaluateModel = new EvaluateModel();
+                    evaluateModel.setAssetTypeID(assetTypeID);
+                    evaluateModel.setModelName(modelName);
+                    evaluateModel.setFrom(from);
+                    evaluateModel.setTo(to);
+                    modelList.add(evaluateModel);
+                    modelDAO.insertToEvaluate(modelName, assetTypeID, (int) trainSlider.getValue(), (int) testSlider.getValue());
+
+            });
 
             //Setting IDs for the elements
             modelNameLabel.setId("modelNameLabel");
