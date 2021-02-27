@@ -95,6 +95,7 @@ public class AssetTypeInfoController implements Initializable {
     @FXML
     private Label associatedModelLabel;
     private ObservableList<Model> modelObservableList;
+    private int associatedModelID;
     private Model selectedModel;
     private int selectedModelIndex;
     private UIUtilities uiUtilities;
@@ -137,6 +138,7 @@ public class AssetTypeInfoController implements Initializable {
         this.originalAssetType = new AssetTypeList(assetType);
         assetTypeName.setText(assetType.getAssetType().getName());
         assetTypeDesc.setText(assetType.getAssetType().getDescription());
+        associatedModelID = modelDAO.getModelIDFromAssetTypeID(assetType.getId());
         associatedModelLabel.setText(modelDAO.getModelNameFromAssetTypeID(assetType.getId()));
         try {
             thresholdOK.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueOk())));
@@ -220,7 +222,10 @@ public class AssetTypeInfoController implements Initializable {
 
     private void attachEventsModelTab() {
         modelSaveBtn.setDisable(true);
-        modelSaveBtn.setOnMouseClicked(mouseEvent -> saveSelectedModelAssociation());
+        modelSaveBtn.setOnMouseClicked(mouseEvent -> {
+            saveSelectedModelAssociation();
+            uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE);
+        });
         evaluateAllModelsBtn.setDisable(true);
         evaluateButtons = new ArrayList<>();
         evaluateButtons.add(evaluateAllModelsBtn);
@@ -615,22 +620,21 @@ public class AssetTypeInfoController implements Initializable {
             modelPanes.add(modelPane);
         }
         setModelThumbnailsContainerPane(modelPanes);
-        highlightAssociatedModel(modelPanes);
+        highlightAssociatedModel(modelPanes, associatedModelID);
     }
 
     /**
      * This function highlights the pane of the currently associated model for the asset type.
      *
      * @param modelPanes is the observable list of panes that contain model information
+     * @param modelID    is the ID of the model
      * @author Jeremie
      */
-    private void highlightAssociatedModel(ObservableList<Pane> modelPanes) {
-        int associatedModelID = modelDAO.getModelIDFromAssetTypeID(assetType.getId());
+    public void highlightAssociatedModel(ObservableList<Pane> modelPanes, int modelID) {
         for (int i = 0; i < modelPanes.size(); i++) {
-            if ((i + 1) == associatedModelID) {
+            if ((i + 1) == modelID) {
                 modelPanes.get(i).setStyle("-fx-border-color: red");
-            }
-            else if((i + 1) != associatedModelID) {
+            } else if ((i + 1) != modelID) {
                 modelPanes.get(i).setStyle("-fx-background-color: #e0e0eb");
             }
         }
@@ -668,7 +672,7 @@ public class AssetTypeInfoController implements Initializable {
      * This function handles the selection of a model.
      *
      * @param model is the selected model
-     * @param pane is the pane containing the selected model
+     * @param pane  is the pane containing the selected model
      * @author Jeremie
      */
     private void handleModelSelection(Model model, Pane pane) {
