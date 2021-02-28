@@ -179,6 +179,9 @@ public class AssetsController implements Initializable {
             pane.setOnMouseClicked(event -> uiUtilities.changeScene(event, "/AssetInfo", asset));
             pane.getStyleClass().add("assetPane");
 
+            Pane imagePlaceholder = new Pane();
+            imagePlaceholder.getStyleClass().add("imagePlaceholder");
+
             Pane rulPane = new Pane();
             rulPane.getStyleClass().add("rulPane");
 
@@ -203,6 +206,19 @@ public class AssetsController implements Initializable {
             recommendationLabel.getStyleClass().add("statusLabel");
             recommendation.getStyleClass().add("statusValue");
             statusPane.getStyleClass().add("statusPane");
+            if(asset.getRecommendation().equals("Ok"))
+                statusPane.getStyleClass().add("ok");
+            else if(asset.getRecommendation().equals("Advisory"))
+                statusPane.getStyleClass().add("advisory");
+            else if(asset.getRecommendation().equals("Caution"))
+                statusPane.getStyleClass().add("caution");
+            else if(asset.getRecommendation().equals("Warning"))
+                statusPane.getStyleClass().add("warning");
+            else if(asset.getRecommendation().equals("Failed"))
+                statusPane.getStyleClass().add("failed");
+            else
+                statusPane.getStyleClass().add("none");
+
             rulPane.getStyleClass().add("rulPane");
 
             //recommendation.layoutXProperty().bind(statusPane.widthProperty().subtract(recommendation.wrappingWidthProperty()).divide(2));
@@ -216,6 +232,8 @@ public class AssetsController implements Initializable {
             assetName.setLayoutY(35.0);
             assetType.setLayoutX(15.0);
             assetType.setLayoutY(63.0);
+            imagePlaceholder.setLayoutX(15.0);
+            imagePlaceholder.setLayoutY(80.0);
             rulLabel.setLayoutX(52.0);
             rulLabel.setLayoutY(239.0);
             rulPane.setLayoutX(15.0);
@@ -235,6 +253,7 @@ public class AssetsController implements Initializable {
             pane.getChildren().add(recommendationLabel);
             statusPane.getChildren().add(recommendation);
             pane.getChildren().add(statusPane);
+            pane.getChildren().add(imagePlaceholder);
 
             boxes.add(pane);
         }

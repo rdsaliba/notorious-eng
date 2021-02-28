@@ -120,9 +120,7 @@
 .statusPane {
     -fx-background-radius: 2px;
     -fx-border-radius: 2px;
-    -fx-border-color: #B1FFC6;
     -fx-border-width: 1px;
-    -fx-background-color: #B1FFC6;
     -fx-pref-width: 99px;
     -fx-pref-height: 33px;
     -fx-alignment: center;
@@ -209,4 +207,34 @@
     -fx-font-family: "Segoe UI";
     -fx-font-size: 18px;
     -fx-font-weight: bold;
+}
+
+.ok {
+    -fx-background-color: #B1FFC6;
+    -fx-border-color:: #B1FFC6;
+}
+
+.caution {
+    -fx-background-color: #F5FFB1;
+    -fx-border-color: #F5FFB1;
+}
+
+.advisory {
+    -fx-background-color: #F5FFB1;
+    -fx-border-color: #F5FFB1;
+}
+
+.warning {
+    -fx-background-color: #FFE0B1;
+    -fx-border-color: #FFE0B1;
+}
+
+.failed {
+    -fx-background-color: #FFB1B1;
+    -fx-border-color: #FFB1B1;
+}
+
+.none {
+    -fx-background-color: transparent;
+    -fx-border-color: #D3D3D3;
 }
