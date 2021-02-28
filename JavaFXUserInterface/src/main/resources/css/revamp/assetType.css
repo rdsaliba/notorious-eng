@@ -1,0 +1,43 @@
+#addAssetTypeBtn {
+    -fx-background-color: #EE6352;
+    -fx-text-fill: #FFFFFF;
+}
+
+.table-view {
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header-background .filler {
+    -fx-background-color: transparent;
+}
+
+.table-view .corner {
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header {
+    -fx-background-color: #FBFBFC;
+    -fx-size: 40;
+}
+
+.table-view .column-header .label {
+    -fx-alignment: CENTER-LEFT;
+}
+
+.table-view .column-header .filter {
+    -fx-background-color: #FBFBFC;
+}
+
+.table-row-cell {
+    -fx-cell-size: 35px;
+}
+
+.table-row-cell:filled:hover {
+    -fx-background-color: #E4E6E8;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #FBFBFC;
+    -fx-border-width: 1px;
+    -fx-border-color: #E8E9EA transparent #E8E9EA transparent;
+}

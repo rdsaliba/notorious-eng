@@ -125,12 +125,6 @@ public class AssetTypeController implements Initializable {
         //set up the columns in the table
         attachColumnEvents();
 
-        //Attach link to assetMenuButton to go to Assets.fxml
-        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE));
-
-        //Attach link to assetTypeMenuBtn to go to Utilities.AssetTypeList.fxml
-        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
-
         //Attach link to addTypeBtn to go to AddAssetType.fxml
         addTypeBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/AddAssetType"));
     }
