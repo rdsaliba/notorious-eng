@@ -102,8 +102,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()){
                     name = rs.getString("name");
-                    models.add(name);
-                    models.size();}
+                    models.add(name);}
             }
         } catch (SQLException e) {
             e.printStackTrace();

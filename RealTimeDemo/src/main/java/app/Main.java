@@ -10,9 +10,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class Main {
+    private static final int LIMIT = 10;
+    private static int counter;
     static Logger logger = LoggerFactory.getLogger(Main.class);
-    public final static int LIMIT = 10;
-    public static int counter = 0;
 
     public static void main(String[] args) {
         MeasurementDAO measurementDAO = new MeasurementDAO();

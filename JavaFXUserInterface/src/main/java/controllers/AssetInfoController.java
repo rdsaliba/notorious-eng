@@ -10,7 +10,6 @@ package controllers;
 import utilities.CustomDialog;
 import utilities.TextConstants;
 import utilities.UIUtilities;
-import app.Main;
 import app.item.Asset;
 import app.item.AssetAttribute;
 import app.item.Measurement;
@@ -53,7 +52,7 @@ import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class AssetInfoController implements Initializable {
-    static Logger logger = LoggerFactory.getLogger(Main.class);
+    static Logger logger = LoggerFactory.getLogger(AssetInfoController.class);
 
     private static final String CYCLE = "Cycle";
     private static final String ATTRIBUTE_VALUES = "Attribute Values";

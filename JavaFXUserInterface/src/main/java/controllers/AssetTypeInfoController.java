@@ -89,15 +89,15 @@ public class AssetTypeInfoController implements Initializable {
     private ModelController modelController;
     private Instances trainDataset;
     private Instances testDataset;
-    private DataPrePreprocessorController prePreprocessorController;
 
     private final Text[] errorMessages = new Text[7];
     private final boolean[] validInput = new boolean[7];
 
     public int trainSize = 0;
     public int testSize = 0;
+    protected DataPrePreprocessorController prePreprocessorController;
 
-    static Logger logger = LoggerFactory.getLogger(AssetInfoController.class);
+    static Logger logger = LoggerFactory.getLogger(AssetTypeInfoController.class);
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {

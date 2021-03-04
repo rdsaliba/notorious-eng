@@ -89,7 +89,7 @@ public class ModelEvaluation {
      * @author Khaled
      */
     public double evaluateTrainSplitByPercent() throws Exception {
-        int trainSize = (int) Math.round(this.trainData.numInstances() * ((double) this.percent) / 100);
+        int trainSize = (int) Math.round(this.trainData.numInstances() * this.percent / 100);
         int testSize = this.trainData.numInstances() - trainSize;
         Instances train = new Instances(this.trainData, 0, trainSize);
         Instances test = new Instances(this.trainData, trainSize, testSize);

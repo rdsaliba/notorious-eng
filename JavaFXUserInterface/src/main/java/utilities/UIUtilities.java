@@ -23,7 +23,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.ParsePosition;
-import java.util.ArrayList;
+import java.util.List;
 
 public class UIUtilities {
 
@@ -167,7 +167,7 @@ public class UIUtilities {
         }
     }
 
-    public void changeScene(ArrayList<Timeline> timelines, MouseEvent mouseEvent, String s) {
+    public void changeScene(List<Timeline> timelines, MouseEvent mouseEvent, String s) {
         timelines.forEach(Timeline::stop);
         changeScene(mouseEvent, s);
     }

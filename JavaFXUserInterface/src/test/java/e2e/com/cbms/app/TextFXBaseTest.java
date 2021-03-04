@@ -17,7 +17,7 @@ import org.testfx.framework.junit.ApplicationTest;
  *
  * @author Jérémie Chouteau
  * */
-public class TextFXBase extends ApplicationTest {
+public class TextFXBaseTest extends ApplicationTest {
     /** All test cases have some common elements to them
      * '@Before' represents the set-up of the application with the correct initial conditions and is run before each
      * test case
