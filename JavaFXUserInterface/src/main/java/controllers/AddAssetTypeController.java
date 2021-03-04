@@ -3,10 +3,10 @@
   @author Jeff, Paul, Najim
   @last_edit 02/7/2020
  */
-package Controllers;
+package controllers;
 
-import Utilities.TextConstants;
-import Utilities.UIUtilities;
+import utilities.TextConstants;
+import utilities.UIUtilities;
 import app.item.AssetType;
 import app.item.AssetTypeParameter;
 import external.AssetTypeDAOImpl;
@@ -94,8 +94,7 @@ public class AddAssetTypeController implements Initializable {
         // Change scenes to Assets.fxml
         cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
         saveBtn.setOnMouseClicked(mouseEvent -> {
-            if (formInputValidation()) {
-                if (saveAssetType(assembleAssetType()))
+            if (formInputValidation() && saveAssetType(assembleAssetType())) {
                     uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE);
             }
         });

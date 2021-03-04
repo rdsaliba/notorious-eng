@@ -1,11 +1,16 @@
+package app;
+
 import app.item.Asset;
 import local.AssetDAOImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class Main {
+    static Logger logger = LoggerFactory.getLogger(Main.class);
     public final static int LIMIT = 10;
     public static int counter = 0;
 
@@ -16,7 +21,7 @@ public class Main {
         for (Asset a : assets) {
             a.setAssetInfo(measurementDAO.getMeasurementsFromID(a.getId(), LIMIT));
             measurementDAO.deleteMeasurementsFromID(a.getId(), LIMIT);
-            System.out.println("Measurements delete for asset : " + a.getId());
+            logger.info("Measurements delete for asset : {}", a.getId());
         }
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
@@ -24,12 +29,12 @@ public class Main {
             public void run() {
                 if (counter >= LIMIT)
                     timer.cancel();
-                System.out.println("New Measurements for time max - " + (counter + 1) + " - Start");
+                logger.info("New Measurements for time max - {} - Start", (counter + 1));
                 for (Asset a : assets) {
                     measurementDAO.insertMeasurement(a, counter);
                     assetDAOs.setAssetUpdate(a.getId());
                 }
-                System.out.println("New Measurements for time max - " + (counter + 1) + " - end");
+                logger.info("New Measurements for time max - {} - end", (counter + 1) );
                 counter++;
             }
         }, 0, 1000);

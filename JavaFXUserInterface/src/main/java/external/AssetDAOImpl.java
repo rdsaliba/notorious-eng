@@ -24,7 +24,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
     private static final String GET_ALL_LIVE_ASSETS = "SELECT * FROM asset, asset_type WHERE asset.asset_type_id=asset_type.asset_type_id AND archived = false";
     private static final String INSERT_ASSET = "INSERT INTO asset (name, asset_type_id, description, sn, manufacturer, category, site, location) values(?,?,?,?,?,?,?,?)";
     private static final String GET_ATTRIBUTE_DETAILS_FROM_ASSET_ID = "SELECT att.* FROM attribute_measurements am, attribute att WHERE att.attribute_id=am.attribute_id AND am.asset_id = ? GROUP by attribute_id";
-
+    public static final String ATTRIBUTE_NAME = "attribute_name";
 
     /**
      * When given an asset ID this will delete the the asset from the database as well as the corresponding
@@ -126,7 +126,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
             ps.setInt(1, assetID);
             try (ResultSet attributesQuery = ps.executeQuery()) {
                 while (attributesQuery.next()) {
-                    AssetAttribute newAtt = new AssetAttribute(attributesQuery.getInt("attribute_id"), attributesQuery.getString("attribute_name"));
+                    AssetAttribute newAtt = new AssetAttribute(attributesQuery.getInt("attribute_id"), attributesQuery.getString(ATTRIBUTE_NAME));
                     preparedStatementPart1.append(", Coalesce(Sum(`").append(newAtt.getName()).append("`), 0) AS '").append(newAtt.getName()).append("'");
                     preparedStatementPart2.append(", CASE WHEN tab.attribute_id = ").append(newAtt.getId()).append(" THEN tab.value end AS `").append(newAtt.getName()).append("`");
                     newAssetInfo.addAttribute(newAtt);
@@ -168,15 +168,15 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
 
             while (rs.next()) {
                 preparedStatementPart1.append(", Coalesce(Sum(`");
-                preparedStatementPart1.append(rs.getString("attribute_name"));
+                preparedStatementPart1.append(rs.getString(ATTRIBUTE_NAME));
                 preparedStatementPart1.append("`), 0) AS '");
-                preparedStatementPart1.append(rs.getString("attribute_name"));
+                preparedStatementPart1.append(rs.getString(ATTRIBUTE_NAME));
                 preparedStatementPart1.append("'");
 
                 preparedStatementPart2.append(", CASE WHEN tab.attribute_id = ");
                 preparedStatementPart2.append(rs.getString("attribute_id"));
                 preparedStatementPart2.append(" THEN tab.value end AS `");
-                preparedStatementPart2.append(rs.getString("attribute_name"));
+                preparedStatementPart2.append(rs.getString(ATTRIBUTE_NAME));
                 preparedStatementPart2.append("`");
             }
 

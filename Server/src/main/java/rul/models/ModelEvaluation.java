@@ -4,7 +4,7 @@
    2) Only training instances, split by percentage (constructor 2), method evaluateTrainSplitByPercent
    3) Cross validation (folding) with training instances (constructor 3), method evaluateTrainCrossValidation
 
-   Methods can be called to get RMSE using any of the 3 above approaches or to get toString of
+   Methods can be called to get rmse using any of the 3 above approaches or to get toString of
    a more detailed Evaluation Summary.
    The instances passed need to have the RUL values (addRULCol from preprocessor for training).
 
@@ -30,7 +30,7 @@ public class ModelEvaluation {
     private double percent;
     private int fold;
     private Evaluation eval;
-    private double RMSE;
+    private double rmse;
 
     //Constructor #1: for evaluating a model with separate training and testing data.
     public ModelEvaluation(Classifier newModel, Instances newTrainData, Instances newTestData) {
@@ -59,32 +59,31 @@ public class ModelEvaluation {
     }
 
     /** This method can be used by creating an object using the first constructor. Needs classifier,
-     * training instances and testing instances, returns the double RMSE after evaluating the model
+     * training instances and testing instances, returns the double rmse after evaluating the model
      * trained using trained instances against the test instances.
      *
      @author Khaled
      **/
     public double evaluateTrainWithTest() throws Exception {
-        //this.trainData.setClassIndex(this.trainData.numAttributes() - 1);
         this.testData.setClassIndex(this.testData.numAttributes() - 1);
-        model.buildClassifier(this.trainData);       //TODO: delete this line if model is already trained.
+        model.buildClassifier(this.trainData);       //delete this line if model is already trained.
         //"No input instance format defined" error if model passed via constructor is not trained
 
-        Evaluation eval = new Evaluation(this.trainData);
+        Evaluation evaluateTrain = new Evaluation(this.trainData);
 
-        eval.evaluateModel(this.model, this.testData);    //assumes model has already been trained
-        this.RMSE = eval.rootMeanSquaredError();
-        this.eval = eval;
+        evaluateTrain.evaluateModel(this.model, this.testData);    //assumes model has already been trained
+        this.rmse = evaluateTrain.rootMeanSquaredError();
+        this.eval = evaluateTrain;
 
-        //Trim RMSE double to 2 decimal places
+        //Trim rmse double to 2 decimal places
         DecimalFormat df = new DecimalFormat("#.##");
-        return Double.parseDouble(df.format(eval.rootMeanSquaredError()));
+        return Double.parseDouble(df.format(evaluateTrain.rootMeanSquaredError()));
     }
 
     /**
      * This method can be used by creating an object using the second constructor. Needs classifier,
      * training instances and a double percent value (decimal form) to split up the training instances.
-     * Returns the double RMSE after evaluating the model using percent value as training data
+     * Returns the double rmse after evaluating the model using percent value as training data
      * and the rest as testing.
      *
      * @author Khaled
@@ -99,13 +98,13 @@ public class ModelEvaluation {
         Classifier classifier = this.model;
         classifier.buildClassifier(train);                //Needs to be retrained with split data
 
-        Evaluation eval = new Evaluation(train);
-        eval.evaluateModel(classifier, test);
-        this.RMSE = eval.rootMeanSquaredError();
-        this.eval = eval;
+        Evaluation evalSplit = new Evaluation(train);
+        evalSplit.evaluateModel(classifier, test);
+        this.rmse = evalSplit.rootMeanSquaredError();
+        this.eval = evalSplit;
 
         DecimalFormat df = new DecimalFormat("#.##");
-        return Double.parseDouble(df.format(eval.rootMeanSquaredError()));
+        return Double.parseDouble(df.format(evalSplit.rootMeanSquaredError()));
     }
 
     /**
@@ -116,17 +115,17 @@ public class ModelEvaluation {
      * @author Khaled
      */
     public double evaluateTrainCrossValidation() throws Exception {
-        Evaluation eval = new Evaluation(this.trainData);
-        eval.crossValidateModel(this.model, this.trainData, this.fold, new Random(1));
-        this.RMSE = eval.rootMeanSquaredError();
-        this.eval = eval;
+        Evaluation evalCross = new Evaluation(this.trainData);
+        evalCross.crossValidateModel(this.model, this.trainData, this.fold, new Random(1));
+        this.rmse = evalCross.rootMeanSquaredError();
+        this.eval = evalCross;
 
         DecimalFormat df = new DecimalFormat("#.##");
-        return Double.parseDouble(df.format(eval.rootMeanSquaredError()));
+        return Double.parseDouble(df.format(evalCross.rootMeanSquaredError()));
     }
 
     /**
-     * Whereas the previous methods return only the double RMSE value, this toString will
+     * Whereas the previous methods return only the double rmse value, this toString will
      * return a more detailed analysis of the evaluation. Including: Model name, Correlation
      * Coefficient, Total Number of Instances, etc.
      *
@@ -182,8 +181,8 @@ public class ModelEvaluation {
         this.fold = fold;
     }
 
-    public double getRMSE() {
-        return RMSE;
+    public double getRmse() {
+        return rmse;
     }
 
 }

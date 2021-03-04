@@ -43,10 +43,9 @@ public class LSTMModelImpl implements ModelStrategy
         {
             //Setting Parameters for the model
             ((Dl4jMlpClassifier) network).setNumEpochs(1);                //Bigger the better but also takes more time
-            //network.setEarlyStopping(new EarlyStopping()); //TODO: set a stopping to make it stop if no progress
+            //network.setEarlyStopping(new EarlyStopping()); //Set a stopping to make it stop if no progress
             ((Dl4jMlpClassifier) network).setBatchSize("100");
             //network.setSeed(124564);                            //to ensure randomness
-            //network.setNumDecimalPlaces(2);
 
 
             //Network configurations

@@ -3,11 +3,11 @@
   @author
   @last_edit 02/7/2020
  */
-package Controllers;
+package controllers;
 
-import Utilities.CustomDialog;
-import Utilities.TextConstants;
-import Utilities.UIUtilities;
+import utilities.CustomDialog;
+import utilities.TextConstants;
+import utilities.UIUtilities;
 import app.item.Asset;
 import app.item.AssetType;
 import external.AssetDAOImpl;
@@ -17,20 +17,18 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.util.StringConverter;
 
 import java.net.URL;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class AddAssetController implements Initializable {
-
-    private static final String SAVE_DIALOG = "Save Dialog";
-    private static final String SAVE_HEADER = "Asset has been saved to the database.";
 
     @FXML
     public Button assetMenuBtn;
@@ -101,11 +99,9 @@ public class AddAssetController implements Initializable {
 
         saveBtn.setOnMouseClicked(mouseEvent -> {
             Asset newAsset = assembleAsset();
-            if (formInputValidation()){
-                if (!isAssetEmpty(newAsset)) {
+            if (formInputValidation() && !isAssetEmpty(newAsset)){
                     saveAsset(newAsset);
                     CustomDialog.addSystemControllerSaveDialog(mouseEvent);
-                }
             }
         });
         // Change scenes to Assets.fxml

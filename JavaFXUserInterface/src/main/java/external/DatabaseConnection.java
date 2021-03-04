@@ -14,15 +14,15 @@ public class DatabaseConnection {
     private static DatabaseConnection openConnection;
     private static Connection conn;
 
-    private static String URL = null;
-    private static String USER = null;
-    private static String PASSWORD = null;
+    private static String url = null;
+    private static String user = null;
+    private static String password = null;
 
     static {
         try {
-            URL = properties.getConfigValues("database_url");
-            USER = properties.getConfigValues("database_user");
-            PASSWORD = properties.getConfigValues("database_password");
+            url = properties.getConfigValues("database_url");
+            user = properties.getConfigValues("database_user");
+            password = properties.getConfigValues("database_password");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -40,7 +40,7 @@ public class DatabaseConnection {
     public static Connection getConnection() {
         if (conn == null) {
             try {
-                conn = DriverManager.getConnection(URL, USER, PASSWORD);
+                conn = DriverManager.getConnection(url, user, password);
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }

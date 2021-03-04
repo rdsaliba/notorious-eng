@@ -9,7 +9,7 @@
 <?import java.net.URL?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
             prefHeight="712.0" prefWidth="1026.0" xmlns="http://javafx.com/javafx/15.0.1"
-            fx:controller="Controllers.AssetTypeInfoController">
+            fx:controller="controllers.AssetTypeInfoController">
     <VBox layoutY="169.0" prefHeight="543.0" prefWidth="74.0" style="-fx-background-color: #0C072E;"
           AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="169.0">
         <children>

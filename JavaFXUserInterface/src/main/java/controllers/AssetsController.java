@@ -6,10 +6,10 @@
   @author Jeff, Paul, Najim
   @last_edit 02/7/2020
  */
-package Controllers;
+package controllers;
 
-import Utilities.TextConstants;
-import Utilities.UIUtilities;
+import utilities.TextConstants;
+import utilities.UIUtilities;
 import app.ModelController;
 import app.item.Asset;
 import external.AssetTypeDAOImpl;
@@ -252,7 +252,6 @@ public class AssetsController implements Initializable {
             return row;
         });
 
-        String TYPE_COL = "Type";
         TableColumn<Asset, String> assetTypeCol = new TableColumn<>(TYPE_COL);
         assetTypeCol.setCellValueFactory(cellData -> new SimpleStringProperty(
                 cellData.getValue().getAssetTypeName()));

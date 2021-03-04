@@ -1,8 +1,7 @@
-package Utilities;
+package utilities;
 
 
 import external.AssetDAOImpl;
-import external.AssetTypeDAO;
 import external.AssetTypeDAOImpl;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -22,13 +21,12 @@ public class CustomDialog extends Stage {
 
 
     private static UIUtilities uiUtilities = new UIUtilities();
-    private static TextConstants textConstants;
     private Button btn;
     private Pane root;
     private Rectangle bg;
     private Button cancelBtn;
 
-    public CustomDialog(String header, String content, MouseEvent mouseEvent) {
+    public CustomDialog(String header, String content) {
         root = new Pane();
 
         initStyle(StageStyle.TRANSPARENT);
@@ -82,7 +80,7 @@ public class CustomDialog extends Stage {
 
     public static void systemTypeInfoControllerDialog(MouseEvent mouseEvent, String systemID) {
         AssetTypeDAOImpl assetTypeDAO = new AssetTypeDAOImpl();
-        CustomDialog dialog = new CustomDialog(textConstants.ALERT_HEADER, textConstants.ALERT_CONTENT, mouseEvent);
+        CustomDialog dialog = new CustomDialog(TextConstants.ALERT_HEADER, TextConstants.ALERT_CONTENT);
         dialog.getOkButton().setOnAction(e -> {
             assetTypeDAO.deleteAssetTypeByID(systemID);
             uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE);
@@ -93,7 +91,7 @@ public class CustomDialog extends Stage {
 
     public static void systemInfoController(MouseEvent mouseEvent, int systemID) {
         AssetDAOImpl assetDAOImpl = new AssetDAOImpl();
-        CustomDialog dialog = new CustomDialog(textConstants.ALERT_HEADER, textConstants.ALERT_CONTENT, mouseEvent);
+        CustomDialog dialog = new CustomDialog(TextConstants.ALERT_HEADER, TextConstants.ALERT_CONTENT);
         //Set the functionality of the btn
         dialog.getOkButton().setOnAction(e -> {
             assetDAOImpl.deleteAssetByID(systemID);
@@ -104,7 +102,7 @@ public class CustomDialog extends Stage {
     }
 
     public static void addSystemControllerSaveDialog(MouseEvent mouseEvent) {
-        CustomDialog dialog = new CustomDialog(textConstants.SAVE_DIALOG, textConstants.SAVE_HEADER, mouseEvent);
+        CustomDialog dialog = new CustomDialog(TextConstants.SAVE_DIALOG, TextConstants.SAVE_HEADER);
         dialog.getRoot().getChildren().remove(dialog.getCancelBtn());
         dialog.getOkButton().setOnAction(e -> {
             uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE);
@@ -114,8 +112,8 @@ public class CustomDialog extends Stage {
 
     }
 
-    public static void addSystemControllerErrorDialog(MouseEvent mouseEvent) {
-        CustomDialog dialog = new CustomDialog(textConstants.ERROR_DIALOG, textConstants.ERROR_HEADER, mouseEvent);
+    public static void addSystemControllerErrorDialog() {
+        CustomDialog dialog = new CustomDialog(TextConstants.ERROR_DIALOG, TextConstants.ERROR_HEADER);
         dialog.getRoot().getChildren().remove(dialog.getCancelBtn());
         dialog.getOkButton().setOnAction(e -> dialog.closeDialog());
         dialog.openDialog();

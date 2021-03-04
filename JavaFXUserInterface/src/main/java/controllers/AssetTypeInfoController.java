@@ -6,12 +6,12 @@
   @author Jeff, Paul, Roy, Najim
   @last_edit 02/7/2020
  */
-package Controllers;
+package controllers;
 
-import Utilities.AssetTypeList;
-import Utilities.CustomDialog;
-import Utilities.TextConstants;
-import Utilities.UIUtilities;
+import utilities.AssetTypeList;
+import utilities.CustomDialog;
+import utilities.TextConstants;
+import utilities.UIUtilities;
 import app.ModelController;
 import external.AssetTypeDAOImpl;
 import external.ModelDAOImpl;
@@ -23,10 +23,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import local.AssetDAOImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import preprocessing.DataPrePreprocessorController;
 import rul.models.*;
 import weka.classifiers.Classifier;
@@ -37,9 +38,6 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class AssetTypeInfoController implements Initializable {
-    private static final String ALERT_HEADER = "Confirmation of asset type deletion";
-    private static final String ALERT_CONTENT = "Are you sure you want to delete this asset type? \n " +
-            "this will delete all the assets of this type";
     @FXML
     Tab modelTab;
     @FXML
@@ -92,10 +90,14 @@ public class AssetTypeInfoController implements Initializable {
     private Instances trainDataset;
     private Instances testDataset;
     private DataPrePreprocessorController prePreprocessorController;
-    private int trainSize = 0;
-    private int testSize = 0;
+
     private final Text[] errorMessages = new Text[7];
     private final boolean[] validInput = new boolean[7];
+
+    public int trainSize = 0;
+    public int testSize = 0;
+
+    static Logger logger = LoggerFactory.getLogger(AssetInfoController.class);
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -131,6 +133,7 @@ public class AssetTypeInfoController implements Initializable {
             thresholdWarning.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueWarning())));
             thresholdFailed.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueFailed())));
         } catch (NumberFormatException e) {
+            logger.error("NumberFormatException error inside initData");
             e.printStackTrace();
         }
     }
@@ -241,12 +244,13 @@ public class AssetTypeInfoController implements Initializable {
                         exception.printStackTrace();
                     }
                     try {
-                        evaluateModels(mouseEvent);
+                        evaluateModels();
                     } catch (Exception exception) {
                         exception.printStackTrace();
                     }
                 });
             } catch (Exception e) {
+                logger.error("There was an error pressing the button in modelsButtonPressed()");
             }
         }
     }
@@ -254,60 +258,67 @@ public class AssetTypeInfoController implements Initializable {
     /**
      * Evaluates all models of a specific Asset Type
      *
-     * @param mouseEvent is an event trigger to evlauate models
      * @author Talal
      */
-    private void evaluateModels(MouseEvent mouseEvent) {
+    private void evaluateModels() {
         try {
             ArrayList<String> models = modelDAO.getListOfModels();
             trainDataset.setClassIndex(trainDataset.numAttributes() - 1);
             testDataset.setClassIndex(testDataset.numAttributes() - 1);
 
 
-            for (int i = 0; i < models.size(); i++) {
-                switch (models.get(i)) {
+            for (String s : models) {
+                switch (s) {
                     case "Linear":
                         LinearRegressionModelImpl linearRegressionModelImpl = new LinearRegressionModelImpl();
                         Classifier model = linearRegressionModelImpl.trainModel(trainDataset);
                         calculateEvaluation(model, trainDataset, testDataset, 1);
+                        break;
 
                     case "LSTM":
                         ModelStrategy lstmm = new LSTMModelImpl();
                         Classifier lstm = lstmm.trainModel(trainDataset);
                         calculateEvaluation(lstm, trainDataset, testDataset, 2);
+                        break;
 
                     case "RandomForest":
                         RandomForestModelImpl randomForestModel = new RandomForestModelImpl();
                         Classifier forestModel = randomForestModel.trainModel(trainDataset);
                         calculateEvaluation(forestModel, trainDataset, testDataset, 3);
+                        break;
 
                     case "RandomCommittee":
                         RandomCommitteeModelImpl randomCommitteeModel = new RandomCommitteeModelImpl();
                         Classifier randomCommittee = randomCommitteeModel.trainModel(trainDataset);
                         calculateEvaluation(randomCommittee, trainDataset, testDataset, 4);
+                        break;
 
                     case "RandomSubSpace":
                         RandomSubSpaceModelImpl randomSubSpaceModel = new RandomSubSpaceModelImpl();
                         Classifier randomSubSpace = randomSubSpaceModel.trainModel(trainDataset);
                         calculateEvaluation(randomSubSpace, trainDataset, testDataset, 5);
+                        break;
 
                     case "AdditiveRegression":
                         AdditiveRegressionModelImpl additiveRegressionModel = new AdditiveRegressionModelImpl();
                         Classifier additiveRegression = additiveRegressionModel.trainModel(trainDataset);
                         calculateEvaluation(additiveRegression, trainDataset, testDataset, 6);
+                        break;
 
                     case "SMOReg":
                         SMORegModelImpl smoRegModel = new SMORegModelImpl();
                         Classifier smOreg = smoRegModel.trainModel(trainDataset);
                         calculateEvaluation(smOreg, trainDataset, testDataset, 7);
+                        break;
 
                     case "MultilayerPerceptron":
                         MultilayerPerceptronModelImpl multilayerPerceptronModel = new MultilayerPerceptronModelImpl();
                         Classifier multilayerPerceptron = multilayerPerceptronModel.trainModel(trainDataset);
                         calculateEvaluation(multilayerPerceptron, trainDataset, testDataset, 8);
+                        break;
 
                     default:
-                        model = null;
+                        break; // This behavior needs to be adjusted
                 }
             }
         } catch (Exception e) {

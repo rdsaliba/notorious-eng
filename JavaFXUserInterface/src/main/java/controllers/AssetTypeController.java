@@ -3,11 +3,11 @@
   @author Najim, Shirwa, Paul
   @last_edit 02/7/2020
  */
-package Controllers;
+package controllers;
 
-import Utilities.AssetTypeList;
-import Utilities.TextConstants;
-import Utilities.UIUtilities;
+import utilities.AssetTypeList;
+import utilities.TextConstants;
+import utilities.UIUtilities;
 import app.item.AssetType;
 import external.AssetTypeDAOImpl;
 import javafx.application.Platform;

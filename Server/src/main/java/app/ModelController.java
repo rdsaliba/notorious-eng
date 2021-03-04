@@ -11,6 +11,8 @@ import app.item.Asset;
 import app.item.TrainedModel;
 import local.AssetDAOImpl;
 import local.ModelDAOImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import preprocessing.DataPrePreprocessorController;
 import rul.assessment.AssessmentController;
 import rul.models.*;
@@ -25,6 +27,8 @@ public class ModelController {
     private static ModelController instance = null;
     private final AssetDAOImpl assetDaoImpl;
     private final ModelDAOImpl modelDAOImpl;
+
+    static Logger logger = LoggerFactory.getLogger(ModelController.class);
 
     public ModelController() {
         assetDaoImpl = new AssetDAOImpl();
@@ -52,12 +56,12 @@ public class ModelController {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                System.out.println("ModelController - initialize - checkAsset - start");
+                logger.info("Initialize - checkAsset - start");
                 checkAssets();
-                System.out.println("ModelController - initialize - checkAsset - end");
-                System.out.println("ModelController - initialize - checkModels - start");
+                logger.info("Initialize - checkAsset - end");
+                logger.info("Initialize - checkModels - start");
                 checkModels();
-                System.out.println("ModelController - initialize - checkModels - end");
+                logger.info("Initialize - checkModels - end");
             }
         }, 0, 5000);
     }

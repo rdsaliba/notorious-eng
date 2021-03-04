@@ -1,4 +1,4 @@
-/*
+package app;/*
   This class implements the start function which runs first when opening the application.
    It sets the scene / view to the main page.
   @author
@@ -10,8 +10,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CBMSApplication extends Application {
+
+    static Logger logger = LoggerFactory.getLogger(CBMSApplication.class);
 
     public static void main(String[] args) {
         launch(args);
@@ -45,7 +49,7 @@ public class CBMSApplication extends Application {
      * @author Najim
      */
     private void closeProgram() {
-        System.out.println("Program closing.");
+        logger.info("Program closing.");
         Platform.exit();
         System.exit(0);
     }

@@ -4,10 +4,10 @@
   @author
   @last_edit 02/7/2020
  */
-package Utilities;
+package utilities;
 
-import Controllers.AssetInfoController;
-import Controllers.AssetTypeInfoController;
+import controllers.AssetInfoController;
+import controllers.AssetTypeInfoController;
 import app.item.Asset;
 import javafx.animation.Timeline;
 import javafx.fxml.FXMLLoader;
@@ -26,6 +26,10 @@ import java.text.ParsePosition;
 import java.util.ArrayList;
 
 public class UIUtilities {
+
+    private static final String FXML = ".fxml";
+    private static final String ERROR_MESSAGE = "error-message";
+    private static final String INPUT_ERROR = "input-error";
 
     /**
      * Given a tableView this function will set the width to fit the largest content
@@ -75,7 +79,7 @@ public class UIUtilities {
     public void changeScene(MouseEvent mouseEvent, String fxmlFileName) {
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource(fxmlFileName + ".fxml"));
+            loader.setLocation(getClass().getResource(fxmlFileName + FXML));
             Parent assetsParent = loader.load();
             Scene assetInfo = new Scene(assetsParent);
 
@@ -119,7 +123,7 @@ public class UIUtilities {
         try {
             if (!row.isEmpty()) {
                 FXMLLoader loader = new FXMLLoader();
-                loader.setLocation(getClass().getResource(fxmlFileName + ".fxml"));
+                loader.setLocation(getClass().getResource(fxmlFileName + FXML));
                 Parent assetTypeParent = loader.load();
                 Scene assetTypeInfo = new Scene(assetTypeParent);
 
@@ -148,7 +152,7 @@ public class UIUtilities {
 
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource(fxmlFileName + ".fxml"));
+            loader.setLocation(getClass().getResource(fxmlFileName + FXML));
             Parent assetTypeParent = loader.load();
             Scene assetTypeInfo = new Scene(assetTypeParent);
 
@@ -186,21 +190,21 @@ public class UIUtilities {
             errorMessages[i] = new Text(msg);
             errorMessages[i].setLayoutY(verticalPosition);
             errorMessages[i].setLayoutX(horizontalPosition);
-            errorMessages[i].getStyleClass().add("error-message");
+            errorMessages[i].getStyleClass().add(ERROR_MESSAGE);
 
             inputError.getChildren().add(errorMessages[i]);
-            field.getStyleClass().add("input-error");
+            field.getStyleClass().add(INPUT_ERROR);
         } else if (errorMessages[i].getText().equals("")) {
-            errorMessages[i].getStyleClass().remove("error-message");
-            field.getStyleClass().remove("input-error");
+            errorMessages[i].getStyleClass().remove(ERROR_MESSAGE);
+            field.getStyleClass().remove(INPUT_ERROR);
 
             errorMessages[i] = new Text(msg);
             errorMessages[i].setLayoutY(verticalPosition);
             errorMessages[i].setLayoutX(horizontalPosition);
-            errorMessages[i].getStyleClass().add("error-message");
+            errorMessages[i].getStyleClass().add(ERROR_MESSAGE);
 
             inputError.getChildren().add(errorMessages[i]);
-            field.getStyleClass().add("input-error");
+            field.getStyleClass().add(INPUT_ERROR);
         }
     }
 
@@ -216,7 +220,7 @@ public class UIUtilities {
      */
     public static void removeInputError(AnchorPane inputError, Text[] errorMessages, boolean[] validInput, TextInputControl field, int i) {
         if (errorMessages[i] != null && validInput[i]) {
-            field.getStyleClass().remove("input-error");
+            field.getStyleClass().remove(INPUT_ERROR);
             inputError.getChildren().remove(errorMessages[i]);
             errorMessages[i] = null;
         }

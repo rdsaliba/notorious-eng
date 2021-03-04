@@ -1,5 +1,8 @@
 package app;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,7 +10,9 @@ import java.util.Properties;
 
 public class ConfigProperties {
 
+    static Logger logger = LoggerFactory.getLogger(ConfigProperties.class);
     String result = "";
+
     InputStream inputStream;
 
     public String getConfigValues(String key) throws IOException {
@@ -27,7 +32,7 @@ public class ConfigProperties {
             result = config.getProperty(key);
 
         } catch (Exception e) {
-            System.out.println("Exception: " + e);
+            logger.error("Exception: { }", e);
         } finally {
             inputStream.close();
         }

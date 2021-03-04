@@ -96,7 +96,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
 
     @Override
     public ArrayList<String> getListOfModels(){
-        ArrayList<String> models=new ArrayList<String>();
+        ArrayList<String> models=new ArrayList<>();
         String name="";
         try (PreparedStatement ps = getConnection().prepareStatement(GET_MODELS_LIST)) {
             try (ResultSet rs = ps.executeQuery()) {

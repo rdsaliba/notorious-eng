@@ -5,11 +5,12 @@
   @author Jeff, Paul, Roy
   @last_edit 02/7/2020
  */
-package Controllers;
+package controllers;
 
-import Utilities.CustomDialog;
-import Utilities.TextConstants;
-import Utilities.UIUtilities;
+import utilities.CustomDialog;
+import utilities.TextConstants;
+import utilities.UIUtilities;
+import app.Main;
 import app.item.Asset;
 import app.item.AssetAttribute;
 import app.item.Measurement;
@@ -26,18 +27,21 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
-import javafx.scene.Scene;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import rul.assessment.AssessmentController;
 
 import java.net.URL;
@@ -45,13 +49,12 @@ import java.sql.ResultSet;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class AssetInfoController implements Initializable {
-    private static final String ALERT_HEADER = "Confirmation of asset deletion";
-    private static final String ALERT_CONTENT = "Are you sure you want to delete this asset?";
+    static Logger logger = LoggerFactory.getLogger(Main.class);
+
     private static final String CYCLE = "Cycle";
     private static final String ATTRIBUTE_VALUES = "Attribute Values";
 
@@ -283,7 +286,7 @@ public class AssetInfoController implements Initializable {
             tableview.setItems(data);
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Error on Building Data");
+            logger.error("Error on Building Data");
         }
 
 
@@ -317,7 +320,7 @@ public class AssetInfoController implements Initializable {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            System.out.println("Error on Building Data");
+            logger.error("Error on Building Data");
         }
         lastCycle.set(data.size());
     }

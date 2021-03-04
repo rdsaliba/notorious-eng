@@ -1,4 +1,4 @@
-/*
+package app;/*
   Implementation of the DAO design pattern.
   This class extends the general DAO object and calculates the RUL
   of assets in real time with new incoming measurements.

@@ -1,7 +1,7 @@
 package e2e.com.cbms.app;
 
 
-import Controllers.AddAssetController;
+import controllers.AddAssetController;
 import app.item.Asset;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
