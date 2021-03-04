@@ -21,9 +21,9 @@ public interface ModelDAO {
 
     List<Model> getAllModels();
 
-    void updateModelAssociatedWithAssetType(String modelID, String assetTypeID);
+    void updateModelAssociatedWithAssetType(int modelID, String assetTypeID);
 
     void setModelToTrain(String assetTypeID);
 
-    String getGetModelEvaluation(String modelID, String assetTypeID);
+    String getGetModelEvaluation(int modelID, String assetTypeID);
 }

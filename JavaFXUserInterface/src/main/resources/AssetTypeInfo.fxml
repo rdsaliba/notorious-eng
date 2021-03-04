@@ -192,6 +192,10 @@
                                     </Text>
                                     <Label fx:id="associatedModelLabel" layoutX="300.0" layoutY="183.0"
                                            prefHeight="18.0" prefWidth="143.0" text="Associated Model Name"/>
+                                    <AnchorPane fx:id="inputError" layoutX="654.0" layoutY="317.0" prefHeight="318.0"
+                                                prefWidth="295.0" stylesheets="@css/style.css"
+                                                AnchorPane.leftAnchor="654.0">
+                                    </AnchorPane>
                                 </AnchorPane>
                             </content>
                         </Tab>

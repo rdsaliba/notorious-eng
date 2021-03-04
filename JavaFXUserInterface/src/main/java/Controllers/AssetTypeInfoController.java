@@ -8,10 +8,7 @@
  */
 package Controllers;
 
-import Utilities.AssetTypeList;
-import Utilities.CustomDialog;
-import Utilities.TextConstants;
-import Utilities.UIUtilities;
+import Utilities.*;
 import app.ModelController;
 import app.item.Asset;
 import app.item.Model;
@@ -44,6 +41,7 @@ public class AssetTypeInfoController implements Initializable {
     private static final String RMSE = "RMSE";
     private final Text[] errorMessages = new Text[7];
     private final boolean[] validInput = new boolean[7];
+    private final ModelPanes modelPanes = new ModelPanes();
     @FXML
     Tab modelTab;
     @FXML
@@ -96,8 +94,6 @@ public class AssetTypeInfoController implements Initializable {
     private Label associatedModelLabel;
     private ObservableList<Model> modelObservableList;
     private int associatedModelID;
-    private Model selectedModel;
-    private int selectedModelIndex;
     private UIUtilities uiUtilities;
     private AssetTypeList assetType;
     private AssetTypeList originalAssetType;
@@ -229,6 +225,7 @@ public class AssetTypeInfoController implements Initializable {
         evaluateAllModelsBtn.setDisable(true);
         evaluateButtons = new ArrayList<>();
         evaluateButtons.add(evaluateAllModelsBtn);
+
         if (modelTab.getId().equals("modelTab")) {
             int nbOfAssets = assetDAO.getAssetsFromAssetTypeID(Integer.parseInt(assetType.getId())).size();
             trainSlider.setMax(nbOfAssets);
@@ -271,7 +268,7 @@ public class AssetTypeInfoController implements Initializable {
      *                      and the individual evaluation model buttons.
      * @author Jeremie
      */
-    private void enableEvaluation(ArrayList<Button> enableBtnList) {
+    public void enableEvaluation(ArrayList<Button> enableBtnList) {
         for (Button enableButton : enableBtnList) {
             if (trainSize > 0 && testSize > 0) {
                 enableButton.setDisable(false);
@@ -568,14 +565,17 @@ public class AssetTypeInfoController implements Initializable {
      *
      * @author Jeremie
      */
-    private void generateThumbnails() {
-        ObservableList<Pane> modelPanes = FXCollections.observableArrayList();
+    public void generateThumbnails() {
+        ObservableList<Pane> modelPaneObservableList = FXCollections.observableArrayList();
 
         for (Model model : modelObservableList) {
             // Creating a Thumbnail element
             Pane modelPane = new Pane();
             modelPane.getStyleClass().add("modelPane");
-            modelPane.setOnMouseClicked(mouseEvent -> handleModelSelection(model, modelPane));
+            modelPane.setOnMouseClicked(mouseEvent -> {
+                modelPanes.handleModelSelection(model, modelPane);
+                modelSaveBtn.setDisable(false);
+            });
 
             // Generating items to display for the Thumbnail
             Text modelNameLabel = new Text(model.getModelName());
@@ -617,69 +617,10 @@ public class AssetTypeInfoController implements Initializable {
             modelPane.getChildren().add(RMSEValue);
             modelPane.getChildren().add(evaluateModelBtn);
 
-            modelPanes.add(modelPane);
+            modelPaneObservableList.add(modelPane);
         }
-        setModelThumbnailsContainerPane(modelPanes);
-        highlightAssociatedModel(modelPanes, associatedModelID);
-    }
-
-    /**
-     * This function highlights the pane of the currently associated model for the asset type.
-     *
-     * @param modelPanes is the observable list of panes that contain model information
-     * @param modelID    is the ID of the model
-     * @author Jeremie
-     */
-    public void highlightAssociatedModel(ObservableList<Pane> modelPanes, int modelID) {
-        for (int i = 0; i < modelPanes.size(); i++) {
-            if ((i + 1) == modelID) {
-                modelPanes.get(i).setStyle("-fx-border-color: red");
-            } else if ((i + 1) != modelID) {
-                modelPanes.get(i).setStyle("-fx-background-color: #e0e0eb");
-            }
-        }
-    }
-
-    /**
-     * This function properly sets up the flow pane to scroll horizontally only and other
-     * settings
-     *
-     * @param modelPanes is the observable list of panes that contain model information
-     * @author Jeremie
-     */
-    private void setModelThumbnailsContainerPane(ObservableList<Pane> modelPanes) {
-        modelsThumbPane.setPrefWidth((300.0 + modelsThumbPane.getHgap()) * (modelPanes.size()) + (2 * modelsThumbPane.getHgap()));
-        modelsThumbPane.getChildren().addAll(modelPanes);
-        modelsThumbPane.setOnMouseClicked(mouseEvent -> handleModelSelectionChange(modelPanes));
-    }
-
-    /**
-     * This function handles the UI display of changing the user selection from one model
-     * pane to another.
-     *
-     * @param modelPanes is the observable list of panes that contain model information
-     * @author Jeremie
-     */
-    private void handleModelSelectionChange(ObservableList<Pane> modelPanes) {
-        for (int i = 0; i < modelPanes.size(); i++) {
-            if ((i + 1) != selectedModelIndex) {
-                modelPanes.get(i).setStyle("-fx-border-color: transparent; -fx-background-color: #e0e0eb");
-            }
-        }
-    }
-
-    /**
-     * This function handles the selection of a model.
-     *
-     * @param model is the selected model
-     * @param pane  is the pane containing the selected model
-     * @author Jeremie
-     */
-    private void handleModelSelection(Model model, Pane pane) {
-        pane.setStyle("-fx-border-color: red");
-        selectedModel = model;
-        selectedModelIndex = Integer.parseInt(model.getModelID());
-        modelSaveBtn.setDisable(false);
+        modelPanes.setModelThumbnailsContainerPane(modelPaneObservableList, modelsThumbPane);
+        modelPanes.highlightAssociatedModel(modelPaneObservableList, associatedModelID);
     }
 
     private void updateThumbnails() {
@@ -695,7 +636,7 @@ public class AssetTypeInfoController implements Initializable {
      * @author Jeremie
      */
     private void saveSelectedModelAssociation() {
-        modelDAO.updateModelAssociatedWithAssetType(selectedModel.getModelID(), assetType.getId());
+        modelDAO.updateModelAssociatedWithAssetType(modelPanes.getSelectedModel().getModelID(), assetType.getId());
         modelDAO.setModelToTrain(assetType.getId());
         updateAssetsForSelectedModelAssociation(assetType.getId());
     }

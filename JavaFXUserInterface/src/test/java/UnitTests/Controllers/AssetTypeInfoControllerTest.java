@@ -34,10 +34,4 @@ public class AssetTypeInfoControllerTest {
         pane2 = null;
         pane3 = null;
     }
-
-    @Test
-    public void highlightingAssociatedModel() {
-        assetTypeInfoController.highlightAssociatedModel(paneObservableList, 1);
-        assertEquals("-fx-border-color: red", pane1.getStyle());
-    }
 }

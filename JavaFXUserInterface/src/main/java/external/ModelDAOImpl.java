@@ -103,7 +103,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Model newModel = new Model();
-                    newModel.setModelID(rs.getString("model_id"));
+                    newModel.setModelID(rs.getInt("model_id"));
                     newModel.setModelName(rs.getString("name"));
                     newModel.setDescription(rs.getString("description"));
                     modelList.add(newModel);
@@ -124,9 +124,9 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
      * @author Jeremie
      */
     @Override
-    public void updateModelAssociatedWithAssetType(String modelID, String assetTypeID) {
+    public void updateModelAssociatedWithAssetType(int modelID, String assetTypeID) {
         try (PreparedStatement ps = getConnection().prepareStatement(UPDATE_MODEL_FOR_ASSET_TYPE)) {
-            ps.setString(1, modelID);
+            ps.setInt(1, modelID);
             ps.setString(2, assetTypeID);
             ps.executeQuery();
         } catch (SQLException e) {
@@ -160,10 +160,10 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
      * @author Jeremie
      */
     @Override
-    public String getGetModelEvaluation(String modelID, String assetTypeID) {
+    public String getGetModelEvaluation(int modelID, String assetTypeID) {
         String rmseValue = null;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_EVALUATION)) {
-            ps.setString(1, modelID);
+            ps.setInt(1, modelID);
             ps.setString(2, assetTypeID);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next())
