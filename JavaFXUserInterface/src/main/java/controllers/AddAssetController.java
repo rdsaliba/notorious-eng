@@ -5,6 +5,8 @@
  */
 package controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import utilities.CustomDialog;
 import utilities.TextConstants;
 import utilities.UIUtilities;
@@ -61,13 +63,17 @@ public class AddAssetController implements Initializable {
     @FXML
     private AnchorPane inputError;
 
+    Logger logger = LoggerFactory.getLogger(AddAssetController.class);
+
+    private static final String AND_OR = " and/or \n";
+
     private AssetDAOImpl assetDAOImpl;
     private AssetTypeDAOImpl assetTypeDAOImpl;
     private UIUtilities uiUtilities;
     private AssetType selectedAssetType;
     private Text[] errorMessages = new Text[7];
     private boolean[] validInput = new boolean[7];
-
+    boolean validForm = true;
     /**
      * Initialize runs before the scene is displayed.
      * It initializes elements and data in the scene.
@@ -185,18 +191,92 @@ public class AddAssetController implements Initializable {
      * @author Najim
      */
     public boolean formInputValidation() {
-        String assetNameValue = assetNameInput.getText();
-        String assetDescriptionValue = assetDescriptionTextArea.getText();
-        String serialNumberValue = serialNumberInput.getText();
-        String manufacturerValue = manufacturerInput.getText();
-        String categoryValue = categoryInput.getText();
-        String siteValue = siteInput.getText();
-        String locationValue = locationInput.getText();
         String regexWordAndHyphen = "(?=\\S*[-])([a-zA-Z0-9-]*)|([a-zA-Z0-9]*)"; //Any word containing letters, numbers and hyphens
         String regexLettersAndHyphen = "(?=\\S*[-])([a-zA-Z-]*)|([a-zA-Z]*)"; //Any word containing letters and hyphens
         double horizontalPosition = 0;
-        boolean validForm = true;
 
+        logger.info("Start - formInputValidation() -> The form is : {}", validForm);
+
+        assetNameValidation(assetNameInput.getText(), horizontalPosition);
+        assetDescriptionValidation(assetDescriptionTextArea.getText(), horizontalPosition);
+        serialNumberValidation(serialNumberInput.getText(), regexWordAndHyphen, horizontalPosition);
+        manufacturerValidation(manufacturerInput.getText(), regexWordAndHyphen, horizontalPosition);
+        categoryValidation(categoryInput.getText(), regexLettersAndHyphen, horizontalPosition);
+        siteValidation(siteInput.getText(), regexWordAndHyphen, horizontalPosition);
+        locationValidation(locationInput.getText(), regexWordAndHyphen, horizontalPosition);
+
+        logger.info("End - formInputValidation() -> The form is : {}", validForm);
+
+        return validForm;
+    }
+
+    private void locationValidation(String locationValue, String regexWordAndHyphen, double horizontalPosition) {
+        if (locationValue.length() > 20 || !locationValue.trim().matches(regexWordAndHyphen)) {
+            validForm = false;
+            validInput[6] = false;
+            UIUtilities.createInputError(inputError, errorMessages, locationInput, TextConstants.MAX_20_CHARACTERS_ERROR + AND_OR + TextConstants.WORD_HYPHEN_ERROR, 533.0, horizontalPosition, 6);
+        } else {
+            validInput[6] = true;
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, locationInput, 6);
+        }
+    }
+
+    private void siteValidation(String siteValue, String regexWordAndHyphen, double horizontalPosition) {
+        if (siteValue.length() > 20 || !siteValue.trim().matches(regexWordAndHyphen)) {
+            validForm = false;
+            validInput[5] = false;
+            UIUtilities.createInputError(inputError, errorMessages, siteInput, TextConstants.MAX_20_CHARACTERS_ERROR + AND_OR + TextConstants.WORD_HYPHEN_ERROR, 482.0, horizontalPosition, 5);
+        } else {
+            validInput[5] = true;
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, siteInput, 5);
+        }
+    }
+
+    private void categoryValidation(String categoryValue, String regexLettersAndHyphen, double horizontalPosition) {
+        if (categoryValue.length() > 20 || !categoryValue.trim().matches(regexLettersAndHyphen)) {
+            validForm = false;
+            validInput[4] = false;
+            UIUtilities.createInputError(inputError, errorMessages, categoryInput, TextConstants.MAX_20_CHARACTERS_ERROR + AND_OR + TextConstants.LETTER_NUMBER_ERROR, 384.0, horizontalPosition, 4);
+        } else {
+            validInput[4] = true;
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, categoryInput, 4);
+        }
+    }
+
+    private void manufacturerValidation(String manufacturerValue, String regexWordAndHyphen, double horizontalPosition) {
+        if (manufacturerValue.length() > 20 || !manufacturerValue.trim().matches(regexWordAndHyphen)) {
+            validForm = false;
+            validInput[3] = false;
+            UIUtilities.createInputError(inputError, errorMessages, manufacturerInput, TextConstants.MAX_20_CHARACTERS_ERROR + AND_OR + TextConstants.WORD_HYPHEN_ERROR, 331.0, horizontalPosition, 3);
+        } else {
+            validInput[3] = true;
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, manufacturerInput, 3);
+        }
+    }
+
+    private void serialNumberValidation(String serialNumberValue, String regexWordAndHyphen, double horizontalPosition) {
+        if (serialNumberValue.trim().isEmpty() || serialNumberValue.length() > 20 || !serialNumberValue.trim().matches(regexWordAndHyphen)) {
+            validForm = false;
+            validInput[2] = false;
+            UIUtilities.createInputError(inputError, errorMessages, serialNumberInput, TextConstants.EMPTY_FIELD_ERROR + AND_OR + TextConstants.MAX_20_CHARACTERS_ERROR + AND_OR + TextConstants.WORD_HYPHEN_ERROR, 276.5, horizontalPosition, 2);
+        } else {
+            validInput[2] = true;
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, serialNumberInput, 2);
+        }
+    }
+
+    private void assetDescriptionValidation(String assetDescriptionValue, double horizontalPosition) {
+        if (assetDescriptionValue.length() > 300) {
+            validForm = false;
+            validInput[1] = false;
+            UIUtilities.createInputError(inputError, errorMessages, assetDescriptionTextArea, TextConstants.MAX_300_CHARACTERS_ERROR, 210.0, horizontalPosition, 1);
+        } else {
+            validInput[1] = true;
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, assetDescriptionTextArea, 1);
+        }
+    }
+
+    private void assetNameValidation(String assetNameValue, double horizontalPosition) {
         if (assetNameValue.trim().isEmpty()) {
             validForm = false;
             validInput[0] = false;
@@ -206,59 +286,10 @@ public class AddAssetController implements Initializable {
             validInput[0] = false;
             UIUtilities.createInputError(inputError, errorMessages, assetNameInput, TextConstants.MAX_50_CHARACTERS_ERROR, 66.0, horizontalPosition, 0);
         } else {
+            validForm = true;
             validInput[0] = true;
             UIUtilities.removeInputError(inputError, errorMessages, validInput, assetNameInput, 0);
         }
-
-        if (assetDescriptionValue.length() > 300) {
-            validForm = false;
-            validInput[1] = false;
-            UIUtilities.createInputError(inputError, errorMessages, assetDescriptionTextArea, TextConstants.MAX_300_CHARACTERS_ERROR, 210.0, horizontalPosition, 1);
-        } else {
-            validInput[1] = true;
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, assetDescriptionTextArea, 1);
-        }
-        if (serialNumberValue.trim().isEmpty() || serialNumberValue.length() > 20 || !serialNumberValue.trim().matches(regexWordAndHyphen)) {
-            validForm = false;
-            validInput[2] = false;
-            UIUtilities.createInputError(inputError, errorMessages, serialNumberInput, TextConstants.EMPTY_FIELD_ERROR + " and/or \n" + TextConstants.MAX_20_CHARACTERS_ERROR + " and/or \n" + TextConstants.WORD_HYPHEN_ERROR, 276.5, horizontalPosition, 2);
-        } else {
-            validInput[2] = true;
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, serialNumberInput, 2);
-        }
-        if (manufacturerValue.length() > 20 || !manufacturerValue.trim().matches(regexWordAndHyphen)) {
-            validForm = false;
-            validInput[3] = false;
-            UIUtilities.createInputError(inputError, errorMessages, manufacturerInput, TextConstants.MAX_20_CHARACTERS_ERROR + " and/or \n" + TextConstants.WORD_HYPHEN_ERROR, 331.0, horizontalPosition, 3);
-        } else {
-            validInput[3] = true;
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, manufacturerInput, 3);
-        }
-        if (categoryValue.length() > 20 || !categoryValue.trim().matches(regexLettersAndHyphen)) {
-            validForm = false;
-            validInput[4] = false;
-            UIUtilities.createInputError(inputError, errorMessages, categoryInput, TextConstants.MAX_20_CHARACTERS_ERROR + " and/or \n" + TextConstants.LETTER_NUMBER_ERROR, 384.0, horizontalPosition, 4);
-        } else {
-            validInput[4] = true;
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, categoryInput, 4);
-        }
-        if (siteValue.length() > 20 || !siteValue.trim().matches(regexWordAndHyphen)) {
-            validForm = false;
-            validInput[5] = false;
-            UIUtilities.createInputError(inputError, errorMessages, siteInput, TextConstants.MAX_20_CHARACTERS_ERROR + " and/or \n" + TextConstants.WORD_HYPHEN_ERROR, 482.0, horizontalPosition, 5);
-        } else {
-            validInput[5] = true;
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, siteInput, 5);
-        }
-        if (locationValue.length() > 20 || !locationValue.trim().matches(regexWordAndHyphen)) {
-            validForm = false;
-            validInput[6] = false;
-            UIUtilities.createInputError(inputError, errorMessages, locationInput, TextConstants.MAX_20_CHARACTERS_ERROR + " and/or \n" + TextConstants.WORD_HYPHEN_ERROR, 533.0, horizontalPosition, 6);
-        } else {
-            validInput[6] = true;
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, locationInput, 6);
-        }
-        return validForm;
     }
 
 }
