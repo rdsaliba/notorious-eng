@@ -35,6 +35,7 @@ import weka.core.Instances;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class AssetTypeInfoController implements Initializable {
@@ -97,7 +98,7 @@ public class AssetTypeInfoController implements Initializable {
     private UIUtilities uiUtilities;
     private AssetTypeList assetType;
     private AssetTypeList originalAssetType;
-    private ArrayList<Asset> assetsList;
+    private List<Asset> assetsList;
     private AssetTypeDAOImpl assetTypeDAO;
     private ModelDAOImpl modelDAO;
     private AssetDAOImpl assetDAO;
@@ -227,7 +228,7 @@ public class AssetTypeInfoController implements Initializable {
         evaluateButtons.add(evaluateAllModelsBtn);
 
         if (modelTab.getId().equals("modelTab")) {
-            int nbOfAssets = assetDAO.getAssetsFromAssetTypeID(Integer.parseInt(assetType.getId())).size();
+            int nbOfAssets = assetDAO.getArchivedAssetsFromAssetTypeID(Integer.parseInt(assetType.getId())).size();
             trainSlider.setMax(nbOfAssets);
             trainValue.setText(String.valueOf(trainSlider.getValue()));
             testSlider.setMax(nbOfAssets);
@@ -319,8 +320,8 @@ public class AssetTypeInfoController implements Initializable {
         try {
             int from = trainSize + 1;
             int to = trainSize + 1 + testSize;
-            trainDataset = DataPrePreprocessorController.getInstance().addRULCol(modelController.createInstancesFromAssets(assetDAO.getAssetsFromAssetTypeID(Integer.parseInt(assetType.getId())).subList(0, trainSize - 1)));
-            testDataset = DataPrePreprocessorController.getInstance().addRULCol(modelController.createInstancesFromAssets(assetDAO.getAssetsFromAssetTypeID(Integer.parseInt(assetType.getId())).subList(from, to - 1)));
+            trainDataset = DataPrePreprocessorController.getInstance().addRULCol(modelController.createInstancesFromAssets(assetDAO.getArchivedAssetsFromAssetTypeID(Integer.parseInt(assetType.getId())).subList(0, trainSize - 1)));
+            testDataset = DataPrePreprocessorController.getInstance().addRULCol(modelController.createInstancesFromAssets(assetDAO.getArchivedAssetsFromAssetTypeID(Integer.parseInt(assetType.getId())).subList(from, to - 1)));
         } catch (Exception exception) {
             exception.printStackTrace();
         }
@@ -638,7 +639,7 @@ public class AssetTypeInfoController implements Initializable {
     private void saveSelectedModelAssociation() {
         modelDAO.updateModelAssociatedWithAssetType(modelPanes.getSelectedModel().getModelID(), assetType.getId());
         modelDAO.setModelToTrain(assetType.getId());
-        updateAssetsForSelectedModelAssociation(assetType.getId());
+        updateAssetsForSelectedModelAssociation(Integer.parseInt(assetType.getId()));
     }
 
     /**
@@ -648,7 +649,7 @@ public class AssetTypeInfoController implements Initializable {
      * @param AssetTypeID Is the Asset type ID of the current AssetType
      * @author Jeremie
      */
-    private void updateAssetsForSelectedModelAssociation(String AssetTypeID) {
+    private void updateAssetsForSelectedModelAssociation(int AssetTypeID) {
         assetsList = assetDAO.getLiveAssetsFromAssetTypeID(AssetTypeID);
         for (Asset asset : assetsList) {
             assetDAO.setAssetToBeUpdated(asset.getId());
