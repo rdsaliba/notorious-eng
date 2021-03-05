@@ -8,15 +8,10 @@
  */
 package rul.models;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 
 public interface ModelStrategy {
-
-    Logger logger = LoggerFactory.getLogger(ModelStrategy.class);
-
 
     Classifier trainModel(Instances reducedData);
 
