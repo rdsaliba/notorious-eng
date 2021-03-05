@@ -89,12 +89,13 @@ public class AssetTypeInfoController implements Initializable {
     private ModelController modelController;
     private Instances trainDataset;
     private Instances testDataset;
+    boolean validForm = true;
 
     private final Text[] errorMessages = new Text[7];
     private final boolean[] validInput = new boolean[7];
 
-    public int trainSize = 0;
-    public int testSize = 0;
+    int trainSize = 0;
+    int testSize = 0;
     protected DataPrePreprocessorController prePreprocessorController;
 
     static Logger logger = LoggerFactory.getLogger(AssetTypeInfoController.class);
@@ -145,26 +146,7 @@ public class AssetTypeInfoController implements Initializable {
      * Edit: added all the text proprety listeners and text formaters for all the fields
      */
     public void attachEvents() {
-        // Change scenes to Assets.fxml
-        backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
-        //Attach ability to close program
-        exitMenuBtn.setOnMouseClicked(mouseEvent -> Platform.exit());
-
-        modelTab.setOnSelectionChanged(event -> modelsButtonPressed());
-
-        // Change scenes to Assets.fxml
-        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE));
-        //Attach link to assetTypeMenuBtn to go to Utilities.AssetTypeList.fxml
-        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
-        infoDeleteBtn.setOnMouseClicked(mouseEvent -> CustomDialog.systemTypeInfoControllerDialog(mouseEvent, assetType.getId()));
-
-        infoSaveBtn.setDisable(true);
-        infoSaveBtn.setOnMouseClicked(mouseEvent -> {
-            if (formInputValidation()) {
-                assetTypeDAO.updateAssetType(assetType.toAssetType());
-                uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE);
-            }
-        });
+        setSceneEvents();
 
         assetTypeName.textProperty().addListener((obs, oldText, newText) -> {
             if (handleTextChange(newText, originalAssetType.getName()))
@@ -207,6 +189,29 @@ public class AssetTypeInfoController implements Initializable {
 
     }
 
+    private void setSceneEvents() {
+        // Change scenes to Assets.fxml
+        backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
+        //Attach ability to close program
+        exitMenuBtn.setOnMouseClicked(mouseEvent -> Platform.exit());
+
+        modelTab.setOnSelectionChanged(event -> modelsButtonPressed());
+
+        // Change scenes to Assets.fxml
+        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE));
+        //Attach link to assetTypeMenuBtn to go to Utilities.AssetTypeList.fxml
+        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
+        infoDeleteBtn.setOnMouseClicked(mouseEvent -> CustomDialog.systemTypeInfoControllerDialog(mouseEvent, assetType.getId()));
+
+        infoSaveBtn.setDisable(true);
+        infoSaveBtn.setOnMouseClicked(mouseEvent -> {
+            if (formInputValidation()) {
+                assetTypeDAO.updateAssetType(assetType.toAssetType());
+                uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE);
+            }
+        });
+    }
+
     private void modelsButtonPressed() {
 
         if (modelTab.getId().equals("modelTab")) {
@@ -220,7 +225,8 @@ public class AssetTypeInfoController implements Initializable {
                 @Override
                 public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
                     trainValue.setText(Integer.toString((int) trainSlider.getValue()));
-                    testSlider.setMax(nbOfAssets - (int) trainSlider.getValue());
+                    int maxSlider = nbOfAssets - (int) trainSlider.getValue();
+                    testSlider.setMax(maxSlider);
                     trainSize = (int) trainSlider.getValue();
                 }
             });
@@ -228,7 +234,8 @@ public class AssetTypeInfoController implements Initializable {
                 @Override
                 public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
                     testValue.setText(Integer.toString((int) testSlider.getValue()));
-                    trainSlider.setMax(nbOfAssets - (int) testSlider.getValue());
+                    int maxSlider = nbOfAssets - (int) testSlider.getValue();
+                    trainSlider.setMax(maxSlider);
                     testSize = (int) testSlider.getValue();
                 }
             });
@@ -405,20 +412,8 @@ public class AssetTypeInfoController implements Initializable {
         String assetTypeNameValue = assetTypeName.getText();
         String assetTypeDescValue = assetTypeDesc.getText();
         double horizontalPosition = 0;
-        boolean validForm = true;
 
-        if (assetTypeNameValue.trim().isEmpty()) {
-            validForm = false;
-            validInput[0] = false;
-            UIUtilities.createInputError(inputError, errorMessages, assetTypeName, TextConstants.EMPTY_FIELD_ERROR, 28.0, horizontalPosition, 0);
-        } else if (assetTypeNameValue.length() > 50) {
-            validForm = false;
-            validInput[0] = false;
-            UIUtilities.createInputError(inputError, errorMessages, assetTypeName, TextConstants.MAX_50_CHARACTERS_ERROR, 28.0, horizontalPosition, 0);
-        } else {
-            validInput[0] = true;
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, assetTypeName, 0);
-        }
+        assetTypeNameValidation(assetTypeNameValue, horizontalPosition);
 
         if (assetTypeDescValue.length() > 300) {
             validForm = false;
@@ -505,5 +500,21 @@ public class AssetTypeInfoController implements Initializable {
             UIUtilities.createInputError(inputError, errorMessages, thresholdFailed, "", 0, 0, 6);
         }
         return validForm;
+    }
+
+    private void assetTypeNameValidation(String assetTypeNameValue, double horizontalPosition) {
+        validForm = true;
+        if (assetTypeNameValue.trim().isEmpty()) {
+            validForm = false;
+            validInput[0] = false;
+            UIUtilities.createInputError(inputError, errorMessages, assetTypeName, TextConstants.EMPTY_FIELD_ERROR, 28.0, horizontalPosition, 0);
+        } else if (assetTypeNameValue.length() > 50) {
+            validForm = false;
+            validInput[0] = false;
+            UIUtilities.createInputError(inputError, errorMessages, assetTypeName, TextConstants.MAX_50_CHARACTERS_ERROR, 28.0, horizontalPosition, 0);
+        } else {
+            validInput[0] = true;
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, assetTypeName, 0);
+        }
     }
 }

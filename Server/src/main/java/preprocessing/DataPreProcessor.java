@@ -11,9 +11,9 @@ import weka.core.Instances;
 import weka.filters.unsupervised.attribute.Remove;
 
 public interface DataPreProcessor {
-    void processFullReduction() throws Exception;
-    void processMinimalReduction() throws Exception;
+    void processFullReduction();
+    void processMinimalReduction();
     Instances getReducedDataset();
     Instances getMinimallyReducedDataset();
-    Remove getRemovedIndexList() throws Exception;
+    Remove getRemovedIndexList();
 }

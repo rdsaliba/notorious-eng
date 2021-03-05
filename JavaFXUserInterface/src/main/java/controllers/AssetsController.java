@@ -305,7 +305,7 @@ public class AssetsController implements Initializable {
     /**
      * Stops the timeline
      */
-    private void closeTimeline() {
+    public void closeTimeline() {
         if (rulTimeline != null)
             rulTimeline.stop();
     }

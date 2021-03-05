@@ -28,7 +28,7 @@ public class DataPrePreprocessorController {
         Reduced data is returned from the implementation methods after using Weka's built in
         filtering that eliminates columns that don't correlate with the RUL values.
      */
-    public Instances reduceData(Instances originalData) throws Exception {
+    public Instances reduceData(Instances originalData) {
         dataPreProcessorImpl = new DataPreProcessorImpl(originalData);
         dataPreProcessorImpl.processFullReduction();
         return dataPreProcessorImpl.getReducedDataset();
@@ -38,7 +38,7 @@ public class DataPrePreprocessorController {
        Minimally reduced data is returned from the implementation methods after manually eliminating
        columns that have standard deviation of 0 or close to 0.
     */
-    public Instances minimallyReduceData(Instances originalData) throws Exception {
+    public Instances minimallyReduceData(Instances originalData) {
         dataPreProcessorImpl = new DataPreProcessorImpl(originalData);
         dataPreProcessorImpl.processMinimalReduction();
         return dataPreProcessorImpl.getMinimallyReducedDataset();
