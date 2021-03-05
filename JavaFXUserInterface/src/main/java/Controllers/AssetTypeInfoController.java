@@ -236,12 +236,12 @@ public class AssetTypeInfoController implements Initializable {
 
             trainSlider.valueProperty().addListener((observableValue, number, t1) -> {
                 trainValue.setText(Integer.toString((int) trainSlider.getValue()));
-                testSlider.setMax(nbOfAssets - (int) trainSlider.getValue());
+                testSlider.setMax(nbOfAssets - trainSlider.getValue());
                 trainSize = (int) trainSlider.getValue();
             });
             testSlider.valueProperty().addListener((observableValue, number, t1) -> {
                 testValue.setText(Integer.toString((int) testSlider.getValue()));
-                trainSlider.setMax(nbOfAssets - (int) testSlider.getValue());
+                trainSlider.setMax(nbOfAssets - testSlider.getValue());
                 testSize = (int) testSlider.getValue();
             });
             try {
@@ -269,7 +269,7 @@ public class AssetTypeInfoController implements Initializable {
      *                      and the individual evaluation model buttons.
      * @author Jeremie
      */
-    public void enableEvaluation(ArrayList<Button> enableBtnList) {
+    public void enableEvaluation(List<Button> enableBtnList) {
         for (Button enableButton : enableBtnList) {
             if (trainSize > 0 && testSize > 0) {
                 enableButton.setDisable(false);
@@ -371,9 +371,9 @@ public class AssetTypeInfoController implements Initializable {
                         break;
                     case "SMOReg":
                         SMORegModelImpl smoRegModel = new SMORegModelImpl();
-                        Classifier Clf = smoRegModel.trainModel(trainDataset);
-                        calculateRMSEEvaluation(Clf, trainDataset, testDataset, 7);
-
+                        Classifier smoRegClf = smoRegModel.trainModel(trainDataset);
+                        calculateRMSEEvaluation(smoRegClf, trainDataset, testDataset, 7);
+                        break;
                     case "MultilayerPerceptron":
                         MultilayerPerceptronModelImpl multilayerPerceptronModel = new MultilayerPerceptronModelImpl();
                         Classifier multilayerPerceptronClf = multilayerPerceptronModel.trainModel(trainDataset);
@@ -581,11 +581,11 @@ public class AssetTypeInfoController implements Initializable {
             // Generating items to display for the Thumbnail
             Text modelNameLabel = new Text(model.getModelName());
             Text modelDescriptionText = new Text(model.getDescription());
-            Text RMSELabel = new Text(RMSE + ": ");
-            Text RMSEValue = new Text();
-            String RMSEValueObject = modelDAO.getGetModelEvaluation(model.getModelID(), assetType.getId());
-            SimpleStringProperty observableRMSEValue = new SimpleStringProperty(RMSEValueObject);
-            RMSEValue.textProperty().bind(observableRMSEValue);
+            Text rmseLabel = new Text(RMSE + ": ");
+            Text rmseValue = new Text();
+            String rmseValueObject = modelDAO.getGetModelEvaluation(model.getModelID(), assetType.getId());
+            SimpleStringProperty observableRMSEValue = new SimpleStringProperty(rmseValueObject);
+            rmseValue.textProperty().bind(observableRMSEValue);
 
             Button evaluateModelBtn = new Button();
             evaluateModelBtn.setText("Evaluate");
@@ -596,8 +596,8 @@ public class AssetTypeInfoController implements Initializable {
             //Setting IDs for the elements
             modelNameLabel.setId("modelNameLabel");
             modelDescriptionText.setId("modelDescriptionText");
-            RMSELabel.setId("RMSELabel");
-            RMSEValue.setId("RMSEValue");
+            rmseLabel.setId("RMSELabel");
+            rmseValue.setId("RMSEValue");
             evaluateModelBtn.setId("SelectBtn");
 
             //Setting the Layout of the elements
@@ -605,17 +605,17 @@ public class AssetTypeInfoController implements Initializable {
             modelNameLabel.setLayoutY(28.0);
             modelDescriptionText.setLayoutX(14.0);
             modelDescriptionText.setLayoutY(60.0);
-            RMSELabel.setLayoutX(14.0);
-            RMSELabel.setLayoutY(100.0);
-            RMSEValue.setLayoutX(50.0);
-            RMSEValue.setLayoutY(100.0);
+            rmseLabel.setLayoutX(14.0);
+            rmseLabel.setLayoutY(100.0);
+            rmseValue.setLayoutX(50.0);
+            rmseValue.setLayoutY(100.0);
             evaluateModelBtn.setLayoutX(150.0);
             evaluateModelBtn.setLayoutY(75.0);
 
             modelPane.getChildren().add(modelNameLabel);
             modelPane.getChildren().add(modelDescriptionText);
-            modelPane.getChildren().add(RMSELabel);
-            modelPane.getChildren().add(RMSEValue);
+            modelPane.getChildren().add(rmseLabel);
+            modelPane.getChildren().add(rmseValue);
             modelPane.getChildren().add(evaluateModelBtn);
 
             modelPaneObservableList.add(modelPane);
@@ -646,11 +646,11 @@ public class AssetTypeInfoController implements Initializable {
      * This function updates all live assets for the current asset type by setting their status as
      * updated. This means that their RUl needs to be re-evaluated.
      *
-     * @param AssetTypeID Is the Asset type ID of the current AssetType
+     * @param assetTypeID Is the Asset type ID of the current AssetType
      * @author Jeremie
      */
-    private void updateAssetsForSelectedModelAssociation(int AssetTypeID) {
-        assetsList = assetDAO.getLiveAssetsFromAssetTypeID(AssetTypeID);
+    private void updateAssetsForSelectedModelAssociation(int assetTypeID) {
+        assetsList = assetDAO.getLiveAssetsFromAssetTypeID(assetTypeID);
         for (Asset asset : assetsList) {
             assetDAO.setAssetToBeUpdated(asset.getId());
         }
