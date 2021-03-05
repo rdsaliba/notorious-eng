@@ -8,12 +8,16 @@
  */
 package rul.models;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import weka.classifiers.Classifier;
 import weka.classifiers.functions.LinearRegression;
 import weka.core.Instance;
 import weka.core.Instances;
 
 public class LinearRegressionModelImpl implements ModelStrategy {
+
+    Logger logger = LoggerFactory.getLogger(LinearRegressionModelImpl.class);
     /**
      * This function takes the filtered training dataset and trains a linear regression regression model,
      * after that it returns the model.

@@ -7,6 +7,8 @@
  */
 package preprocessing;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import weka.attributeSelection.BestFirst;
 import weka.attributeSelection.CfsSubsetEval;
 import weka.core.Attribute;
@@ -19,9 +21,13 @@ import weka.filters.supervised.attribute.AttributeSelection;
 import weka.filters.unsupervised.attribute.Add;
 import weka.filters.unsupervised.attribute.Remove;
 
+import javax.xml.crypto.Data;
 import java.util.ArrayList;
 
 public class DataPreProcessorImpl implements DataPreProcessor {
+
+    Logger logger = LoggerFactory.getLogger(DataPreProcessorImpl.class);
+
     private final Instances originalDataset;
     private final ArrayList<Integer> removedIndex;
     private Instances reducedDataset;
