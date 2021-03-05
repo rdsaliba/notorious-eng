@@ -10,6 +10,8 @@ import app.item.Asset;
 import app.item.AssetAttribute;
 import app.item.AssetInfo;
 import local.DAO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,6 +19,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class MeasurementDAO extends DAO {
+
+    Logger logger = LoggerFactory.getLogger(MeasurementDAO.class);
+
     private static final String GET_MEASUREMENTS = "SELECT * from attribute_measurements where asset_id =? and time > ((SELECT MAX(time) FROM attribute_measurements where asset_id=?) - ?) order by attribute_id";
     private static final String INSERT_MEASUREMENT_FOR_ASSET = "insert into attribute_measurements values (?,?,?,?)";
     private static final String DELETE_MEASUREMENT = "delete from attribute_measurements where asset_id =? and time > ((SELECT MAX(time) FROM attribute_measurements where asset_id=?) - ?) order by attribute_id";
@@ -48,7 +53,7 @@ public class MeasurementDAO extends DAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception getMeasurementsFromID(): ", e);
         }
         toReturn.setAssetAttributes(measurements);
         return toReturn;
@@ -69,7 +74,7 @@ public class MeasurementDAO extends DAO {
             ps.setInt(3, limit);
             ps.executeQuery();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception deleteMeasurementsFromID(): ", e);
         }
     }
 
@@ -93,7 +98,7 @@ public class MeasurementDAO extends DAO {
             }
             ps.executeBatch();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception insertMeasurement(): ", e);
         }
 
     }

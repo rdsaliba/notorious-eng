@@ -7,6 +7,8 @@
 package rul.models;
 
 import org.deeplearning4j.nn.weights.WeightInit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import weka.classifiers.Classifier;
 import weka.classifiers.functions.Dl4jMlpClassifier;
 import weka.core.Instances;
@@ -21,16 +23,17 @@ import weka.dl4j.updater.Sgd;
 
 import static org.deeplearning4j.nn.api.OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT;
 
-public class LSTMModelImpl implements ModelStrategy
-{
+public class LSTMModelImpl implements ModelStrategy {
+
+    Logger logger = LoggerFactory.getLogger(LSTMModelImpl.class);
+
     /**
      * This function takes the filtered training dataset, builds a Neural Network using Weka's Deep Learning 4 Java plugin
      * and trains and returns an LSTM model.
      * @author Khaled
      */
     @Override
-    public Classifier trainModel(Instances firstTrain)
-    {
+    public Classifier trainModel(Instances firstTrain) {
         firstTrain.setClassIndex(firstTrain.numAttributes() - 1);
 
         Instances trainDataset = LinearRegressionModelImpl.removeInstances(firstTrain);
@@ -76,9 +79,8 @@ public class LSTMModelImpl implements ModelStrategy
 
         }
 
-        catch(Exception ex)
-        {
-            ex.printStackTrace();
+        catch(Exception e) {
+            logger.error("Exception: ", e);
         }
 
         //return Neural network Classifier for LSTM

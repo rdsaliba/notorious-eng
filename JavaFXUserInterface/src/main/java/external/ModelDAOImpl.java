@@ -41,7 +41,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
                     name = rs.getString("name");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception getModelNameFromAssetTypeID(): ", e);
         }
         return name;
     }
@@ -65,7 +65,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception getModelsByAssetTypeID(): ", e);
         }
         return tm;
     }
@@ -87,7 +87,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
                 tm.setModelClassifier((Classifier) new ObjectInputStream(new ByteArrayInputStream(rs.getBytes("serialized_model"))).readObject());
             }
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            logger.error("Exception createTrainedModelFromResultSet(): ", e);
             return null;
         }
         return tm;
@@ -105,7 +105,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
                     models.add(name);}
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception getListOfModels(): ", e);
         }
         return models;
 
@@ -118,7 +118,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
 
             ps.executeQuery();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception updateRMSE(): ", e);
         }
     }
 }

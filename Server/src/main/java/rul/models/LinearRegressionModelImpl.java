@@ -29,7 +29,7 @@ public class LinearRegressionModelImpl implements ModelStrategy {
         try {
             lr.buildClassifier(firstTrain);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Exception: ", e);
             return null;
         }
         return lr;

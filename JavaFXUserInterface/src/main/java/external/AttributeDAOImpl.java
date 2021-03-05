@@ -34,7 +34,7 @@ public class AttributeDAOImpl extends DAO implements AttributeDAO {
                     measurements.add(new Measurement(queryResult.getInt("time"), queryResult.getDouble("value")));
             }
         } catch (SQLException e){
-            e.printStackTrace();
+            logger.error("Exception: ", e);
         }
         return measurements;
     }

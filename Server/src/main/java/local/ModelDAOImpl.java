@@ -8,6 +8,8 @@
 package local;
 
 import app.item.TrainedModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import weka.classifiers.Classifier;
 
 import java.io.ByteArrayInputStream;
@@ -19,6 +21,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class ModelDAOImpl extends DAO implements ModelDAO {
+
+    Logger logger = LoggerFactory.getLogger(ModelDAOImpl.class);
+
     private static final String UPDATE_SERIALIZE_OBJECT = "UPDATE trained_model SET retrain = false, serialized_model  = ? WHERE model_id = ? AND asset_type_id = ?";
     private static final String GET_SERIALIZE_OBJECT = "SELECT * FROM trained_model WHERE retrain = true";
     private static final String GET_MODEL_NAME_FROM_ID = "SELECT name from trained_model, model where trained_model.model_id = model.model_id and asset_type_id = ?";
@@ -41,7 +46,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
                     name = rs.getString("name");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception getModelNameFromAssetTypeID(): ", e);
         }
         return name;
     }
@@ -63,7 +68,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception getModelsToTrain(): ", e);
         }
         return tms;
     }
@@ -87,7 +92,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception setModelsToTrain(): ", e);
         }
     }
 
@@ -110,7 +115,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception getModelsByAssetTypeID(): ", e);
         }
         return tm;
     }
@@ -132,7 +137,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
                 tm.setModelClassifier((Classifier) new ObjectInputStream(new ByteArrayInputStream(rs.getBytes("serialized_model"))).readObject());
             }
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            logger.error("Exception createTrainedModelFromResultSet(): ", e);
             return null;
         }
         return tm;

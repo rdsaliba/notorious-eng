@@ -6,12 +6,18 @@
  */
 package local;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 
 public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
+
+    Logger logger = LoggerFactory.getLogger(AssetTypeDAOImpl.class);
+
     private static final String GET_ASSET_TYPE_THRESHOLDS = "SELECT *  FROM asset_type_parameters WHERE asset_type_id = ? and boundary is not null";
 
     /**
@@ -30,7 +36,7 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
                     thresholds.put(rs.getString("parameter_name"), rs.getDouble("boundary"));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception: ", e);
         }
         return thresholds;
     }

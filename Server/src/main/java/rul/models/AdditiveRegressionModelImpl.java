@@ -6,11 +6,15 @@
  */
 package rul.models;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import weka.classifiers.Classifier;
 import weka.classifiers.meta.AdditiveRegression;
 import weka.core.Instances;
 
-public class AdditiveRegressionModelImpl implements ModelStrategy{
+public class AdditiveRegressionModelImpl implements ModelStrategy {
+
+    Logger logger = LoggerFactory.getLogger(AdditiveRegressionModelImpl.class);
 
     /**
      * This function takes the assets as the training dataset, and returns the trained
@@ -28,8 +32,7 @@ public class AdditiveRegressionModelImpl implements ModelStrategy{
         }
 
         catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            logger.error("Exception:", e);
         }
 
         return additiveRegression;

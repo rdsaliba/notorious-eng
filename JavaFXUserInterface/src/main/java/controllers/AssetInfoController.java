@@ -45,6 +45,7 @@ import rul.assessment.AssessmentController;
 
 import java.net.URL;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -261,31 +262,31 @@ public class AssetInfoController implements Initializable {
      * @author Paul
      */
     public void generateRawDataTable() {
-        TableView<ObservableList> tableview = new TableView<>();
-        ObservableList<ObservableList> data = FXCollections.observableArrayList();
+        TableView<ObservableList<String>> tableview = new TableView<>();
+        ObservableList<ObservableList<String>> data = FXCollections.observableArrayList();
         AtomicInteger lastCycle = new AtomicInteger();
-        ResultSet resultSet = assetDAOImpl.createMeasurementsFromAssetIdAndTime(asset.getId(), lastCycle.get());
-        try {
-            for (int i = 0; i < resultSet.getMetaData().getColumnCount(); i++) {
-                final int j = i;
-                TableColumn<ObservableList, String> col = new TableColumn(resultSet.getMetaData().getColumnName(i + 1));
-                col.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(j).toString()));
-                tableview.getColumns().addAll(col);
-            }
+        try (ResultSet resultSet = assetDAOImpl.createMeasurementsFromAssetIdAndTime(asset.getId(), lastCycle.get())) {
+                for (int i = 0; i < resultSet.getMetaData().getColumnCount(); i++) {
+                    final int j = i;
+                    TableColumn<ObservableList<String>, String> col = new TableColumn<>(resultSet.getMetaData().getColumnName(i + 1));
+                    col.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(j)));
+                    tableview.getColumns().addAll(col);
+                }
 
-            updateRawTableView(data, lastCycle);
+                updateRawTableView(data, lastCycle);
 
-            Timeline timeline = new Timeline(new KeyFrame(Duration.millis(1000), e -> updateRawTableView(data, lastCycle)));
+                Timeline timeline = new Timeline(new KeyFrame(Duration.millis(1000), e -> updateRawTableView(data, lastCycle)));
 
-            timeline.setCycleCount(Animation.INDEFINITE); // loop forever
-            timeline.play();
+                timeline.setCycleCount(Animation.INDEFINITE); // loop forever
+                timeline.play();
 
-            timelines.add(timeline);
+                timelines.add(timeline);
 
-            tableview.setItems(data);
-        } catch (Exception e) {
-            e.printStackTrace();
+                tableview.setItems(data);
+
+        } catch (SQLException e) {
             logger.error("Error on Building Data");
+            logger.error("Exception: ", e);
         }
 
 
@@ -307,19 +308,19 @@ public class AssetInfoController implements Initializable {
      *
      * @author Paul
      */
-    private void updateRawTableView(ObservableList<ObservableList> data, AtomicInteger lastCycle) {
-        ResultSet rs = assetDAOImpl.createMeasurementsFromAssetIdAndTime(asset.getId(), lastCycle.get());
-        try {
-            while (rs.next()) {
-                ObservableList<String> row = FXCollections.observableArrayList();
-                for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
-                    row.add(rs.getString(i));
+    private void updateRawTableView(ObservableList<ObservableList<String>> data, AtomicInteger lastCycle) {
+        try (ResultSet rs = assetDAOImpl.createMeasurementsFromAssetIdAndTime(asset.getId(), lastCycle.get())) {
+                while (rs.next()) {
+                    ObservableList<String> row = FXCollections.observableArrayList();
+                    for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
+                        row.add(rs.getString(i));
+                    }
+                    data.add(0, row);
                 }
-                data.add(0, row);
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            logger.error("Error on Building Data");
+
+        } catch (SQLException e) {
+            logger.error("Error on Building Data: ", e);
+
         }
         lastCycle.set(data.size());
     }

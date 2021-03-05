@@ -11,6 +11,8 @@ package external;
 import app.item.Asset;
 import app.item.AssetAttribute;
 import app.item.AssetInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,6 +20,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class AssetDAOImpl extends DAO implements AssetDAO {
+
+    Logger logger = LoggerFactory.getLogger(AssetDAOImpl.class);
 
     private static final String DELETE_ASSET = "DELETE FROM asset WHERE asset_id = ?";
     private static final String GET_ASSET_INFO_FROM_ASSET_ID = "SELECT DISTINCT att.* FROM attribute_measurements am, attribute att WHERE att.attribute_id=am.attribute_id AND am.asset_id = ?";
@@ -39,7 +43,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
             ps.setInt(1, assetID);
             ps.executeQuery();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception in deleteAssetByID(): ", e);
         }
     }
 
@@ -57,7 +61,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
                 assets.add(createAssetFromQueryResult(rs));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception in getAllLiveAssets(): ", e);
         }
         return assets;
     }
@@ -81,7 +85,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
             ps.setString(8, asset.getLocation());
             ps.executeQuery();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception in insertAsset(): ", e);
         }
     }
 
@@ -144,7 +148,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
             }
             return newAssetInfo;
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception in createAssetInfo(): ", e);
         }
         return null;
     }
@@ -164,20 +168,21 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         ResultSet returned = null;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_ATTRIBUTE_DETAILS_FROM_ASSET_ID)) {
             ps.setInt(1, assetID);
-            ResultSet rs = ps.executeQuery();
+            try (ResultSet rs = ps.executeQuery()) {
 
-            while (rs.next()) {
-                preparedStatementPart1.append(", Coalesce(Sum(`");
-                preparedStatementPart1.append(rs.getString(ATTRIBUTE_NAME));
-                preparedStatementPart1.append("`), 0) AS '");
-                preparedStatementPart1.append(rs.getString(ATTRIBUTE_NAME));
-                preparedStatementPart1.append("'");
+                while (rs.next()) {
+                    preparedStatementPart1.append(", Coalesce(Sum(`");
+                    preparedStatementPart1.append(rs.getString(ATTRIBUTE_NAME));
+                    preparedStatementPart1.append("`), 0) AS '");
+                    preparedStatementPart1.append(rs.getString(ATTRIBUTE_NAME));
+                    preparedStatementPart1.append("'");
 
-                preparedStatementPart2.append(", CASE WHEN tab.attribute_id = ");
-                preparedStatementPart2.append(rs.getString("attribute_id"));
-                preparedStatementPart2.append(" THEN tab.value end AS `");
-                preparedStatementPart2.append(rs.getString(ATTRIBUTE_NAME));
-                preparedStatementPart2.append("`");
+                    preparedStatementPart2.append(", CASE WHEN tab.attribute_id = ");
+                    preparedStatementPart2.append(rs.getString("attribute_id"));
+                    preparedStatementPart2.append(" THEN tab.value end AS `");
+                    preparedStatementPart2.append(rs.getString(ATTRIBUTE_NAME));
+                    preparedStatementPart2.append("`");
+                }
             }
 
             // i'm unsure why but i cannot do setString on the prepared statement, it keeps failing the query.
@@ -188,7 +193,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
                 returned = measurementStatement.executeQuery();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception in createMeasurementsFromAssetIdAndTime(): ", e);
         }
         return returned;
     }

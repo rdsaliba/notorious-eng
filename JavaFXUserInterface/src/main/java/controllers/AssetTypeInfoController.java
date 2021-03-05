@@ -8,16 +8,10 @@
  */
 package controllers;
 
-import utilities.AssetTypeList;
-import utilities.CustomDialog;
-import utilities.TextConstants;
-import utilities.UIUtilities;
 import app.ModelController;
 import external.AssetTypeDAOImpl;
 import external.ModelDAOImpl;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -30,6 +24,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import preprocessing.DataPrePreprocessorController;
 import rul.models.*;
+import utilities.AssetTypeList;
+import utilities.CustomDialog;
+import utilities.TextConstants;
+import utilities.UIUtilities;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 
@@ -111,7 +109,7 @@ public class AssetTypeInfoController implements Initializable {
         try {
             attachEvents();
         } catch (Exception exception) {
-            exception.printStackTrace();
+            logger.error("Exception in initialize(): ", exception);
         }
     }
 
@@ -135,7 +133,7 @@ public class AssetTypeInfoController implements Initializable {
             thresholdFailed.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueFailed())));
         } catch (NumberFormatException e) {
             logger.error("NumberFormatException error inside initData");
-            e.printStackTrace();
+            logger.error("Exception initData(): ", e);
         }
     }
 
@@ -221,23 +219,18 @@ public class AssetTypeInfoController implements Initializable {
             testSlider.setMax(nbOfAssets);
             testValue.setText(String.valueOf(testSlider.getValue()));
 
-            trainSlider.valueProperty().addListener(new ChangeListener<Number>() {
-                @Override
-                public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
-                    trainValue.setText(Integer.toString((int) trainSlider.getValue()));
-                    int maxSlider = nbOfAssets - (int) trainSlider.getValue();
-                    testSlider.setMax(maxSlider);
-                    trainSize = (int) trainSlider.getValue();
-                }
+            trainSlider.valueProperty().addListener((observableValue, number, t1) -> {
+                trainValue.setText(Integer.toString((int) trainSlider.getValue()));
+                int maxSlider = nbOfAssets - (int) trainSlider.getValue();
+                testSlider.setMax(maxSlider);
+                trainSize = (int) trainSlider.getValue();
             });
-            testSlider.valueProperty().addListener(new ChangeListener<Number>() {
-                @Override
-                public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
-                    testValue.setText(Integer.toString((int) testSlider.getValue()));
-                    int maxSlider = nbOfAssets - (int) testSlider.getValue();
-                    trainSlider.setMax(maxSlider);
-                    testSize = (int) testSlider.getValue();
-                }
+
+            testSlider.valueProperty().addListener((observableValue, number, t1) -> {
+                testValue.setText(Integer.toString((int) testSlider.getValue()));
+                int maxSlider = nbOfAssets - (int) testSlider.getValue();
+                trainSlider.setMax(maxSlider);
+                testSize = (int) testSlider.getValue();
             });
 
             try {
@@ -248,12 +241,12 @@ public class AssetTypeInfoController implements Initializable {
                         trainDataset = DataPrePreprocessorController.getInstance().addRULCol(modelController.createInstancesFromAssets(assetDAO.getAssetsFromAssetTypeID(Integer.parseInt(assetType.getId())).subList(0, (int) trainSlider.getValue() - 1)));
                         testDataset = DataPrePreprocessorController.getInstance().addRULCol(modelController.createInstancesFromAssets(assetDAO.getAssetsFromAssetTypeID(Integer.parseInt(assetType.getId())).subList(from, to - 1)));
                     } catch (Exception exception) {
-                        exception.printStackTrace();
+                        logger.error("Exception modelEvaluateBtn.setOnMouseClicked: ", exception);
                     }
                     try {
                         evaluateModels();
                     } catch (Exception exception) {
-                        exception.printStackTrace();
+                        logger.error("Exception in evaluateModels: ", exception);
                     }
                 });
             } catch (Exception e) {
@@ -330,6 +323,7 @@ public class AssetTypeInfoController implements Initializable {
             }
         } catch (Exception e) {
             trainValue.setText(e.getMessage());
+            logger.error("Exception in evaluateModels(): ", e);
         }
     }
 
@@ -342,11 +336,14 @@ public class AssetTypeInfoController implements Initializable {
      * @param modelId model id in the database
      * @author Talal
      */
-    public void calculateEvaluation(Classifier model, Instances train, Instances test, int modelId) throws Exception {
+    public void calculateEvaluation(Classifier model, Instances train, Instances test, int modelId) {
         ModelEvaluation modelEvaluation = new ModelEvaluation(model, train, test);
-        double rmse = modelEvaluation.evaluateTrainWithTest();
-        modelDAO.updateRMSE(rmse, modelId, Integer.parseInt(assetType.getId()));
-
+        try {
+            double rmse = modelEvaluation.evaluateTrainWithTest();
+            modelDAO.updateRMSE(rmse, modelId, Integer.parseInt(assetType.getId()));
+        } catch (Exception e){
+            logger.error("Exception calculateEvaluation(): ", e);
+        }
     }
 
 

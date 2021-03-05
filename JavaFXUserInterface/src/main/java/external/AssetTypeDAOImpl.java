@@ -36,7 +36,7 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
                     return (rs.getInt("count"));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception in getAssetTypeIdCount(): ", e);
         }
         return 0;
     }
@@ -54,7 +54,7 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception getAssetTypeThreshold(): ", e);
         }
         if (threshold == null || threshold.equals("null"))
             threshold = "-";
@@ -86,7 +86,7 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception insertAssetType(): ", e);
         }
         return -1;
     }
@@ -109,7 +109,7 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception getAssetTypeList(): ", e);
         }
         return assetTypeList;
     }
@@ -124,7 +124,7 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
                     name = rs.getString("name");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception getNameFromID(): ", e);
         }
         return name;
     }
@@ -150,7 +150,7 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
                 ps2.executeBatch();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception updateAssetType(): ", e);
         }
     }
 
@@ -160,7 +160,7 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
             ps.setString(1, assetTypeID);
             ps.executeQuery();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception deleteAssetTypeByID(): ", e);
         }
     }
 
@@ -180,7 +180,7 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception getAssetTypeBoundaryCount(): ", e);
         }
         return count;
     }

@@ -129,7 +129,7 @@ public class ModelController {
                 try {
                     trainModel(trainedModel);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.error("Exception: ", e);
                 }
             }
             modelDAOImpl.setModelsToTrain(trainedModelsToRetrain);
@@ -196,7 +196,7 @@ public class ModelController {
             toTest = dppc.addRULCol(toTest);
             estimate = assessmentController.estimateRUL(toTest, classifier);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Exception: ", e);
         }
         return estimate;
     }

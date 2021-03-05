@@ -181,7 +181,7 @@ public class DataPreProcessorImpl implements DataPreProcessor {
             if (reducedDataset.attribute("RUL") == null)
                 reducedDataset = addRULCol(reducedDataset);
         } catch (Exception e){
-            e.printStackTrace();
+            logger.error("Exception processFullReduction(): ", e);
         }
 
     }
@@ -215,7 +215,7 @@ public class DataPreProcessorImpl implements DataPreProcessor {
             if (minimallyReducedDataset.attribute("RUL") == null)
                 minimallyReducedDataset = addRULCol(minimallyReducedDataset);
         } catch (Exception e){
-            e.printStackTrace();
+            logger.error("Exception processMinimalReduction(): ", e);
         }
 
     }
@@ -242,7 +242,7 @@ public class DataPreProcessorImpl implements DataPreProcessor {
         try {
             remove.setInputFormat(originalDataset);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Exception getRemovedIndexList(): ", e);
         }
 
         return remove;

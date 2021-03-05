@@ -11,6 +11,8 @@ import app.item.Asset;
 import app.item.AssetAttribute;
 import app.item.AssetInfo;
 import app.item.TrainedModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,6 +20,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class AssetDAOImpl extends DAO implements AssetDAO {
+
+    Logger logger = LoggerFactory.getLogger(AssetDAOImpl.class);
 
     private static final String GET_ASSETS_TO_UPDATE = "SELECT * FROM asset WHERE archived = false AND updated = true";
     private static final String GET_ASSET_INFO_FROM_ASSET_ID = "SELECT DISTINCT att.* FROM attribute_measurements am, attribute att WHERE att.attribute_id=am.attribute_id AND am.asset_id = ?";
@@ -44,7 +48,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
                 assets.add(createFullAssetFromQueryResult(rs));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception in getAssetsToUpdate: ", e);
         }
         return assets;
     }
@@ -67,7 +71,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
                     attributeNames.add(queryResult.getString("attribute_name"));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception: in getAttributesNameFromAssetID", e);
         }
 
         return attributeNames;
@@ -92,7 +96,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception in getAssetsFromAssetTypeID: ", e);
         }
         return assets;
     }
@@ -113,7 +117,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
                     name = queryResult.getString("name");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception in getAssetTypeNameFromID(): ", e);
         }
         return name;
     }
@@ -131,7 +135,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
                 assets.add(createAssetFromQueryResult(rs));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception in getAllLiveAssets(): ", e);
         }
         return assets;
     }
@@ -154,7 +158,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
             ps.setDouble(3, estimation);
             ps.executeQuery();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception in addRULEstimation(): ", e);
         }
         resetAssetUpdate(asset.getId());
     }
@@ -172,7 +176,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
             ps.setInt(2, assetID);
             ps.executeQuery();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception in updateRecommendation(): ", e);
         }
     }
 
@@ -188,7 +192,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
             ps.setInt(1, assetID);
             ps.executeQuery();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception in resetAssetUpdate(): ", e);
         }
     }
 
@@ -203,7 +207,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
             ps.setInt(1, assetID);
             ps.executeQuery();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception setAssetUpdate(): ", e);
         }
     }
 
@@ -290,7 +294,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
             }
             return newAssetInfo;
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception in createAssetInfo(): ", e);
         }
         return null;
     }

@@ -30,7 +30,7 @@ public class RandomForestModelImpl implements ModelStrategy
         }
 
         catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Exception: ", e);
             return null;
         }
 

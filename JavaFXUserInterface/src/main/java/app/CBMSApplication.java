@@ -37,8 +37,8 @@ public class CBMSApplication extends Application {
         primaryStage.setOnCloseRequest(e -> {
             try {
                 closeProgram();
-            } catch (Exception exception) {
-                exception.printStackTrace();
+            } catch (Exception ex) {
+                logger.error("Exception: ", ex);
             }
         });
     }

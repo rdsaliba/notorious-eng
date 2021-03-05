@@ -7,10 +7,15 @@
  */
 package preprocessing;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import weka.core.Instances;
 import weka.filters.unsupervised.attribute.Remove;
 
 public interface DataPreProcessor {
+
+    Logger logger = LoggerFactory.getLogger(DataPreProcessor.class);
+
     void processFullReduction();
     void processMinimalReduction();
     Instances getReducedDataset();

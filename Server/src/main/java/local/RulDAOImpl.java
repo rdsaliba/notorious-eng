@@ -7,11 +7,15 @@
  */
 package local;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class RulDAOImpl extends DAO implements RulDAO {
+    Logger logger = LoggerFactory.getLogger(RulDAOImpl.class);
     public static final String GET_LATEST_RUL_FROM_ASSET_ID = "SELECT value FROM asset_model_calculation where asset_id = ? ORDER BY `timestamp` desc LIMIT 1";
 
     /**
@@ -31,7 +35,7 @@ public class RulDAOImpl extends DAO implements RulDAO {
                     estimate = rs.getDouble("value");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception: ", e);
         }
         return estimate;
     }

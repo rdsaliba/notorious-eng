@@ -8,6 +8,8 @@
  */
 package controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import utilities.TextConstants;
 import utilities.UIUtilities;
 import app.ModelController;
@@ -37,6 +39,9 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class AssetsController implements Initializable {
+
+    Logger logger = LoggerFactory.getLogger(AssetsController.class);
+
     private static final String SORT_DEFAULT = "Default";
     private static final String SORT_RUL_ASC = "Ascending RUL";
     private static final String SORT_RUL_DESC = "Descending RUL";
@@ -85,7 +90,7 @@ public class AssetsController implements Initializable {
         try {
             assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets().subList(0, 50));
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Exception: ", e);
         }
     }
 

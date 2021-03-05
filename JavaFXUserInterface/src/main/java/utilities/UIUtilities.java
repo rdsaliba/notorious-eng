@@ -19,6 +19,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -26,6 +28,8 @@ import java.text.ParsePosition;
 import java.util.List;
 
 public class UIUtilities {
+
+    Logger logger = LoggerFactory.getLogger(UIUtilities.class);
 
     private static final String FXML = ".fxml";
     private static final String ERROR_MESSAGE = "error-message";
@@ -89,7 +93,7 @@ public class UIUtilities {
             window.show();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Exception in changeScene(): ", e);
         }
     }
 
@@ -135,7 +139,7 @@ public class UIUtilities {
                 window.show();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Exception in changeScene 2: ", e);
         }
     }
 
@@ -163,7 +167,7 @@ public class UIUtilities {
             window.show();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Exception in changeScene 3: ", e);
         }
     }
 
