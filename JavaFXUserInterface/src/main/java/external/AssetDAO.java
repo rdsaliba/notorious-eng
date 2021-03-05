@@ -13,6 +13,7 @@ import app.item.AssetInfo;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 public interface AssetDAO {
 
@@ -26,4 +27,11 @@ public interface AssetDAO {
 
     AssetInfo createAssetInfo(int assetID);
 
+    List<Asset> getLiveAssetsFromAssetTypeID(int assetTypeID);
+
+    Asset createFullAssetFromQueryResult(ResultSet assetsQuery) throws SQLException;
+
+    List<Asset> getArchivedAssetsFromAssetTypeID(int assetTypeID);
+
+    void setAssetToBeUpdated(int assetID);
 }

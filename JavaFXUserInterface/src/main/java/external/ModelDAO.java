@@ -7,18 +7,23 @@
  */
 package external;
 
-import app.item.TrainedModel;
+import app.item.Model;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.List;
 
 public interface ModelDAO {
 
-    TrainedModel getModelsByAssetTypeID(String assetTypeID);
-
     String getModelNameFromAssetTypeID(String assetTypeId);
 
-    TrainedModel createTrainedModelFromResultSet(ResultSet rs, boolean withModel) throws SQLException;
-    ArrayList<String> getListOfModels();
+    int getModelIDFromAssetTypeID(String assetTypeID);
+
+    void updateRMSE(Double rmse, int modelId, int assetTypeId);
+
+    List<Model> getAllModels();
+
+    void updateModelAssociatedWithAssetType(int modelID, String assetTypeID);
+
+    void setModelToTrain(String assetTypeID);
+
+    String getGetModelEvaluation(int modelID, String assetTypeID);
 }
