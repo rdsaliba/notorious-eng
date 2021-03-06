@@ -100,7 +100,6 @@
     -fx-background-color: #FBFBFC;
 }
 
-
 .table-row-cell {
     -fx-cell-size: 35px;
 }
@@ -113,4 +112,8 @@
     -fx-background-color: #FBFBFC;
     -fx-border-width: 1px;
     -fx-border-color: #E8E9EA transparent #E8E9EA transparent;
+}
+
+.default-color0.chart-series-line {
+    -fx-stroke: #EE6352;
 }

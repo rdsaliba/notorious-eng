@@ -5,6 +5,7 @@
 
 .navBtn:hover {
     -fx-background-color: #226B9E;
+    -fx-cursor: hand;
 }
 
 .nav {

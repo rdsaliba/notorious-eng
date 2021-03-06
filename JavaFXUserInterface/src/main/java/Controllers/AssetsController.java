@@ -23,10 +23,12 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
@@ -182,10 +184,10 @@ public class AssetsController implements Initializable {
             Pane imagePlaceholder = new Pane();
             imagePlaceholder.getStyleClass().add("imagePlaceholder");
 
-            Pane rulPane = new Pane();
+            HBox rulPane = new HBox();
             rulPane.getStyleClass().add("rulPane");
 
-            Pane statusPane = new Pane();
+            HBox statusPane = new HBox();
             statusPane.getStyleClass().add("statusPane");
 
             Text assetName = new Text(asset.getSerialNo());
@@ -219,13 +221,19 @@ public class AssetsController implements Initializable {
             else
                 statusPane.getStyleClass().add("none");
 
+            statusPane.setAlignment(Pos.CENTER);
             rulPane.getStyleClass().add("rulPane");
+            rulPane.setAlignment(Pos.CENTER);
 
             //recommendation.layoutXProperty().bind(statusPane.widthProperty().subtract(recommendation.wrappingWidthProperty()).divide(2));
             //rulValue.layoutXProperty().bind(rulPane.widthProperty().subtract(rulValue.prefWidth(-1)).divide(2));
 
-            recommendation.layoutXProperty().bind(statusPane.widthProperty().subtract(recommendation.wrappingWidthProperty()).divide(3));
-            rulValue.layoutXProperty().bind(rulPane.widthProperty().subtract(rulValue.wrappingWidthProperty()).divide(3));
+//            rulValue.setAlignment(Pos.CENTER_LEFT);
+//            //rulValue.setLayoutY(-20);
+//            recommendation.setAlignment(Pos.CENTER);
+//            recommendation.setLayoutY(0);
+            //recommendation.layoutXProperty().bind(statusPane.widthProperty().subtract(recommendation.wrappingWidthProperty()).divide(3));
+            //rulValue.layoutXProperty().bind(rulPane.widthProperty().subtract(rulValue.widthProperty()).divide(2));
 
 
             assetName.setLayoutX(15.0);

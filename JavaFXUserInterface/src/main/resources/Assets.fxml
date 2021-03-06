@@ -9,7 +9,6 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.FlowPane?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
@@ -36,25 +35,25 @@
                                  <content>
                                     <FlowPane fx:id="assetsThumbPane" hgap="31.0" prefHeight="625.0" prefWidth="1134.0" prefWrapLength="600.0" styleClass="flowPane" vgap="24.0">
                                        <children>
-                                          <Pane prefHeight="200.0" prefWidth="200.0" styleClass="assetPane">
-                                             <children>
-                                                <Text id="assetName" layoutX="15.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="assetName" text="System101" />
-                                                <Text id="assetType" layoutX="15.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="assetType" text="TurboJet Engine" />
-                                                <Pane layoutX="15.0" layoutY="80.0" prefHeight="200.0" prefWidth="200.0" styleClass="imagePlaceholder" />
-                                                <Text layoutX="52.0" layoutY="239.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="rulLabel" text="RUL" />
-                                                <Pane layoutX="15.0" layoutY="243.0" prefHeight="30.0" prefWidth="99.0" styleClass="rulPane">
-                                                   <children>
-                                                      <Text layoutX="31.0" layoutY="21.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="rulValue" text="234.6" textAlignment="CENTER" />
-                                                   </children>
-                                                </Pane>
-                                                <Text layoutX="164.0" layoutY="238.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="statusLabel" text="Status" />
-                                                <Pane layoutX="133.0" layoutY="243.0" prefHeight="30.0" prefWidth="99.0" styleClass="statusPane">
-                                                   <children>
-                                                      <Text layoutX="21.0" layoutY="21.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="statusValue" text="Advisory" textAlignment="CENTER" />
-                                                   </children>
-                                                </Pane>
-                                             </children>
-                                          </Pane>
+<!--                                          <Pane prefHeight="200.0" prefWidth="200.0" styleClass="assetPane">-->
+<!--                                             <children>-->
+<!--                                                <Text id="assetName" layoutX="15.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="assetName" text="System101" />-->
+<!--                                                <Text id="assetType" layoutX="15.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="assetType" text="TurboJet Engine" />-->
+<!--                                                <Pane layoutX="15.0" layoutY="80.0" prefHeight="200.0" prefWidth="200.0" styleClass="imagePlaceholder" />-->
+<!--                                                <Text layoutX="52.0" layoutY="239.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="rulLabel" text="RUL" />-->
+<!--                                                <Pane layoutX="15.0" layoutY="243.0" prefHeight="30.0" prefWidth="99.0" styleClass="rulPane">-->
+<!--                                                   <children>-->
+<!--                                                      <Text layoutX="31.0" layoutY="21.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="rulValue" text="234.6" textAlignment="CENTER" />-->
+<!--                                                   </children>-->
+<!--                                                </Pane>-->
+<!--                                                <Text layoutX="164.0" layoutY="238.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="statusLabel" text="Status" />-->
+<!--                                                <Pane layoutX="133.0" layoutY="243.0" prefHeight="30.0" prefWidth="99.0" styleClass="statusPane">-->
+<!--                                                   <children>-->
+<!--                                                      <Text layoutX="21.0" layoutY="21.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="statusValue" text="Advisory" textAlignment="CENTER" />-->
+<!--                                                   </children>-->
+<!--                                                </Pane>-->
+<!--                                             </children>-->
+<!--                                          </Pane>-->
                                        </children>
                                     </FlowPane>
                                  </content>

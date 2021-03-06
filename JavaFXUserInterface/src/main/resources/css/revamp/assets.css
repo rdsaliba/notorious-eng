@@ -132,7 +132,7 @@
     -fx-fill: #3A3A3A;
     -fx-font-weight: bold;
     -fx-pref-width: 99px;
-    -fx-text-alignment: center;
+    -fx-pref-height: 15px;
 }
 
 .statusValue {
@@ -141,7 +141,7 @@
     -fx-fill: #3A3A3A;
     -fx-font-weight: bold;
     -fx-pref-width: 99px;
-    -fx-text-alignment: center;
+    -fx-pref-height: 15px;
 }
 
 .table-view {
@@ -211,7 +211,7 @@
 
 .ok {
     -fx-background-color: #B1FFC6;
-    -fx-border-color:: #B1FFC6;
+    -fx-border-color: #B1FFC6;
 }
 
 .caution {
