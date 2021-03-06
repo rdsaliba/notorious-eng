@@ -1,16 +1,11 @@
 package app.item.parameter;
 
-public class IntParameter extends parameter {
+public class IntParameter extends Parameter {
     private int intValue;
 
 
-    public IntParameter(String paramName, int intValue) {
-        super(paramName);
-        this.intValue = intValue;
-    }
-
-    public IntParameter(int paramID, String paramName, int intValue) {
-        super(paramID, paramName);
+    public IntParameter(int paramID, String paramName, boolean isLive, boolean isDefault, int intValue) {
+        super(paramID, paramName, isLive, isDefault);
         this.intValue = intValue;
     }
 

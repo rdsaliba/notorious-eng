@@ -123,14 +123,17 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
      */
     @Override
     public TrainedModel createTrainedModelFromResultSet(ResultSet rs, boolean withModel) throws SQLException {
+        ParameterDAO parameterDAO = new ParameterDAOImpl();
         TrainedModel tm = new TrainedModel();
         tm.setModelID(rs.getInt("model_id"));
         tm.setAssetTypeID(rs.getInt("asset_type_id"));
         tm.setRetrain(rs.getBoolean("retrain"));
+        tm.setIsLive(rs.getBoolean("is_live"));
         try {
             if (withModel) {
                 tm.setModelClassifier((Classifier) new ObjectInputStream(new ByteArrayInputStream(rs.getBytes("serialized_model"))).readObject());
             }
+            tm.setParameterList(parameterDAO.getParametersForModelAssetType(tm.getModelID(), tm.getAssetTypeID()));
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
             return null;

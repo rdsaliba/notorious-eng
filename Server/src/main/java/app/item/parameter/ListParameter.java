@@ -2,17 +2,18 @@ package app.item.parameter;
 
 import java.util.ArrayList;
 
-public class ListParameter extends parameter {
+public class ListParameter extends Parameter {
     private ArrayList<String> listValues;
     private String selectedValue;
 
-
-    public ListParameter(String paramName) {
-        super(paramName);
+    public ListParameter(int paramID, String paramName, boolean isLive, boolean isDefault) {
+        super(paramID, paramName, isLive, isDefault);
+        this.listValues = new ArrayList<>();
+        this.selectedValue = null;
     }
 
-    public ListParameter(int paramID, String paramName) {
-        super(paramID, paramName);
+    public void addToList(String value){
+        listValues.add(value);
     }
 
     public ArrayList<String> getListValues() {

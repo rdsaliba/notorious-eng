@@ -1,16 +1,10 @@
 package app.item.parameter;
 
-public class StringParameter extends parameter {
+public class StringParameter extends Parameter {
     private String stringValue;
 
-
-    public StringParameter(String paramName, String stringValue) {
-        super(paramName);
-        this.stringValue = stringValue;
-    }
-
-    public StringParameter(int paramID, String paramName, String stringValue) {
-        super(paramID, paramName);
+    public StringParameter(int paramID, String paramName, boolean isLive, boolean isDefault, String stringValue) {
+        super(paramID, paramName, isLive, isDefault);
         this.stringValue = stringValue;
     }
 
