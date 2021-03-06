@@ -20,6 +20,7 @@ import external.ModelDAOImpl;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -57,6 +58,10 @@ public class AssetInfoController implements Initializable {
     private static final int ATTRIBUTE_GRAPH_SIZE = 5;
     @FXML
     private Button deleteBtn;
+    @FXML
+    private Button backBtn;
+    @FXML
+    private Button exitMenuBtn;
     @FXML
     private Text assetName;
     @FXML
@@ -216,6 +221,8 @@ public class AssetInfoController implements Initializable {
      * @author Jeff
      */
     public void attachEvents() {
+        // Change scenes to Assets.fxml
+        backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE));
         deleteBtn.setOnMouseClicked(mouseEvent -> {
             timelines.forEach(Timeline::stop);
             CustomDialog.systemInfoController(mouseEvent, asset.getId());
