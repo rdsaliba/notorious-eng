@@ -102,7 +102,7 @@ public class ModelController {
             if (tm.getAssetTypeID() == Integer.parseInt(assetTypeID))
                 return tm;
         }
-        trainedModels.add(modelDAOImpl.getModelsByAssetTypeID(assetTypeID));
+        trainedModels.add(modelDAOImpl.getModelsByAssetTypeID(assetTypeID, 1));
         return trainedModels.get(trainedModels.size() - 1);
     }
 
@@ -124,11 +124,11 @@ public class ModelController {
             for (TrainedModel trainedModel : trainedModelsToRetrain) {
                 try {
                     trainModel(trainedModel);
+                    modelDAOImpl.setModelsToTrain(trainedModel);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-            modelDAOImpl.setModelsToTrain(trainedModelsToRetrain);
         }
     }
 
@@ -143,6 +143,7 @@ public class ModelController {
         ModelStrategy modelStrategy = getModelStrategy(trainedModel);
         if (modelStrategy != null) {
             ModelsController modelsController = new ModelsController(modelStrategy);
+            trainedModel.setModelStrategy(modelStrategy);
             trainedModel.setModelClassifier(modelsController.trainModel(reducedData));
         }
     }
@@ -154,7 +155,7 @@ public class ModelController {
      * @author Paul
      */
     private ModelStrategy getModelStrategy(TrainedModel trainedModel) {
-        String stratName = modelDAOImpl.getModelNameFromAssetTypeID(String.valueOf(trainedModel.getAssetTypeID()));
+        String stratName = modelDAOImpl.getModelNameFromModelID(String.valueOf(trainedModel.getModelID()));
         switch (stratName) {
             case "Linear":                                  //1: Linear
                 return new LinearRegressionModelImpl();
