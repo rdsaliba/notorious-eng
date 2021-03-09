@@ -38,5 +38,21 @@
              </Button>
          </children>
       </VBox>
+      <VBox layoutY="683.0" prefHeight="144.0" prefWidth="58.0">
+         <children>
+            <Button fx:id="exitMenuBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="58.0" prefWidth="58.0" style="-fx-background-radius: 0;" styleClass="navBtn" textAlignment="CENTER" textFill="#f0f0f0">
+               <font>
+                  <Font name="Segoe UI Bold" size="14.0" />
+               </font>
+               <graphic>
+                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@imgs/outline_exit_to_app_white_36dp.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+         </children>
+      </VBox>
    </children>
 </AnchorPane>

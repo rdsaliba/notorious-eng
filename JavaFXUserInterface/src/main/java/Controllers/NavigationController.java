@@ -2,10 +2,10 @@ package Controllers;
 
 import Utilities.TextConstants;
 import Utilities.UIUtilities;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -15,6 +15,8 @@ public class NavigationController implements Initializable {
     private Button assetMenuBtn;
     @FXML
     private Button assetTypeMenuBtn;
+    @FXML
+    private Button exitMenuBtn;
 
     private UIUtilities uiUtilities;
 
@@ -30,5 +32,8 @@ public class NavigationController implements Initializable {
 
         //Attach link to assetTypeMenuBtn to go to Utilities.AssetTypeList.fxml
         assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
+
+        //Attach ability to close program
+        exitMenuBtn.setOnMouseClicked(mouseEvent -> Platform.exit());
     }
 }

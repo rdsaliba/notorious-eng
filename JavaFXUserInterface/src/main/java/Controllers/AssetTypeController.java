@@ -10,7 +10,6 @@ import Utilities.TextConstants;
 import Utilities.UIUtilities;
 import app.item.AssetType;
 import external.AssetTypeDAOImpl;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -20,7 +19,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -49,13 +47,7 @@ public class AssetTypeController implements Initializable {
 
     //Configure buttons
     @FXML
-    private Button assetMenuBtn;
-    @FXML
-    private Button assetTypeMenuBtn;
-    @FXML
     private Button addTypeBtn;
-    @FXML
-    private Button exitMenuBtn;
 
     private UIUtilities uiUtilities;
 

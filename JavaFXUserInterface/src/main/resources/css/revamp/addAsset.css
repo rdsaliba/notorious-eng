@@ -55,3 +55,9 @@
     -fx-font-size: 20px;
     -fx-fill: #3A3A3A;
 }
+
+.formLabel {
+    -fx-fill: #3A3A3A;
+    -fx-font-size: 14px;
+    -fx-font-family: 'Segoe UI';
+}

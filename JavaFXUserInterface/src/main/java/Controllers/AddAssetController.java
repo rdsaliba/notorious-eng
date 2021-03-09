@@ -12,19 +12,15 @@ import app.item.Asset;
 import app.item.AssetType;
 import external.AssetDAOImpl;
 import external.AssetTypeDAOImpl;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.util.StringConverter;
-
 import java.net.URL;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class AddAssetController implements Initializable {
@@ -33,17 +29,11 @@ public class AddAssetController implements Initializable {
     private static final String SAVE_HEADER = "Asset has been saved to the database.";
 
     @FXML
-    public Button assetMenuBtn;
-    @FXML
-    private Button assetTypeMenuBtn;
-    @FXML
     private Button cancelBtn;
     @FXML
     private Button saveBtn;
     @FXML
     private Button backBtn;
-    @FXML
-    private Button exitMenuBtn;
     @FXML
     private ChoiceBox<AssetType> assetTypeChoiceBox;
     @FXML
@@ -110,8 +100,6 @@ public class AddAssetController implements Initializable {
         });
         // Change scenes to Assets.fxml
         backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE));
-        //Attach ability to close program
-        //exitMenuBtn.setOnMouseClicked(mouseEvent -> Platform.exit());
         cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE));
     }
 

@@ -17,7 +17,6 @@ import external.ModelDAOImpl;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.application.Platform;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -34,7 +33,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import rul.assessment.AssessmentController;
-
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -59,8 +57,6 @@ public class AssetsController implements Initializable {
 
     @FXML
     private Button addAssetBtn;
-    @FXML
-    private Button exitMenuBtn;
     @FXML
     private FlowPane assetsThumbPane;
     @FXML
@@ -142,8 +138,6 @@ public class AssetsController implements Initializable {
             assetsListPane.getChildren().clear();
             generateList();
         });
-        //Attach ability to close program
-        exitMenuBtn.setOnMouseClicked(mouseEvent -> Platform.exit());
 
         //Attach link to addAssetButton to go to AddAsset.fxml
         addAssetBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(rulTimeline, mouseEvent, TextConstants.ADD_ASSETS));
@@ -227,7 +221,6 @@ public class AssetsController implements Initializable {
                 statusPane.getStyleClass().add("none");
 
             statusPane.setAlignment(Pos.CENTER);
-            rulPane.getStyleClass().add("rulPane");
             rulPane.setAlignment(Pos.CENTER);
 
             //recommendation.layoutXProperty().bind(statusPane.widthProperty().subtract(recommendation.wrappingWidthProperty()).divide(2));

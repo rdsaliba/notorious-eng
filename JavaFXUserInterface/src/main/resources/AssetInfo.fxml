@@ -6,6 +6,8 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.text.Font?>
@@ -13,12 +15,21 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="834.0" prefWidth="1194.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AssetInfoController">
     <children>
-        <fx:include source="Navigation.fxml" />
+        <fx:include source="Navigation.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0" />
         <AnchorPane prefHeight="200.0" prefWidth="200.0" styleClass="container" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="59.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
                 <AnchorPane prefHeight="80.0" prefWidth="952.0" styleClass="titleBar" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <children>
-                        <Text fx:id="assetName" fill="#0c072e" layoutX="26.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="header" text="Asset Name">
+                        <Button fx:id="backBtn" layoutX="15.0" layoutY="17.0" mnemonicParsing="false" style="-fx-background-color: transparent;" textFill="TRANSPARENT">
+                            <graphic>
+                                <ImageView fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@imgs/outline_arrow_back_black_36dp.png" />
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                        <Text fx:id="assetName" fill="#0c072e" layoutX="62.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="header" text="Asset Name">
                             <font>
                                 <Font name="Segoe UI Bold" size="18.0" />
                             </font>

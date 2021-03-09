@@ -14,18 +14,19 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="834.0" prefWidth="1194.0" stylesheets="@css/revamp/style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.AssetsController">
    <children>
-       <fx:include source="Navigation.fxml" />
+       <fx:include source="Navigation.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0" />
       <AnchorPane layoutX="315.0" layoutY="180.0" prefHeight="200.0" prefWidth="808.0" styleClass="container" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="59.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <ChoiceBox layoutX="996.0" layoutY="147.0" prefWidth="150.0" styleClass="dropdown" />
-            <Button id="addAssetBtn" fx:id="addAssetBtn" layoutX="860.0" layoutY="25.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="247.0" text="Add System">
+            <ChoiceBox fx:id="sortAsset" layoutX="860.0" layoutY="147.0" prefWidth="150.0" styleClass="dropdown" AnchorPane.rightAnchor="164.0" />
+            <ChoiceBox layoutX="996.0" layoutY="147.0" prefWidth="150.0" styleClass="dropdown" AnchorPane.rightAnchor="28.0" />
+            <Button id="addAssetBtn" fx:id="addAssetBtn" layoutX="860.0" layoutY="25.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="247.0" text="Add Asset" AnchorPane.rightAnchor="28.0">
                <font>
                   <Font name="Segoe UI Semibold" size="20.0" />
                </font>
             </Button>
             <TextField id="search" fx:id="search" layoutX="26.0" layoutY="25.0" promptText="Search Here" />
             <Text layoutX="26.0" layoutY="115.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="header" text="Systems" />
-            <TabPane layoutX="201.0" layoutY="172.0" prefHeight="667.0" prefWidth="1135.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+            <TabPane layoutX="201.0" layoutY="172.0" prefHeight="667.0" prefWidth="1135.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="167.0">
               <tabs>
                 <Tab id="thumbnailTab" fx:id="thumbnailTab" text="Thumbnails">
                   <content>
@@ -35,25 +36,6 @@
                                  <content>
                                     <FlowPane fx:id="assetsThumbPane" hgap="31.0" prefHeight="625.0" prefWidth="1134.0" prefWrapLength="600.0" styleClass="flowPane" vgap="24.0">
                                        <children>
-<!--                                          <Pane prefHeight="200.0" prefWidth="200.0" styleClass="assetPane">-->
-<!--                                             <children>-->
-<!--                                                <Text id="assetName" layoutX="15.0" layoutY="35.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="assetName" text="System101" />-->
-<!--                                                <Text id="assetType" layoutX="15.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="assetType" text="TurboJet Engine" />-->
-<!--                                                <Pane layoutX="15.0" layoutY="80.0" prefHeight="200.0" prefWidth="200.0" styleClass="imagePlaceholder" />-->
-<!--                                                <Text layoutX="52.0" layoutY="239.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="rulLabel" text="RUL" />-->
-<!--                                                <Pane layoutX="15.0" layoutY="243.0" prefHeight="30.0" prefWidth="99.0" styleClass="rulPane">-->
-<!--                                                   <children>-->
-<!--                                                      <Text layoutX="31.0" layoutY="21.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="rulValue" text="234.6" textAlignment="CENTER" />-->
-<!--                                                   </children>-->
-<!--                                                </Pane>-->
-<!--                                                <Text layoutX="164.0" layoutY="238.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="statusLabel" text="Status" />-->
-<!--                                                <Pane layoutX="133.0" layoutY="243.0" prefHeight="30.0" prefWidth="99.0" styleClass="statusPane">-->
-<!--                                                   <children>-->
-<!--                                                      <Text layoutX="21.0" layoutY="21.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="statusValue" text="Advisory" textAlignment="CENTER" />-->
-<!--                                                   </children>-->
-<!--                                                </Pane>-->
-<!--                                             </children>-->
-<!--                                          </Pane>-->
                                        </children>
                                     </FlowPane>
                                  </content>
@@ -70,7 +52,6 @@
                 </Tab>
               </tabs>
             </TabPane>
-            <ChoiceBox fx:id="sortAsset" layoutX="860.0" layoutY="147.0" prefWidth="150.0" styleClass="dropdown" />
          </children>
       </AnchorPane>
    </children>

@@ -15,7 +15,6 @@ import app.item.Model;
 import external.AssetDAOImpl;
 import external.AssetTypeDAOImpl;
 import external.ModelDAOImpl;
-import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,8 +22,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
@@ -34,7 +31,6 @@ import preprocessing.DataPrePreprocessorController;
 import rul.models.*;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,17 +46,11 @@ public class AssetTypeInfoController implements Initializable {
     @FXML
     private FlowPane modelsThumbPane;
     @FXML
-    private Button assetMenuBtn;
-    @FXML
-    private Button assetTypeMenuBtn;
-    @FXML
     private Button infoSaveBtn;
     @FXML
     private Button infoDeleteBtn;
     @FXML
     private Button backBtn;
-    @FXML
-    private Button exitMenuBtn;
     @FXML
     private TextField assetTypeName;
     @FXML
@@ -75,8 +65,6 @@ public class AssetTypeInfoController implements Initializable {
     private TextField thresholdWarning;
     @FXML
     private TextField thresholdFailed;
-    @FXML
-    private ImageView assetTypeImageView;
     @FXML
     private AnchorPane inputError;
     @FXML
@@ -158,16 +146,10 @@ public class AssetTypeInfoController implements Initializable {
      */
     public void attachEvents() {
         // Change scenes to Assets.fxml
-        //backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
-        //Attach ability to close program
-        //exitMenuBtn.setOnMouseClicked(mouseEvent -> Platform.exit());
+        backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
 
         modelTab.setOnSelectionChanged(event -> attachEventsModelTab());
 
-        // Change scenes to Assets.fxml
-        //assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE));
-        //Attach link to assetTypeMenuBtn to go to Utilities.AssetTypeList.fxml
-        //assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
         infoDeleteBtn.setOnMouseClicked(mouseEvent -> CustomDialog.systemTypeInfoControllerDialog(mouseEvent, assetType.getId()));
 
         infoSaveBtn.setDisable(true);
