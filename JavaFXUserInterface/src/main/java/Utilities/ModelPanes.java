@@ -42,7 +42,7 @@ public class ModelPanes {
             if ((i + 1) == modelID) {
                 modelPanes.get(i).setStyle("-fx-border-color: red");
             } else if ((i + 1) != modelID) {
-                modelPanes.get(i).setStyle("-fx-background-color: #e0e0eb");
+                //modelPanes.get(i).setStyle("-fx-background-color: #e0e0eb");
             }
         }
     }
@@ -70,7 +70,7 @@ public class ModelPanes {
     public void handleModelSelectionChange(ObservableList<Pane> modelPanes, int index) {
         for (int i = 0; i < modelPanes.size(); i++) {
             if ((i + 1) != index) {
-                modelPanes.get(i).setStyle("-fx-border-color: transparent; -fx-background-color: #e0e0eb");
+                modelPanes.get(i).setStyle("-fx-border-color: transparent;");
             }
         }
     }

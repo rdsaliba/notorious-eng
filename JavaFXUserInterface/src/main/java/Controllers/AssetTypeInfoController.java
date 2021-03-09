@@ -21,11 +21,13 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import preprocessing.DataPrePreprocessorController;
@@ -156,16 +158,16 @@ public class AssetTypeInfoController implements Initializable {
      */
     public void attachEvents() {
         // Change scenes to Assets.fxml
-        backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
+        //backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
         //Attach ability to close program
-        exitMenuBtn.setOnMouseClicked(mouseEvent -> Platform.exit());
+        //exitMenuBtn.setOnMouseClicked(mouseEvent -> Platform.exit());
 
         modelTab.setOnSelectionChanged(event -> attachEventsModelTab());
 
         // Change scenes to Assets.fxml
-        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE));
+        //assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE));
         //Attach link to assetTypeMenuBtn to go to Utilities.AssetTypeList.fxml
-        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
+        //assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
         infoDeleteBtn.setOnMouseClicked(mouseEvent -> CustomDialog.systemTypeInfoControllerDialog(mouseEvent, assetType.getId()));
 
         infoSaveBtn.setDisable(true);
@@ -413,24 +415,24 @@ public class AssetTypeInfoController implements Initializable {
         if ((field).equals(originalAssetType.getName()) || field.equals(originalAssetType.getDescription())) {
             if (!newText.isEmpty() && !newText.equals(field)) {
                 infoSaveBtn.setDisable(false);
-                infoSaveBtn.getStyleClass().clear();
-                infoSaveBtn.getStyleClass().add("infoSaveTrue");
+                //infoSaveBtn.getStyleClass().clear();
+                //infoSaveBtn.getStyleClass().add("infoSaveTrue");
                 return true;
             } else {
                 infoSaveBtn.setDisable(true);
-                infoSaveBtn.getStyleClass().clear();
-                infoSaveBtn.getStyleClass().add("infoSaveFalse");
+                //infoSaveBtn.getStyleClass().clear();
+                //infoSaveBtn.getStyleClass().add("infoSaveFalse");
                 return false;
             }
         } else if (!newText.isEmpty() && !field.equals("-") && Double.parseDouble(newText) == Double.parseDouble(field)) {
             infoSaveBtn.setDisable(true);
-            infoSaveBtn.getStyleClass().clear();
-            infoSaveBtn.getStyleClass().add("infoSaveFalse");
+            //infoSaveBtn.getStyleClass().clear();
+            //infoSaveBtn.getStyleClass().add("infoSaveFalse");
             return false;
         } else {
             infoSaveBtn.setDisable(false);
-            infoSaveBtn.getStyleClass().clear();
-            infoSaveBtn.getStyleClass().add("infoSaveTrue");
+            //infoSaveBtn.getStyleClass().clear();
+            //infoSaveBtn.getStyleClass().add("infoSaveTrue");
             return true;
         }
     }
@@ -441,11 +443,11 @@ public class AssetTypeInfoController implements Initializable {
      * @author Najim
      */
     public void setImage(String typeName) {
-        if (typeName.contains("Engine")) {
-            assetTypeImageView.setImage(new Image("imgs/asset_type_engine.png"));
-        } else {
-            assetTypeImageView.setImage(new Image("imgs/unknown_asset_type.png"));
-        }
+//        if (typeName.contains("Engine")) {
+//            assetTypeImageView.setImage(new Image("imgs/asset_type_engine.png"));
+//        } else {
+//            assetTypeImageView.setImage(new Image("imgs/unknown_asset_type.png"));
+//        }
     }
 
     /**
@@ -581,11 +583,15 @@ public class AssetTypeInfoController implements Initializable {
             // Generating items to display for the Thumbnail
             Text modelNameLabel = new Text(model.getModelName());
             Text modelDescriptionText = new Text(model.getDescription());
-            Text rmseLabel = new Text(RMSE + ": ");
+            Text rmseLabel = new Text(RMSE);
             Text rmseValue = new Text();
             String rmseValueObject = modelDAO.getGetModelEvaluation(model.getModelID(), assetType.getId());
             SimpleStringProperty observableRMSEValue = new SimpleStringProperty(rmseValueObject);
             rmseValue.textProperty().bind(observableRMSEValue);
+
+            HBox rmsePane = new HBox();
+            rmsePane.getStyleClass().add("rmsePane");
+            rmsePane.setAlignment(Pos.CENTER);
 
             Button evaluateModelBtn = new Button();
             evaluateModelBtn.setText("Evaluate");
@@ -594,28 +600,31 @@ public class AssetTypeInfoController implements Initializable {
             evaluateModelBtn.setOnMouseClicked(mouseEvent -> evaluateSelectedModel(model));
 
             //Setting IDs for the elements
-            modelNameLabel.setId("modelNameLabel");
+            modelNameLabel.getStyleClass().add("modelName");
             modelDescriptionText.setId("modelDescriptionText");
-            rmseLabel.setId("RMSELabel");
-            rmseValue.setId("RMSEValue");
-            evaluateModelBtn.setId("SelectBtn");
+            rmseLabel.getStyleClass().add("rmseLabel");
+            rmseValue.getStyleClass().add("rmseValue");
+            evaluateModelBtn.getStyleClass().add("selectBtn");
 
             //Setting the Layout of the elements
-            modelNameLabel.setLayoutX(14.0);
-            modelNameLabel.setLayoutY(28.0);
-            modelDescriptionText.setLayoutX(14.0);
-            modelDescriptionText.setLayoutY(60.0);
-            rmseLabel.setLayoutX(14.0);
-            rmseLabel.setLayoutY(100.0);
+            modelNameLabel.setLayoutX(15.0);
+            modelNameLabel.setLayoutY(35.0);
+            modelDescriptionText.setLayoutX(15.0);
+            modelDescriptionText.setLayoutY(80.0);
+            rmseLabel.setLayoutX(47.0);
+            rmseLabel.setLayoutY(239.0);
+            rmsePane.setLayoutX(15.0);
+            rmsePane.setLayoutY(243.0);
             rmseValue.setLayoutX(50.0);
             rmseValue.setLayoutY(100.0);
-            evaluateModelBtn.setLayoutX(150.0);
-            evaluateModelBtn.setLayoutY(75.0);
+            evaluateModelBtn.setLayoutX(133.0);
+            evaluateModelBtn.setLayoutY(243.0);
 
             modelPane.getChildren().add(modelNameLabel);
             modelPane.getChildren().add(modelDescriptionText);
+            rmsePane.getChildren().add(rmseValue);
             modelPane.getChildren().add(rmseLabel);
-            modelPane.getChildren().add(rmseValue);
+            modelPane.getChildren().add(rmsePane);
             modelPane.getChildren().add(evaluateModelBtn);
 
             modelPaneObservableList.add(modelPane);
