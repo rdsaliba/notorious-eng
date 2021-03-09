@@ -223,17 +223,6 @@ public class AssetsController implements Initializable {
             statusPane.setAlignment(Pos.CENTER);
             rulPane.setAlignment(Pos.CENTER);
 
-            //recommendation.layoutXProperty().bind(statusPane.widthProperty().subtract(recommendation.wrappingWidthProperty()).divide(2));
-            //rulValue.layoutXProperty().bind(rulPane.widthProperty().subtract(rulValue.prefWidth(-1)).divide(2));
-
-//            rulValue.setAlignment(Pos.CENTER_LEFT);
-//            //rulValue.setLayoutY(-20);
-//            recommendation.setAlignment(Pos.CENTER);
-//            recommendation.setLayoutY(0);
-            //recommendation.layoutXProperty().bind(statusPane.widthProperty().subtract(recommendation.wrappingWidthProperty()).divide(3));
-            //rulValue.layoutXProperty().bind(rulPane.widthProperty().subtract(rulValue.widthProperty()).divide(2));
-
-
             assetName.setLayoutX(15.0);
             assetName.setLayoutY(35.0);
             assetType.setLayoutX(15.0);

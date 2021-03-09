@@ -397,39 +397,18 @@ public class AssetTypeInfoController implements Initializable {
         if ((field).equals(originalAssetType.getName()) || field.equals(originalAssetType.getDescription())) {
             if (!newText.isEmpty() && !newText.equals(field)) {
                 infoSaveBtn.setDisable(false);
-                //infoSaveBtn.getStyleClass().clear();
-                //infoSaveBtn.getStyleClass().add("infoSaveTrue");
                 return true;
             } else {
                 infoSaveBtn.setDisable(true);
-                //infoSaveBtn.getStyleClass().clear();
-                //infoSaveBtn.getStyleClass().add("infoSaveFalse");
                 return false;
             }
         } else if (!newText.isEmpty() && !field.equals("-") && Double.parseDouble(newText) == Double.parseDouble(field)) {
             infoSaveBtn.setDisable(true);
-            //infoSaveBtn.getStyleClass().clear();
-            //infoSaveBtn.getStyleClass().add("infoSaveFalse");
             return false;
         } else {
             infoSaveBtn.setDisable(false);
-            //infoSaveBtn.getStyleClass().clear();
-            //infoSaveBtn.getStyleClass().add("infoSaveTrue");
             return true;
         }
-    }
-
-    /**
-     * Changes the Image depending on the Asset Type.
-     *
-     * @author Najim
-     */
-    public void setImage(String typeName) {
-//        if (typeName.contains("Engine")) {
-//            assetTypeImageView.setImage(new Image("imgs/asset_type_engine.png"));
-//        } else {
-//            assetTypeImageView.setImage(new Image("imgs/unknown_asset_type.png"));
-//        }
     }
 
     /**
