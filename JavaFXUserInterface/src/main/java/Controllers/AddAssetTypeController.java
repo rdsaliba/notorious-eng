@@ -27,17 +27,11 @@ import java.util.ResourceBundle;
 public class AddAssetTypeController implements Initializable {
 
     @FXML
-    private Button assetMenuBtn;
-    @FXML
-    private Button assetTypeMenuBtn;
-    @FXML
     private Button cancelBtn;
     @FXML
     private Button saveBtn;
     @FXML
     private Button backBtn;
-    @FXML
-    private Button exitMenuBtn;
     @FXML
     private TextField assetTypeName;
     @FXML
@@ -85,12 +79,6 @@ public class AddAssetTypeController implements Initializable {
     public void attachEvents() {
         // Change scenes to Assets.fxml
         backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
-        //Attach ability to close program
-        exitMenuBtn.setOnMouseClicked(mouseEvent -> Platform.exit());
-        // Change scenes to Assets.fxml
-        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
-        //Attach link to assetTypeMenuBtn to go to Utilities.AssetTypeList.fxml
-        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
         // Change scenes to Assets.fxml
         cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
         saveBtn.setOnMouseClicked(mouseEvent -> {
