@@ -8,7 +8,7 @@
  */
 package controllers;
 
-import Utilities.*;
+import utilities.*;
 import app.ModelController;
 import app.item.Asset;
 import app.item.Model;
@@ -28,7 +28,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
-import local.AssetDAOImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import preprocessing.DataPrePreprocessorController;
@@ -114,12 +113,8 @@ public class AssetTypeInfoController implements Initializable {
     private Instances testDataset;
     boolean validForm = true;
 
-    private final Text[] errorMessages = new Text[7];
-    private final boolean[] validInput = new boolean[7];
-
     int trainSize = 0;
     int testSize = 0;
-    protected DataPrePreprocessorController prePreprocessorController;
 
     static Logger logger = LoggerFactory.getLogger(AssetTypeInfoController.class);
 
@@ -579,7 +574,7 @@ public class AssetTypeInfoController implements Initializable {
             UIUtilities.removeInputError(inputError, errorMessages, validInput, assetTypeName, 0);
         }
     }
-}
+
     /**
      * Generates the thumbnails for each model that exist in the database. This function will display
      * on each thumbnail: the name of the model, its description, a button to generate the evaluation

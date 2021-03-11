@@ -1,14 +1,11 @@
 package UnitTests.Controllers;
 
-import Controllers.AssetTypeInfoController;
+import controllers.AssetTypeInfoController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.layout.Pane;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
 
 public class AssetTypeInfoControllerTest {
     private AssetTypeInfoController assetTypeInfoController;
