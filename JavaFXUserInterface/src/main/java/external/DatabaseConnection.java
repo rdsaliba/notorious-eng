@@ -11,10 +11,8 @@ import java.sql.SQLException;
 
 public class DatabaseConnection {
 
-    static Logger logger = LoggerFactory.getLogger(DatabaseConnection.class);
-
     private static final ConfigProperties properties = new ConfigProperties();
-
+    static Logger logger = LoggerFactory.getLogger(DatabaseConnection.class);
     private static DatabaseConnection openConnection;
     private static Connection conn;
 
@@ -32,7 +30,8 @@ public class DatabaseConnection {
         }
     }
 
-    private DatabaseConnection() {}
+    private DatabaseConnection() {
+    }
 
     public static DatabaseConnection getInstance() {
         if (openConnection == null) {

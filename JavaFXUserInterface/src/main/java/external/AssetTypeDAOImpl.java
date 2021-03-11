@@ -42,7 +42,6 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
         return 0;
     }
 
-
     @Override
     public String getAssetTypeThreshold(String assetTypeId, String thresholdType) {
         String threshold = "null";
@@ -61,7 +60,6 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
             threshold = "-";
         return threshold;
     }
-
 
     @Override
     public int insertAssetType(AssetType assetType) {
@@ -130,7 +128,6 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
         return name;
     }
 
-
     @Override
     public void updateAssetType(AssetType assetType) {
         try (PreparedStatement ps = getConnection().prepareStatement(UPDATE_ASSET_TYPE)) {
@@ -165,7 +162,8 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
         }
     }
 
-    /** Given an asset type id and boundary string value, this method will return the count of asset that match that asset type id
+    /**
+     * Given an asset type id and boundary string value, this method will return the count of asset that match that asset type id
      * and has as current recommendation the given threshold
      *
      * @author Paul
@@ -176,7 +174,7 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
             ps.setString(1, id);
             ps.setString(2, thresholdString);
             try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()){
+                while (rs.next()) {
                     count = rs.getInt("count");
                 }
             }

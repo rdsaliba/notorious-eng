@@ -20,11 +20,11 @@ import javafx.stage.StageStyle;
 public class CustomDialog extends Stage {
 
 
-    private static UIUtilities uiUtilities = new UIUtilities();
-    private Button btn;
-    private Pane root;
-    private Rectangle bg;
-    private Button cancelBtn;
+    private static final UIUtilities uiUtilities = new UIUtilities();
+    private final Button btn;
+    private final Pane root;
+    private final Rectangle bg;
+    private final Button cancelBtn;
 
     public CustomDialog(String header, String content) {
         root = new Pane();
@@ -56,26 +56,6 @@ public class CustomDialog extends Stage {
 
         root.getChildren().addAll(bg, box, btn, cancelBtn);
         setScene(new Scene(root, null));
-    }
-
-    public Pane getRoot() {
-        return root;
-    }
-
-    public Button getCancelBtn() {
-        return cancelBtn;
-    }
-
-    public Button getOkButton() {
-        return btn;
-    }
-
-    public void openDialog() {
-        show();
-    }
-
-    public void closeDialog() {
-        close();
     }
 
     public static void systemTypeInfoControllerDialog(MouseEvent mouseEvent, String systemID) {
@@ -118,5 +98,25 @@ public class CustomDialog extends Stage {
         dialog.getOkButton().setOnAction(e -> dialog.closeDialog());
         dialog.openDialog();
 
+    }
+
+    public Pane getRoot() {
+        return root;
+    }
+
+    public Button getCancelBtn() {
+        return cancelBtn;
+    }
+
+    public Button getOkButton() {
+        return btn;
+    }
+
+    public void openDialog() {
+        show();
+    }
+
+    public void closeDialog() {
+        close();
     }
 }

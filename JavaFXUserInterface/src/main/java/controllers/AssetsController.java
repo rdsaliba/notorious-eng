@@ -8,10 +8,6 @@
  */
 package controllers;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import utilities.TextConstants;
-import utilities.UIUtilities;
 import app.ModelController;
 import app.item.Asset;
 import external.AssetTypeDAOImpl;
@@ -33,14 +29,16 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import rul.assessment.AssessmentController;
+import utilities.TextConstants;
+import utilities.UIUtilities;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class AssetsController implements Initializable {
-
-    Logger logger = LoggerFactory.getLogger(AssetsController.class);
 
     private static final String SORT_DEFAULT = "Default";
     private static final String SORT_RUL_ASC = "Ascending RUL";
@@ -56,9 +54,9 @@ public class AssetsController implements Initializable {
     private static final String CATEGORY_COL = "Category";
     private static final String SITE_COL = "Site";
     private static final String DESCRIPTION_COL = "Description";
-
     private final AssetTypeDAOImpl assetTypeDAO;
     private final ModelDAOImpl modelDAO;
+    Logger logger = LoggerFactory.getLogger(AssetsController.class);
     @FXML
     private Button assetMenuBtn;
     @FXML
@@ -80,7 +78,7 @@ public class AssetsController implements Initializable {
     private UIUtilities uiUtilities;
     private ObservableList<Asset> assets;
     private Timeline rulTimeline;
-    private TableView<Asset> table;
+    private final TableView<Asset> table;
 
     public AssetsController() {
         assetTypeDAO = new AssetTypeDAOImpl();

@@ -5,9 +5,6 @@
  */
 package controllers;
 
-import utilities.AssetTypeList;
-import utilities.TextConstants;
-import utilities.UIUtilities;
 import app.item.AssetType;
 import external.AssetTypeDAOImpl;
 import javafx.application.Platform;
@@ -20,6 +17,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import utilities.AssetTypeList;
+import utilities.TextConstants;
+import utilities.UIUtilities;
 
 import java.net.URL;
 import java.util.ArrayList;

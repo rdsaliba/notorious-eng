@@ -5,8 +5,6 @@
  */
 package controllers;
 
-import utilities.TextConstants;
-import utilities.UIUtilities;
 import app.item.AssetType;
 import app.item.AssetTypeParameter;
 import external.AssetTypeDAOImpl;
@@ -19,6 +17,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
+import utilities.TextConstants;
+import utilities.UIUtilities;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -26,6 +26,7 @@ import java.util.ResourceBundle;
 
 public class AddAssetTypeController implements Initializable {
 
+    boolean validForm = true;
     @FXML
     private Button assetMenuBtn;
     @FXML
@@ -54,13 +55,11 @@ public class AddAssetTypeController implements Initializable {
     private TextField thresholdFailedValue;
     @FXML
     private AnchorPane inputError;
-
     private UIUtilities uiUtilities;
     private AssetTypeDAOImpl db;
     private ArrayList<AssetTypeParameter> assetTypeParameters;
-    private Text[] errorMessages = new Text[7];
-    private boolean[] validInput = new boolean[7];
-    boolean validForm = true;
+    private final Text[] errorMessages = new Text[7];
+    private final boolean[] validInput = new boolean[7];
 
     /**
      * Initialize runs before the scene is displayed.
@@ -96,7 +95,7 @@ public class AddAssetTypeController implements Initializable {
         cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
         saveBtn.setOnMouseClicked(mouseEvent -> {
             if (assetTypeFormInputValidation() && saveAssetType(assembleAssetType())) {
-                    uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE);
+                uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE);
             }
         });
 

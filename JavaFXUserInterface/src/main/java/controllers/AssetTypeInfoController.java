@@ -8,7 +8,6 @@
  */
 package controllers;
 
-import utilities.*;
 import app.ModelController;
 import app.item.Asset;
 import app.item.Model;
@@ -32,10 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import preprocessing.DataPrePreprocessorController;
 import rul.models.*;
-import utilities.AssetTypeList;
-import utilities.CustomDialog;
-import utilities.TextConstants;
-import utilities.UIUtilities;
+import utilities.*;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 
@@ -46,11 +42,15 @@ import java.util.ResourceBundle;
 
 public class AssetTypeInfoController implements Initializable {
     private static final String RMSE = "RMSE";
+    static Logger logger = LoggerFactory.getLogger(AssetTypeInfoController.class);
     private final Text[] errorMessages = new Text[7];
     private final boolean[] validInput = new boolean[7];
     private final ModelPanes modelPanes = new ModelPanes();
+    boolean validForm = true;
+    int trainSize = 0;
+    int testSize = 0;
     @FXML
-    Tab modelTab;
+    private Tab modelTab;
     @FXML
     private FlowPane modelsThumbPane;
     @FXML
@@ -111,12 +111,6 @@ public class AssetTypeInfoController implements Initializable {
     private ModelController modelController;
     private Instances trainDataset;
     private Instances testDataset;
-    boolean validForm = true;
-
-    int trainSize = 0;
-    int testSize = 0;
-
-    static Logger logger = LoggerFactory.getLogger(AssetTypeInfoController.class);
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {

@@ -5,11 +5,6 @@
  */
 package controllers;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import utilities.CustomDialog;
-import utilities.TextConstants;
-import utilities.UIUtilities;
 import app.item.Asset;
 import app.item.AssetType;
 import external.AssetDAOImpl;
@@ -26,14 +21,25 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.util.StringConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import utilities.CustomDialog;
+import utilities.TextConstants;
+import utilities.UIUtilities;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class AddAssetController implements Initializable {
 
+    private static final String AND_OR = " and/or \n";
+    private final Text[] errorMessages = new Text[7];
+    private final boolean[] validInput = new boolean[7];
+    Logger logger = LoggerFactory.getLogger(AddAssetController.class);
+    boolean validForm = true;
+
     @FXML
-    public Button assetMenuBtn;
+    private Button assetMenuBtn;
     @FXML
     private Button assetTypeMenuBtn;
     @FXML
@@ -62,18 +68,11 @@ public class AddAssetController implements Initializable {
     private TextField locationInput;
     @FXML
     private AnchorPane inputError;
-
-    Logger logger = LoggerFactory.getLogger(AddAssetController.class);
-
-    private static final String AND_OR = " and/or \n";
-
     private AssetDAOImpl assetDAOImpl;
     private AssetTypeDAOImpl assetTypeDAOImpl;
     private UIUtilities uiUtilities;
     private AssetType selectedAssetType;
-    private Text[] errorMessages = new Text[7];
-    private boolean[] validInput = new boolean[7];
-    boolean validForm = true;
+
     /**
      * Initialize runs before the scene is displayed.
      * It initializes elements and data in the scene.
@@ -105,9 +104,9 @@ public class AddAssetController implements Initializable {
 
         saveBtn.setOnMouseClicked(mouseEvent -> {
             Asset newAsset = assembleAsset();
-            if (formInputValidation() && !isAssetEmpty(newAsset)){
-                    saveAsset(newAsset);
-                    CustomDialog.addSystemControllerSaveDialog(mouseEvent);
+            if (formInputValidation() && !isAssetEmpty(newAsset)) {
+                saveAsset(newAsset);
+                CustomDialog.addSystemControllerSaveDialog(mouseEvent);
             }
         });
         // Change scenes to Assets.fxml
