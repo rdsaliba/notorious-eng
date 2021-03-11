@@ -6,12 +6,11 @@ package app;/*
   @author
   @last_edit 02/7/2020
  */
+
 import app.item.Asset;
 import app.item.AssetAttribute;
 import app.item.AssetInfo;
 import local.DAO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,8 +18,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class MeasurementDAO extends DAO {
-
-    Logger logger = LoggerFactory.getLogger(MeasurementDAO.class);
 
     private static final String GET_MEASUREMENTS = "SELECT * from attribute_measurements where asset_id =? and time > ((SELECT MAX(time) FROM attribute_measurements where asset_id=?) - ?) order by attribute_id";
     private static final String INSERT_MEASUREMENT_FOR_ASSET = "insert into attribute_measurements values (?,?,?,?)";

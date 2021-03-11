@@ -7,6 +7,7 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
+
     private static final String INSERT_ASSET_TYPE = "INSERT INTO asset_type (name, description) values( ?,? )";
     private static final String INSERT_ASSET_TYPE_PARAMETERS = "INSERT INTO asset_type_parameters (asset_type_id, parameter_name, boundary) values(?, ?, ?)";
     private static final String GET_ASSET_TYPES = "SELECT * FROM asset_type";

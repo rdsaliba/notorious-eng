@@ -11,8 +11,6 @@ package external;
 import app.item.Asset;
 import app.item.AssetAttribute;
 import app.item.AssetInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,8 +18,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class AssetDAOImpl extends DAO implements AssetDAO {
-
-    Logger logger = LoggerFactory.getLogger(AssetDAOImpl.class);
 
     private static final String DELETE_ASSET = "DELETE FROM asset WHERE asset_id = ?";
     private static final String GET_ASSET_INFO_FROM_ASSET_ID = "SELECT DISTINCT att.* FROM attribute_measurements am, attribute att WHERE att.attribute_id=am.attribute_id AND am.asset_id = ?";

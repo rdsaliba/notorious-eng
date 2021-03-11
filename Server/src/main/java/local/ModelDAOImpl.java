@@ -8,8 +8,6 @@
 package local;
 
 import app.item.TrainedModel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import weka.classifiers.Classifier;
 
 import java.io.ByteArrayInputStream;
@@ -21,8 +19,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class ModelDAOImpl extends DAO implements ModelDAO {
-
-    Logger logger = LoggerFactory.getLogger(ModelDAOImpl.class);
 
     private static final String UPDATE_SERIALIZE_OBJECT = "UPDATE trained_model SET retrain = false, serialized_model  = ? WHERE model_id = ? AND asset_type_id = ?";
     private static final String GET_SERIALIZE_OBJECT = "SELECT * FROM trained_model WHERE retrain = true";
