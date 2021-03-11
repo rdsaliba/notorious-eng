@@ -63,12 +63,12 @@ public class AssetInfoTest extends ApplicationTest {
 //        AssetInfo assetInfo = new AssetInfo();
 //        assetInfo.setAssetAttributes(attributes);
 //        asset.setAssetInfo(assetInfo);
-        AssetDAOImpl assetDAOImpl = new AssetDAOImpl();
-        ArrayList<Asset> assets = assetDAOImpl.getAllLiveAssets();
-        AssetInfoController.initData(assets.get(0));
-        stage.setTitle("CBMS");
-        stage.setScene(scene);
-        stage.show();
+//        AssetDAOImpl assetDAOImpl = new AssetDAOImpl();
+//        ArrayList<Asset> assets = assetDAOImpl.getAllLiveAssets();
+//        AssetInfoController.initData(assets.get(0));
+//        stage.setTitle("CBMS");
+//        stage.setScene(scene);
+//        stage.show();
     }
 
     @After

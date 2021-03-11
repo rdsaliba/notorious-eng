@@ -28,9 +28,6 @@ public class AssetTypeDAOImplTest {
 
         // second assert
         Assert.assertFalse(assetTypeDAO.getAssetTypeList().stream()
-                .filter(s -> s.getId().equals(testID))
-                .findAny()
-                .isPresent());
-
+                .anyMatch(s -> s.getId().equals(testID)));
     }
 }

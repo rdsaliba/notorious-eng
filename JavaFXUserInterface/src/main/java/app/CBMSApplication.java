@@ -25,7 +25,7 @@ public class CBMSApplication extends Application {
      * The main entry point for the JavaFX application.
      *
      * @param primaryStage the primary stage for this application, onto which the application scene can be set
-     * @author
+     * @author Jeff
      */
     @Override
     public void start(Stage primaryStage) throws Exception {

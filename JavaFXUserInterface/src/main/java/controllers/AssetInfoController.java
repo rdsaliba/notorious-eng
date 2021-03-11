@@ -247,15 +247,6 @@ public class AssetInfoController implements Initializable {
     }
 
     /**
-     * Send the asset ID to the Database class in order for it to be deleted.
-     *
-     * @author Jeff
-     */
-    public void deleteAsset() {
-        assetDAOImpl.deleteAssetByID(asset.getId());
-    }
-
-    /**
      * Fill the raw data table with the current measurement for the asset and update the list every
      * second with new measurement as they come in
      *
