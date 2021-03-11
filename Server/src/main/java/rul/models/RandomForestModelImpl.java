@@ -12,6 +12,32 @@ import weka.classifiers.trees.RandomForest;
 import weka.core.Instances;
 
 public class RandomForestModelImpl extends ModelStrategy {
+
+    private int bagSizePercentParameter;
+    private int batchSize;
+    private boolean breakTiesRandomlyParameter;
+    private boolean calcOutBagParameter;
+    private boolean computeAttributeImportanceParameter;
+    private int maxDepthParameter;
+    private int numExecutionSlotsParamter;
+    private int numFeaturesParameter;
+    private int numIterationsParameter;
+    private boolean storeOutOfBagPredictionsParameter;
+
+    //default
+    public RandomForestModelImpl()
+    {
+        bagSizePercentParameter = 100;
+        batchSize = 100;
+        breakTiesRandomlyParameter = false;
+        calcOutBagParameter = false;
+        computeAttributeImportanceParameter = false;
+        maxDepthParameter = 0;
+        numExecutionSlotsParamter = 1;
+        numFeaturesParameter = 0;
+        numIterationsParameter = 100;
+        storeOutOfBagPredictionsParameter = false;
+    }
     /**
      * This function takes the assets as the training dataset, and returns the trained
      * Random Forest classifier.
@@ -21,7 +47,7 @@ public class RandomForestModelImpl extends ModelStrategy {
 
     @Override
     public Classifier trainModel(Instances dataToTrain) {
-        Classifier randomForest = new RandomForest();
+        RandomForest randomForest = new RandomForest();
         dataToTrain.setClassIndex(dataToTrain.numAttributes() - 1);
 
         try {

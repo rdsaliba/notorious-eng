@@ -22,6 +22,36 @@ import weka.dl4j.updater.Sgd;
 import static org.deeplearning4j.nn.api.OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT;
 
 public class LSTMModelImpl extends ModelStrategy {
+
+    private int numberOfEpochParameter;
+    private String cacheModeParameter; //options: NONE, MEMORY, FILESYSTEM
+    private int queueSizeParameter;
+    private boolean resumeParameter;
+    private boolean filterModeParameter;
+    private boolean doNotClearFileSystemCacheParameter;
+    private int numberOfGPUParameter;
+    private int avgFrequencyParameter;
+    private int batchSizeParameter;
+    private String optimizationAlgoParameter; //options: STOCHASTIC_GRADIENT_DESCENT, LINE_GRADIENT_DESCENT,
+    private String weightInitParameter;     //options: XAVIER, RELU, IDENTITY, NORMAL, UNIFORM, ZERO, DISTRIBUTION
+    private boolean minimizeOBjectiveParameter;
+
+    public LSTMModelImpl()
+    {
+        this.numberOfEpochParameter = 10;
+        this.cacheModeParameter = "MEMORY";
+        this.queueSizeParameter = 0;
+        this.resumeParameter = false;
+        this.filterModeParameter = false;
+        this.doNotClearFileSystemCacheParameter = false;
+        this.numberOfGPUParameter = 1;
+        this.avgFrequencyParameter = 10;
+        this.batchSizeParameter = 100;
+        this.optimizationAlgoParameter = "STOCHASTIC_GRADIENT_DESCENT";
+        this.weightInitParameter = "XAVIER";
+        this.minimizeOBjectiveParameter = true;
+    }
+
     /**
      * This function takes the filtered training dataset, builds a Neural Network using Weka's Deep Learning 4 Java plugin
      * and trains and returns an LSTM model.

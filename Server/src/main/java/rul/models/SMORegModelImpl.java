@@ -13,6 +13,14 @@ import weka.core.Instances;
 
 public class SMORegModelImpl extends ModelStrategy {
 
+    private int batchSizeParameter;
+    private double cComplexityParameter;
+
+    public SMORegModelImpl()
+    {
+        batchSizeParameter = 100;
+        cComplexityParameter = 1.0;
+    }
     /**
      * This function takes the assets as the training dataset, and returns the trained
      * SMOReg classifier.
@@ -21,7 +29,7 @@ public class SMORegModelImpl extends ModelStrategy {
      */
     @Override
     public Classifier trainModel(Instances dataToTrain) {
-        Classifier smOreg = new SMOreg();
+        SMOreg smOreg = new SMOreg();
         dataToTrain.setClassIndex(dataToTrain.numAttributes() - 1);
 
         try {

@@ -13,6 +13,17 @@ import weka.core.Instances;
 
 public class RandomCommitteeModelImpl extends ModelStrategy {
 
+    private int batchSizePara;
+    private int numExecutionSlotsParamter;
+    private int numIterationsParameter;
+
+    public RandomCommitteeModelImpl()
+    {
+        this.batchSizePara = 100;
+        this.numExecutionSlotsParamter = 1;
+        this.numIterationsParameter = 10;
+    }
+
     /**
      * This function takes the assets as the training dataset, and returns the trained
      * Random Committee classifier.

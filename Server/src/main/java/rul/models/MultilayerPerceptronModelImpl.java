@@ -13,6 +13,41 @@ import weka.classifiers.functions.MultilayerPerceptron;
 import weka.core.Instances;
 
 public class MultilayerPerceptronModelImpl extends ModelStrategy {
+
+    //Parameters
+    private boolean showGUIParameter;
+    private boolean autoBuildParameter;
+    private int batchSizeParameter;
+    private boolean decayParameter;
+    private double learningRateParameter;
+    private double momentumParameter;
+    private boolean nominalToBinaryFilterParameter;
+    private boolean normalizeAttributesParameter;
+    private boolean normalizeNumericClassParameter;
+    private boolean resetParameter;
+    private boolean resumeParameter;
+    private int trainingTimeParameter;
+    private int validationSizeParameter;
+    private int validationThresholdParameter;
+
+    public MultilayerPerceptronModelImpl()
+    {
+        this.showGUIParameter = false;
+        this.autoBuildParameter = true;
+        this.batchSizeParameter = 100;
+        this.decayParameter = false;
+        this.learningRateParameter = 0.3;
+        this.momentumParameter = 0.2;
+        this.nominalToBinaryFilterParameter = true;
+        this.normalizeAttributesParameter = true;
+        this.normalizeNumericClassParameter = true;
+        this.resetParameter = true;
+        this.resumeParameter = false;
+        this.trainingTimeParameter = 500;
+        this.validationSizeParameter = 0;
+        this.validationThresholdParameter = 20;
+    }
+
     /**
      * This function takes the assets as the training dataset, and returns the trained
      * Multilayer Perceptron classifier.
