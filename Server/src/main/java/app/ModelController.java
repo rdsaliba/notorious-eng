@@ -60,7 +60,7 @@ public class ModelController {
                 checkModels();
                 System.out.println("ModelController - initialize - checkModels - end");
             }
-        }, 0, 5000);
+        }, 0, 2000);
     }
 
 
@@ -81,7 +81,7 @@ public class ModelController {
      *
      * @author Paul
      */
-    public boolean checkAssets() {
+    public void checkAssets() {
         AssessmentController assessmentController = new AssessmentController();
         //check for assets that need a new calculation
         ArrayList<Asset> assetsToUpdate = assetDaoImpl.getAssetsToUpdate();
@@ -95,7 +95,6 @@ public class ModelController {
             assetDaoImpl.updateRecommendation(asset.getId(), asset.getRecommendation());
             assetDaoImpl.addRULEstimation(estimation, asset, trainedModel);
         }
-        return !assetsToUpdate.isEmpty();
     }
 
     public TrainedModel getModelForAssetType(List<TrainedModel> trainedModels, String assetTypeID) {
@@ -116,21 +115,30 @@ public class ModelController {
      * @author Paul
      */
     public void checkModels() {
-
         // check for models that need retraining
         ArrayList<TrainedModel> trainedModelsToRetrain = modelDAOImpl.getModelsToTrain();
+        trainedModelsToRetrain
+                .stream()
+                .filter(tm -> tm.getStatusID() == Constants.STATUS_LIVE)
+                .forEach(this::trainAndSave);
+        trainedModelsToRetrain
+                .stream()
+                .filter(tm -> tm.getStatusID() == Constants.STATUS_EVALUATION)
+                .findFirst().ifPresent(this::trainAndSave);
+    }
 
-        // retrain models if necessary
-        if (!trainedModelsToRetrain.isEmpty()) {
-            for (TrainedModel trainedModel : trainedModelsToRetrain) {
-                try {
-                    trainModel(trainedModel);
-                    modelDAOImpl.setModelToTrain(trainedModel);
+    /**
+     * train the specific model and save it in the db
+     *
+     * @author Paul
+     */
+    private void trainAndSave(TrainedModel tm) {
+        try {
+            trainModel(tm);
+            modelDAOImpl.setModelToTrain(tm);
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -143,10 +151,14 @@ public class ModelController {
         Instances trainingSet = createInstancesFromAssets(assetDaoImpl.getAssetsFromAssetTypeID(trainedModel.getAssetTypeID()));
         Instances reducedData = DataPrePreprocessorController.getInstance().addRULCol(trainingSet);
         ModelStrategy modelStrategy = trainedModel.getModelStrategy();
-        if (modelStrategy != null) {
-            ModelsController modelsController = new ModelsController(modelStrategy);
-            trainedModel.setModelClassifier(modelsController.trainModel(reducedData));
+        if (modelStrategy == null) {
+            modelStrategy = getModelStrategy(trainedModel);
+            trainedModel.setModelStrategy(modelStrategy);
         }
+        ModelsController modelsController = new ModelsController(modelStrategy);
+        trainedModel.setModelClassifier(modelsController.trainModel(reducedData));
+
+
     }
 
     /**

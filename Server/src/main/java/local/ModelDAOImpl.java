@@ -59,7 +59,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
         try (PreparedStatement ps = getConnection().prepareStatement(GET_SERIALIZE_OBJECT)) {
             try (ResultSet queryResult = ps.executeQuery()) {
                 while (queryResult.next()) {
-                    tms.add(createTrainedModelFromResultSet(queryResult, false));
+                    tms.add(createTrainedModelFromResultSet(queryResult));
                 }
             }
         } catch (SQLException e) {
@@ -107,7 +107,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
             ps.setInt(2, statusID);
             try (ResultSet queryResult = ps.executeQuery()) {
                 while (queryResult.next()) {
-                    tm = createTrainedModelFromResultSet(queryResult, false);
+                    tm = createTrainedModelFromResultSet(queryResult);
                 }
             }
         } catch (SQLException e) {
@@ -123,16 +123,17 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
      * @author Paul
      */
     @Override
-    public TrainedModel createTrainedModelFromResultSet(ResultSet rs, boolean withModel) throws SQLException {
+    public TrainedModel createTrainedModelFromResultSet(ResultSet rs) throws SQLException {
         TrainedModel tm = new TrainedModel();
         tm.setModelID(rs.getInt("model_id"));
         tm.setAssetTypeID(rs.getInt("asset_type_id"));
         tm.setRetrain(rs.getBoolean("retrain"));
         tm.setStatusID(rs.getInt("status_id"));
         try {
-            if (withModel) {
-                tm.setModelStrategy((ModelStrategy) new ObjectInputStream(new ByteArrayInputStream(rs.getBytes("serialized_model"))).readObject());
-            }
+            byte[] buf = rs.getBytes("serialized_model");
+            if (buf != null)
+                tm.setModelStrategy((ModelStrategy) new ObjectInputStream(new ByteArrayInputStream(buf)).readObject());
+
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
             return null;

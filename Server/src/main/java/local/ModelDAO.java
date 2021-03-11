@@ -21,5 +21,5 @@ public interface ModelDAO {
 
     TrainedModel getModelsByAssetTypeID(String assetTypeID, int statusID);
 
-    TrainedModel createTrainedModelFromResultSet(ResultSet rs, boolean withModel) throws SQLException;
+    TrainedModel createTrainedModelFromResultSet(ResultSet rs) throws SQLException;
 }
