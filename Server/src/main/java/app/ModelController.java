@@ -14,6 +14,7 @@ import local.ModelDAOImpl;
 import preprocessing.DataPrePreprocessorController;
 import rul.assessment.AssessmentController;
 import rul.models.*;
+import utilities.Constants;
 import weka.classifiers.Classifier;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
@@ -102,7 +103,7 @@ public class ModelController {
             if (tm.getAssetTypeID() == Integer.parseInt(assetTypeID))
                 return tm;
         }
-        trainedModels.add(modelDAOImpl.getModelsByAssetTypeID(assetTypeID, 1));
+        trainedModels.add(modelDAOImpl.getModelsByAssetTypeID(assetTypeID, Constants.STATUS_LIVE));
         return trainedModels.get(trainedModels.size() - 1);
     }
 
@@ -124,7 +125,8 @@ public class ModelController {
             for (TrainedModel trainedModel : trainedModelsToRetrain) {
                 try {
                     trainModel(trainedModel);
-                    modelDAOImpl.setModelsToTrain(trainedModel);
+                    modelDAOImpl.setModelToTrain(trainedModel);
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -140,10 +142,9 @@ public class ModelController {
     private void trainModel(TrainedModel trainedModel) throws Exception {
         Instances trainingSet = createInstancesFromAssets(assetDaoImpl.getAssetsFromAssetTypeID(trainedModel.getAssetTypeID()));
         Instances reducedData = DataPrePreprocessorController.getInstance().addRULCol(trainingSet);
-        ModelStrategy modelStrategy = getModelStrategy(trainedModel);
+        ModelStrategy modelStrategy = trainedModel.getModelStrategy();
         if (modelStrategy != null) {
             ModelsController modelsController = new ModelsController(modelStrategy);
-            trainedModel.setModelStrategy(modelStrategy);
             trainedModel.setModelClassifier(modelsController.trainModel(reducedData));
         }
     }

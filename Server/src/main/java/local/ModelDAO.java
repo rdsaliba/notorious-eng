@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public interface ModelDAO {
     ArrayList<TrainedModel> getModelsToTrain();
 
-    void setModelsToTrain(TrainedModel tm);
+    void setModelToTrain(TrainedModel tm);
 
     String getModelNameFromModelID(String modelID);
 
