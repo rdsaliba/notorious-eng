@@ -127,7 +127,6 @@ public class UIUtilities {
                 window.setScene(assetTypeInfo);
                 AssetTypeInfoController controller = loader.getController();
                 controller.initData(assetType);
-                controller.setImage(assetType.getAssetType().getName());
                 window.show();
             }
         } catch (IOException e) {
