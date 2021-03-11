@@ -16,23 +16,22 @@ import weka.core.Instances;
 public class RandomForestModelImpl implements ModelStrategy {
 
     static Logger logger = LoggerFactory.getLogger(RandomForestModelImpl.class);
+
     /**
      * This function takes the assets as the training dataset, and returns the trained
      * Random Forest classifier.
+     *
      * @author Khaled
      */
 
     @Override
-    public Classifier trainModel(Instances dataToTrain)
-    {
+    public Classifier trainModel(Instances dataToTrain) {
         Classifier randomForest = new RandomForest();
         dataToTrain.setClassIndex(dataToTrain.numAttributes() - 1);
 
         try {
             randomForest.buildClassifier(dataToTrain);
-        }
-
-        catch (Exception e) {
+        } catch (Exception e) {
             logger.error("Exception: ", e);
             return null;
         }

@@ -30,6 +30,7 @@ public class LSTMModelImpl implements ModelStrategy {
     /**
      * This function takes the filtered training dataset, builds a Neural Network using Weka's Deep Learning 4 Java plugin
      * and trains and returns an LSTM model.
+     *
      * @author Khaled
      */
     @Override
@@ -42,8 +43,7 @@ public class LSTMModelImpl implements ModelStrategy {
         //DL4J Recurrent Neural Network (RNN)
         Classifier network = new Dl4jMlpClassifier();
 
-        try
-        {
+        try {
             //Setting Parameters for the model
             ((Dl4jMlpClassifier) network).setNumEpochs(1);                //Bigger the better but also takes more time
             //network.setEarlyStopping(new EarlyStopping()); //Set a stopping to make it stop if no progress
@@ -77,9 +77,7 @@ public class LSTMModelImpl implements ModelStrategy {
             //train with the DL4J classifier
             network.buildClassifier(trainDataset);
 
-        }
-
-        catch(Exception e) {
+        } catch (Exception e) {
             logger.error("Exception: ", e);
         }
 

@@ -60,6 +60,6 @@ public class DataPrePreprocessorController {
         these attributes will be returned.
      */
     public Instances removeAttributes(Instances trainDataset, Instances testDataset) throws Exception {
-        return DataPreProcessorImpl.removeAttributes(trainDataset,testDataset);
+        return DataPreProcessorImpl.removeAttributes(trainDataset, testDataset);
     }
 }

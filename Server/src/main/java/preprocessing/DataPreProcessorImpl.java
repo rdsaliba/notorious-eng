@@ -25,10 +25,9 @@ import java.util.ArrayList;
 
 public class DataPreProcessorImpl implements DataPreProcessor {
 
-    Logger logger = LoggerFactory.getLogger(DataPreProcessorImpl.class);
-
     private final Instances originalDataset;
     private final ArrayList<Integer> removedIndex;
+    Logger logger = LoggerFactory.getLogger(DataPreProcessorImpl.class);
     private Instances reducedDataset;
     private Instances minimallyReducedDataset;
 
@@ -176,7 +175,7 @@ public class DataPreProcessorImpl implements DataPreProcessor {
         CfsSubsetEval eval = new CfsSubsetEval(); // the evaluator chosen is the CfsSubsetEval
         BestFirst search = new BestFirst(); // the search method used is BestFirst
 
-        try{
+        try {
             filter.setEvaluator(eval); // set the filter evaluator and search method
             filter.setSearch(search);
 
@@ -185,7 +184,7 @@ public class DataPreProcessorImpl implements DataPreProcessor {
 
             if (reducedDataset.attribute("RUL") == null)
                 reducedDataset = addRULCol(reducedDataset);
-        } catch (Exception e){
+        } catch (Exception e) {
             logger.error("Exception processFullReduction(): ", e);
         }
 
@@ -219,7 +218,7 @@ public class DataPreProcessorImpl implements DataPreProcessor {
             minimallyReducedDataset = Filter.useFilter(originalDataset, remove);
             if (minimallyReducedDataset.attribute("RUL") == null)
                 minimallyReducedDataset = addRULCol(minimallyReducedDataset);
-        } catch (Exception e){
+        } catch (Exception e) {
             logger.error("Exception processMinimalReduction(): ", e);
         }
 

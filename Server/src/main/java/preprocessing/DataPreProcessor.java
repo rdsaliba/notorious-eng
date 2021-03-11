@@ -13,8 +13,12 @@ import weka.filters.unsupervised.attribute.Remove;
 public interface DataPreProcessor {
 
     void processFullReduction();
+
     void processMinimalReduction();
+
     Instances getReducedDataset();
+
     Instances getMinimallyReducedDataset();
+
     Remove getRemovedIndexList();
 }

@@ -58,11 +58,12 @@ public class ModelEvaluation {
         this.fold = fold;
     }
 
-    /** This method can be used by creating an object using the first constructor. Needs classifier,
+    /**
+     * This method can be used by creating an object using the first constructor. Needs classifier,
      * training instances and testing instances, returns the double rmse after evaluating the model
      * trained using trained instances against the test instances.
      *
-     @author Khaled
+     * @author Khaled
      **/
     public double evaluateTrainWithTest() throws Exception {
         this.testData.setClassIndex(this.testData.numAttributes() - 1);
@@ -108,10 +109,11 @@ public class ModelEvaluation {
     }
 
     /**
-     *  This method can be used by creating an object using the third constructor. Needs classifier,
-     *  training instances and an int n value for fold to divide the training instances into n parts .
-     *  Ex: if fold = 10, data will be divided into 10 parts, each of those 10 parts will be used for
-     *  testing once and the result will be averaged out.
+     * This method can be used by creating an object using the third constructor. Needs classifier,
+     * training instances and an int n value for fold to divide the training instances into n parts .
+     * Ex: if fold = 10, data will be divided into 10 parts, each of those 10 parts will be used for
+     * testing once and the result will be averaged out.
+     *
      * @author Khaled
      */
     public double evaluateTrainCrossValidation() throws Exception {
@@ -134,7 +136,7 @@ public class ModelEvaluation {
     @Override
     public String toString() {
         return "Model: " + model.getClass().getSimpleName() +
-               "\nModel Summary: " + eval.toSummaryString();
+                "\nModel Summary: " + eval.toSummaryString();
     }
 
     /*

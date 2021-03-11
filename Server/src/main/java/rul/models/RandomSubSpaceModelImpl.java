@@ -20,19 +20,17 @@ public class RandomSubSpaceModelImpl implements ModelStrategy {
     /**
      * This function takes the assets as the training dataset, and returns the trained
      * Random SubSpace classifier.
+     *
      * @author Khaled
      */
     @Override
-    public  Classifier trainModel(Instances dataToTrain)
-    {
+    public Classifier trainModel(Instances dataToTrain) {
         Classifier randomSubSpace = new RandomSubSpace();
         dataToTrain.setClassIndex(dataToTrain.numAttributes() - 1);
 
         try {
             randomSubSpace.buildClassifier(dataToTrain);
-        }
-
-        catch (Exception e) {
+        } catch (Exception e) {
             logger.error("Exception: ", e);
             return null;
         }

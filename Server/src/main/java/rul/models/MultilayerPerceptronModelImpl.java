@@ -17,9 +17,11 @@ import weka.core.Instances;
 public class MultilayerPerceptronModelImpl implements ModelStrategy {
 
     Logger logger = LoggerFactory.getLogger(MultilayerPerceptronModelImpl.class);
+
     /**
      * This function takes the assets as the training dataset, and returns the trained
      * Multilayer Perceptron classifier.
+     *
      * @author Khaled
      */
     @Override
@@ -29,9 +31,7 @@ public class MultilayerPerceptronModelImpl implements ModelStrategy {
 
         try {
             mlp.buildClassifier(dataToTrain);
-        }
-
-        catch (Exception e) {
+        } catch (Exception e) {
             logger.error("Exception: ", e);
             return null;
         }

@@ -20,6 +20,7 @@ public class SMORegModelImpl implements ModelStrategy {
     /**
      * This function takes the assets as the training dataset, and returns the trained
      * SMOReg classifier.
+     *
      * @author Khaled
      */
     @Override
@@ -29,9 +30,7 @@ public class SMORegModelImpl implements ModelStrategy {
 
         try {
             smOreg.buildClassifier(dataToTrain);
-        }
-
-        catch (Exception e) {
+        } catch (Exception e) {
             logger.error("Exception: ", e);
             return null;
         }

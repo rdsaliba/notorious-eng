@@ -29,7 +29,8 @@ public class DAO {
         return DatabaseConnection.getConnection();
     }
 
-    /** This will run the query in the parameter and return its corresponding ResultSet
+    /**
+     * This will run the query in the parameter and return its corresponding ResultSet
      *
      * @author Paul
      */

@@ -20,6 +20,7 @@ public class RandomCommitteeModelImpl implements ModelStrategy {
     /**
      * This function takes the assets as the training dataset, and returns the trained
      * Random Committee classifier.
+     *
      * @author Khaled
      */
 
@@ -30,9 +31,7 @@ public class RandomCommitteeModelImpl implements ModelStrategy {
 
         try {
             randomCommittee.buildClassifier(dataToTrain);
-        }
-
-        catch (Exception e) {
+        } catch (Exception e) {
             logger.error("Exception: ", e);
             return null;
         }
