@@ -47,20 +47,22 @@ public class LSTMTest
     @Before
     public void setUp(){
         modelsController = new ModelsController(new LSTMModelImpl());
-        resumePara = new BoolParameter("resume", true);
-        filterModePara = new BoolParameter("filterMode", true);
-        doNotClearFileSystemCachePara = new BoolParameter("doNotClearFileSystemCache", true);
-        minimizeObjectivePara = new BoolParameter("minimizeObjective", false);
+        resumePara = new BoolParameter("Resume", true);
+        filterModePara = new BoolParameter("Filter Mode", true);
+        doNotClearFileSystemCachePara = new BoolParameter("Do Not Clear File System Cache", true);
+        minimizeObjectivePara = new BoolParameter("Minimize Objective", false);
 
-        numberOfEpochPara = new IntParameter("numberOfEpoch", 1);
-        numberOfGPUPara = new IntParameter("numberOfGPU", 2);
-        avgFrequencyPara = new IntParameter("averageFrequency", 5);
-        queueSizePara = new IntParameter("queueSize", 1);
+        numberOfEpochPara = new IntParameter("Number of Epoch", 1);
+        numberOfGPUPara = new IntParameter("Number of GPU", 2);
+        avgFrequencyPara = new IntParameter("Average Frequency", 5);
+        queueSizePara = new IntParameter("Queue Size", 1);
 
-        optimizationAlgoPara = new ListParameter("optimizationAlgo", new ArrayList<>(Arrays.asList("STOCHASTIC_GRADIENT_DESCENT", "LINE_GRADIENT_DESCENT")), "LINE_GRADIENT_DESCENT");
-        weightInitPara = new ListParameter("weightInit", new ArrayList<>(Arrays.asList("XAVIER", "RELU", "IDENTITY", "NORMAL", "UNIFORM", "ZERO", "DISTRIBUTION")), "NORMAL");
-        cacheModePara = new ListParameter("cacheMode", new ArrayList<>(Arrays.asList("NONE", "MEMORY", "FILESYSTEM")), "NONE");
-        batchSizePara = new StringParameter("batchSize", "5");
+        optimizationAlgoPara = new ListParameter("Optimization Algorithm", new ArrayList<>(Arrays.asList("STOCHASTIC_GRADIENT_DESCENT", "LINE_GRADIENT_DESCENT")), "LINE_GRADIENT_DESCENT");
+        weightInitPara = new ListParameter("Weight Initializer", new ArrayList<>(Arrays.asList("XAVIER", "RELU", "IDENTITY", "NORMAL", "UNIFORM", "ZERO", "DISTRIBUTION")), "NORMAL");
+        cacheModePara = new ListParameter("Cache Mode", new ArrayList<>(Arrays.asList("NONE", "MEMORY", "FILESYSTEM")), "NONE");
+        batchSizePara = new StringParameter("Batch Size", "5");
+
+        learningRatePara = new FloatParameter("Learning Rate", 0.002F);
 
         parameters = new HashMap();
         parameters.put(batchSizePara.getParamName(), batchSizePara);
@@ -75,7 +77,7 @@ public class LSTMTest
         parameters.put(doNotClearFileSystemCachePara.getParamName(), doNotClearFileSystemCachePara);
         parameters.put(filterModePara.getParamName(), filterModePara);
         parameters.put(resumePara.getParamName(), resumePara);
-
+        parameters.put(learningRatePara.getParamName(), learningRatePara);
 
     }
 

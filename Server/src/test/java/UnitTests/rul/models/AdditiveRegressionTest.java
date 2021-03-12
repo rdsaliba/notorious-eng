@@ -30,11 +30,11 @@ public class AdditiveRegressionTest
     public void setUp()
     {
         modelsController = new ModelsController(new AdditiveRegressionModelImpl());
-        batchSizePara = new StringParameter("batchSize", "456");
-        minimizeAbsoluteErrorPara = new BoolParameter("minimizeAbsoluteError", true);
-        numIterationsPara = new IntParameter("numIterations", 22);
-        resumePara = new BoolParameter("resume", false);
-        shrinkagePara = new FloatParameter("shrinkage", 4.5f);
+        batchSizePara = new StringParameter("Batch Size", "456");
+        minimizeAbsoluteErrorPara = new BoolParameter("Minimize Absolute Error", true);
+        numIterationsPara = new IntParameter("Number of Iterations", 22);
+        resumePara = new BoolParameter("Resume", false);
+        shrinkagePara = new FloatParameter("Shrinkage", 4.5f);
 
         parameters = new HashMap();
         parameters.put(batchSizePara.getParamName(), batchSizePara);

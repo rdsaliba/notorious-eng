@@ -34,11 +34,11 @@ public class AdditiveRegressionModelImpl extends ModelStrategy
 
     public AdditiveRegressionModelImpl()
     {
-        batchSizePara = new StringParameter("batchSize", BATCH_SIZE_PARAM_DEFAULT);
-        minimizeAbsoluteErrorPara = new BoolParameter("minimizeAbsoluteError", MINIMIZE_ABSOLUTE_ERROR_PARAM_DEFAULT);
-        numIterationsPara = new IntParameter("numIterations", NUM_ITERATIONS_PARAM_DEFAULT);
-        resumePara = new BoolParameter("resume", RESUME_PARAM_DEFAULT);
-        shrinkagePara = new FloatParameter("shrinkage", SHRINKAGE_PARAM_DEFAULT);
+        batchSizePara = new StringParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
+        minimizeAbsoluteErrorPara = new BoolParameter("Minimize Absolute Error", MINIMIZE_ABSOLUTE_ERROR_PARAM_DEFAULT);
+        numIterationsPara = new IntParameter("Number of Iterations", NUM_ITERATIONS_PARAM_DEFAULT);
+        resumePara = new BoolParameter("Resume", RESUME_PARAM_DEFAULT);
+        shrinkagePara = new FloatParameter("Shrinkage", SHRINKAGE_PARAM_DEFAULT);
 
         addParameter(batchSizePara);
         addParameter(minimizeAbsoluteErrorPara);
@@ -80,11 +80,11 @@ public class AdditiveRegressionModelImpl extends ModelStrategy
     @Override
     public Map<String, Parameter> getDefaultParameters()
     {
-        StringParameter batchSizeParaDefault             = new StringParameter("batchSize", BATCH_SIZE_PARAM_DEFAULT);
-        BoolParameter   minimizeAbsoluteErrorParaDefault = new BoolParameter("minimizeAbsoluteError", MINIMIZE_ABSOLUTE_ERROR_PARAM_DEFAULT);
-        IntParameter    numIterationsParaDefault         = new IntParameter("numIterations", NUM_ITERATIONS_PARAM_DEFAULT);
-        BoolParameter   resumeParaDefault                = new BoolParameter("resume", RESUME_PARAM_DEFAULT);
-        FloatParameter  shrinkageParaDefault             = new FloatParameter("shrinkage", SHRINKAGE_PARAM_DEFAULT);
+        StringParameter batchSizeParaDefault             = new StringParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
+        BoolParameter   minimizeAbsoluteErrorParaDefault = new BoolParameter("Minimize Absolute Error", MINIMIZE_ABSOLUTE_ERROR_PARAM_DEFAULT);
+        IntParameter    numIterationsParaDefault         = new IntParameter("Number of Iterations", NUM_ITERATIONS_PARAM_DEFAULT);
+        BoolParameter   resumeParaDefault                = new BoolParameter("Resume", RESUME_PARAM_DEFAULT);
+        FloatParameter  shrinkageParaDefault             = new FloatParameter("Shrinkage", SHRINKAGE_PARAM_DEFAULT);
 
         Map<String, Parameter> parameters = new HashMap<>();
         parameters.put(batchSizeParaDefault.getParamName(), batchSizeParaDefault);

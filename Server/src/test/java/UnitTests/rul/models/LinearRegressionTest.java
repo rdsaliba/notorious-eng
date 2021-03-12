@@ -21,7 +21,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class LinearRegressionTest {
-    //private LinearRegressionModelImpl lr;
     private ModelsController modelsController;
     private BoolParameter useQRDecompositionPara;
     private BoolParameter eliminateColinearAttributesPara;
@@ -29,14 +28,13 @@ public class LinearRegressionTest {
     private StringParameter batchSizePara;
     private Map<String, Parameter> parameters;
 
-
     @Before
     public void setUp() {
         modelsController = new ModelsController(new LinearRegressionModelImpl());
-        useQRDecompositionPara = new BoolParameter("useQRDecomposition", true);
-        eliminateColinearAttributesPara = new BoolParameter("eliminateColinearAttributes", false);
-        ridgePara = new FloatParameter("ridge", 1.0E-5F);
-        batchSizePara = new StringParameter("batchSize", "10");
+        useQRDecompositionPara = new BoolParameter("Use QR Decomposition", true);
+        eliminateColinearAttributesPara = new BoolParameter("Eliminate Colinear Attributes", false);
+        ridgePara = new FloatParameter("Ridge", 1.0E-5F);
+        batchSizePara = new StringParameter("Batch Size", "10");
 
         parameters = new HashMap();
         parameters.put(useQRDecompositionPara.getParamName(), useQRDecompositionPara);
@@ -81,8 +79,8 @@ public class LinearRegressionTest {
         modelsController.setParameters(parameters);
         modelsController.trainModel(trainData);
 
-        assertEquals("Asserting the USEQRDecomposition parameter was changed",((LinearRegressionModelImpl) modelsController.getModelStrategy()).getLinearRegressionObject().getUseQRDecomposition(), useQRDecompositionPara.getBoolValue());
-        //assertEquals("Asserting the Ridge parameter was changed",((LinearRegressionModelImpl) modelsController.getModelStrategy()).getLinearRegressionObject().getRidge(), ridgePara.getFloatValue(), 0.001f);
+        assertEquals("Asserting the UseQRDecomposition parameter was changed",((LinearRegressionModelImpl) modelsController.getModelStrategy()).getLinearRegressionObject().getUseQRDecomposition(), useQRDecompositionPara.getBoolValue());
+        assertEquals("Asserting the EliminateColinearAttributes parameter was changed",((LinearRegressionModelImpl) modelsController.getModelStrategy()).getLinearRegressionObject().getEliminateColinearAttributes(), eliminateColinearAttributesPara.getBoolValue());
         assertEquals("Asserting the BatchSize parameter was changed", ((LinearRegressionModelImpl) modelsController.getModelStrategy()).getLinearRegressionObject().getBatchSize(), batchSizePara.getStringValue());
     }
 }

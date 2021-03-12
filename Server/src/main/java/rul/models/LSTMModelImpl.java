@@ -71,22 +71,22 @@ public class LSTMModelImpl extends ModelStrategy
 
     public LSTMModelImpl()
     {
-        resumePara = new BoolParameter("resume", RESUME_PARAM_DEFAULT);
-        filterModePara = new BoolParameter("filterMode", FILTER_MODE_PARAM_DEFAULT);
-        doNotClearFileSystemCachePara = new BoolParameter("doNotClearFileSystemCache", DO_NOT_CLEAR_FILE_SYSTEM_CACHE_PARAM_DEFAULT);
-        minimizeObjectivePara = new BoolParameter("minimizeObjective", MINIMIZE_OBJECTIVE_PARA_DEFAULT);
+        resumePara = new BoolParameter("Resume", RESUME_PARAM_DEFAULT);
+        filterModePara = new BoolParameter("Filter Mode", FILTER_MODE_PARAM_DEFAULT);
+        doNotClearFileSystemCachePara = new BoolParameter("Do Not Clear File System Cache", DO_NOT_CLEAR_FILE_SYSTEM_CACHE_PARAM_DEFAULT);
+        minimizeObjectivePara = new BoolParameter("Minimize Objective", MINIMIZE_OBJECTIVE_PARA_DEFAULT);
 
-        numberOfEpochPara = new IntParameter("numberOfEpoch", NUMBER_OF_EPOCH_PARAM_DEFAULT);
-        queueSizePara = new IntParameter("queueSize", QUEUE_SIZE_PARAM_DEFAULT);
-        numberOfGPUPara = new IntParameter("numberOfGPU", NUMBER_OF_GPU_PARAM_DEFAULT);
-        avgFrequencyPara = new IntParameter("averageFrequency", AVG_FREQUENCY_PARAM_DEFAULT);
+        numberOfEpochPara = new IntParameter("Number of Epoch", NUMBER_OF_EPOCH_PARAM_DEFAULT);
+        queueSizePara = new IntParameter("Queue Size", QUEUE_SIZE_PARAM_DEFAULT);
+        numberOfGPUPara = new IntParameter("Number of GPU", NUMBER_OF_GPU_PARAM_DEFAULT);
+        avgFrequencyPara = new IntParameter("Average Frequency", AVG_FREQUENCY_PARAM_DEFAULT);
 
-        optimizationAlgoPara = new ListParameter("optimizationAlgo", new ArrayList<String>(Arrays.asList("STOCHASTIC_GRADIENT_DESCENT", "LINE_GRADIENT_DESCENT")), OPTIMIZATION_ALGO_PARAM_DEFAULT);
-        weightInitPara = new ListParameter("weightInit", new ArrayList<String>(Arrays.asList("XAVIER", "RELU", "IDENTITY", "NORMAL", "UNIFORM", "ZERO", "DISTRIBUTION")), WEIGHT_INIT_PARAM_DEFAULT);
-        cacheModePara = new ListParameter("cacheMode", new ArrayList<String>(Arrays.asList("NONE", "MEMORY", "FILESYSTEM")), CACHE_MODE_PARAM_DEFAULT);
-        batchSizePara = new StringParameter("batchSize", BATCH_SIZE_PARAM_DEFAULT);
+        optimizationAlgoPara = new ListParameter("Optimization Algorithm", new ArrayList<String>(Arrays.asList("STOCHASTIC_GRADIENT_DESCENT", "LINE_GRADIENT_DESCENT")), OPTIMIZATION_ALGO_PARAM_DEFAULT);
+        weightInitPara = new ListParameter("Weight Initializer", new ArrayList<String>(Arrays.asList("XAVIER", "RELU", "IDENTITY", "NORMAL", "UNIFORM", "ZERO", "DISTRIBUTION")), WEIGHT_INIT_PARAM_DEFAULT);
+        cacheModePara = new ListParameter("Cache Mode", new ArrayList<String>(Arrays.asList("NONE", "MEMORY", "FILESYSTEM")), CACHE_MODE_PARAM_DEFAULT);
+        batchSizePara = new StringParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
 
-        learningRatePara = new FloatParameter("learningRate", LEARNING_RATE_PARAM_DEFAULT);
+        learningRatePara = new FloatParameter("Learning Rate", LEARNING_RATE_PARAM_DEFAULT);
 
         addParameter(resumePara);
         addParameter(filterModePara);
@@ -186,20 +186,20 @@ public class LSTMModelImpl extends ModelStrategy
     @Override
     public Map<String, Parameter> getDefaultParameters()
     {
-        BoolParameter resumeParaDefault = new BoolParameter("resume", RESUME_PARAM_DEFAULT);
-        BoolParameter filterModeParaDefault = new BoolParameter("filterMode", FILTER_MODE_PARAM_DEFAULT);
-        BoolParameter doNotClearFileSystemCacheParaDefault = new BoolParameter("doNotClearFileSystemCache", DO_NOT_CLEAR_FILE_SYSTEM_CACHE_PARAM_DEFAULT);
-        BoolParameter minimizeObjectiveParaDefault = new BoolParameter("minimizeObjective", MINIMIZE_OBJECTIVE_PARA_DEFAULT);
+        BoolParameter resumeParaDefault = new BoolParameter("Resume", RESUME_PARAM_DEFAULT);
+        BoolParameter filterModeParaDefault = new BoolParameter("Filter Mode", FILTER_MODE_PARAM_DEFAULT);
+        BoolParameter doNotClearFileSystemCacheParaDefault = new BoolParameter("Do Not Clear File System Cache", DO_NOT_CLEAR_FILE_SYSTEM_CACHE_PARAM_DEFAULT);
+        BoolParameter minimizeObjectiveParaDefault = new BoolParameter("Minimize Objective", MINIMIZE_OBJECTIVE_PARA_DEFAULT);
 
-        IntParameter numberOfGPUParaDefault = new IntParameter("numberOfGPU", NUMBER_OF_GPU_PARAM_DEFAULT);
-        IntParameter avgFrequencyParaDefault = new IntParameter("averageFrequency", AVG_FREQUENCY_PARAM_DEFAULT);
-        IntParameter numberOfEpochParaDefault = new IntParameter("numberOfEpoch", NUMBER_OF_EPOCH_PARAM_DEFAULT);
-        IntParameter queueSizeParaDefault = new IntParameter("queueSize", QUEUE_SIZE_PARAM_DEFAULT);
+        IntParameter numberOfGPUParaDefault = new IntParameter("Number of GPU", NUMBER_OF_GPU_PARAM_DEFAULT);
+        IntParameter avgFrequencyParaDefault = new IntParameter("Average Frequency", AVG_FREQUENCY_PARAM_DEFAULT);
+        IntParameter numberOfEpochParaDefault = new IntParameter("Number of Epoch", NUMBER_OF_EPOCH_PARAM_DEFAULT);
+        IntParameter queueSizeParaDefault = new IntParameter("Queue Size", QUEUE_SIZE_PARAM_DEFAULT);
 
-        ListParameter cacheModeParaDefault = new ListParameter("cacheMode", new ArrayList<String>(Arrays.asList("NONE", "MEMORY", "FILESYSTEM")), CACHE_MODE_PARAM_DEFAULT);
-        ListParameter optimizationAlgoParaDefault = new ListParameter("optimizationAlgo", new ArrayList<String>(Arrays.asList("STOCHASTIC_GRADIENT_DESCENT", "LINE_GRADIENT_DESCENT")), OPTIMIZATION_ALGO_PARAM_DEFAULT);
-        ListParameter weightInitParaDefault = new ListParameter("weightInit", new ArrayList<String>(Arrays.asList("XAVIER", "RELU", "IDENTITY", "NORMAL", "UNIFORM", "ZERO", "DISTRIBUTION")), WEIGHT_INIT_PARAM_DEFAULT);
-        StringParameter batchSizeParaDefault = new StringParameter("batchSize", BATCH_SIZE_PARAM_DEFAULT);
+        ListParameter cacheModeParaDefault = new ListParameter("Cache Mode", new ArrayList<String>(Arrays.asList("NONE", "MEMORY", "FILESYSTEM")), CACHE_MODE_PARAM_DEFAULT);
+        ListParameter optimizationAlgoParaDefault = new ListParameter("Optimization Algorithm", new ArrayList<String>(Arrays.asList("STOCHASTIC_GRADIENT_DESCENT", "LINE_GRADIENT_DESCENT")), OPTIMIZATION_ALGO_PARAM_DEFAULT);
+        ListParameter weightInitParaDefault = new ListParameter("Weight Initializer", new ArrayList<String>(Arrays.asList("XAVIER", "RELU", "IDENTITY", "NORMAL", "UNIFORM", "ZERO", "DISTRIBUTION")), WEIGHT_INIT_PARAM_DEFAULT);
+        StringParameter batchSizeParaDefault = new StringParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
 
         FloatParameter learningRateParaDefault = new FloatParameter("learningRate", LEARNING_RATE_PARAM_DEFAULT);
 

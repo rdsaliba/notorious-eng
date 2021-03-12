@@ -27,21 +27,21 @@ public class LinearRegressionModelImpl extends ModelStrategy {
     private final boolean ELIMINATE_COLINEAR_ATTRIBUTES_PARAM_DEFAULT = true;
     private final float RIDGE_PARAM_DEFAULT = 1.0E-8F;
     private final String BATCH_SIZE_PARAM_DEFAULT = "100";
-    
+
     private BoolParameter useQRDecompositionPara;
     private BoolParameter eliminateColinearAttributesPara;
     private FloatParameter ridgePara;
     private StringParameter batchSizePara;
 
     private LinearRegression linearRegression;
-    
+
     public LinearRegressionModelImpl()
     {
-        useQRDecompositionPara = new BoolParameter("useQRDecomposition", USE_QR_DECOMPOSITION_PARAM_DEFAULT);
-        eliminateColinearAttributesPara = new BoolParameter("eliminateColinearAttributes", ELIMINATE_COLINEAR_ATTRIBUTES_PARAM_DEFAULT);
-        ridgePara = new FloatParameter("ridge", RIDGE_PARAM_DEFAULT);
-        batchSizePara = new StringParameter("batchSize", BATCH_SIZE_PARAM_DEFAULT);
-        
+        useQRDecompositionPara = new BoolParameter("Use QR Decomposition", USE_QR_DECOMPOSITION_PARAM_DEFAULT);
+        eliminateColinearAttributesPara = new BoolParameter("Eliminate Colinear Attributes", ELIMINATE_COLINEAR_ATTRIBUTES_PARAM_DEFAULT);
+        ridgePara = new FloatParameter("Ridge", RIDGE_PARAM_DEFAULT);
+        batchSizePara = new StringParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
+
         addParameter(useQRDecompositionPara);
         addParameter(eliminateColinearAttributesPara);
         addParameter(ridgePara);
@@ -65,14 +65,14 @@ public class LinearRegressionModelImpl extends ModelStrategy {
         linearRegression.setEliminateColinearAttributes((((BoolParameter) getParameters().get(eliminateColinearAttributesPara.getParamName()))).getBoolValue());
         linearRegression.setRidge((((FloatParameter) getParameters().get(ridgePara.getParamName()))).getFloatValue());
         linearRegression.setBatchSize((((StringParameter) getParameters().get(batchSizePara.getParamName()))).getStringValue());
-        
+
         try {
             linearRegression.buildClassifier(firstTrain);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
-        
+
         setClassifier(linearRegression);
         return linearRegression;
     }
@@ -80,10 +80,10 @@ public class LinearRegressionModelImpl extends ModelStrategy {
     @Override
     public Map<String, Parameter> getDefaultParameters()
     {
-        BoolParameter   useQRDecompositionParaDefault = new BoolParameter("useQRDecomposition", USE_QR_DECOMPOSITION_PARAM_DEFAULT);
-        BoolParameter eliminateColinearAttributesParaDefault = new BoolParameter("eliminateColinearAttributesPara", ELIMINATE_COLINEAR_ATTRIBUTES_PARAM_DEFAULT);
-        FloatParameter  ridgeParaDefault             = new FloatParameter("ridge", RIDGE_PARAM_DEFAULT);
-        StringParameter batchSizeParaDefault             = new StringParameter("batchSize", BATCH_SIZE_PARAM_DEFAULT);
+        BoolParameter   useQRDecompositionParaDefault          = new BoolParameter("Use QR Decomposition", USE_QR_DECOMPOSITION_PARAM_DEFAULT);
+        BoolParameter   eliminateColinearAttributesParaDefault = new BoolParameter("Eliminate Colinear Attributes", ELIMINATE_COLINEAR_ATTRIBUTES_PARAM_DEFAULT);
+        FloatParameter  ridgeParaDefault                       = new FloatParameter("Ridge", RIDGE_PARAM_DEFAULT);
+        StringParameter batchSizeParaDefault                   = new StringParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
 
         Map<String, Parameter> parameters = new HashMap<>();
         parameters.put(useQRDecompositionParaDefault.getParamName(), useQRDecompositionParaDefault);
@@ -123,7 +123,7 @@ public class LinearRegressionModelImpl extends ModelStrategy {
         return removeInstances(trainDataset,150);
     }
 
-    
+
 }
 
 

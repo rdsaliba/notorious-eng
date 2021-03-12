@@ -2,32 +2,49 @@
  * attribute/feature bagging.
  *
  * @author Khaled
- * @last_edit 02/14/2021
+ * @last_edit 03/12/2021
  */
 
 package rul.models;
 
+import app.item.parameter.FloatParameter;
+import app.item.parameter.IntParameter;
 import app.item.parameter.Parameter;
+import app.item.parameter.StringParameter;
 import weka.classifiers.Classifier;
 import weka.classifiers.meta.RandomSubSpace;
 import weka.core.Instances;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class RandomSubSpaceModelImpl extends ModelStrategy
 {
+    //Default Parameters
+    private final float SUBSPACE_SIZE_PARAM_DEFAULT = 0.5F;
+    private final int NUM_EXECUTION_SLOTS_PARAM_DEFAULT = 1;
+    private final int NUM_ITERATIONS_PARAM_DEFAULT = 10;
+    private final String BATCH_SIZE_PARAM_DEFAULT = "100";
 
-    private int batchSize;
-    private int numExecutionSlotsParamter;
-    private int numIterationsParameter;
-    private double subSpaceSize;
+    //Parameters
+    private FloatParameter subSpaceSizePara;
+    private IntParameter numExecutionSlotsPara;
+    private IntParameter numIterationsPara;
+    private StringParameter batchSizePara;
+
+    private RandomSubSpace randomSubSpace;
 
     public RandomSubSpaceModelImpl()
     {
-        batchSize = 100;
-        numExecutionSlotsParamter = 1;
-        numIterationsParameter = 10;
-        subSpaceSize = 0.5;
+     subSpaceSizePara = new FloatParameter("SubSpace Size", SUBSPACE_SIZE_PARAM_DEFAULT);
+     numExecutionSlotsPara = new IntParameter("Number of Execution Slots", NUM_EXECUTION_SLOTS_PARAM_DEFAULT);
+     numIterationsPara = new IntParameter("Number of Iterations", NUM_ITERATIONS_PARAM_DEFAULT);
+     batchSizePara = new StringParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
+
+     addParameter(subSpaceSizePara);
+     addParameter(numExecutionSlotsPara);
+     addParameter(numIterationsPara);
+     addParameter(batchSizePara);
     }
 
     /**
@@ -39,8 +56,13 @@ public class RandomSubSpaceModelImpl extends ModelStrategy
     @Override
     public Classifier trainModel(Instances dataToTrain)
     {
-        Classifier randomSubSpace = new RandomSubSpace();
+        randomSubSpace = new RandomSubSpace();
         dataToTrain.setClassIndex(dataToTrain.numAttributes() - 1);
+
+        randomSubSpace.setSubSpaceSize(((FloatParameter) getParameters().get(subSpaceSizePara.getParamName())).getFloatValue());
+        randomSubSpace.setNumExecutionSlots(((IntParameter) getParameters().get(numExecutionSlotsPara.getParamName())).getIntValue());
+        randomSubSpace.setNumIterations(((IntParameter) getParameters().get(numIterationsPara.getParamName())).getIntValue());
+        randomSubSpace.setBatchSize(((StringParameter) getParameters().get(batchSizePara.getParamName())).getStringValue());
 
         try
         {
@@ -52,13 +74,30 @@ public class RandomSubSpaceModelImpl extends ModelStrategy
             return null;
         }
 
+        setClassifier(randomSubSpace);
         return randomSubSpace;
     }
 
     @Override
     public Map<String, Parameter> getDefaultParameters()
     {
-        return null;
+        FloatParameter subSpaceSizeParaDefault = new FloatParameter("SubSpace Size", SUBSPACE_SIZE_PARAM_DEFAULT);
+        IntParameter numExecutionSlotsParaDefault = new IntParameter("Number of Execution Slots", NUM_EXECUTION_SLOTS_PARAM_DEFAULT);
+        IntParameter    numIterationsParaDefault         = new IntParameter("Number of Iterations", NUM_ITERATIONS_PARAM_DEFAULT);
+        StringParameter batchSizeParaDefault             = new StringParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
+
+        Map<String, Parameter> parameters = new HashMap<>();
+        parameters.put(subSpaceSizeParaDefault.getParamName(), subSpaceSizeParaDefault);
+        parameters.put(numExecutionSlotsParaDefault.getParamName(), numExecutionSlotsParaDefault);
+        parameters.put(numIterationsParaDefault.getParamName(), numIterationsParaDefault);
+        parameters.put(batchSizeParaDefault.getParamName(), batchSizeParaDefault);
+
+        return parameters;
+    }
+
+    public RandomSubSpace getRandomSubSpaceObject()
+    {
+        return this.randomSubSpace;
     }
 
 }
