@@ -21,7 +21,7 @@ import java.util.ArrayList;
 public class ModelDAOImpl extends DAO implements ModelDAO {
     private static final String UPDATE_SERIALIZE_OBJECT = "UPDATE trained_model SET retrain = false, serialized_model  = ? WHERE model_id = ? AND asset_type_id = ? and status_id = ?";
     private static final String GET_SERIALIZE_OBJECT = "SELECT * FROM trained_model WHERE retrain = true";
-    private static final String GET_MODEL_NAME_FROM_ID = "SELECT name from model where model.model_id = ?";
+    private static final String GET_MODEL_NAME_FROM_ID = "SELECT name from model where model.model_id = ? AND archived = 0";
     private static final String GET_MODEL_FROM_ASSET_TYPE = "SELECT * FROM trained_model WHERE asset_type_id = ? and status_id = ?";
 
     /**
