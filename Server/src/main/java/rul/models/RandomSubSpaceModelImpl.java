@@ -11,24 +11,22 @@ import weka.classifiers.Classifier;
 import weka.classifiers.meta.RandomSubSpace;
 import weka.core.Instances;
 
-public class RandomSubSpaceModelImpl implements ModelStrategy{
+public class RandomSubSpaceModelImpl extends ModelStrategy {
 
     /**
      * This function takes the assets as the training dataset, and returns the trained
      * Random SubSpace classifier.
+     *
      * @author Khaled
      */
     @Override
-    public  Classifier trainModel(Instances dataToTrain)
-    {
+    public Classifier trainModel(Instances dataToTrain) {
         Classifier randomSubSpace = new RandomSubSpace();
         dataToTrain.setClassIndex(dataToTrain.numAttributes() - 1);
 
         try {
             randomSubSpace.buildClassifier(dataToTrain);
-        }
-
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }

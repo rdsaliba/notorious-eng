@@ -192,6 +192,10 @@
                                     </Text>
                                     <Label fx:id="associatedModelLabel" layoutX="300.0" layoutY="183.0"
                                            prefHeight="18.0" prefWidth="143.0" text="Associated Model Name"/>
+                                    <AnchorPane fx:id="inputError" layoutX="654.0" layoutY="317.0" prefHeight="318.0"
+                                                prefWidth="295.0" stylesheets="@css/style.css"
+                                                AnchorPane.leftAnchor="654.0">
+                                    </AnchorPane>
                                 </AnchorPane>
                             </content>
                         </Tab>
@@ -223,10 +227,6 @@
                                             prefWidth="217.0" showTickLabels="true"/>
                                     <Slider fx:id="testSlider" layoutX="90.0" layoutY="159.0" prefHeight="16.0"
                                             prefWidth="217.0" showTickLabels="true"/>
-                                    <AnchorPane fx:id="inputError" layoutX="654.0" layoutY="317.0" prefHeight="318.0"
-                                                prefWidth="295.0" stylesheets="@css/style.css"
-                                                AnchorPane.leftAnchor="654.0">
-                                    </AnchorPane>
                                     <Label layoutX="90.0" layoutY="59.0" text="Training Assets"/>
                                     <Label layoutX="90.0" layoutY="134.0" text="Testing Assets"/>
                                     <Label fx:id="trainValue" layoutX="343.0" layoutY="90.0" text="Label"/>

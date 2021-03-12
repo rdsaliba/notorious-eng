@@ -5,7 +5,7 @@ import weka.classifiers.Classifier;
 
 public class Model {
     private String modelName;
-    private String modelID;
+    private int modelID;
     private String description;
     private SimpleStringProperty rmse;
 
@@ -15,6 +15,15 @@ public class Model {
 
     public void setRMSE(String rmse){ this.rmse.setValue(rmse);}
 
+    public Model() {
+    }
+
+    public Model(String modelName, int modelID, String description) {
+        this.modelName = modelName;
+        this.modelID = modelID;
+        this.description = description;
+    }
+
     public String getModelName() {
         return modelName;
     }
@@ -23,11 +32,11 @@ public class Model {
         this.modelName = modelName;
     }
 
-    public String getModelID() {
+    public int getModelID() {
         return modelID;
     }
 
-    public void setModelID(String modelID) {
+    public void setModelID(int modelID) {
         this.modelID = modelID;
     }
 

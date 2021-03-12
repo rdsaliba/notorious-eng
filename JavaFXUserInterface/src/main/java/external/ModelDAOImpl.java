@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ModelDAOImpl extends DAO implements ModelDAO {
-    private static final String GET_MODEL_NAME_FROM_ID = "SELECT name from trained_model, model WHERE trained_model.model_id = model.model_id AND trained_model.asset_type_id = ?";
+    private static final String GET_MODEL_FROM_ASSET_TYPE_ID = "SELECT * from trained_model, model WHERE trained_model.model_id = model.model_id AND trained_model.asset_type_id = ?";
     private static final String GET_ALL_MODELS = "SELECT * from model";
     private static final String INSERT_To_EVALUATE = "REPLACE INTO model_to_evlaute SET model_name = ?,asset_type_id = ?, train_value = ?, test_value = ?";
     private static final String GET_LATEST_RMSE = "select rmse from model_evaluation where model_id=? and asset_type_id=?";
@@ -41,7 +41,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     @Override
     public String getModelNameFromAssetTypeID(String assetTypeID) {
         String name = null;
-        try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_NAME_FROM_ID)) {
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_FROM_ASSET_TYPE_ID)) {
             ps.setString(1, assetTypeID);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next())
@@ -79,6 +79,30 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
 
     /**
      * Given a result set object, this function will create the corresponding trained model object
+     * Given a asset type id, this function will return the int corresponding
+     * to the ID of the model in the database associated with the asset type
+     *
+     * @param assetTypeID represents a asset type id
+     * @author Jeremie
+     */
+    // @Override
+    // public int getModelIDFromAssetTypeID(String assetTypeID) {
+    //     int ID = 0;
+    //     try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_FROM_ASSET_TYPE_ID)) {
+    //         ps.setString(1, assetTypeID);
+    //         try (ResultSet rs = ps.executeQuery()) {
+    //             if (rs.next())
+    //                 ID = rs.getInt("model_id");
+    //         }
+    //     } catch (SQLException e) {
+    //         e.printStackTrace();
+    //     }
+    //     return ID;
+    // }
+
+    /**
+     * Given a RMSE model evaluation value for a specific model applied to a specific asset type,
+     * this function will updated the RMSE value in the database in the model evaluation table
      *
      * @param rs represents the result from a trained model query
      * @author Paul
@@ -113,7 +137,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Model newModel = new Model();
-                    newModel.setModelID(rs.getString("model_id"));
+                    newModel.setModelID(rs.getInt("model_id"));
                     newModel.setModelName(rs.getString("name"));
                     newModel.setDescription(rs.getString("description"));
                     modelList.add(newModel);
@@ -134,9 +158,9 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
      * @author Jeremie
      */
     @Override
-    public void updateModelAssociatedWithAssetType(String modelID, String assetTypeID) {
+    public void updateModelAssociatedWithAssetType(int modelID, String assetTypeID) {
         try (PreparedStatement ps = getConnection().prepareStatement(UPDATE_MODEL_FOR_ASSET_TYPE)) {
-            ps.setString(1, modelID);
+            ps.setInt(1, modelID);
             ps.setString(2, assetTypeID);
             ps.executeQuery();
         } catch (SQLException e) {
@@ -197,10 +221,10 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
      * @author Jeremie
      */
     @Override
-    public String getGetModelEvaluation(String modelID, String assetTypeID) {
+    public String getGetModelEvaluation(int modelID, String assetTypeID) {
         String rmseValue = null;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_EVALUATION)) {
-            ps.setString(1, modelID);
+            ps.setInt(1, modelID);
             ps.setString(2, assetTypeID);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next())

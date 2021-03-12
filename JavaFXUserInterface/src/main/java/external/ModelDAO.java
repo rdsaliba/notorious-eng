@@ -19,12 +19,15 @@ public interface ModelDAO {
     String getModelNameFromAssetTypeID(String assetTypeId);
 
     TrainedModel createTrainedModelFromResultSet(ResultSet rs, boolean withModel) throws SQLException;
+    // int getModelIDFromAssetTypeID(String assetTypeID);
+
+    // void updateRMSE(Double rmse, int modelId, int assetTypeId);
 
     List<Model> getAllModels();
 
-    void updateModelAssociatedWithAssetType(String modelID, String assetTypeID);
+    void updateModelAssociatedWithAssetType(int modelID, String assetTypeID);
 
     void setModelToTrain(String assetTypeID);
 
-    String getGetModelEvaluation(String modelID, String assetTypeID);
+    String getGetModelEvaluation(int modelID, String assetTypeID);
 }

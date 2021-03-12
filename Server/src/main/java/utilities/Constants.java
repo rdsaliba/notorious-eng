@@ -8,6 +8,9 @@ public class Constants {
     public static final String WARNING_THRESHOLD = "Warning";
     public static final String FAILED_THRESHOLD = "Failed";
 
+    public static final int STATUS_LIVE = 1;
+    public static final int STATUS_EVALUATION = 2;
+
     private Constants() {
         throw new IllegalStateException("Utility class");
     }

@@ -16,13 +16,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class AssetDAOImpl extends DAO implements AssetDAO {
 
     private static final String DELETE_ASSET = "DELETE FROM asset WHERE asset_id = ?";
     private static final String GET_ASSET_INFO_FROM_ASSET_ID = "SELECT DISTINCT att.* FROM attribute_measurements am, attribute att WHERE att.attribute_id=am.attribute_id AND am.asset_id = ?";
     private static final String GET_LIVE_ASSETS_FROM_ASSET_TYPE_ID = "SELECT * FROM asset a WHERE a.archived = false AND a.asset_type_id = ?";
-    private static final String GET_ASSETS_FROM_ASSET_TYPE_ID = "SELECT * FROM asset a WHERE a.archived = true AND a.asset_type_id = ?";
+    private static final String GET_ARCHIVED_ASSETS_FROM_ASSET_TYPE_ID = "SELECT * FROM asset a WHERE a.archived = true AND a.asset_type_id = ?";
     private static final String GET_ALL_LIVE_ASSETS = "SELECT * FROM asset, asset_type WHERE asset.asset_type_id=asset_type.asset_type_id AND archived = false";
     private static final String INSERT_ASSET = "INSERT INTO asset (name, asset_type_id, description, sn, manufacturer, category, site, location) values(?,?,?,?,?,?,?,?)";
     private static final String SET_UPDATED_TRUE = "UPDATE asset set updated = 1 where asset_id = ?";
@@ -202,13 +203,14 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
      * used for classifier calculation
      *
      * @param assetTypeID represents the asset's type ID
+     * @return a list of all the live assets for a specific asset type
      * @author Paul
      */
     @Override
-    public ArrayList<Asset> getLiveAssetsFromAssetTypeID(String assetTypeID) {
+    public List<Asset> getLiveAssetsFromAssetTypeID(int assetTypeID) {
         ArrayList<Asset> assets = new ArrayList<>();
         try (PreparedStatement ps = getConnection().prepareStatement(GET_LIVE_ASSETS_FROM_ASSET_TYPE_ID)) {
-            ps.setString(1, assetTypeID);
+            ps.setInt(1, assetTypeID);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     assets.add(createFullAssetFromQueryResult(rs));
@@ -250,12 +252,13 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
      * used for classifier calculation
      *
      * @param assetTypeID represents the asset's type ID
+     * @return a list of all the archived asset for a specific asset type
      * @author Paul
      */
     @Override
-    public ArrayList<Asset> getAssetsFromAssetTypeID(int assetTypeID) {
+    public List<Asset> getArchivedAssetsFromAssetTypeID(int assetTypeID) {
         ArrayList<Asset> assets = new ArrayList<>();
-        try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSETS_FROM_ASSET_TYPE_ID)) {
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_ARCHIVED_ASSETS_FROM_ASSET_TYPE_ID)) {
             ps.setInt(1, assetTypeID);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
