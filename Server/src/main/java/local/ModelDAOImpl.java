@@ -21,21 +21,21 @@ import java.util.ArrayList;
 public class ModelDAOImpl extends DAO implements ModelDAO {
     private static final String UPDATE_SERIALIZE_OBJECT = "UPDATE trained_model SET retrain = false, serialized_model  = ? WHERE model_id = ? AND asset_type_id = ? and status_id = ?";
     private static final String GET_SERIALIZE_OBJECT = "SELECT * FROM trained_model WHERE retrain = true";
-    private static final String GET_MODEL_NAME_FROM_ID = "SELECT name from trained_model, model where trained_model.model_id = model.model_id and model.model_id = ?";
+    private static final String GET_MODEL_NAME_FROM_ID = "SELECT name from model where model.model_id = ?";
     private static final String GET_MODEL_FROM_ASSET_TYPE = "SELECT * FROM trained_model WHERE asset_type_id = ? and status_id = ?";
 
     /**
-     * Given a asset type id, this function will return the string corresponding
-     * to the name of the model in the database associated with the asset type
+     * Given a model id, this function will return the string corresponding
+     * to the name of the specified model in the database
      *
-     * @param assetTypeID represents a asset type id
+     * @param modelID represents a model's id
      * @author Paul
      */
     @Override
-    public String getModelNameFromModelID(String assetTypeID) {
+    public String getModelNameFromModelID(String modelID) {
         String name = null;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_NAME_FROM_ID)) {
-            ps.setString(1, assetTypeID);
+            ps.setString(1, modelID);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next())
                     name = rs.getString("name");
@@ -59,7 +59,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
         try (PreparedStatement ps = getConnection().prepareStatement(GET_SERIALIZE_OBJECT)) {
             try (ResultSet queryResult = ps.executeQuery()) {
                 while (queryResult.next()) {
-                    tms.add(createTrainedModelFromResultSet(queryResult, false));
+                    tms.add(createTrainedModelFromResultSet(queryResult));
                 }
             }
         } catch (SQLException e) {
@@ -69,14 +69,14 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     }
 
     /**
-     * Given an arraylist of trained models this function will write the new Classifier object
+     * Given an trained model this function will write the Model implementation object(including the classifier) object
      * to the corresponding trained model entry after an model training phase
      *
-     * @param tm<TrainedModel> represents a list of trained models
+     * @param tm represents a trained model
      * @author Paul
      */
     @Override
-    public void setModelsToTrain(TrainedModel tm) {
+    public void setModelToTrain(TrainedModel tm) {
         try {
             try (PreparedStatement ps = getConnection().prepareStatement(UPDATE_SERIALIZE_OBJECT)) {
                 ps.setObject(1, tm.getModelStrategy());
@@ -107,7 +107,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
             ps.setInt(2, statusID);
             try (ResultSet queryResult = ps.executeQuery()) {
                 while (queryResult.next()) {
-                    tm = createTrainedModelFromResultSet(queryResult, false);
+                    tm = createTrainedModelFromResultSet(queryResult);
                 }
             }
         } catch (SQLException e) {
@@ -123,16 +123,17 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
      * @author Paul
      */
     @Override
-    public TrainedModel createTrainedModelFromResultSet(ResultSet rs, boolean withModel) throws SQLException {
+    public TrainedModel createTrainedModelFromResultSet(ResultSet rs) throws SQLException {
         TrainedModel tm = new TrainedModel();
         tm.setModelID(rs.getInt("model_id"));
         tm.setAssetTypeID(rs.getInt("asset_type_id"));
         tm.setRetrain(rs.getBoolean("retrain"));
         tm.setStatusID(rs.getInt("status_id"));
         try {
-            if (withModel) {
-                tm.setModelStrategy((ModelStrategy) new ObjectInputStream(new ByteArrayInputStream(rs.getBytes("serialized_model"))).readObject());
-            }
+            byte[] buf = rs.getBytes("serialized_model");
+            if (buf != null)
+                tm.setModelStrategy((ModelStrategy) new ObjectInputStream(new ByteArrayInputStream(buf)).readObject());
+
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
             return null;

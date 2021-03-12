@@ -14,6 +14,7 @@ import local.ModelDAOImpl;
 import preprocessing.DataPrePreprocessorController;
 import rul.assessment.AssessmentController;
 import rul.models.*;
+import utilities.Constants;
 import weka.classifiers.Classifier;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
@@ -59,7 +60,7 @@ public class ModelController {
                 checkModels();
                 System.out.println("ModelController - initialize - checkModels - end");
             }
-        }, 0, 5000);
+        }, 0, 2000);
     }
 
 
@@ -80,7 +81,7 @@ public class ModelController {
      *
      * @author Paul
      */
-    public boolean checkAssets() {
+    public void checkAssets() {
         AssessmentController assessmentController = new AssessmentController();
         //check for assets that need a new calculation
         ArrayList<Asset> assetsToUpdate = assetDaoImpl.getAssetsToUpdate();
@@ -94,7 +95,6 @@ public class ModelController {
             assetDaoImpl.updateRecommendation(asset.getId(), asset.getRecommendation());
             assetDaoImpl.addRULEstimation(estimation, asset, trainedModel);
         }
-        return !assetsToUpdate.isEmpty();
     }
 
     public TrainedModel getModelForAssetType(List<TrainedModel> trainedModels, String assetTypeID) {
@@ -102,7 +102,7 @@ public class ModelController {
             if (tm.getAssetTypeID() == Integer.parseInt(assetTypeID))
                 return tm;
         }
-        trainedModels.add(modelDAOImpl.getModelsByAssetTypeID(assetTypeID, 1));
+        trainedModels.add(modelDAOImpl.getModelsByAssetTypeID(assetTypeID, Constants.STATUS_LIVE));
         return trainedModels.get(trainedModels.size() - 1);
     }
 
@@ -115,20 +115,30 @@ public class ModelController {
      * @author Paul
      */
     public void checkModels() {
-
         // check for models that need retraining
         ArrayList<TrainedModel> trainedModelsToRetrain = modelDAOImpl.getModelsToTrain();
+        trainedModelsToRetrain
+                .stream()
+                .filter(tm -> tm.getStatusID() == Constants.STATUS_LIVE)
+                .forEach(this::trainAndSave);
+        trainedModelsToRetrain
+                .stream()
+                .filter(tm -> tm.getStatusID() == Constants.STATUS_EVALUATION)
+                .findFirst().ifPresent(this::trainAndSave);
+    }
 
-        // retrain models if necessary
-        if (!trainedModelsToRetrain.isEmpty()) {
-            for (TrainedModel trainedModel : trainedModelsToRetrain) {
-                try {
-                    trainModel(trainedModel);
-                    modelDAOImpl.setModelsToTrain(trainedModel);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+    /**
+     * train the specific model and save it in the db
+     *
+     * @author Paul
+     */
+    private void trainAndSave(TrainedModel tm) {
+        try {
+            trainModel(tm);
+            modelDAOImpl.setModelToTrain(tm);
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -140,12 +150,15 @@ public class ModelController {
     private void trainModel(TrainedModel trainedModel) throws Exception {
         Instances trainingSet = createInstancesFromAssets(assetDaoImpl.getAssetsFromAssetTypeID(trainedModel.getAssetTypeID()));
         Instances reducedData = DataPrePreprocessorController.getInstance().addRULCol(trainingSet);
-        ModelStrategy modelStrategy = getModelStrategy(trainedModel);
-        if (modelStrategy != null) {
-            ModelsController modelsController = new ModelsController(modelStrategy);
+        ModelStrategy modelStrategy = trainedModel.getModelStrategy();
+        if (modelStrategy == null) {
+            modelStrategy = getModelStrategy(trainedModel);
             trainedModel.setModelStrategy(modelStrategy);
-            trainedModel.setModelClassifier(modelsController.trainModel(reducedData));
         }
+        ModelsController modelsController = new ModelsController(modelStrategy);
+        trainedModel.setModelClassifier(modelsController.trainModel(reducedData));
+
+
     }
 
     /**
