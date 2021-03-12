@@ -6,26 +6,46 @@
  */
 package rul.models;
 
-import app.item.parameter.BoolParameter;
-import app.item.parameter.FloatParameter;
-import app.item.parameter.IntParameter;
+import app.item.parameter.*;
 import weka.classifiers.Classifier;
 import weka.classifiers.meta.AdditiveRegression;
 import weka.core.Instances;
 
-import java.io.FileReader;
-import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
-public class AdditiveRegressionModelImpl extends ModelStrategy {
+public class AdditiveRegressionModelImpl extends ModelStrategy
+{
 
-    //Parameters set to default values;
-    private IntParameter batchSizePara = new IntParameter(1, "batchSize", false, true, 100);
-    private BoolParameter minimizeAbsoluteErrorPara = new BoolParameter(1, "minimizeAbsoluteError", false, true, false);
-    private IntParameter numIterationsPara = new IntParameter(1, "numIterations", false, true, 10);
-    private BoolParameter resumePara = new BoolParameter(1, "resume", false, true, false);
-    private FloatParameter shrinkagePara = new FloatParameter(1, "shrinkage", false, true, 1.0F);
+    private final String BATCH_SIZE_PARAM_DEFAULT = "100";
+    private final boolean MINIMIZE_ABSOLUTE_ERROR_PARAM_DEFAULT = false;
+    private final int NUM_ITERATIONS_PARAM_DEFAULT = 10;
+    private final boolean RESUME_PARAM_DEFAULT = false;
+    private final float SHRINKAGE_PARAM_DEFAULT = 1.0F;
 
-    private Classifier classifier;
+    private StringParameter batchSizePara;
+    private BoolParameter minimizeAbsoluteErrorPara;
+    private IntParameter numIterationsPara;
+    private BoolParameter resumePara;
+    private FloatParameter shrinkagePara;
+
+    private AdditiveRegression additiveRegression;
+
+    public AdditiveRegressionModelImpl()
+    {
+        batchSizePara = new StringParameter("batchSize", BATCH_SIZE_PARAM_DEFAULT);
+        minimizeAbsoluteErrorPara = new BoolParameter("minimizeAbsoluteError", MINIMIZE_ABSOLUTE_ERROR_PARAM_DEFAULT);
+        numIterationsPara = new IntParameter("numIterations", NUM_ITERATIONS_PARAM_DEFAULT);
+        resumePara = new BoolParameter("resume", RESUME_PARAM_DEFAULT);
+        shrinkagePara = new FloatParameter("shrinkage", SHRINKAGE_PARAM_DEFAULT);
+
+
+        addParameter(batchSizePara);
+        addParameter(minimizeAbsoluteErrorPara);
+        addParameter(numIterationsPara);
+        addParameter(resumePara);
+        addParameter(shrinkagePara);
+    }
 
     /**
      * This function takes the assets as the training dataset, and returns the trained
@@ -34,130 +54,50 @@ public class AdditiveRegressionModelImpl extends ModelStrategy {
      * @author Khaled
      */
     @Override
-    public Classifier trainModel(Instances dataToTrain) {
-        AdditiveRegression additiveRegression = new AdditiveRegression();
+    public Classifier trainModel(Instances dataToTrain)
+    {
+        additiveRegression = new AdditiveRegression();
         dataToTrain.setClassIndex(dataToTrain.numAttributes() - 1);
 
-        additiveRegression.setBatchSize("" + getBatchSizePara());
-        additiveRegression.setMinimizeAbsoluteError(getMinimizeAbsoluteErrorPara());
-        additiveRegression.setNumIterations(getNumIterationsPara());
-        additiveRegression.setResume(getResumePara());
-        additiveRegression.setShrinkage(getShrinkagePara());
-
-        try {
+        additiveRegression.setBatchSize(((StringParameter) getParameters().get(batchSizePara.getParamName())).getStringValue());
+        additiveRegression.setMinimizeAbsoluteError(((BoolParameter) getParameters().get(minimizeAbsoluteErrorPara.getParamName())).getBoolValue());
+        additiveRegression.setNumIterations(((IntParameter) getParameters().get(numIterationsPara.getParamName())).getIntValue());
+        additiveRegression.setResume(((BoolParameter) getParameters().get(resumePara.getParamName())).getBoolValue());
+        additiveRegression.setShrinkage(((FloatParameter) getParameters().get(shrinkagePara.getParamName())).getFloatValue());
+        try
+        {
             additiveRegression.buildClassifier(dataToTrain);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
         }
-
-        this.classifier = additiveRegression;
+        catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+        setClassifier(additiveRegression);
 
         return additiveRegression;
     }
 
-    //getter for batchSizeObj
-    public int getBatchSizePara()
-    {
-        return this.batchSizePara.getIntValue();
-    }
-
-    public void setBatchSizePara(int batchSizeVal)
-    {
-        this.batchSizePara.setDefault((batchSizeVal == 100));
-        this.batchSizePara.setIntValue(batchSizeVal);
-    }
-
-    public boolean getMinimizeAbsoluteErrorPara()
-    {
-        return this.minimizeAbsoluteErrorPara.getBoolValue();
-    }
-
-    public void setMinimizeAbsoluteErrorPara(boolean minimizeAbsoluteErrorVal)
-    {
-        this.batchSizePara.setDefault((!minimizeAbsoluteErrorVal));
-        this.minimizeAbsoluteErrorPara.setBoolValue(minimizeAbsoluteErrorVal);
-    }
-
-    public int getNumIterationsPara()
-    {
-        return this.numIterationsPara.getIntValue();
-    }
-
-    public void setNumIterationsPara(int numIterationsVal)
-    {
-        this.numIterationsPara.setDefault(numIterationsVal == 10);
-        this.numIterationsPara.setIntValue(numIterationsVal);
-    }
-
-    public boolean getResumePara()
-    {
-        return this.resumePara.getBoolValue();
-    }
-
-    public void setResumePara(boolean resumeParaVal)
-    {
-        this.resumePara.setDefault(!resumeParaVal);
-        this.resumePara.setBoolValue(resumeParaVal);
-    }
-
-    public float getShrinkagePara()
-    {
-        return this.shrinkagePara.getFloatValue();
-    }
-
-    public void setShrinkagePara(float shrinkageParaVal)
-    {
-        this.shrinkagePara.setDefault(shrinkageParaVal == 1.0F);
-        this.shrinkagePara.setFloatValue(shrinkageParaVal);
-    }
-
-    public void resetAllToDefault()
-    {
-        this.batchSizePara.setDefault(true);
-        this.batchSizePara.setIntValue(100);
-        this.minimizeAbsoluteErrorPara.setDefault(true);
-        this.minimizeAbsoluteErrorPara.setBoolValue(false);
-        this.numIterationsPara.setDefault(true);
-        this.numIterationsPara.setIntValue(10);
-        this.resumePara.setDefault(true);
-        this.resumePara.setBoolValue(false);
-        this.shrinkagePara.setDefault(true);
-        this.shrinkagePara.setFloatValue(1.0F);
-    }
-
     @Override
-    public Classifier getClassifier() {
-        return this.classifier;
-    }
-
-    @Override
-    public void setClassifier(Classifier classifier)
+    public Map<String, Parameter> getDefaultParameters()
     {
-        this.classifier = classifier;
+        StringParameter batchSizeParaDefault             = new StringParameter("batchSize", BATCH_SIZE_PARAM_DEFAULT);
+        BoolParameter   minimizeAbsoluteErrorParaDefault = new BoolParameter("minimizeAbsoluteError", MINIMIZE_ABSOLUTE_ERROR_PARAM_DEFAULT);
+        IntParameter    numIterationsParaDefault         = new IntParameter("numIterations", NUM_ITERATIONS_PARAM_DEFAULT);
+        BoolParameter   resumeParaDefault                = new BoolParameter("resume", RESUME_PARAM_DEFAULT);
+        FloatParameter  shrinkageParaDefault             = new FloatParameter("shrinkage", SHRINKAGE_PARAM_DEFAULT);
+
+        Map<String, Parameter> parameters = new HashMap<>();
+        parameters.put(batchSizeParaDefault.getParamName(), batchSizeParaDefault);
+        parameters.put(minimizeAbsoluteErrorParaDefault.getParamName(), minimizeAbsoluteErrorParaDefault);
+        parameters.put(numIterationsParaDefault.getParamName(), numIterationsParaDefault);
+        parameters.put(resumeParaDefault.getParamName(), resumeParaDefault);
+        parameters.put(shrinkageParaDefault.getParamName(), shrinkageParaDefault);
+
+        return parameters;
     }
 
-    public static void main(String[] args) throws IOException
+    public AdditiveRegression getAdditiveRegressionObject()
     {
-        FileReader trainFile = new FileReader("Dataset/Converted/train_FD001_withRUL.arff");
-        Instances   trainData = new Instances(trainFile);
-        //trainData.setClassIndex(trainData.numAttributes() - 1);
-
-        AdditiveRegressionModelImpl modelStrategy = new AdditiveRegressionModelImpl();
-        //AdditiveRegression classifier = (AdditiveRegression) modelStrategy.trainModel(trainData);
-        //modelStrategy.getClassifier();
-
-        modelStrategy.setBatchSizePara(10);
-        modelStrategy.resetAllToDefault();
-        modelStrategy.setClassifier(modelStrategy.trainModel(trainData));
-
-        //modelStrategy.setBatchSizePara(200);
-       // modelStrategy.setNumIterationsPara(100);
-        //System.out.println(modelStrategy.getNumIterationsPara());
-
-        System.out.println(modelStrategy.getBatchSizePara());
-        //modelStrategy.trainModel(trainData);
-
+        return this.additiveRegression;
     }
-
 }

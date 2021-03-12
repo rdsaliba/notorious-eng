@@ -7,18 +7,46 @@
  */
 package rul.models;
 
+import app.item.parameter.Parameter;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 
-public class ModelsController {
+import java.util.ArrayList;
+import java.util.Map;
+
+public class ModelsController
+{
     private final ModelStrategy modelStrategy;
 
-    public ModelsController(ModelStrategy modelStrategy) {
+    public ModelsController(ModelStrategy modelStrategy)
+    {
         this.modelStrategy = modelStrategy;
     }
 
-    public Classifier trainModel(Instances reducedData) {
+    public Classifier trainModel(Instances reducedData)
+    {
         return modelStrategy.trainModel(reducedData);
     }
+
+    public ModelStrategy getModelStrategy()
+    {
+        return modelStrategy;
+    }
+
+    public Map<String, Parameter> getParameters()
+    {
+        return modelStrategy.getParameters();
+    }
+
+    public Map<String, Parameter> getDefaultParameters()
+    {
+        return modelStrategy.getDefaultParameters();
+    }
+
+    public void setParameters(Map<String, Parameter> newParam)
+    {
+        modelStrategy.setParameters(newParam);
+    }
+
 
 }

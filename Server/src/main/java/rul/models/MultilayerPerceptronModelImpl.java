@@ -8,9 +8,12 @@
 
 package rul.models;
 
+import app.item.parameter.Parameter;
 import weka.classifiers.Classifier;
 import weka.classifiers.functions.MultilayerPerceptron;
 import weka.core.Instances;
+
+import java.util.Map;
 
 public class MultilayerPerceptronModelImpl extends ModelStrategy {
 
@@ -70,5 +73,12 @@ public class MultilayerPerceptronModelImpl extends ModelStrategy {
 
         return mlp;
     }
+
+    @Override
+    public Map<String, Parameter> getDefaultParameters()
+    {
+        return null;
+    }
+
 
 }

@@ -7,9 +7,12 @@
 
 package rul.models;
 
+import app.item.parameter.Parameter;
 import weka.classifiers.Classifier;
 import weka.classifiers.trees.RandomForest;
 import weka.core.Instances;
+
+import java.util.Map;
 
 public class RandomForestModelImpl extends ModelStrategy {
 
@@ -58,6 +61,12 @@ public class RandomForestModelImpl extends ModelStrategy {
         }
 
         return randomForest;
+    }
+
+    @Override
+    public Map<String, Parameter> getDefaultParameters()
+    {
+        return null;
     }
 
 }

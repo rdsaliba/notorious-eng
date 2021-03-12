@@ -7,9 +7,12 @@
 
 package rul.models;
 
+import app.item.parameter.Parameter;
 import weka.classifiers.Classifier;
 import weka.classifiers.meta.RandomCommittee;
 import weka.core.Instances;
+
+import java.util.Map;
 
 public class RandomCommitteeModelImpl extends ModelStrategy {
 
@@ -47,4 +50,11 @@ public class RandomCommitteeModelImpl extends ModelStrategy {
 
         return randomCommittee;
     }
+
+    @Override
+    public Map<String, Parameter> getDefaultParameters()
+    {
+        return null;
+    }
+
 }

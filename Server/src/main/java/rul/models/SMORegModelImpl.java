@@ -7,9 +7,12 @@
 
 package rul.models;
 
+import app.item.parameter.Parameter;
 import weka.classifiers.Classifier;
 import weka.classifiers.functions.SMOreg;
 import weka.core.Instances;
+
+import java.util.Map;
 
 public class SMORegModelImpl extends ModelStrategy {
 
@@ -41,4 +44,11 @@ public class SMORegModelImpl extends ModelStrategy {
 
         return smOreg;
     }
+
+    @Override
+    public Map<String, Parameter> getDefaultParameters()
+    {
+        return null;
+    }
+
 }

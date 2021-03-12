@@ -7,11 +7,15 @@
 
 package rul.models;
 
+import app.item.parameter.Parameter;
 import weka.classifiers.Classifier;
 import weka.classifiers.meta.RandomSubSpace;
 import weka.core.Instances;
 
-public class RandomSubSpaceModelImpl extends ModelStrategy {
+import java.util.Map;
+
+public class RandomSubSpaceModelImpl extends ModelStrategy
+{
 
     private int batchSize;
     private int numExecutionSlotsParamter;
@@ -25,6 +29,7 @@ public class RandomSubSpaceModelImpl extends ModelStrategy {
         numIterationsParameter = 10;
         subSpaceSize = 0.5;
     }
+
     /**
      * This function takes the assets as the training dataset, and returns the trained
      * Random SubSpace classifier.
@@ -32,17 +37,28 @@ public class RandomSubSpaceModelImpl extends ModelStrategy {
      * @author Khaled
      */
     @Override
-    public Classifier trainModel(Instances dataToTrain) {
+    public Classifier trainModel(Instances dataToTrain)
+    {
         Classifier randomSubSpace = new RandomSubSpace();
         dataToTrain.setClassIndex(dataToTrain.numAttributes() - 1);
 
-        try {
+        try
+        {
             randomSubSpace.buildClassifier(dataToTrain);
-        } catch (Exception e) {
+        }
+        catch(Exception e)
+        {
             e.printStackTrace();
             return null;
         }
 
         return randomSubSpace;
     }
+
+    @Override
+    public Map<String, Parameter> getDefaultParameters()
+    {
+        return null;
+    }
+
 }

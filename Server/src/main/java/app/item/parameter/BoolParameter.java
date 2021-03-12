@@ -3,8 +3,8 @@ package app.item.parameter;
 public class BoolParameter extends Parameter {
     private boolean boolValue;
 
-    public BoolParameter(int paramID, String paramName, boolean isLive, boolean isDefault, boolean boolValue) {
-        super(paramID, paramName, isLive, isDefault);
+    public BoolParameter(String paramName, boolean boolValue) {
+        super(paramName);
         this.boolValue = boolValue;
     }
 

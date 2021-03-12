@@ -8,21 +8,33 @@
  */
 package rul.models;
 
-import app.item.parameter.BoolParameter;
-import app.item.parameter.FloatParameter;
-import app.item.parameter.IntParameter;
+import app.item.parameter.*;
 import weka.classifiers.Classifier;
 import weka.classifiers.functions.LinearRegression;
 import weka.core.Instance;
 import weka.core.Instances;
 
+import java.util.Map;
+
 public class LinearRegressionModelImpl extends ModelStrategy {
 
     //Parameters
-    private IntParameter batchSizePara = new IntParameter(1, "batchSize", false, true, 100);
-    private BoolParameter useQRDecompositionPara = new BoolParameter(1, "useQRDecomposition", false, true, false);
-    private BoolParameter eliminateColinearAttributesPara = new BoolParameter(1, "eliminateColinearAttributes", false, true, true);
-    private FloatParameter ridgePara = new FloatParameter(1, "ridge", false, true, 1.0E-8F);
+//    private IntParameter batchSizePara = new IntParameter(1, "batchSize", false, true, 100);
+//    private BoolParameter useQRDecompositionPara = new BoolParameter(1, "useQRDecomposition", false, true, false);
+//    private BoolParameter eliminateColinearAttributesPara = new BoolParameter(1, "eliminateColinearAttributes", false, true, true);
+//    private FloatParameter ridgePara = new FloatParameter(1, "ridge", false, true, 1.0E-8F);
+
+    private final String BATCH_SIZE_PARAM_DEFAULT = "100";
+    private final boolean USE_QR_DECOMPOSITION_DEFAULT = false;
+    private final int ELIMINATE_ = 10;
+    private final boolean RESUME_PARAM_DEFAULT = false;
+    private final float SHRINKAGE_PARAM_DEFAULT = 1.0F;
+
+    private StringParameter batchSizePara;
+    private BoolParameter minimizeAbsoluteErrorPara;
+    private IntParameter numIterationsPara;
+    private BoolParameter resumePara;
+    private FloatParameter shrinkagePara;
 
     private Classifier classifier;
 
@@ -48,6 +60,13 @@ public class LinearRegressionModelImpl extends ModelStrategy {
         return lr;
     }
 
+    @Override
+    public Map<String, Parameter> getDefaultParameters()
+    {
+        return null;
+    }
+
+
     /**
      * This function removes the outliers (data that can affect the prediction of the model)
      * from a training dataset.
@@ -71,62 +90,62 @@ public class LinearRegressionModelImpl extends ModelStrategy {
     public static Instances removeInstances (Instances trainDataset) {
         return removeInstances(trainDataset,150);
     }
+//
+//    public int getBatchSizePara()
+//    {
+//        return batchSizePara.getIntValue();
+//    }
 
-    public int getBatchSizePara()
-    {
-        return batchSizePara.getIntValue();
-    }
+//    public void setBatchSizePara(int batchSizeParaVal)
+//    {
+//        this.batchSizePara.setDefault(batchSizeParaVal == 100);
+//        this.batchSizePara.setIntValue(batchSizeParaVal);
+//    }
 
-    public void setBatchSizePara(int batchSizeParaVal)
-    {
-        this.batchSizePara.setDefault(batchSizeParaVal == 100);
-        this.batchSizePara.setIntValue(batchSizeParaVal);
-    }
+//    public boolean getUseQRDecompositionPara()
+//    {
+//        return useQRDecompositionPara.getBoolValue();
+//    }
 
-    public boolean getUseQRDecompositionPara()
-    {
-        return useQRDecompositionPara.getBoolValue();
-    }
+//    public void setUseQRDecompositionPara(boolean useQRDecompositionParaVal)
+//    {
+//        this.useQRDecompositionPara.setDefault(!useQRDecompositionParaVal);
+//        this.useQRDecompositionPara.setBoolValue(useQRDecompositionParaVal);
+//    }
 
-    public void setUseQRDecompositionPara(boolean useQRDecompositionParaVal)
-    {
-        this.useQRDecompositionPara.setDefault(!useQRDecompositionParaVal);
-        this.useQRDecompositionPara.setBoolValue(useQRDecompositionParaVal);
-    }
+//    public BoolParameter getEliminateColinearAttributesPara()
+//    {
+//        return eliminateColinearAttributesPara;
+//    }
+//
+//    public void setEliminateColinearAttributesPara(boolean eliminateColinearAttributesParaVal)
+//    {
+//        this.eliminateColinearAttributesPara.setDefault(eliminateColinearAttributesParaVal);
+//        this.eliminateColinearAttributesPara.setBoolValue(eliminateColinearAttributesParaVal);
+//    }
 
-    public BoolParameter getEliminateColinearAttributesPara()
-    {
-        return eliminateColinearAttributesPara;
-    }
+//    public FloatParameter getRidgePara()
+//    {
+//        return ridgePara;
+//    }
 
-    public void setEliminateColinearAttributesPara(boolean eliminateColinearAttributesParaVal)
-    {
-        this.eliminateColinearAttributesPara.setDefault(eliminateColinearAttributesParaVal);
-        this.eliminateColinearAttributesPara.setBoolValue(eliminateColinearAttributesParaVal);
-    }
+//    public void setRidgePara(float ridgeParaVal)
+//    {
+//        this.ridgePara.setDefault(ridgeParaVal == 1.0F);
+//        this.ridgePara.setFloatValue(ridgeParaVal);
+//    }
 
-    public FloatParameter getRidgePara()
-    {
-        return ridgePara;
-    }
-
-    public void setRidgePara(float ridgeParaVal)
-    {
-        this.ridgePara.setDefault(ridgeParaVal == 1.0F);
-        this.ridgePara.setFloatValue(ridgeParaVal);
-    }
-
-    public void resetAllToDefault()
-    {
-        this.batchSizePara.setDefault(true);
-        this.batchSizePara.setIntValue(100);
-        this.useQRDecompositionPara.setDefault(true);
-        this.useQRDecompositionPara.setBoolValue(false);
-        this.eliminateColinearAttributesPara.setDefault(true);
-        this.eliminateColinearAttributesPara.setBoolValue(true);
-        this.ridgePara.setDefault(true);
-        this.ridgePara.setFloatValue(1.0F);
-    }
+//    public void resetAllToDefault()
+//    {
+//        this.batchSizePara.setDefault(true);
+//        this.batchSizePara.setIntValue(100);
+//        this.useQRDecompositionPara.setDefault(true);
+//        this.useQRDecompositionPara.setBoolValue(false);
+//        this.eliminateColinearAttributesPara.setDefault(true);
+//        this.eliminateColinearAttributesPara.setBoolValue(true);
+//        this.ridgePara.setDefault(true);
+//        this.ridgePara.setFloatValue(1.0F);
+//    }
 
     @Override
     public Classifier getClassifier()
