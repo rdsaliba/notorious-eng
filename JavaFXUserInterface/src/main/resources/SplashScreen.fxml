@@ -5,7 +5,6 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 <VBox fx:id="rootContainer" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
       minWidth="-Infinity" prefHeight="712.0" prefWidth="1026.0" styleClass="splash-screen-bg"
       stylesheets="@css/style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
@@ -22,10 +21,7 @@
       </HBox>
       <HBox alignment="CENTER">
          <children>
-            <Label text="M i n e r v a" textAlignment="CENTER" textFill="WHITE">
-               <font>
-                  <Font name="Futura Medium" size="55.0"/>
-               </font>
+            <Label text="M i n e r v a" styleClass="splash-screen-title">
             </Label>
          </children>
       </HBox>
