@@ -25,9 +25,9 @@ public class CBMSApplication extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/Assets.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/SplashScreen.fxml"));
         Scene scene = new Scene(root);
-        primaryStage.setTitle("CBMS");
+        primaryStage.setTitle("Minerva");
         primaryStage.setScene(scene);
         primaryStage.show();
         primaryStage.setOnCloseRequest(e -> {

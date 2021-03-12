@@ -68,3 +68,8 @@
     -fx-border-color: red;
     -fx-border-width: 2px;
 }
+
+.splash-screen-bg {
+    -fx-background-color: rgb(22, 53, 96);
+    -fx-background-color: linear-gradient(to top right, rgba(22, 53, 96, 1) 0%, rgba(63, 143, 204, 1) 85%);;
+}
