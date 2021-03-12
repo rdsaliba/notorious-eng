@@ -14,7 +14,7 @@ import weka.classifiers.Classifier;
 import weka.classifiers.functions.MultilayerPerceptron;
 import weka.core.Instances;
 
-public class MultilayerPerceptronModelImpl implements ModelStrategy {
+public class MultilayerPerceptronModelImpl extends ModelStrategy {
 
     Logger logger = LoggerFactory.getLogger(MultilayerPerceptronModelImpl.class);
 

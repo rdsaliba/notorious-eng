@@ -23,7 +23,7 @@ import weka.dl4j.updater.Sgd;
 
 import static org.deeplearning4j.nn.api.OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT;
 
-public class LSTMModelImpl implements ModelStrategy {
+public class LSTMModelImpl extends ModelStrategy {
 
     Logger logger = LoggerFactory.getLogger(LSTMModelImpl.class);
 
@@ -49,6 +49,7 @@ public class LSTMModelImpl implements ModelStrategy {
             //network.setEarlyStopping(new EarlyStopping()); //Set a stopping to make it stop if no progress
             ((Dl4jMlpClassifier) network).setBatchSize("100");
             //network.setSeed(124564);                            //to ensure randomness
+            //network.setNumDecimalPlaces(2);
 
 
             //Network configurations

@@ -13,7 +13,7 @@ import weka.classifiers.Classifier;
 import weka.classifiers.meta.RandomCommittee;
 import weka.core.Instances;
 
-public class RandomCommitteeModelImpl implements ModelStrategy {
+public class RandomCommitteeModelImpl extends ModelStrategy {
 
     Logger logger = LoggerFactory.getLogger(RandomCommitteeModelImpl.class);
 

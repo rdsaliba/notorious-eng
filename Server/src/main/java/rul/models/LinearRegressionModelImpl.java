@@ -15,7 +15,7 @@ import weka.classifiers.functions.LinearRegression;
 import weka.core.Instance;
 import weka.core.Instances;
 
-public class LinearRegressionModelImpl implements ModelStrategy {
+public class LinearRegressionModelImpl extends ModelStrategy {
 
     Logger logger = LoggerFactory.getLogger(LinearRegressionModelImpl.class);
 

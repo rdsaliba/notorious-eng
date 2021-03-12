@@ -12,7 +12,7 @@ import weka.classifiers.Classifier;
 import weka.classifiers.meta.AdditiveRegression;
 import weka.core.Instances;
 
-public class AdditiveRegressionModelImpl implements ModelStrategy {
+public class AdditiveRegressionModelImpl extends ModelStrategy {
 
     Logger logger = LoggerFactory.getLogger(AdditiveRegressionModelImpl.class);
 

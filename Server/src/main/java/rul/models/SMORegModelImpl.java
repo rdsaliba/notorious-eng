@@ -13,10 +13,9 @@ import weka.classifiers.Classifier;
 import weka.classifiers.functions.SMOreg;
 import weka.core.Instances;
 
-public class SMORegModelImpl implements ModelStrategy {
+public class SMORegModelImpl extends ModelStrategy {
 
     Logger logger = LoggerFactory.getLogger(SMORegModelImpl.class);
-
     /**
      * This function takes the assets as the training dataset, and returns the trained
      * SMOReg classifier.

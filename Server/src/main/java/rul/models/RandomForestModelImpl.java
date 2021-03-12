@@ -13,7 +13,7 @@ import weka.classifiers.Classifier;
 import weka.classifiers.trees.RandomForest;
 import weka.core.Instances;
 
-public class RandomForestModelImpl implements ModelStrategy {
+public class RandomForestModelImpl extends ModelStrategy {
 
     static Logger logger = LoggerFactory.getLogger(RandomForestModelImpl.class);
 

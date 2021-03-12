@@ -13,7 +13,7 @@ import weka.classifiers.Classifier;
 import weka.classifiers.meta.RandomSubSpace;
 import weka.core.Instances;
 
-public class RandomSubSpaceModelImpl implements ModelStrategy {
+public class RandomSubSpaceModelImpl extends ModelStrategy {
 
     Logger logger = LoggerFactory.getLogger(RandomSubSpaceModelImpl.class);
 
