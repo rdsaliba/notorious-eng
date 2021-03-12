@@ -1,5 +1,9 @@
 package UnitTests.rul.models;
 
+import app.item.parameter.BoolParameter;
+import app.item.parameter.FloatParameter;
+import app.item.parameter.Parameter;
+import app.item.parameter.StringParameter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,6 +14,8 @@ import weka.core.Instances;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -17,12 +23,26 @@ import static org.junit.Assert.assertTrue;
 public class LinearRegressionTest {
     //private LinearRegressionModelImpl lr;
     private ModelsController modelsController;
+    private BoolParameter useQRDecompositionPara;
+    private BoolParameter eliminateColinearAttributesPara;
+    private FloatParameter ridgePara;
+    private StringParameter batchSizePara;
+    private Map<String, Parameter> parameters;
 
 
     @Before
     public void setUp() {
         modelsController = new ModelsController(new LinearRegressionModelImpl());
+        useQRDecompositionPara = new BoolParameter("useQRDecomposition", true);
+        eliminateColinearAttributesPara = new BoolParameter("eliminateColinearAttributes", false);
+        ridgePara = new FloatParameter("ridge", 1.0E-5F);
+        batchSizePara = new StringParameter("batchSize", "10");
 
+        parameters = new HashMap();
+        parameters.put(useQRDecompositionPara.getParamName(), useQRDecompositionPara);
+        parameters.put(eliminateColinearAttributesPara.getParamName(), eliminateColinearAttributesPara);
+        parameters.put(ridgePara.getParamName(), ridgePara);
+        parameters.put(batchSizePara.getParamName(), batchSizePara);
     }
 
     @After
@@ -49,6 +69,20 @@ public class LinearRegressionTest {
         set.setClassIndex(set.numAttributes() - 1);
         LinearRegression linearRegression = new LinearRegression();
         assertEquals("Should Return Linear Regression Model", linearRegression.getClass(), modelsController.trainModel(set).getClass());
+    }
 
+    @Test
+    public void updateParam() throws Exception
+    {
+        FileReader trainFile = new FileReader("src/test/resources/FD01_Train_RUL.arff");
+        Instances  trainData = new Instances(trainFile);
+        trainData.setClassIndex(trainData.numAttributes() - 1);
+
+        modelsController.setParameters(parameters);
+        modelsController.trainModel(trainData);
+
+        assertEquals("Asserting the USEQRDecomposition parameter was changed",((LinearRegressionModelImpl) modelsController.getModelStrategy()).getLinearRegressionObject().getUseQRDecomposition(), useQRDecompositionPara.getBoolValue());
+        //assertEquals("Asserting the Ridge parameter was changed",((LinearRegressionModelImpl) modelsController.getModelStrategy()).getLinearRegressionObject().getRidge(), ridgePara.getFloatValue(), 0.001f);
+        assertEquals("Asserting the BatchSize parameter was changed", ((LinearRegressionModelImpl) modelsController.getModelStrategy()).getLinearRegressionObject().getBatchSize(), batchSizePara.getStringValue());
     }
 }

@@ -7,6 +7,7 @@
 package rul.models;
 
 import app.item.parameter.*;
+import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.weights.WeightInit;
 import weka.classifiers.Classifier;
 import weka.classifiers.functions.Dl4jMlpClassifier;
@@ -14,63 +15,95 @@ import weka.core.Instances;
 import weka.dl4j.NeuralNetConfiguration;
 import weka.dl4j.activations.ActivationRReLU;
 import weka.dl4j.activations.ActivationSwish;
+import weka.dl4j.enums.CacheMode;
 import weka.dl4j.layers.LSTM;
 import weka.dl4j.layers.OutputLayer;
 import weka.dl4j.lossfunctions.LossMSE;
 import weka.dl4j.updater.Adam;
-import weka.dl4j.updater.Sgd;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
-import static org.deeplearning4j.nn.api.OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT;
+//import static org.deeplearning4j.nn.api.OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT;
 
 public class LSTMModelImpl extends ModelStrategy
 {
-
-    private final String BATCH_SIZE_PARAM_DEFAULT = "100";
-    private final int NUMBER_OF_EPOCH_PARAM_DEFAULT = 10;
-    private final String CACHE_MODE_PARAM_DEFAULT = "MEMORY";
-    private final int QUEUE_SIZE_PARAM_DEFAULT = 0;
+    //Default boolean Parameters
     private final boolean RESUME_PARAM_DEFAULT = false;
     private final boolean FILTER_MODE_PARAM_DEFAULT = false;
     private final boolean DO_NOT_CLEAR_FILE_SYSTEM_CACHE_PARAM_DEFAULT = false;
+    private final boolean MINIMIZE_OBJECTIVE_PARA_DEFAULT = true;
+    //Default int parameters
+    private final int NUMBER_OF_EPOCH_PARAM_DEFAULT = 10;
+    private final int QUEUE_SIZE_PARAM_DEFAULT = 0;
     private final int NUMBER_OF_GPU_PARAM_DEFAULT = 1;
+    private final int AVG_FREQUENCY_PARAM_DEFAULT = 10;
+    //Default String parameters
+    private final String BATCH_SIZE_PARAM_DEFAULT = "100";
+    private final String CACHE_MODE_PARAM_DEFAULT = "MEMORY";
     private final String OPTIMIZATION_ALGO_PARAM_DEFAULT = "STOCHASTIC_GRADIENT_DESCENT";
     private final String WEIGHT_INIT_PARAM_DEFAULT = "XAVIER";
-    private final int AVG_FREQUENCY_PARAM_DEFAULT = 10;
-    private final boolean MINIMIZE_OBJECTIVE_PARA_DEFAULT = true;
+    //Default float parameter
+    private final float LEARNING_RATE_PARAM_DEFAULT = 0.001F;
 
-
-    private IntParameter numberOfEpochPara;
-    private ListParameter cacheModePara; //options: NONE, MEMORY, FILESYSTEM
-    private IntParameter queueSizePara;
+    //BoolParameters
     private BoolParameter resumePara;
     private BoolParameter filterModePara;
     private BoolParameter doNotClearFileSystemCachePara;
+    private BoolParameter minimizeObjectivePara;
+    //IntParameters
+    private IntParameter numberOfEpochPara;
     private IntParameter numberOfGPUPara;
     private IntParameter avgFrequencyPara;
-    private StringParameter batchSizePara;
+    private IntParameter queueSizePara;
+    //List & StringParameters
+    private ListParameter cacheModePara; //options: NONE, MEMORY, FILESYSTEM
     private ListParameter optimizationAlgoPara; //options: STOCHASTIC_GRADIENT_DESCENT, LINE_GRADIENT_DESCENT,
     private ListParameter weightInitPara;     //options: XAVIER, RELU, IDENTITY, NORMAL, UNIFORM, ZERO, DISTRIBUTION
-    private BoolParameter minimizeObjectivePara;
+    private StringParameter batchSizePara;
+    //FloatParameter
+    private FloatParameter learningRatePara;
 
+    private Dl4jMlpClassifier dl4jMlpClassifier;
+    private NeuralNetConfiguration neuralNetConfiguration;
 
     public LSTMModelImpl()
     {
-        numberOfEpochPara = new IntParameter("numberOfEpoch", NUMBER_OF_EPOCH_PARAM_DEFAULT);
-        cacheModePara = new ListParameter("cacheMode", new ArrayList<String>(Arrays.asList("NONE", "MEMORY", "FILESYSTEM")), CACHE_MODE_PARAM_DEFAULT);
-        queueSizePara = new IntParameter("queueSize", QUEUE_SIZE_PARAM_DEFAULT);
         resumePara = new BoolParameter("resume", RESUME_PARAM_DEFAULT);
         filterModePara = new BoolParameter("filterMode", FILTER_MODE_PARAM_DEFAULT);
         doNotClearFileSystemCachePara = new BoolParameter("doNotClearFileSystemCache", DO_NOT_CLEAR_FILE_SYSTEM_CACHE_PARAM_DEFAULT);
+        minimizeObjectivePara = new BoolParameter("minimizeObjective", MINIMIZE_OBJECTIVE_PARA_DEFAULT);
+
+        numberOfEpochPara = new IntParameter("numberOfEpoch", NUMBER_OF_EPOCH_PARAM_DEFAULT);
+        queueSizePara = new IntParameter("queueSize", QUEUE_SIZE_PARAM_DEFAULT);
         numberOfGPUPara = new IntParameter("numberOfGPU", NUMBER_OF_GPU_PARAM_DEFAULT);
         avgFrequencyPara = new IntParameter("averageFrequency", AVG_FREQUENCY_PARAM_DEFAULT);
-        batchSizePara = new StringParameter("batchSize", BATCH_SIZE_PARAM_DEFAULT);
+
         optimizationAlgoPara = new ListParameter("optimizationAlgo", new ArrayList<String>(Arrays.asList("STOCHASTIC_GRADIENT_DESCENT", "LINE_GRADIENT_DESCENT")), OPTIMIZATION_ALGO_PARAM_DEFAULT);
         weightInitPara = new ListParameter("weightInit", new ArrayList<String>(Arrays.asList("XAVIER", "RELU", "IDENTITY", "NORMAL", "UNIFORM", "ZERO", "DISTRIBUTION")), WEIGHT_INIT_PARAM_DEFAULT);
-        minimizeObjectivePara = new BoolParameter("minimizeObjective", MINIMIZE_OBJECTIVE_PARA_DEFAULT);
+        cacheModePara = new ListParameter("cacheMode", new ArrayList<String>(Arrays.asList("NONE", "MEMORY", "FILESYSTEM")), CACHE_MODE_PARAM_DEFAULT);
+        batchSizePara = new StringParameter("batchSize", BATCH_SIZE_PARAM_DEFAULT);
+
+        learningRatePara = new FloatParameter("learningRate", LEARNING_RATE_PARAM_DEFAULT);
+
+        addParameter(resumePara);
+        addParameter(filterModePara);
+        addParameter(doNotClearFileSystemCachePara);
+        addParameter(minimizeObjectivePara);
+
+        addParameter(numberOfEpochPara);
+        addParameter(queueSizePara);
+        addParameter(numberOfGPUPara);
+        addParameter(avgFrequencyPara);
+
+        addParameter(optimizationAlgoPara);
+        addParameter(weightInitPara);
+        addParameter(cacheModePara);
+        addParameter(batchSizePara);
+
+        addParameter(learningRatePara);
     }
 
     /**
@@ -88,27 +121,38 @@ public class LSTMModelImpl extends ModelStrategy
         trainDataset.setClassIndex(trainDataset.numAttributes() - 1);
 
         //DL4J Recurrent Neural Network (RNN)
-        Classifier network = new Dl4jMlpClassifier();
+        dl4jMlpClassifier = new Dl4jMlpClassifier();
+        neuralNetConfiguration = new NeuralNetConfiguration();
 
         try
         {
             //Setting Parameters for the model
-            ((Dl4jMlpClassifier) network).setNumEpochs(1);                //Bigger the better but also takes more time
-            //network.setEarlyStopping(new EarlyStopping()); //TODO: set a stopping to make it stop if no progress
-            ((Dl4jMlpClassifier) network).setBatchSize("100");
+            dl4jMlpClassifier.setResume(((BoolParameter) getParameters().get(resumePara.getParamName())).getBoolValue());
+            dl4jMlpClassifier.setFilterMode(((BoolParameter) getParameters().get(filterModePara.getParamName())).getBoolValue());
+            dl4jMlpClassifier.setDoNotClearFilesystemCache(((BoolParameter) getParameters().get(doNotClearFileSystemCachePara.getParamName())).getBoolValue());
+            neuralNetConfiguration.setMinimize(((BoolParameter) getParameters().get(minimizeObjectivePara.getParamName())).getBoolValue());
+
+            dl4jMlpClassifier.setNumEpochs(((IntParameter) getParameters().get(numberOfEpochPara.getParamName())).getIntValue());
+            dl4jMlpClassifier.setQueueSize(((IntParameter) getParameters().get(queueSizePara.getParamName())).getIntValue());
+            dl4jMlpClassifier.setNumGPUs(((IntParameter) getParameters().get(numberOfGPUPara.getParamName())).getIntValue());
+            dl4jMlpClassifier.setParameterAveragingFrequency(((IntParameter) getParameters().get(avgFrequencyPara.getParamName())).getIntValue());
+
+            neuralNetConfiguration.setOptimizationAlgo(OptimizationAlgorithm.valueOf(((ListParameter) getParameters().get(optimizationAlgoPara.getParamName())).getSelectedValue()));
+            dl4jMlpClassifier.setCacheMode(CacheMode.valueOf(((ListParameter) getParameters().get(cacheModePara.getParamName())).getSelectedValue()));
+            neuralNetConfiguration.setWeightInit(WeightInit.valueOf((((ListParameter) getParameters().get(weightInitPara.getParamName())).getSelectedValue())));
+            dl4jMlpClassifier.setBatchSize(((StringParameter) getParameters().get(batchSizePara.getParamName())).getStringValue());
+
+
             //network.setSeed(124564);                            //to ensure randomness
             //network.setNumDecimalPlaces(2);
 
 
             //Network configurations
-            NeuralNetConfiguration networkConfig = new NeuralNetConfiguration();
-            networkConfig.setOptimizationAlgo(STOCHASTIC_GRADIENT_DESCENT);
-            networkConfig.getOptimizationAlgo();
-            networkConfig.setWeightInit(WeightInit.XAVIER);
-            networkConfig.setUpdater(new Adam());
-            networkConfig.setBiasUpdater(new Sgd());
-            ((Dl4jMlpClassifier) network).setNeuralNetConfiguration(networkConfig);
-
+            //neuralNetConfiguration.setOptimizationAlgo(OptimizationAlgorithm.valueOf("STOCHASTIC_GRADIENT_DESCENT"));
+            Adam adam = new Adam();
+            neuralNetConfiguration.setUpdater(adam);
+            adam.setLearningRate(((FloatParameter) getParameters().get(learningRatePara.getParamName())).getFloatValue());
+            dl4jMlpClassifier.setNeuralNetConfiguration(neuralNetConfiguration);
 
             //Set Layers
             LSTM lstmLayer1 = new LSTM();
@@ -123,10 +167,10 @@ public class LSTMModelImpl extends ModelStrategy
             outLayer.setLossFn(new LossMSE());                  //Loss function is Mean Square Error
             outLayer.setActivationFunction(new ActivationSwish());      //Activation function
             outLayer.setNOut(1);                                        //Single output
-            ((Dl4jMlpClassifier) network).setLayers(lstmLayer1, outLayer);                //Two layers for now, LSTM and the output
+            ((Dl4jMlpClassifier)dl4jMlpClassifier).setLayers(lstmLayer1, outLayer);                //Two layers for now, LSTM and the output
 
             //train with the DL4J classifier
-            network.buildClassifier(trainDataset);
+            dl4jMlpClassifier.buildClassifier(trainDataset);
 
         }
 
@@ -135,15 +179,58 @@ public class LSTMModelImpl extends ModelStrategy
             ex.printStackTrace();
         }
 
-        setClassifier(network);
-        return network;
+        setClassifier(dl4jMlpClassifier);
+        return dl4jMlpClassifier;
     }
 
     @Override
     public Map<String, Parameter> getDefaultParameters()
     {
-        return null;
+        BoolParameter resumeParaDefault = new BoolParameter("resume", RESUME_PARAM_DEFAULT);
+        BoolParameter filterModeParaDefault = new BoolParameter("filterMode", FILTER_MODE_PARAM_DEFAULT);
+        BoolParameter doNotClearFileSystemCacheParaDefault = new BoolParameter("doNotClearFileSystemCache", DO_NOT_CLEAR_FILE_SYSTEM_CACHE_PARAM_DEFAULT);
+        BoolParameter minimizeObjectiveParaDefault = new BoolParameter("minimizeObjective", MINIMIZE_OBJECTIVE_PARA_DEFAULT);
+
+        IntParameter numberOfGPUParaDefault = new IntParameter("numberOfGPU", NUMBER_OF_GPU_PARAM_DEFAULT);
+        IntParameter avgFrequencyParaDefault = new IntParameter("averageFrequency", AVG_FREQUENCY_PARAM_DEFAULT);
+        IntParameter numberOfEpochParaDefault = new IntParameter("numberOfEpoch", NUMBER_OF_EPOCH_PARAM_DEFAULT);
+        IntParameter queueSizeParaDefault = new IntParameter("queueSize", QUEUE_SIZE_PARAM_DEFAULT);
+
+        ListParameter cacheModeParaDefault = new ListParameter("cacheMode", new ArrayList<String>(Arrays.asList("NONE", "MEMORY", "FILESYSTEM")), CACHE_MODE_PARAM_DEFAULT);
+        ListParameter optimizationAlgoParaDefault = new ListParameter("optimizationAlgo", new ArrayList<String>(Arrays.asList("STOCHASTIC_GRADIENT_DESCENT", "LINE_GRADIENT_DESCENT")), OPTIMIZATION_ALGO_PARAM_DEFAULT);
+        ListParameter weightInitParaDefault = new ListParameter("weightInit", new ArrayList<String>(Arrays.asList("XAVIER", "RELU", "IDENTITY", "NORMAL", "UNIFORM", "ZERO", "DISTRIBUTION")), WEIGHT_INIT_PARAM_DEFAULT);
+        StringParameter batchSizeParaDefault = new StringParameter("batchSize", BATCH_SIZE_PARAM_DEFAULT);
+
+        FloatParameter learningRateParaDefault = new FloatParameter("learningRate", LEARNING_RATE_PARAM_DEFAULT);
+
+        Map<String, Parameter> parameters = new HashMap<>();
+        parameters.put(resumeParaDefault.getParamName(), resumeParaDefault);
+        parameters.put(filterModeParaDefault.getParamName(), filterModeParaDefault);
+        parameters.put(doNotClearFileSystemCacheParaDefault.getParamName(), doNotClearFileSystemCacheParaDefault);
+        parameters.put(minimizeObjectiveParaDefault.getParamName(), minimizeObjectiveParaDefault);
+
+        parameters.put(numberOfGPUParaDefault.getParamName(), numberOfGPUParaDefault);
+        parameters.put(avgFrequencyParaDefault.getParamName(), avgFrequencyParaDefault);
+        parameters.put(numberOfEpochParaDefault.getParamName(), numberOfEpochParaDefault);
+        parameters.put(queueSizeParaDefault.getParamName(), queueSizeParaDefault);
+
+        parameters.put(cacheModeParaDefault.getParamName(), cacheModeParaDefault);
+        parameters.put(optimizationAlgoParaDefault.getParamName(), optimizationAlgoParaDefault);
+        parameters.put(weightInitParaDefault.getParamName(), weightInitParaDefault);
+        parameters.put(batchSizeParaDefault.getParamName(), batchSizeParaDefault);
+
+        parameters.put(learningRateParaDefault.getParamName(), learningRateParaDefault);
+
+        return parameters;
     }
 
+    public Dl4jMlpClassifier getLSTMObject()
+    {
+        return this.dl4jMlpClassifier;
+    }
 
+    public NeuralNetConfiguration getLSTMNeuralObject()
+    {
+        return this.neuralNetConfiguration;
+    }
 }

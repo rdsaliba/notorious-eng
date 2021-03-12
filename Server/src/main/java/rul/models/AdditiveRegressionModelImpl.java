@@ -2,7 +2,7 @@
  * Regression (which is a special case of Additive Regression).
  *
  * @author Khaled
- * @last_edit 02/14/2021
+ * @last_edit 03/11/2021
  */
 package rul.models;
 
@@ -16,18 +16,19 @@ import java.util.Map;
 
 public class AdditiveRegressionModelImpl extends ModelStrategy
 {
-
-    private final String BATCH_SIZE_PARAM_DEFAULT = "100";
+    //Default Parameters
     private final boolean MINIMIZE_ABSOLUTE_ERROR_PARAM_DEFAULT = false;
-    private final int NUM_ITERATIONS_PARAM_DEFAULT = 10;
     private final boolean RESUME_PARAM_DEFAULT = false;
     private final float SHRINKAGE_PARAM_DEFAULT = 1.0F;
+    private final int NUM_ITERATIONS_PARAM_DEFAULT = 10;
+    private final String BATCH_SIZE_PARAM_DEFAULT = "100";
 
-    private StringParameter batchSizePara;
+
     private BoolParameter minimizeAbsoluteErrorPara;
-    private IntParameter numIterationsPara;
     private BoolParameter resumePara;
     private FloatParameter shrinkagePara;
+    private IntParameter numIterationsPara;
+    private StringParameter batchSizePara;
 
     private AdditiveRegression additiveRegression;
 
@@ -38,7 +39,6 @@ public class AdditiveRegressionModelImpl extends ModelStrategy
         numIterationsPara = new IntParameter("numIterations", NUM_ITERATIONS_PARAM_DEFAULT);
         resumePara = new BoolParameter("resume", RESUME_PARAM_DEFAULT);
         shrinkagePara = new FloatParameter("shrinkage", SHRINKAGE_PARAM_DEFAULT);
-
 
         addParameter(batchSizePara);
         addParameter(minimizeAbsoluteErrorPara);
@@ -72,8 +72,8 @@ public class AdditiveRegressionModelImpl extends ModelStrategy
         {
             e.printStackTrace();
         }
-        setClassifier(additiveRegression);
 
+        setClassifier(additiveRegression);
         return additiveRegression;
     }
 
