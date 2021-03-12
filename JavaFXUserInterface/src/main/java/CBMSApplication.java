@@ -9,7 +9,6 @@ import Controllers.SplashScreenPreloader;
 import app.ModelController;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -49,7 +48,7 @@ public class CBMSApplication extends Application {
         long loadStartTime, loadEndTime;
         loadStartTime = System.currentTimeMillis();
         try {
-            FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
+            ModelController.getInstance().getAllLiveAssets();
         } catch (Exception e) {
             e.printStackTrace();
         }
