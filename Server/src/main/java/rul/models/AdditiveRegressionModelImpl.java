@@ -10,24 +10,22 @@ import weka.classifiers.Classifier;
 import weka.classifiers.meta.AdditiveRegression;
 import weka.core.Instances;
 
-public class AdditiveRegressionModelImpl implements ModelStrategy{
+public class AdditiveRegressionModelImpl extends ModelStrategy {
 
     /**
      * This function takes the assets as the training dataset, and returns the trained
      * Additive Regression classifier.
+     *
      * @author Khaled
      */
     @Override
-    public Classifier trainModel(Instances dataToTrain)
-    {
+    public Classifier trainModel(Instances dataToTrain) {
         Classifier additiveRegression = new AdditiveRegression();
         dataToTrain.setClassIndex(dataToTrain.numAttributes() - 1);
 
         try {
             additiveRegression.buildClassifier(dataToTrain);
-        }
-
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }

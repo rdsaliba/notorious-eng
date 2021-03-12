@@ -21,16 +21,15 @@ import weka.dl4j.updater.Sgd;
 
 import static org.deeplearning4j.nn.api.OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT;
 
-public class LSTMModelImpl implements ModelStrategy
-{
+public class LSTMModelImpl extends ModelStrategy {
     /**
      * This function takes the filtered training dataset, builds a Neural Network using Weka's Deep Learning 4 Java plugin
      * and trains and returns an LSTM model.
+     *
      * @author Khaled
      */
     @Override
-    public Classifier trainModel(Instances firstTrain)
-    {
+    public Classifier trainModel(Instances firstTrain) {
         firstTrain.setClassIndex(firstTrain.numAttributes() - 1);
 
         Instances trainDataset = LinearRegressionModelImpl.removeInstances(firstTrain);
@@ -39,8 +38,7 @@ public class LSTMModelImpl implements ModelStrategy
         //DL4J Recurrent Neural Network (RNN)
         Classifier network = new Dl4jMlpClassifier();
 
-        try
-        {
+        try {
             //Setting Parameters for the model
             ((Dl4jMlpClassifier) network).setNumEpochs(1);                //Bigger the better but also takes more time
             //network.setEarlyStopping(new EarlyStopping()); //TODO: set a stopping to make it stop if no progress
