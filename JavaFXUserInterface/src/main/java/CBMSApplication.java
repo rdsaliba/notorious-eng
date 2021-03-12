@@ -48,7 +48,11 @@ public class CBMSApplication extends Application {
     public void init() throws Exception {
         long loadStartTime, loadEndTime;
         loadStartTime = System.currentTimeMillis();
-        FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
+        try {
+            FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         loadEndTime = System.currentTimeMillis();
         if ((loadEndTime - loadStartTime) < 1000) {
             try {
