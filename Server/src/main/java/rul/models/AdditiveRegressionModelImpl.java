@@ -14,7 +14,7 @@ import weka.core.Instances;
 
 public class AdditiveRegressionModelImpl extends ModelStrategy {
 
-    Logger logger = LoggerFactory.getLogger(AdditiveRegressionModelImpl.class);
+    static Logger logger = LoggerFactory.getLogger(AdditiveRegressionModelImpl.class);
 
     /**
      * This function takes the assets as the training dataset, and returns the trained

@@ -17,7 +17,7 @@ import weka.core.Instances;
 
 public class LinearRegressionModelImpl extends ModelStrategy {
 
-    Logger logger = LoggerFactory.getLogger(LinearRegressionModelImpl.class);
+    static Logger logger = LoggerFactory.getLogger(LinearRegressionModelImpl.class);
 
     /**
      * This function removes the outliers (data that can affect the prediction of the model)

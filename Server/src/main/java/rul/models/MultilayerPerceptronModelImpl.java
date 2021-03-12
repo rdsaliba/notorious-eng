@@ -16,7 +16,7 @@ import weka.core.Instances;
 
 public class MultilayerPerceptronModelImpl extends ModelStrategy {
 
-    Logger logger = LoggerFactory.getLogger(MultilayerPerceptronModelImpl.class);
+    static Logger logger = LoggerFactory.getLogger(MultilayerPerceptronModelImpl.class);
 
     /**
      * This function takes the assets as the training dataset, and returns the trained

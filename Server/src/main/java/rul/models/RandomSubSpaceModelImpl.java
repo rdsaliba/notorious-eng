@@ -15,7 +15,7 @@ import weka.core.Instances;
 
 public class RandomSubSpaceModelImpl extends ModelStrategy {
 
-    Logger logger = LoggerFactory.getLogger(RandomSubSpaceModelImpl.class);
+    static Logger logger = LoggerFactory.getLogger(RandomSubSpaceModelImpl.class);
 
     /**
      * This function takes the assets as the training dataset, and returns the trained

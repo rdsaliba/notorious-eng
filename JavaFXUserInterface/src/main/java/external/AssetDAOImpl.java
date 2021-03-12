@@ -176,7 +176,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception in getLiveAssetsFromAssetTypeID(): ", e);
         }
         return assets;
     }
@@ -225,7 +225,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception in getArchivedAssetsFromAssetTypeID(): ", e);
         }
         return assets;
     }

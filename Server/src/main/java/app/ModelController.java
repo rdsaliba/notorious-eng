@@ -141,7 +141,7 @@ public class ModelController {
             modelDAOImpl.setModelToTrain(tm);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Exception in trainAndSave(): ", e);
         }
     }
 

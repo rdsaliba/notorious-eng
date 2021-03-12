@@ -55,17 +55,17 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
      */
     @Override
     public int getModelIDFromAssetTypeID(String assetTypeID) {
-        int ID = 0;
+        int modelID = 0;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_FROM_ASSET_TYPE_ID)) {
             ps.setString(1, assetTypeID);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next())
-                    ID = rs.getInt("model_id");
+                    modelID = rs.getInt("model_id");
             }
         } catch (SQLException e) {
             logger.error("Exception getModelsByAssetTypeID(): ", e);
         }
-        return ID;
+        return modelID;
     }
 
     /**

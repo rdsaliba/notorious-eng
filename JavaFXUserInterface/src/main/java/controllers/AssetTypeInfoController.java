@@ -294,7 +294,7 @@ public class AssetTypeInfoController implements Initializable {
         try {
             evaluateModelClassifiers(modelObservableList);
         } catch (Exception exception) {
-            exception.printStackTrace();
+            logger.error("Exception in evaluating all models ", exception);
         }
     }
 
@@ -310,7 +310,7 @@ public class AssetTypeInfoController implements Initializable {
         try {
             evaluateModelClassifiers(selectedModelToEvaluateList);
         } catch (Exception exception) {
-            exception.printStackTrace();
+            logger.error("Exception in evaluating a model: ", exception);
         }
         selectedModelToEvaluateList.clear();
     }
@@ -328,7 +328,7 @@ public class AssetTypeInfoController implements Initializable {
             trainDataset = DataPrePreprocessorController.getInstance().addRULCol(modelController.createInstancesFromAssets(assetDAO.getArchivedAssetsFromAssetTypeID(Integer.parseInt(assetType.getId())).subList(0, trainSize - 1)));
             testDataset = DataPrePreprocessorController.getInstance().addRULCol(modelController.createInstancesFromAssets(assetDAO.getArchivedAssetsFromAssetTypeID(Integer.parseInt(assetType.getId())).subList(from, to - 1)));
         } catch (Exception exception) {
-            exception.printStackTrace();
+            logger.error("Exception setting anf training test instances ", exception);
         }
     }
 

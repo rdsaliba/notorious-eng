@@ -15,7 +15,7 @@ import weka.core.Instances;
 
 public class RandomCommitteeModelImpl extends ModelStrategy {
 
-    Logger logger = LoggerFactory.getLogger(RandomCommitteeModelImpl.class);
+    static Logger logger = LoggerFactory.getLogger(RandomCommitteeModelImpl.class);
 
     /**
      * This function takes the assets as the training dataset, and returns the trained
