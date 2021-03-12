@@ -11,27 +11,9 @@ package rul.models;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 
-import java.io.Serializable;
+public interface ModelStrategy {
 
-public abstract class ModelStrategy implements Serializable {
-    private Classifier classifier;
-    private Instances dataToTrain;
 
-    public abstract Classifier trainModel(Instances reducedData);
+    Classifier trainModel(Instances reducedData);
 
-    public Classifier getClassifier() {
-        return classifier;
-    }
-
-    public void setClassifier(Classifier classifier) {
-        this.classifier = classifier;
-    }
-
-    public Instances getDataToTrain() {
-        return dataToTrain;
-    }
-
-    public void setDataToTrain(Instances dataToTrain) {
-        this.dataToTrain = dataToTrain;
-    }
 }

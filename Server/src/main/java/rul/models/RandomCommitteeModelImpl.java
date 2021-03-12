@@ -11,12 +11,11 @@ import weka.classifiers.Classifier;
 import weka.classifiers.meta.RandomCommittee;
 import weka.core.Instances;
 
-public class RandomCommitteeModelImpl extends ModelStrategy {
+public class RandomCommitteeModelImpl implements ModelStrategy {
 
     /**
      * This function takes the assets as the training dataset, and returns the trained
      * Random Committee classifier.
-     *
      * @author Khaled
      */
 

@@ -12,11 +12,10 @@ import weka.classifiers.Classifier;
 import weka.classifiers.functions.MultilayerPerceptron;
 import weka.core.Instances;
 
-public class MultilayerPerceptronModelImpl extends ModelStrategy {
+public class MultilayerPerceptronModelImpl implements ModelStrategy{
     /**
      * This function takes the assets as the training dataset, and returns the trained
      * Multilayer Perceptron classifier.
-     *
      * @author Khaled
      */
     @Override

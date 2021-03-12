@@ -11,22 +11,25 @@ import weka.classifiers.Classifier;
 import weka.classifiers.functions.SMOreg;
 import weka.core.Instances;
 
-public class SMORegModelImpl extends ModelStrategy {
+public class SMORegModelImpl implements ModelStrategy
+{
 
     /**
      * This function takes the assets as the training dataset, and returns the trained
      * SMOReg classifier.
-     *
      * @author Khaled
      */
     @Override
-    public Classifier trainModel(Instances dataToTrain) {
+    public Classifier trainModel(Instances dataToTrain)
+    {
         Classifier smOreg = new SMOreg();
         dataToTrain.setClassIndex(dataToTrain.numAttributes() - 1);
 
         try {
             smOreg.buildClassifier(dataToTrain);
-        } catch (Exception e) {
+        }
+
+        catch (Exception e) {
             e.printStackTrace();
             return null;
         }

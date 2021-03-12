@@ -15,11 +15,11 @@ import java.util.ArrayList;
 public interface ModelDAO {
     ArrayList<TrainedModel> getModelsToTrain();
 
-    void setModelToTrain(TrainedModel tm);
+    void setModelsToTrain(ArrayList<TrainedModel> tms);
 
-    String getModelNameFromModelID(String modelID);
+    TrainedModel getModelsByAssetTypeID(String assetTypeID);
 
-    TrainedModel getModelsByAssetTypeID(String assetTypeID, int statusID);
+    String getModelNameFromAssetTypeID(String modelID);
 
-    TrainedModel createTrainedModelFromResultSet(ResultSet rs) throws SQLException;
+    TrainedModel createTrainedModelFromResultSet(ResultSet rs, boolean withModel) throws SQLException;
 }

@@ -8,7 +8,7 @@
 package local;
 
 import app.item.TrainedModel;
-import rul.models.ModelStrategy;
+import weka.classifiers.Classifier;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -19,23 +19,23 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class ModelDAOImpl extends DAO implements ModelDAO {
-    private static final String UPDATE_SERIALIZE_OBJECT = "UPDATE trained_model SET retrain = false, serialized_model  = ? WHERE model_id = ? AND asset_type_id = ? and status_id = ?";
+    private static final String UPDATE_SERIALIZE_OBJECT = "UPDATE trained_model SET retrain = false, serialized_model  = ? WHERE model_id = ? AND asset_type_id = ?";
     private static final String GET_SERIALIZE_OBJECT = "SELECT * FROM trained_model WHERE retrain = true";
-    private static final String GET_MODEL_NAME_FROM_ID = "SELECT name from model where model.model_id = ?";
-    private static final String GET_MODEL_FROM_ASSET_TYPE = "SELECT * FROM trained_model WHERE asset_type_id = ? and status_id = ?";
+    private static final String GET_MODEL_NAME_FROM_ID = "SELECT name from trained_model, model where trained_model.model_id = model.model_id and asset_type_id = ?";
+    private static final String GET_MODEL_FROM_ASSET_TYPE = "SELECT * FROM trained_model WHERE asset_type_id = ?";
 
     /**
-     * Given a model id, this function will return the string corresponding
-     * to the name of the specified model in the database
+     * Given a asset type id, this function will return the string corresponding
+     * to the name of the model in the database associated with the asset type
      *
-     * @param modelID represents a model's id
+     * @param assetTypeID represents a asset type id
      * @author Paul
      */
     @Override
-    public String getModelNameFromModelID(String modelID) {
+    public String getModelNameFromAssetTypeID(String assetTypeID) {
         String name = null;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_NAME_FROM_ID)) {
-            ps.setString(1, modelID);
+            ps.setString(1, assetTypeID);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next())
                     name = rs.getString("name");
@@ -59,7 +59,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
         try (PreparedStatement ps = getConnection().prepareStatement(GET_SERIALIZE_OBJECT)) {
             try (ResultSet queryResult = ps.executeQuery()) {
                 while (queryResult.next()) {
-                    tms.add(createTrainedModelFromResultSet(queryResult));
+                    tms.add(createTrainedModelFromResultSet(queryResult, false));
                 }
             }
         } catch (SQLException e) {
@@ -69,23 +69,23 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     }
 
     /**
-     * Given an trained model this function will write the Model implementation object(including the classifier) object
+     * Given an arraylist of trained models this function will write the new Classifier object
      * to the corresponding trained model entry after an model training phase
      *
-     * @param tm represents a trained model
+     * @param tms<TrainedModel> represents a list of trained models
      * @author Paul
      */
     @Override
-    public void setModelToTrain(TrainedModel tm) {
+    public void setModelsToTrain(ArrayList<TrainedModel> tms) {
         try {
-            try (PreparedStatement ps = getConnection().prepareStatement(UPDATE_SERIALIZE_OBJECT)) {
-                ps.setObject(1, tm.getModelStrategy());
-                ps.setInt(2, tm.getModelID());
-                ps.setInt(3, tm.getAssetTypeID());
-                ps.setInt(4, tm.getStatusID());
-                ps.executeUpdate();
+            for (TrainedModel tm : tms) {
+                try (PreparedStatement ps = getConnection().prepareStatement(UPDATE_SERIALIZE_OBJECT)) {
+                    ps.setObject(1, tm.getModelClassifier());
+                    ps.setInt(2, tm.getModelID());
+                    ps.setInt(3, tm.getAssetTypeID());
+                    ps.executeUpdate();
+                }
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -100,14 +100,13 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
      * @author Paul
      */
     @Override
-    public TrainedModel getModelsByAssetTypeID(String assetTypeID, int statusID) {
+    public TrainedModel getModelsByAssetTypeID(String assetTypeID) {
         TrainedModel tm = null;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_FROM_ASSET_TYPE)) {
             ps.setString(1, assetTypeID);
-            ps.setInt(2, statusID);
             try (ResultSet queryResult = ps.executeQuery()) {
                 while (queryResult.next()) {
-                    tm = createTrainedModelFromResultSet(queryResult);
+                    tm = createTrainedModelFromResultSet(queryResult, false);
                 }
             }
         } catch (SQLException e) {
@@ -123,17 +122,15 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
      * @author Paul
      */
     @Override
-    public TrainedModel createTrainedModelFromResultSet(ResultSet rs) throws SQLException {
+    public TrainedModel createTrainedModelFromResultSet(ResultSet rs, boolean withModel) throws SQLException {
         TrainedModel tm = new TrainedModel();
         tm.setModelID(rs.getInt("model_id"));
         tm.setAssetTypeID(rs.getInt("asset_type_id"));
         tm.setRetrain(rs.getBoolean("retrain"));
-        tm.setStatusID(rs.getInt("status_id"));
         try {
-            byte[] buf = rs.getBytes("serialized_model");
-            if (buf != null)
-                tm.setModelStrategy((ModelStrategy) new ObjectInputStream(new ByteArrayInputStream(buf)).readObject());
-
+            if (withModel) {
+                tm.setModelClassifier((Classifier) new ObjectInputStream(new ByteArrayInputStream(rs.getBytes("serialized_model"))).readObject());
+            }
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
             return null;
