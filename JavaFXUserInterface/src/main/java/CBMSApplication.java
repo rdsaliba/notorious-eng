@@ -5,7 +5,6 @@
   @last_edit 02/7/2020
  */
 
-import Controllers.SplashScreenPreloader;
 import app.ModelController;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -43,16 +42,20 @@ public class CBMSApplication extends Application {
         });
     }
 
+    /**
+     * Loads all live assets before starting the application
+     *
+     * @throws Exception
+     */
     @Override
     public void init() throws Exception {
-        long loadStartTime, loadEndTime;
-        loadStartTime = System.currentTimeMillis();
+        long loadStartTime = System.currentTimeMillis();
         try {
             ModelController.getInstance().getAllLiveAssets();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        loadEndTime = System.currentTimeMillis();
+        long loadEndTime = System.currentTimeMillis();
         if ((loadEndTime - loadStartTime) < 1000) {
             try {
                 Thread.sleep(1000);

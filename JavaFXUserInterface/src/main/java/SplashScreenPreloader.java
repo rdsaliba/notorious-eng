@@ -1,4 +1,9 @@
-package Controllers;
+/*
+  This is a Preloader which will display the Splash Screen before the main application is started.
+
+  @author Najim
+  @last_edit 12/03/2021
+ */
 
 import javafx.animation.FadeTransition;
 import javafx.application.Preloader;
@@ -15,11 +20,24 @@ public class SplashScreenPreloader extends Preloader {
 
     private Stage preloaderStage;
 
+    /**
+     * Creates the Splash Screen
+     *
+     * @return Splash Screen Scene
+     * @throws Exception
+     * @author Najim
+     */
     private Scene createPreloaderScene() throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("/SplashScreen.fxml"));
         return new Scene(root);
     }
 
+    /**
+     * The main entry point for the Preloader.
+     *
+     * @param stage the stage for the preloader, onto which the application scene can be set
+     * @author Najim
+     */
     @Override
     public void start(Stage stage) throws Exception {
         this.preloaderStage = stage;
@@ -28,6 +46,14 @@ public class SplashScreenPreloader extends Preloader {
         preloaderStage.show();
     }
 
+    /**
+     * A notification that signals a change in the application state.
+     * A state change notification is sent to a preloader immediately prior to loading the application class, calling the application init method,
+     * or calling the application start method.
+     *
+     * @param evt Notification
+     * @author Najim
+     */
     @Override
     public void handleStateChangeNotification(StateChangeNotification evt) {
         if (evt.getType() == StateChangeNotification.Type.BEFORE_START) {
