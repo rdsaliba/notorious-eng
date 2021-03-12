@@ -4,8 +4,12 @@
   @author
   @last_edit 02/7/2020
  */
+
+import Controllers.SplashScreenPreloader;
+import app.ModelController;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -14,7 +18,8 @@ import javafx.stage.Stage;
 public class CBMSApplication extends Application {
 
     public static void main(String[] args) {
-        launch(args);
+        System.setProperty("javafx.preloader", SplashScreenPreloader.class.getName());
+        Application.launch(CBMSApplication.class, args);
     }
 
     /**
@@ -25,7 +30,7 @@ public class CBMSApplication extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/SplashScreen.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/Assets.fxml"));
         Scene scene = new Scene(root);
         primaryStage.setTitle("Minerva");
         primaryStage.setScene(scene);
@@ -37,6 +42,21 @@ public class CBMSApplication extends Application {
                 exception.printStackTrace();
             }
         });
+    }
+
+    @Override
+    public void init() throws Exception {
+        long loadStartTime, loadEndTime;
+        loadStartTime = System.currentTimeMillis();
+        FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
+        loadEndTime = System.currentTimeMillis();
+        if ((loadEndTime - loadStartTime) < 1000) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
