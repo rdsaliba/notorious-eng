@@ -242,7 +242,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
             ps.setInt(1, assetID);
             ps.executeQuery();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception in setAssetToBeUpdated(): ", e);
         }
     }
 }
