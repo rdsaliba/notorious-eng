@@ -1,7 +1,7 @@
 /* Second strategy design pattern and implementation of Model Strategy
  *
  * @author Khaled
- * @last_edit 12/28/2020
+ * @last_edit 03/11/2021
  */
 
 package rul.models;

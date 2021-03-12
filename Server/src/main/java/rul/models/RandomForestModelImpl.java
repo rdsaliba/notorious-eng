@@ -52,18 +52,18 @@ public class RandomForestModelImpl extends ModelStrategy {
 
     public RandomForestModelImpl()
     {
-        storeOutOfBagPredictionsPara = new BoolParameter("storeOutOfBagPredictions", STORE_OUT_OF_BAG_PREDICTIONS_PARAM_DEFAULT);
-        breakTiesRandomlyPara = new BoolParameter("breakTiesRandomly", BREAK_TIES_RANDOMLY_PARAM_DEFAULT);
-        calcOutBagPara = new BoolParameter("calcOutBag", CALC_OUT_BAGS_PARAM_DEFAULT);
-        computeAttributeImportancePara = new BoolParameter("computeAttributeImportance", COMPUTE_ATTRIBUTE_IMPORTANCE_PARAM_DEFAULT);
+        storeOutOfBagPredictionsPara = new BoolParameter("Store out of Bag Predictions", STORE_OUT_OF_BAG_PREDICTIONS_PARAM_DEFAULT);
+        breakTiesRandomlyPara = new BoolParameter("Break Ties Randomly", BREAK_TIES_RANDOMLY_PARAM_DEFAULT);
+        calcOutBagPara = new BoolParameter("Calc out of Bag", CALC_OUT_BAGS_PARAM_DEFAULT);
+        computeAttributeImportancePara = new BoolParameter("Compute Attribute Importance", COMPUTE_ATTRIBUTE_IMPORTANCE_PARAM_DEFAULT);
 
-        bagSizePercentPara = new IntParameter("bagSizePercent", BAG_SIZE_PERCENT_PARAM_DEFAULT);
-        maxDepthPara = new IntParameter("maxDepth", MAX_DEPTH_PARAM_DEFAULT);
-        numExecutionSlotsPara = new IntParameter("numExecutionSlots", NUM_EXECUTION_SLOTS_PARAM_DEFAULT);
-        numFeaturesPara = new IntParameter("numFeatures", NUM_FEATURES_PARAM_DEFAULT);
-        numIterationsPara = new IntParameter("numIterations", NUM_ITERATIONS_PARAM_DEFAULT);
+        bagSizePercentPara = new IntParameter("Bag Size Percent", BAG_SIZE_PERCENT_PARAM_DEFAULT);
+        maxDepthPara = new IntParameter("Max Depth", MAX_DEPTH_PARAM_DEFAULT);
+        numExecutionSlotsPara = new IntParameter("Number of Execution Slots", NUM_EXECUTION_SLOTS_PARAM_DEFAULT);
+        numFeaturesPara = new IntParameter("Number of Features", NUM_FEATURES_PARAM_DEFAULT);
+        numIterationsPara = new IntParameter("Number of Iterations", NUM_ITERATIONS_PARAM_DEFAULT);
 
-        batchSizePara = new StringParameter("batchSize", BATCH_SIZE_PARAM_DEFAULT);
+        batchSizePara = new StringParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
 
         addParameter(storeOutOfBagPredictionsPara);
         addParameter(breakTiesRandomlyPara);
@@ -120,18 +120,18 @@ public class RandomForestModelImpl extends ModelStrategy {
     @Override
     public Map<String, Parameter> getDefaultParameters()
     {
-        BoolParameter storeOutOfBagPredictionsParaDefault = new BoolParameter("storeOutOfBagPredictions", STORE_OUT_OF_BAG_PREDICTIONS_PARAM_DEFAULT);
-        BoolParameter breakTiesRandomlyParaDefault = new BoolParameter("breakTiesRandomly", BREAK_TIES_RANDOMLY_PARAM_DEFAULT);
-        BoolParameter calcOutBagParaDefault = new BoolParameter("calcOutBag", CALC_OUT_BAGS_PARAM_DEFAULT);
-        BoolParameter computeAttributeImportanceParaDefault = new BoolParameter("computeAttributeImportance", COMPUTE_ATTRIBUTE_IMPORTANCE_PARAM_DEFAULT);
+        BoolParameter storeOutOfBagPredictionsParaDefault = new BoolParameter("Store out of Bag Predictions", STORE_OUT_OF_BAG_PREDICTIONS_PARAM_DEFAULT);
+        BoolParameter breakTiesRandomlyParaDefault = new BoolParameter("Break Ties Randomly", BREAK_TIES_RANDOMLY_PARAM_DEFAULT);
+        BoolParameter calcOutBagParaDefault = new BoolParameter("Calc out of Bag", CALC_OUT_BAGS_PARAM_DEFAULT);
+        BoolParameter computeAttributeImportanceParaDefault = new BoolParameter("Compute Attribute Importance", COMPUTE_ATTRIBUTE_IMPORTANCE_PARAM_DEFAULT);
 
-        IntParameter bagSizePercentParaDefault = new IntParameter("bagSizePercent", BAG_SIZE_PERCENT_PARAM_DEFAULT);
-        IntParameter maxDepthParaDefault = new IntParameter("maxDepth", MAX_DEPTH_PARAM_DEFAULT);
-        IntParameter numExecutionSlotsParaDefeault = new IntParameter("numExecutionSlots", NUM_EXECUTION_SLOTS_PARAM_DEFAULT);
-        IntParameter numFeaturesParaDefault = new IntParameter("numFeatures", NUM_FEATURES_PARAM_DEFAULT);
-        IntParameter numIterationsParaDefault = new IntParameter("numIterations", NUM_ITERATIONS_PARAM_DEFAULT);
+        IntParameter bagSizePercentParaDefault = new IntParameter("Bag Size Percent", BAG_SIZE_PERCENT_PARAM_DEFAULT);
+        IntParameter maxDepthParaDefault = new IntParameter("Max Depth", MAX_DEPTH_PARAM_DEFAULT);
+        IntParameter numExecutionSlotsParaDefeault = new IntParameter("Number of Execution Slots", NUM_EXECUTION_SLOTS_PARAM_DEFAULT);
+        IntParameter numFeaturesParaDefault = new IntParameter("Number of Features", NUM_FEATURES_PARAM_DEFAULT);
+        IntParameter numIterationsParaDefault = new IntParameter("Number of Iterations", NUM_ITERATIONS_PARAM_DEFAULT);
 
-        StringParameter batchSizeParaDefault = new StringParameter("batchSize", BATCH_SIZE_PARAM_DEFAULT);
+        StringParameter batchSizeParaDefault = new StringParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
 
         Map<String, Parameter> parameters = new HashMap<>();
         parameters.put(storeOutOfBagPredictionsParaDefault.getParamName(), storeOutOfBagPredictionsParaDefault);

@@ -4,7 +4,7 @@
   the return object will be a Classifier, either a linear regression or LSTM(for future releases)
 
   @author Paul Micu
-  @last_edit 11/01/2020
+  @last_edit 03/11/2021
  */
 package rul.models;
 

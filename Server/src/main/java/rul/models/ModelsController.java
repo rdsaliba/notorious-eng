@@ -3,7 +3,7 @@
   allows for a model to be chosen dynamically
 
   @author Paul Micu
-  @last_edit 11/01/2020
+  @last_edit 03/11/2021
  */
 package rul.models;
 
@@ -11,7 +11,6 @@ import app.item.parameter.Parameter;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 public class ModelsController
