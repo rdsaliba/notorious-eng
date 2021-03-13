@@ -157,7 +157,7 @@ public class AssetTypeInfoController implements Initializable {
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
-//        updateRMSE();
+        updateRMSE();
     }
 
     /**
@@ -167,11 +167,7 @@ public class AssetTypeInfoController implements Initializable {
      * Edit: added all the text proprety listeners and text formaters for all the fields
      */
     public void attachEvents() {
-        try {
-            modelObservableList = FXCollections.observableArrayList(modelDAO.getAllModels());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
         // Change scenes to Assets.fxml
         backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
         //Attach ability to close program
@@ -235,6 +231,11 @@ public class AssetTypeInfoController implements Initializable {
     }
 
     private void attachEventsModelTab() {
+        try {
+            modelObservableList = FXCollections.observableArrayList(modelDAO.getAllModels(Integer.parseInt(assetType.getId())));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         modelSaveBtn.setDisable(true);
         modelSaveBtn.setOnMouseClicked(mouseEvent -> {
             saveSelectedModelAssociation();
@@ -624,19 +625,19 @@ public class AssetTypeInfoController implements Initializable {
             assetDAO.setAssetToBeUpdated(asset.getId());
         }
     }
-//    public void updateRMSE(){
-//        for (Model model : modelObservableList) {
-//            model.setRMSE(String.valueOf(TextConstants.RMSEValueFormat.format(modelDAO.getLatestRMSE(Integer.valueOf(model.getModelID()),Integer.valueOf(assetType.getId())))));
-//        }
-//        rmseTimeline =
-//                new Timeline(new KeyFrame(Duration.millis(3000), e ->
-//                {
-//                    for (Model model : modelObservableList) {
-//                        model.setRMSE(String.valueOf(TextConstants.RMSEValueFormat.format(modelDAO.getLatestRMSE(Integer.valueOf(model.getModelID()),Integer.valueOf(assetType.getId())))));
-//                    }
-//                }));
-//
-//        rmseTimeline.setCycleCount(Animation.INDEFINITE); // loop forever
-//        rmseTimeline.play();
-//    }
+    public void updateRMSE(){
+        for (Model model : modelObservableList) {
+            model.setRMSE(String.valueOf(TextConstants.RMSEValueFormat.format(modelDAO.getLatestRMSE(Integer.valueOf(model.getModelID()),Integer.valueOf(assetType.getId())))));
+        }
+        rmseTimeline =
+                new Timeline(new KeyFrame(Duration.millis(3000), e ->
+                {
+                    for (Model model : modelObservableList) {
+                        model.setRMSE(String.valueOf(TextConstants.RMSEValueFormat.format(modelDAO.getLatestRMSE(Integer.valueOf(model.getModelID()),Integer.valueOf(assetType.getId())))));
+                    }
+                }));
+
+        rmseTimeline.setCycleCount(Animation.INDEFINITE); // loop forever
+        rmseTimeline.play();
+    }
 }

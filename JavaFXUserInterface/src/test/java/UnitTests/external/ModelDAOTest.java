@@ -30,7 +30,7 @@ public class ModelDAOTest {
 
     @Test
     public void getAllModelsTest() {
-        modelArrayList = modelDAO.getAllModels();
+        modelArrayList = modelDAO.getAllModels(1);
         assertEquals(8, modelArrayList.size());
         assertEquals(1, modelArrayList.get(0).getModelID());
         assertEquals("Linear", modelArrayList.get(0).getModelName());

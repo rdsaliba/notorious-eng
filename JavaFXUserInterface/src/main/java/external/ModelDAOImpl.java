@@ -102,7 +102,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
      * @author Jeremie
      */
     @Override
-    public List<Model> getAllModels() {
+    public List<Model> getAllModels(int assetTypeID) {
         ArrayList<Model> modelList = new ArrayList<>();
         try (PreparedStatement ps = getConnection().prepareStatement(GET_ALL_MODELS)) {
             try (ResultSet rs = ps.executeQuery()) {
@@ -111,6 +111,13 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
                     newModel.setModelID(rs.getInt("model_id"));
                     newModel.setModelName(rs.getString("name"));
                     newModel.setDescription(rs.getString("description"));
+                    try (PreparedStatement pss = getConnection().prepareStatement(GET_LATEST_RMSE)) {
+                        pss.setInt(1, newModel.getModelID());
+                        pss.setString(2, String.valueOf(assetTypeID));
+                        try (ResultSet rss = pss.executeQuery()) {
+                            if (rss.next())
+                                newModel.setRMSE(rss.getString("rmse"));
+                        }}
                     modelList.add(newModel);
                 }
             }
@@ -220,5 +227,21 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
             e.printStackTrace();
         }
     }
+
+    public double getLatestRMSE(int modelID,int assetTypeID){
+        double estimate = -100000;
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_LATEST_RMSE)) {
+            ps.setInt(1, modelID);
+            ps.setInt(2, assetTypeID);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next())
+                    estimate = rs.getDouble("rmse");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return estimate;
+    }
 }
+
 
