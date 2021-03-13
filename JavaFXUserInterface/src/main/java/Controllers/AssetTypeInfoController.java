@@ -8,6 +8,7 @@
  */
 package Controllers;
 
+import BackgroundTasks.GetModelStrategyService;
 import Utilities.*;
 import app.ModelController;
 import app.item.Asset;
@@ -167,7 +168,6 @@ public class AssetTypeInfoController implements Initializable {
      * Edit: added all the text proprety listeners and text formaters for all the fields
      */
     public void attachEvents() {
-
         // Change scenes to Assets.fxml
         backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
         //Attach ability to close program
@@ -506,9 +506,10 @@ public class AssetTypeInfoController implements Initializable {
      *
      * @author Jeremie
      */
-    public void generateThumbnails() {
+    public void generateThumbnails()
+    {
         ObservableList<Pane> modelPaneObservableList = FXCollections.observableArrayList();
-
+        modelObservableList = FXCollections.observableArrayList(modelDAO.getAllModels(Integer.parseInt(assetType.getId())));
         for (Model model : modelObservableList) {
             // Creating a Thumbnail element
             Pane modelPane = new Pane();
@@ -529,22 +530,19 @@ public class AssetTypeInfoController implements Initializable {
             evaluateModelBtn.setDisable(true);
             evaluateButtons.add(evaluateModelBtn);
             evaluateModelBtn.setOnMouseClicked(mouseEvent -> {
-                ArrayList<EvaluateModel> modelList = new ArrayList<EvaluateModel>();
-                String modelName = model.getModelName();
                 int assetTypeID = Integer.parseInt(assetType.getId());
                 int trainAssets = (int) trainSlider.getValue() + 1;
                 int testAssets = (int) trainSlider.getValue() + 1 + (int) testSlider.getValue();
-                List<Asset> assets= assetDAO.getArchivedAssetsFromAssetTypeID(Integer.parseInt(assetType.getId()));
-                local.ModelDAOImpl dao=new local.ModelDAOImpl();
-                ModelStrategy modelStrategy = null;
-                try {
-                    modelStrategy = modelDAO.getModelStrategy(model.getModelID(),assetTypeID);
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                }
-                modelStrategy.setTrainAssets(trainAssets);
-                modelStrategy.setTestAssets(testAssets);
-                modelDAO.updateModelStrategy(modelStrategy,1,1);
+                GetModelStrategyService getModelStrategyService = new GetModelStrategyService();
+                getModelStrategyService.setModelID(model.getModelID());
+                getModelStrategyService.setAssetTypeID(assetTypeID);
+                getModelStrategyService.setTestAssets(testAssets);
+                getModelStrategyService.setTrainAssets(trainAssets);
+                ProgressIndicator pi = new ProgressIndicator();
+                modelPane.getChildren().add(pi);
+                pi.setVisible(true);
+                pi.visibleProperty().bind(getModelStrategyService.runningProperty());
+                getModelStrategyService.start();
             });
 
             //Setting IDs for the elements
@@ -613,6 +611,7 @@ public class AssetTypeInfoController implements Initializable {
         }
     }
     public void updateRMSE(){
+        modelObservableList = FXCollections.observableArrayList(modelDAO.getAllModels(Integer.parseInt(assetType.getId())));
         for (Model model : modelObservableList) {
             model.setRMSE(String.valueOf(TextConstants.RMSEValueFormat.format(modelDAO.getLatestRMSE(Integer.valueOf(model.getModelID()),Integer.valueOf(assetType.getId())))));
         }
