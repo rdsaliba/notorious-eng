@@ -68,3 +68,14 @@
     -fx-border-color: red;
     -fx-border-width: 2px;
 }
+
+.splash-screen-bg {
+    -fx-background-color: linear-gradient(to top right, rgba(22, 53, 96, 1) 0%, rgba(63, 143, 204, 1) 85%);;
+}
+
+.splash-screen-title {
+    -fx-alignment: CENTER;
+    -fx-text-fill: WHITE;
+    -fx-font-family: Futura;
+    -fx-font-size: 55.0;
+}
