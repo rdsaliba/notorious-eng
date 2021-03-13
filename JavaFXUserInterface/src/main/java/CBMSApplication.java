@@ -4,6 +4,8 @@
   @author
   @last_edit 02/7/2020
  */
+
+import app.ModelController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -14,7 +16,8 @@ import javafx.stage.Stage;
 public class CBMSApplication extends Application {
 
     public static void main(String[] args) {
-        launch(args);
+        System.setProperty("javafx.preloader", SplashScreenPreloader.class.getName());
+        Application.launch(CBMSApplication.class, args);
     }
 
     /**
@@ -27,7 +30,7 @@ public class CBMSApplication extends Application {
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("/Assets.fxml"));
         Scene scene = new Scene(root);
-        primaryStage.setTitle("CBMS");
+        primaryStage.setTitle("Minerva");
         primaryStage.setScene(scene);
         primaryStage.show();
         primaryStage.setOnCloseRequest(e -> {
@@ -37,6 +40,29 @@ public class CBMSApplication extends Application {
                 exception.printStackTrace();
             }
         });
+    }
+
+    /**
+     * Loads all live assets before starting the application
+     *
+     * @throws Exception
+     */
+    @Override
+    public void init() throws Exception {
+        long loadStartTime = System.currentTimeMillis();
+        try {
+            ModelController.getInstance().getAllLiveAssets();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        long loadEndTime = System.currentTimeMillis();
+        if ((loadEndTime - loadStartTime) < 1000) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
