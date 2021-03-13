@@ -78,7 +78,7 @@ public class AssetsController implements Initializable {
         table = new TableView<>();
 
         try {
-            assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets().subList(0, 50));
+            assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -140,7 +140,7 @@ public class AssetsController implements Initializable {
         });
 
         //Attach link to addAssetButton to go to AddAsset.fxml
-        addAssetBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(rulTimeline, mouseEvent, TextConstants.ADD_ASSETS));
+        addAssetBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(rulTimeline, mouseEvent, TextConstants.ADD_ASSETS, addAssetBtn.getScene()));
 
         //Adding items to the choiceBox (drop down list)
         sortAsset.getItems().add(SORT_DEFAULT);
@@ -177,7 +177,7 @@ public class AssetsController implements Initializable {
         for (Asset asset : assets) {
 
             Pane pane = new Pane();
-            pane.setOnMouseClicked(event -> uiUtilities.changeScene(event, "/AssetInfo", asset));
+            pane.setOnMouseClicked(event -> uiUtilities.changeScene(event, "/AssetInfo", asset, pane.getScene()));
             pane.getStyleClass().add("assetPane");
 
             Pane imagePlaceholder = new Pane();
@@ -267,7 +267,7 @@ public class AssetsController implements Initializable {
         // When TableRow is clicked, send data to AssetInfo scene.
         table.setRowFactory(tv -> {
             TableRow<Asset> row = new TableRow<>();
-            row.setOnMouseClicked(event -> uiUtilities.changeScene(event, row, "/AssetInfo", row.getItem()));
+            row.setOnMouseClicked(event -> uiUtilities.changeScene(event, row, "/AssetInfo", row.getItem(), row.getScene()));
             return row;
         });
 

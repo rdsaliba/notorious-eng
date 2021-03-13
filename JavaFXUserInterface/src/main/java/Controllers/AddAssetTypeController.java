@@ -76,13 +76,13 @@ public class AddAssetTypeController implements Initializable {
      */
     public void attachEvents() {
         // Change scenes to Assets.fxml
-        backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
+        backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE, backBtn.getScene()));
         // Change scenes to Assets.fxml
-        cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
+        cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE, cancelBtn.getScene()));
         saveBtn.setOnMouseClicked(mouseEvent -> {
             if (formInputValidation()) {
                 if (saveAssetType(assembleAssetType()))
-                    uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE);
+                    uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE, saveBtn.getScene());
             }
         });
 

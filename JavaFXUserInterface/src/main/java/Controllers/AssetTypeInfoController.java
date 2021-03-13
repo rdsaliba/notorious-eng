@@ -146,7 +146,7 @@ public class AssetTypeInfoController implements Initializable {
      */
     public void attachEvents() {
         // Change scenes to Assets.fxml
-        backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
+        backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE, backBtn.getScene()));
 
         modelTab.setOnSelectionChanged(event -> attachEventsModelTab());
 
@@ -156,7 +156,7 @@ public class AssetTypeInfoController implements Initializable {
         infoSaveBtn.setOnMouseClicked(mouseEvent -> {
             if (formInputValidation()) {
                 assetTypeDAO.updateAssetType(assetType.toAssetType());
-                uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE);
+                uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE, infoSaveBtn.getScene());
             }
         });
 
@@ -205,7 +205,7 @@ public class AssetTypeInfoController implements Initializable {
         modelSaveBtn.setDisable(true);
         modelSaveBtn.setOnMouseClicked(mouseEvent -> {
             saveSelectedModelAssociation();
-            uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE);
+            uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE, modelSaveBtn.getScene());
         });
         evaluateAllModelsBtn.setDisable(true);
         evaluateButtons = new ArrayList<>();
