@@ -1,4 +1,4 @@
-/*
+package utilities;/*
   This is a Preloader which will display the Splash Screen before the main application is started.
 
   @author Najim

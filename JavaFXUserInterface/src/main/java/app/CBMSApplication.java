@@ -5,7 +5,6 @@ package app;/*
   @last_edit 02/7/2020
  */
 
-import app.ModelController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -20,7 +19,7 @@ public class CBMSApplication extends Application {
     static Logger logger = LoggerFactory.getLogger(CBMSApplication.class);
 
     public static void main(String[] args) {
-        System.setProperty("javafx.preloader", SplashScreenPreloader.class.getName());
+        System.setProperty("javafx.preloader", utilities.SplashScreenPreloader.class.getName());
         Application.launch(CBMSApplication.class, args);
     }
 
