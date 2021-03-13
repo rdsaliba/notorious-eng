@@ -613,6 +613,7 @@ public class AssetTypeInfoController implements Initializable {
         }
     }
     public void updateRMSE(){
+        modelObservableList = FXCollections.observableArrayList(modelDAO.getAllModels(Integer.parseInt(assetType.getId())));
         for (Model model : modelObservableList) {
             model.setRMSE(String.valueOf(TextConstants.RMSEValueFormat.format(modelDAO.getLatestRMSE(Integer.valueOf(model.getModelID()),Integer.valueOf(assetType.getId())))));
         }
