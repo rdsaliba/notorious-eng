@@ -1,6 +1,6 @@
 package UnitTests.Utilities;
 
-import Utilities.ModelPanes;
+import utilities.ModelPanes;
 import app.item.Model;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

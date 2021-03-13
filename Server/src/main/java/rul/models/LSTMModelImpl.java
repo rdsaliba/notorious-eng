@@ -7,6 +7,8 @@
 package rul.models;
 
 import org.deeplearning4j.nn.weights.WeightInit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import weka.classifiers.Classifier;
 import weka.classifiers.functions.Dl4jMlpClassifier;
 import weka.core.Instances;
@@ -22,6 +24,9 @@ import weka.dl4j.updater.Sgd;
 import static org.deeplearning4j.nn.api.OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT;
 
 public class LSTMModelImpl extends ModelStrategy {
+
+    static Logger logger = LoggerFactory.getLogger(LSTMModelImpl.class);
+
     /**
      * This function takes the filtered training dataset, builds a Neural Network using Weka's Deep Learning 4 Java plugin
      * and trains and returns an LSTM model.
@@ -41,11 +46,8 @@ public class LSTMModelImpl extends ModelStrategy {
         try {
             //Setting Parameters for the model
             ((Dl4jMlpClassifier) network).setNumEpochs(1);                //Bigger the better but also takes more time
-            //network.setEarlyStopping(new EarlyStopping()); //TODO: set a stopping to make it stop if no progress
+            //network.setEarlyStopping(new EarlyStopping()); //Set a stopping to make it stop if no progress
             ((Dl4jMlpClassifier) network).setBatchSize("100");
-            //network.setSeed(124564);                            //to ensure randomness
-            //network.setNumDecimalPlaces(2);
-
 
             //Network configurations
             NeuralNetConfiguration networkConfig = new NeuralNetConfiguration();
@@ -73,11 +75,8 @@ public class LSTMModelImpl extends ModelStrategy {
             //train with the DL4J classifier
             network.buildClassifier(trainDataset);
 
-        }
-
-        catch(Exception ex)
-        {
-            ex.printStackTrace();
+        } catch (Exception e) {
+            logger.error("Exception: ", e);
         }
 
         //return Neural network Classifier for LSTM

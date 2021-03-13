@@ -7,6 +7,7 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
+
     private static final String INSERT_ASSET_TYPE = "INSERT INTO asset_type (name, description) values( ?,? )";
     private static final String INSERT_ASSET_TYPE_PARAMETERS = "INSERT INTO asset_type_parameters (asset_type_id, parameter_name, boundary) values(?, ?, ?)";
     private static final String GET_ASSET_TYPES = "SELECT * FROM asset_type";
@@ -36,11 +37,10 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
                     return (rs.getInt("count"));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception in getAssetTypeIdCount(): ", e);
         }
         return 0;
     }
-
 
     @Override
     public String getAssetTypeThreshold(String assetTypeId, String thresholdType) {
@@ -54,13 +54,12 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception getAssetTypeThreshold(): ", e);
         }
         if (threshold == null || threshold.equals("null"))
             threshold = "-";
         return threshold;
     }
-
 
     @Override
     public int insertAssetType(AssetType assetType) {
@@ -86,7 +85,7 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception insertAssetType(): ", e);
         }
         return -1;
     }
@@ -109,7 +108,7 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception getAssetTypeList(): ", e);
         }
         return assetTypeList;
     }
@@ -124,11 +123,10 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
                     name = rs.getString("name");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception getNameFromID(): ", e);
         }
         return name;
     }
-
 
     @Override
     public void updateAssetType(AssetType assetType) {
@@ -150,7 +148,7 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
                 ps2.executeBatch();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception updateAssetType(): ", e);
         }
     }
 
@@ -160,11 +158,12 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
             ps.setString(1, assetTypeID);
             ps.executeQuery();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception deleteAssetTypeByID(): ", e);
         }
     }
 
-    /** Given an asset type id and boundary string value, this method will return the count of asset that match that asset type id
+    /**
+     * Given an asset type id and boundary string value, this method will return the count of asset that match that asset type id
      * and has as current recommendation the given threshold
      *
      * @author Paul
@@ -175,12 +174,12 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
             ps.setString(1, id);
             ps.setString(2, thresholdString);
             try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()){
+                while (rs.next()) {
                     count = rs.getInt("count");
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception getAssetTypeBoundaryCount(): ", e);
         }
         return count;
     }

@@ -18,7 +18,8 @@ public class AttributeDAOImpl extends DAO implements AttributeDAO {
 
     private static final String GET_LATEST_MEASUREMENTS_FROM_ASSET_AND_ATTRIBUTE_ID = "SELECT * FROM attribute_measurements WHERE asset_id = ? and attribute_id = ? order by time desc limit ?;";
 
-    /** this method will return the latest(identified by limiter) measurements for the asset id and attribute id combination
+    /**
+     * this method will return the latest(identified by limiter) measurements for the asset id and attribute id combination
      *
      * @author Paul
      */
@@ -33,8 +34,8 @@ public class AttributeDAOImpl extends DAO implements AttributeDAO {
                 while (queryResult.next())
                     measurements.add(new Measurement(queryResult.getInt("time"), queryResult.getDouble("value")));
             }
-        } catch (SQLException e){
-            e.printStackTrace();
+        } catch (SQLException e) {
+            logger.error("Exception: ", e);
         }
         return measurements;
     }

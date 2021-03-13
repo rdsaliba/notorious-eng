@@ -7,6 +7,8 @@
  */
 package preprocessing;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import weka.attributeSelection.BestFirst;
 import weka.attributeSelection.CfsSubsetEval;
 import weka.core.Attribute;
@@ -22,8 +24,10 @@ import weka.filters.unsupervised.attribute.Remove;
 import java.util.ArrayList;
 
 public class DataPreProcessorImpl implements DataPreProcessor {
+
     private final Instances originalDataset;
     private final ArrayList<Integer> removedIndex;
+    Logger logger = LoggerFactory.getLogger(DataPreProcessorImpl.class);
     private Instances reducedDataset;
     private Instances minimallyReducedDataset;
 
@@ -166,19 +170,24 @@ public class DataPreProcessorImpl implements DataPreProcessor {
      * @author Paul
      */
     @Override
-    public void processFullReduction() throws Exception {
+    public void processFullReduction() {
         AttributeSelection filter = new AttributeSelection();  // a filter needs an evaluator and a search method
         CfsSubsetEval eval = new CfsSubsetEval(); // the evaluator chosen is the CfsSubsetEval
         BestFirst search = new BestFirst(); // the search method used is BestFirst
 
-        filter.setEvaluator(eval); // set the filter evaluator and search method
-        filter.setSearch(search);
+        try {
+            filter.setEvaluator(eval); // set the filter evaluator and search method
+            filter.setSearch(search);
 
-        filter.setInputFormat(originalDataset);
-        reducedDataset = Filter.useFilter(originalDataset, filter); // this is what takes the data and applies the filter to reduce it
+            filter.setInputFormat(originalDataset);
+            reducedDataset = Filter.useFilter(originalDataset, filter); // this is what takes the data and applies the filter to reduce it
 
-        if (reducedDataset.attribute("RUL") == null)
-            reducedDataset = addRULCol(reducedDataset);
+            if (reducedDataset.attribute("RUL") == null)
+                reducedDataset = addRULCol(reducedDataset);
+        } catch (Exception e) {
+            logger.error("Exception processFullReduction(): ", e);
+        }
+
     }
 
     /**
@@ -189,7 +198,7 @@ public class DataPreProcessorImpl implements DataPreProcessor {
      * @author Khaled
      */
     @Override
-    public void processMinimalReduction() throws Exception {
+    public void processMinimalReduction() {
 
         for (int i = 0; i < originalDataset.numAttributes(); i++) {
             AttributeStats as = originalDataset.attributeStats(i);
@@ -204,10 +213,15 @@ public class DataPreProcessorImpl implements DataPreProcessor {
         int[] indicesToDelete = removedIndex.stream().mapToInt(i -> i).toArray();   //convert Integer list to int array
         remove.setAttributeIndicesArray(indicesToDelete);
 
-        remove.setInputFormat(originalDataset);
-        minimallyReducedDataset = Filter.useFilter(originalDataset, remove);
-        if (minimallyReducedDataset.attribute("RUL") == null)
-            minimallyReducedDataset = addRULCol(minimallyReducedDataset);
+        try {
+            remove.setInputFormat(originalDataset);
+            minimallyReducedDataset = Filter.useFilter(originalDataset, remove);
+            if (minimallyReducedDataset.attribute("RUL") == null)
+                minimallyReducedDataset = addRULCol(minimallyReducedDataset);
+        } catch (Exception e) {
+            logger.error("Exception processMinimalReduction(): ", e);
+        }
+
     }
 
     @Override
@@ -224,12 +238,17 @@ public class DataPreProcessorImpl implements DataPreProcessor {
         Returns the remove filter after applying the indices that should be deleted.
      */
     @Override
-    public Remove getRemovedIndexList() throws Exception {
+    public Remove getRemovedIndexList() {
         Remove remove = new Remove();
         int[] indicesToDelete = removedIndex.stream().mapToInt(i -> i).toArray();   //convert Integer list to int array
         remove.setAttributeIndicesArray(indicesToDelete);
 
-        remove.setInputFormat(originalDataset);
+        try {
+            remove.setInputFormat(originalDataset);
+        } catch (Exception e) {
+            logger.error("Exception getRemovedIndexList(): ", e);
+        }
+
         return remove;
     }
 
