@@ -56,14 +56,15 @@ public class CBMSApplication extends Application {
         try {
             ModelController.getInstance().getAllLiveAssets();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Exception: ", e);
         }
         long loadEndTime = System.currentTimeMillis();
         if ((loadEndTime - loadStartTime) < 1000) {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logger.error("Exception: ", e);
+                Thread.currentThread().interrupt();
             }
         }
     }

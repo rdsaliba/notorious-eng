@@ -16,6 +16,8 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
+import java.io.IOException;
+
 public class SplashScreenPreloader extends Preloader {
 
     private Stage preloaderStage;
@@ -27,7 +29,7 @@ public class SplashScreenPreloader extends Preloader {
      * @throws Exception
      * @author Najim
      */
-    private Scene createPreloaderScene() throws Exception {
+    private Scene createPreloaderScene() throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/SplashScreen.fxml"));
         return new Scene(root);
     }
@@ -64,11 +66,7 @@ public class SplashScreenPreloader extends Preloader {
                 ft.setFromValue(1.5);
                 ft.setToValue(0.0);
                 final Stage stageLoader = preloaderStage;
-                EventHandler<ActionEvent> eventH = new EventHandler<ActionEvent>() {
-                    public void handle(ActionEvent t) {
-                        stageLoader.hide();
-                    }
-                };
+                EventHandler<ActionEvent> eventH = t -> stageLoader.hide();
                 ft.setOnFinished(eventH);
                 ft.play();
             } else {

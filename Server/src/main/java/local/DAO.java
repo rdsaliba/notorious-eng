@@ -17,7 +17,7 @@ import java.sql.SQLException;
 
 public class DAO {
 
-    public static Logger logger = LoggerFactory.getLogger(DAO.class);
+    public static final Logger logger = LoggerFactory.getLogger(DAO.class);
 
     DatabaseConnection databaseConnection;
 
