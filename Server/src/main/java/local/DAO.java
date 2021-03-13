@@ -7,12 +7,18 @@
  */
 package local;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class DAO {
+
+    public static final Logger logger = LoggerFactory.getLogger(DAO.class);
+
     DatabaseConnection databaseConnection;
 
     public DAO() {
@@ -23,7 +29,8 @@ public class DAO {
         return DatabaseConnection.getConnection();
     }
 
-    /** This will run the query in the parameter and return its corresponding ResultSet
+    /**
+     * This will run the query in the parameter and return its corresponding ResultSet
      *
      * @author Paul
      */
@@ -32,7 +39,7 @@ public class DAO {
         try (PreparedStatement ps = getConnection().prepareStatement(query)) {
             rs = ps.executeQuery();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception: ", e);
         }
         return rs;
     }

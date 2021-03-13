@@ -44,7 +44,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
                 assets.add(createFullAssetFromQueryResult(rs));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception in getAssetsToUpdate: ", e);
         }
         return assets;
     }
@@ -67,7 +67,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
                     attributeNames.add(queryResult.getString("attribute_name"));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception: in getAttributesNameFromAssetID", e);
         }
 
         return attributeNames;
@@ -92,7 +92,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception in getAssetsFromAssetTypeID: ", e);
         }
         return assets;
     }
@@ -113,7 +113,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
                     name = queryResult.getString("name");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception in getAssetTypeNameFromID(): ", e);
         }
         return name;
     }
@@ -131,7 +131,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
                 assets.add(createAssetFromQueryResult(rs));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception in getAllLiveAssets(): ", e);
         }
         return assets;
     }
@@ -154,7 +154,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
             ps.setDouble(3, estimation);
             ps.executeQuery();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception in addRULEstimation(): ", e);
         }
         resetAssetUpdate(asset.getId());
     }
@@ -172,7 +172,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
             ps.setInt(2, assetID);
             ps.executeQuery();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception in updateRecommendation(): ", e);
         }
     }
 
@@ -188,11 +188,12 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
             ps.setInt(1, assetID);
             ps.executeQuery();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception in resetAssetUpdate(): ", e);
         }
     }
 
-    /**This method changes the update indicator of the assert in the database to true
+    /**
+     * This method changes the update indicator of the assert in the database to true
      *
      * @param assetID the specific id of the asset
      * @author Paul
@@ -203,7 +204,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
             ps.setInt(1, assetID);
             ps.executeQuery();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception setAssetUpdate(): ", e);
         }
     }
 
@@ -228,7 +229,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         newAsset.setSerialNo(assetsQuery.getString("sn"));
         newAsset.setRecommendation(assetsQuery.getString("recommendation"));
         newAsset.setAssetTypeName(assetsQuery.getString("asset_type.name"));
-        //newAsset.setAssetInfo(createAssetInfo(newAsset.getId()));
+
         return newAsset;
     }
 
@@ -268,6 +269,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         AssetInfo newAssetInfo = new AssetInfo();
         StringBuilder preparedStatementPart1 = new StringBuilder();
         StringBuilder preparedStatementPart2 = new StringBuilder();
+
         try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_INFO_FROM_ASSET_ID)) {
             ps.setInt(1, assetID);
             try (ResultSet attributesQuery = ps.executeQuery()) {
@@ -290,7 +292,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
             }
             return newAssetInfo;
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception in createAssetInfo(): ", e);
         }
         return null;
     }

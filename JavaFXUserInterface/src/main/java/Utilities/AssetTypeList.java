@@ -3,7 +3,7 @@
   @author
   @last_edit 02/7/2020
  */
-package Utilities;
+package utilities;
 
 import app.item.AssetType;
 import app.item.AssetTypeParameter;
