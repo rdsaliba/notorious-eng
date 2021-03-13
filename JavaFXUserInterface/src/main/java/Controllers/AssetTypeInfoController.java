@@ -313,36 +313,6 @@ public class AssetTypeInfoController implements Initializable {
         }
     }
 
-    /**
-     * This function evaluates all models for the current asset type
-     *
-     * @author Talal, Jeremie
-     */
-//    private void evaluateAllModels() {
-//        setTrainAndTestInstances();
-//        try {
-//            evaluateModelClassifiers(modelObservableList);
-//        } catch (Exception exception) {
-//            exception.printStackTrace();
-//        }
-//    }
-
-//    /**
-//     * This function evaluates a selected model for the current asset type
-//     *
-//     * @author Talal, Jeremie
-//     */
-//    private void evaluateSelectedModel(Model selectedModel) {
-//        setTrainAndTestInstances();
-//        ObservableList<Model> selectedModelToEvaluateList = FXCollections.observableArrayList();
-//        selectedModelToEvaluateList.add(selectedModel);
-//        try {
-//            evaluateModelClassifiers(selectedModelToEvaluateList);
-//        } catch (Exception exception) {
-//            exception.printStackTrace();
-//        }
-//        selectedModelToEvaluateList.clear();
-//    }
 
     /**
      * Handle the text change of the user fields to turn on or off the save functionality

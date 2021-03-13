@@ -20,7 +20,6 @@ public interface ModelDAO {
     String getModelNameFromModelID(String modelID);
 
     void updateRMSE(Double rmse, int modelId, int assetTypeId);
-    // TrainedModel createTrainedModelFromResultSet(ResultSet rs, boolean withModel) throws SQLException;
     TrainedModel getModelsByAssetTypeID(String assetTypeID, int statusID);
 
     TrainedModel createTrainedModelFromResultSet(ResultSet rs) throws SQLException;
