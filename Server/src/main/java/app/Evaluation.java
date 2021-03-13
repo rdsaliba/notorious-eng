@@ -2,6 +2,7 @@ package app;
 
 import app.item.Asset;
 import app.item.EvaluateModel;
+import app.item.TrainedModel;
 import local.AssetDAO;
 import local.AssetDAOImpl;
 import local.ModelDAOImpl;
@@ -19,7 +20,7 @@ public class Evaluation implements Runnable {
     private AssetDAOImpl assetDaoImpl;
     private ModelController modelController;
     private ModelDAOImpl modelDAOImpl;
-    private EvaluateModel model;
+    private TrainedModel model;
     private Instances trainDataset;
     private Instances testDataset;
     public Evaluation(){
@@ -27,7 +28,7 @@ public class Evaluation implements Runnable {
         modelController = ModelController.getInstance();
         modelDAOImpl = new ModelDAOImpl();
     }
-    public Evaluation(EvaluateModel model, Instances trainDataset,Instances testDataset){
+    public Evaluation(TrainedModel model, Instances trainDataset, Instances testDataset){
         assetDaoImpl = new AssetDAOImpl();
         modelController = ModelController.getInstance();
         modelDAOImpl = new ModelDAOImpl();
@@ -37,7 +38,7 @@ public class Evaluation implements Runnable {
     }
 
 
-    public EvaluateModel getModel(){return model;}
+    public TrainedModel getModel(){return model;}
     @Override
     public void run() {
         try {
@@ -55,7 +56,8 @@ public class Evaluation implements Runnable {
     private void evaluateModel() throws Exception {
         trainDataset.setClassIndex(trainDataset.numAttributes() - 1);
         testDataset.setClassIndex(testDataset.numAttributes() - 1);
-        ModelStrategy evaluateStrategy = getEvaluationModelStrategy(model);
+        ModelStrategy evaluateStrategy = model.getModelStrategy();
+                ;
 
         if (evaluateStrategy != null) {
             ModelsController modelsController = new ModelsController(evaluateStrategy);
@@ -64,37 +66,37 @@ public class Evaluation implements Runnable {
         }
     }
 
-    private ModelStrategy getEvaluationModelStrategy(EvaluateModel evaluateModelModel) {
-        String stratName = evaluateModelModel.getModelName();
-        switch (stratName) {
-            case "Linear":                                  //1: Linear
-                evaluateModelModel.setModelID(1);
-                return new LinearRegressionModelImpl();
-            case "LSTM":                                    //2: LSTM
-                evaluateModelModel.setModelID(2);
-                return new LSTMModelImpl();
-            case "RandomForest":                            //3: RandomForest
-                evaluateModelModel.setModelID(3);
-                return new RandomForestModelImpl();
-            case "RandomCommittee":                         //4: RandomCommittee
-                evaluateModelModel.setModelID(4);
-                return new RandomCommitteeModelImpl();
-            case "RandomSubSpace":                          //5: RandomSubSpace
-                evaluateModelModel.setModelID(5);
-                return new RandomSubSpaceModelImpl();
-            case "AdditiveRegression":                      //6: AdditiveRegression
-                evaluateModelModel.setModelID(6);
-                return new AdditiveRegressionModelImpl();
-            case "SMOReg":                                  //7: SMOReg
-                evaluateModelModel.setModelID(7);
-                return new SMORegModelImpl();
-            case "MultilayerPerceptron":                    //8: MultilayerPerceptron
-                evaluateModelModel.setModelID(8);
-                return new MultilayerPerceptronModelImpl();
-            default:
-                return null;
-        }
-    }
+//    private ModelStrategy getEvaluationModelStrategy(EvaluateModel evaluateModelModel) {
+//        String stratName = evaluateModelModel.getModelName();
+//        switch (stratName) {
+//            case "Linear":                                  //1: Linear
+//                evaluateModelModel.setModelID(1);
+//                return new LinearRegressionModelImpl();
+//            case "LSTM":                                    //2: LSTM
+//                evaluateModelModel.setModelID(2);
+//                return new LSTMModelImpl();
+//            case "RandomForest":                            //3: RandomForest
+//                evaluateModelModel.setModelID(3);
+//                return new RandomForestModelImpl();
+//            case "RandomCommittee":                         //4: RandomCommittee
+//                evaluateModelModel.setModelID(4);
+//                return new RandomCommitteeModelImpl();
+//            case "RandomSubSpace":                          //5: RandomSubSpace
+//                evaluateModelModel.setModelID(5);
+//                return new RandomSubSpaceModelImpl();
+//            case "AdditiveRegression":                      //6: AdditiveRegression
+//                evaluateModelModel.setModelID(6);
+//                return new AdditiveRegressionModelImpl();
+//            case "SMOReg":                                  //7: SMOReg
+//                evaluateModelModel.setModelID(7);
+//                return new SMORegModelImpl();
+//            case "MultilayerPerceptron":                    //8: MultilayerPerceptron
+//                evaluateModelModel.setModelID(8);
+//                return new MultilayerPerceptronModelImpl();
+//            default:
+//                return null;
+//        }
+//    }
 
 
     public void calculateEvaluation(Classifier model, Instances train, Instances test, int modelId, int assetTypeId) throws Exception {

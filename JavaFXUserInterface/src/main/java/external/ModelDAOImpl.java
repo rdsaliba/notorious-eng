@@ -10,6 +10,7 @@ package external;
 
 import app.item.Model;
 import app.item.TrainedModel;
+import rul.models.ModelStrategy;
 import weka.classifiers.Classifier;
 
 import java.io.ByteArrayInputStream;
@@ -30,6 +31,8 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     private static final String INSERT_RMSE = "REPLACE INTO model_evaluation SET rmse = ?,model_id = ?, asset_type_id = ? ";
     private static final String UPDATE_MODEL_FOR_ASSET_TYPE = "UPDATE trained_model set model_id = ? where asset_type_id = ?";
     private static final String UPDATE_RETRAIN = "UPDATE trained_model SET retrain = true WHERE asset_type_id = ?";
+    private static final String GET_MODEL_STRATEGY = "select serialized_model from trained_model where model_id=1 and asset_type_id=1 and status_id=2";
+    private static final String UPDATE_MODEL_STRATEGY = "UPDATE trained_model SET retrain = true, serialized_model  = ? WHERE model_id = ? AND asset_type_id = ? and status_id = 2";
 
     /**
      * Given a asset type id, this function will return the string corresponding
@@ -124,6 +127,21 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
         return tm;
     }
 
+    @Override
+    public int getModelIDFromAssetTypeID(String assetTypeID) {
+        int ID = 0;
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_FROM_ASSET_TYPE_ID)) {
+            ps.setString(1, assetTypeID);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next())
+                    ID = rs.getInt("model_id");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return ID;
+    }
+
     /**
      * This function will return a list of all the models that exist in the database and create
      * model objects for each of the model existing in the database
@@ -198,20 +216,20 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
         }
     }
 
-    public double getLatestRMSE(int modelID,int assetTypeID){
-        double estimate = -100000;
-        try (PreparedStatement ps = getConnection().prepareStatement(GET_LATEST_RMSE)) {
-            ps.setInt(1, modelID);
-            ps.setInt(2, assetTypeID);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next())
-                    estimate = rs.getDouble("rmse");
-            }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return estimate;
-    }
+//    public double getLatestRMSE(int modelID,int assetTypeID){
+//        double estimate = -100000;
+//        try (PreparedStatement ps = getConnection().prepareStatement(GET_LATEST_RMSE)) {
+//            ps.setInt(1, modelID);
+//            ps.setInt(2, assetTypeID);
+//            try (ResultSet rs = ps.executeQuery()) {
+//                if (rs.next())
+//                    estimate = rs.getDouble("rmse");
+//            }
+//        } catch (SQLException throwables) {
+//            throwables.printStackTrace();
+//        }
+//        return estimate;
+//    }
     /**
      * This function sets the model associated with the specified asset type to be retrained. It changes
      * the retrain attribute to true.
@@ -235,4 +253,40 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
         }
         return rmseValue;
     }
+
+    @Override
+    public ModelStrategy getModelStrategy(int modelID, int assetTypeID) throws SQLException {
+        ModelStrategy modelStrategy = null;
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_STRATEGY)) {
+//            ps.setInt(1,modelID);
+//            ps.setInt(2,assetTypeID);
+            try(ResultSet rs = ps.executeQuery()){
+                while(rs.next()){
+                    try {
+                        byte[] buf = rs.getBytes("serialized_model");
+                        if (buf != null)
+                            modelStrategy =(ModelStrategy) new ObjectInputStream(new ByteArrayInputStream(buf)).readObject();
+
+                    } catch (IOException | ClassNotFoundException e) {
+                        e.printStackTrace();
+                        return null;
+                    }}
+            }
+        } catch(SQLException e) {
+            e.printStackTrace();
+        }
+        return modelStrategy;
+    }
+    @Override
+    public void updateModelStrategy(ModelStrategy modelStrategy, int modelID, int assetTypeID){
+        try (PreparedStatement ps = getConnection().prepareStatement(UPDATE_MODEL_STRATEGY)) {
+            ps.setObject(1, modelStrategy);
+            ps.setInt(2, 1);
+            ps.setInt(3, 1);
+            ps.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
+

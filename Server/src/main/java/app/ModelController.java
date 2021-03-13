@@ -59,12 +59,12 @@ public class ModelController {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                System.out.println("ModelController - initialize - checkModelsToEvaluate - start");
-                try {
-                    checkModelsToEvaluate();
-                } catch (Exception exception) {
-                    exception.printStackTrace();
-                }
+//                System.out.println("ModelController - initialize - checkModelsToEvaluate - start");
+//                try {
+//                    checkModelsToEvaluate();
+//                } catch (Exception exception) {
+//                    exception.printStackTrace();
+//                }
                 System.out.println("ModelController - initialize - checkModelsToEvaluate - end");
                 System.out.println("ModelController - initialize - checkAsset - start");
                 checkAssets();
@@ -137,7 +137,21 @@ public class ModelController {
         trainedModelsToRetrain
                 .stream()
                 .filter(tm -> tm.getStatusID() == Constants.STATUS_EVALUATION)
+                .findFirst().ifPresent(this::evaluateAndSave);
+        trainedModelsToRetrain
+                .stream()
+                .filter(tm -> tm.getStatusID() == Constants.STATUS_EVALUATION)
                 .findFirst().ifPresent(this::trainAndSave);
+    }
+
+    public void evaluateAndSave(TrainedModel tm){
+        try{
+
+            modelToEvaluate(tm);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -264,17 +278,32 @@ public class ModelController {
     }
 
 //
-public void checkModelsToEvaluate() throws Exception {
-
-    for(EvaluateModel model: modelDAOImpl.getModelsToEvaluate()){
-        Instances trainDataset = DataPrePreprocessorController.getInstance().addRULCol(createInstancesFromAssets(assetDaoImpl.getAssetsFromAssetTypeID(model.getAssetTypeID()).subList(0, model.getFrom()-1)));
-        Instances testDataset = DataPrePreprocessorController.getInstance().addRULCol(createInstancesFromAssets(assetDaoImpl.getAssetsFromAssetTypeID(model.getAssetTypeID()).subList(model.getFrom(), model.getFrom()+model.getTom() - 1)));
+//public void checkModelsToEvaluate() throws Exception {
+//
+//    for(EvaluateModel model: modelDAOImpl.getModelsToEvaluate()){
+//        Instances trainDataset = DataPrePreprocessorController.getInstance().addRULCol(createInstancesFromAssets(assetDaoImpl.getAssetsFromAssetTypeID(model.getAssetTypeID()).subList(0, model.getFrom()-1)));
+//        Instances testDataset = DataPrePreprocessorController.getInstance().addRULCol(createInstancesFromAssets(assetDaoImpl.getAssetsFromAssetTypeID(model.getAssetTypeID()).subList(model.getFrom(), model.getFrom()+model.getTom() - 1)));
+////        evaluateModel(model);
+//            Evaluation evaluation = new Evaluation(model,trainDataset,testDataset);
+//            Thread t = new Thread(evaluation);
+//            t.start();
+//    }
+//    modelDAOImpl.deleteToEvaluateTable();
+//    }
+    public void modelToEvaluate(TrainedModel trainedModel) throws Exception {
+        trainedModel.setAssetTypeID(1);
+        int from =20;
+        int to=10;
+        Instances trainDataset = DataPrePreprocessorController.getInstance().addRULCol(createInstancesFromAssets(assetDaoImpl.getAssetsFromAssetTypeID(trainedModel.getAssetTypeID()).subList(0, from-1)));
+        Instances testDataset = DataPrePreprocessorController.getInstance().addRULCol(createInstancesFromAssets(assetDaoImpl.getAssetsFromAssetTypeID(trainedModel.getAssetTypeID()).subList(from, from+to - 1)));
+//    List<Asset> trainAssets= assets.subList(0,from-1);
+//    List<Asset> testAssets= assets.subList(from,from+to-1);
+//        Instances trainDataset = DataPrePreprocessorController.getInstance().addRULCol(createInstancesFromAssets(trainedModel.getModelStrategy().getTrainsAssets()));
+//        Instances testDataset = DataPrePreprocessorController.getInstance().addRULCol(createInstancesFromAssets(trainedModel.getModelStrategy().getTestAssets()));
 //        evaluateModel(model);
-            Evaluation evaluation = new Evaluation(model,trainDataset,testDataset);
-            Thread t = new Thread(evaluation);
-            t.start();
-    }
-    modelDAOImpl.deleteToEvaluateTable();
+        Evaluation evaluation = new Evaluation(trainedModel,trainDataset,testDataset);
+        Thread t = new Thread(evaluation);
+        t.start();
     }
 }
 

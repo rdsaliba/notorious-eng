@@ -15,8 +15,6 @@ public class Model {
 
     public void setRMSE(String rmse){ this.rmse.setValue(rmse);}
 
-    public Model() {
-    }
 
     public Model(String modelName, int modelID, String description) {
         this.modelName = modelName;

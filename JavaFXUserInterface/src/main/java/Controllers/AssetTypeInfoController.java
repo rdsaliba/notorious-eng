@@ -41,6 +41,7 @@ import weka.classifiers.Classifier;
 import weka.core.Instances;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -156,7 +157,7 @@ public class AssetTypeInfoController implements Initializable {
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
-        updateRMSE();
+//        updateRMSE();
     }
 
     /**
@@ -244,7 +245,8 @@ public class AssetTypeInfoController implements Initializable {
         evaluateButtons.add(evaluateAllModelsBtn);
 
         if (modelTab.getId().equals("modelTab")) {
-            int nbOfAssets = assetDAO.getArchivedAssetsFromAssetTypeID(Integer.parseInt(assetType.getId())).size();
+            List<Asset> assets= assetDAO.getArchivedAssetsFromAssetTypeID(Integer.parseInt(assetType.getId()));
+            int nbOfAssets = assets.size();
             trainSlider.setMax(nbOfAssets);
             trainValue.setText(String.valueOf(trainSlider.getValue()));
             testSlider.setMax(nbOfAssets);
@@ -270,13 +272,23 @@ public class AssetTypeInfoController implements Initializable {
                         int assetTypeID = Integer.parseInt(assetType.getId());
                         int from = (int) trainSlider.getValue() + 1;
                         int to = (int) trainSlider.getValue() + 1 + (int) testSlider.getValue();
-                        EvaluateModel evaluateModel = new EvaluateModel();
-                        evaluateModel.setAssetTypeID(assetTypeID);
-                        evaluateModel.setModelName(modelName);
-                        evaluateModel.setFrom(from);
-                        evaluateModel.setTo(to);
-                        modelList.add(evaluateModel);
-                        modelDAO.insertToEvaluate(modelName, assetTypeID, (int) trainSlider.getValue(), (int) testSlider.getValue());
+                        List<Asset> trainAssets= assets.subList(0,from-1);
+                        List<Asset> testAssets= assets.subList(from,from+to-1);
+                        try {
+                            ModelStrategy modelStrategy = modelDAO.getModelStrategy(associatedModelID,assetTypeID);
+                            modelStrategy.setTrainAssets(trainAssets);
+                            modelStrategy.setTestAssets(testAssets);
+                            modelDAO.updateModelStrategy(modelStrategy,associatedModelID,assetTypeID);
+                        } catch (SQLException throwables) {
+                            throwables.printStackTrace();
+                        }
+//                        EvaluateModel evaluateModel = new EvaluateModel();
+//                        evaluateModel.setAssetTypeID(assetTypeID);
+//                        evaluateModel.setModelName(modelName);
+//                        evaluateModel.setFrom(from);
+//                        evaluateModel.setTo(to);
+//                        modelList.add(evaluateModel);
+//                        modelDAO.insertToEvaluate(modelName, assetTypeID, (int) trainSlider.getValue(), (int) testSlider.getValue());
                     }
 
                 });
@@ -526,17 +538,29 @@ public class AssetTypeInfoController implements Initializable {
             evaluateButtons.add(evaluateModelBtn);
             evaluateModelBtn.setOnMouseClicked(mouseEvent -> {
                 ArrayList<EvaluateModel> modelList = new ArrayList<EvaluateModel>();
-                    String modelName = model.getModelName();
-                    int assetTypeID = Integer.parseInt(assetType.getId());
-                    int from = (int) trainSlider.getValue() + 1;
-                    int to = (int) trainSlider.getValue() + 1 + (int) testSlider.getValue();
-                    EvaluateModel evaluateModel = new EvaluateModel();
-                    evaluateModel.setAssetTypeID(assetTypeID);
-                    evaluateModel.setModelName(modelName);
-                    evaluateModel.setFrom(from);
-                    evaluateModel.setTo(to);
-                    modelList.add(evaluateModel);
-                    modelDAO.insertToEvaluate(modelName, assetTypeID, (int) trainSlider.getValue(), (int) testSlider.getValue());
+                String modelName = model.getModelName();
+                int assetTypeID = Integer.parseInt(assetType.getId());
+                int from = (int) trainSlider.getValue() + 1;
+                int to = (int) trainSlider.getValue() + 1 + (int) testSlider.getValue();
+                List<Asset> assets= assetDAO.getArchivedAssetsFromAssetTypeID(Integer.parseInt(assetType.getId()));
+                List<Asset> trainAssets= assets.subList(0,from-1);
+                List<Asset> testAssets= assets.subList(from,from+to-1);
+                try {
+                    local.ModelDAOImpl dao=new local.ModelDAOImpl();
+                    ModelStrategy modelStrategy = modelDAO.getModelStrategy(model.getModelID(),assetTypeID);
+                    modelStrategy.setTrainAssets(trainAssets);
+                    modelStrategy.setTestAssets(testAssets);
+                    modelDAO.updateModelStrategy(modelStrategy,1,1);
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+//                    EvaluateModel evaluateModel = new EvaluateModel();
+//                    evaluateModel.setAssetTypeID(assetTypeID);
+//                    evaluateModel.setModelName(modelName);
+//                    evaluateModel.setFrom(from);
+//                    evaluateModel.setTo(to);
+//                    modelList.add(evaluateModel);
+//                    modelDAO.insertToEvaluate(modelName, assetTypeID, (int) trainSlider.getValue(), (int) testSlider.getValue());
 
             });
 
@@ -555,17 +579,17 @@ public class AssetTypeInfoController implements Initializable {
             modelNameLabel.setLayoutY(28.0);
             modelDescriptionText.setLayoutX(14.0);
             modelDescriptionText.setLayoutY(60.0);
-            rmseLabel.setLayoutX(14.0);
-            rmseLabel.setLayoutY(100.0);
-            rmseValue.setLayoutX(50.0);
-            rmseValue.setLayoutY(100.0);
+            RMSELabel.setLayoutX(14.0);
+            RMSELabel.setLayoutY(100.0);
+            RMSEValue.setLayoutX(50.0);
+            RMSEValue.setLayoutY(100.0);
             evaluateModelBtn.setLayoutX(150.0);
             evaluateModelBtn.setLayoutY(75.0);
 
             modelPane.getChildren().add(modelNameLabel);
             modelPane.getChildren().add(modelDescriptionText);
-            modelPane.getChildren().add(rmseLabel);
-            modelPane.getChildren().add(rmseValue);
+            modelPane.getChildren().add(RMSELabel);
+            modelPane.getChildren().add(RMSEValue);
             modelPane.getChildren().add(evaluateModelBtn);
 
             modelPaneObservableList.add(modelPane);
@@ -605,19 +629,19 @@ public class AssetTypeInfoController implements Initializable {
             assetDAO.setAssetToBeUpdated(asset.getId());
         }
     }
-    public void updateRMSE(){
-        for (Model model : modelObservableList) {
-            model.setRMSE(String.valueOf(TextConstants.RMSEValueFormat.format(modelDAO.getLatestRMSE(Integer.valueOf(model.getModelID()),Integer.valueOf(assetType.getId())))));
-        }
-        rmseTimeline =
-                new Timeline(new KeyFrame(Duration.millis(3000), e ->
-                {
-                    for (Model model : modelObservableList) {
-                        model.setRMSE(String.valueOf(TextConstants.RMSEValueFormat.format(modelDAO.getLatestRMSE(Integer.valueOf(model.getModelID()),Integer.valueOf(assetType.getId())))));
-                    }
-                }));
-
-        rmseTimeline.setCycleCount(Animation.INDEFINITE); // loop forever
-        rmseTimeline.play();
-    }
+//    public void updateRMSE(){
+//        for (Model model : modelObservableList) {
+//            model.setRMSE(String.valueOf(TextConstants.RMSEValueFormat.format(modelDAO.getLatestRMSE(Integer.valueOf(model.getModelID()),Integer.valueOf(assetType.getId())))));
+//        }
+//        rmseTimeline =
+//                new Timeline(new KeyFrame(Duration.millis(3000), e ->
+//                {
+//                    for (Model model : modelObservableList) {
+//                        model.setRMSE(String.valueOf(TextConstants.RMSEValueFormat.format(modelDAO.getLatestRMSE(Integer.valueOf(model.getModelID()),Integer.valueOf(assetType.getId())))));
+//                    }
+//                }));
+//
+//        rmseTimeline.setCycleCount(Animation.INDEFINITE); // loop forever
+//        rmseTimeline.play();
+//    }
 }

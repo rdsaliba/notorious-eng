@@ -9,6 +9,7 @@ package external;
 
 import app.item.Model;
 import app.item.TrainedModel;
+import rul.models.ModelStrategy;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -30,4 +31,8 @@ public interface ModelDAO {
     void setModelToTrain(String assetTypeID);
 
     String getGetModelEvaluation(int modelID, String assetTypeID);
+
+    int getModelIDFromAssetTypeID(String assetTypeID);
+    public ModelStrategy getModelStrategy(int modelID, int assetTypeID) throws SQLException;
+    public void updateModelStrategy(ModelStrategy modelStrategy, int modelID, int assetTypeID);
 }

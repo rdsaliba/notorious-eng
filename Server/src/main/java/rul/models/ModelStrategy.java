@@ -8,14 +8,28 @@
  */
 package rul.models;
 
+import app.item.Asset;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 
 import java.io.Serializable;
+import java.util.List;
 
 public abstract class ModelStrategy implements Serializable {
+    //    private static final Byte serialVersionUID = new Byte(9176206042562869304);
     private Classifier classifier;
     private Instances dataToTrain;
+    private List<Asset> trainAssets;
+    private List<Asset> testAssets;
+
+
+    public List<Asset> getTrainsAssets(){return trainAssets;}
+
+    public void setTrainAssets(List<Asset> trainAssets){this.trainAssets=trainAssets;}
+
+    public List<Asset> getTestAssets(){return testAssets;}
+
+    public void setTestAssets(List<Asset> testAssets){this.testAssets=testAssets;}
 
     public abstract Classifier trainModel(Instances reducedData);
 
