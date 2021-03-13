@@ -22,8 +22,6 @@ import java.util.ArrayList;
 public class ModelDAOImpl extends DAO implements ModelDAO {
     private static final String UPDATE_SERIALIZE_OBJECT = "UPDATE trained_model SET retrain = false, serialized_model  = ? WHERE model_id = ? AND asset_type_id = ? and status_id = ?";
     private static final String GET_SERIALIZE_OBJECT = "SELECT * FROM trained_model WHERE retrain = true";
-    // private static final String GET_MODEL_NAME_FROM_ID = "SELECT name from trained_model, model where trained_model.model_id = model.model_id and asset_type_id = ?";
-    // private static final String GET_MODEL_FROM_ASSET_TYPE = "SELECT * FROM trained_model WHERE asset_type_id = ?";
     private static final String INSERT_RMSE = "REPLACE INTO trained_model SET rmse = ?,model_id = ?, asset_type_id = ?, status_id=2, retrain=0 ";    private static final String GET_MODELS_TO_EVALUATE = "SELECT * from model_to_evlaute";
     private static final String REMOVE_INFO_FROM_EVALUATE_TABLE = "delete from model_to_evlaute";
     private static final String GET_MODEL_NAME_FROM_ID = "SELECT name from model where model.model_id = ?";
@@ -170,53 +168,6 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
         }
     }
 
-    public EvaluateModel createEvaluateModelFromResultSet(ResultSet rs) throws SQLException {
-        EvaluateModel em = new EvaluateModel();
-        em.setModelName(rs.getString("model_name"));
-        em.setAssetTypeID(rs.getInt("asset_type_id"));
-        em.setFrom(rs.getInt("train_value"));
-        em.setTo(rs.getInt("test_value"));
-        return em;
-    }
-
-    public ArrayList<EvaluateModel> getModelsToEvaluate() {
-
-        ArrayList<EvaluateModel> ems = new ArrayList<>();
-        try (PreparedStatement ps = getConnection().prepareStatement(GET_MODELS_TO_EVALUATE)) {
-            try (ResultSet queryResult = ps.executeQuery()) {
-                while (queryResult.next()) {
-                    ems.add(createEvaluateModelFromResultSet(queryResult));
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return ems;
-    }
-
-    public void deleteToEvaluateTable(){
-        try (PreparedStatement ps = getConnection().prepareStatement(REMOVE_INFO_FROM_EVALUATE_TABLE))  {ps.executeQuery();} catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-    }
-
-    public TrainedModel createTrainedModel(ResultSet rs) throws SQLException {
-        TrainedModel tm = new TrainedModel();
-        tm.setModelID(rs.getInt("model_id"));
-        tm.setAssetTypeID(rs.getInt("asset_type_id"));
-        tm.setRetrain(rs.getBoolean("retrain"));
-        tm.setStatusID(rs.getInt("status_id"));
-        try {
-            byte[] buf = rs.getBytes("serialized_model");
-            if (buf != null)
-                tm.setModelStrategy((ModelStrategy) new ObjectInputStream(new ByteArrayInputStream(buf)).readObject());
-
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return tm;
-    }
 
     public ModelStrategy getModelStrategy() throws SQLException {
         try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_STRATEGY)) {

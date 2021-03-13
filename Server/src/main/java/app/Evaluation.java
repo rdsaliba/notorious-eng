@@ -66,39 +66,6 @@ public class Evaluation implements Runnable {
         }
     }
 
-//    private ModelStrategy getEvaluationModelStrategy(EvaluateModel evaluateModelModel) {
-//        String stratName = evaluateModelModel.getModelName();
-//        switch (stratName) {
-//            case "Linear":                                  //1: Linear
-//                evaluateModelModel.setModelID(1);
-//                return new LinearRegressionModelImpl();
-//            case "LSTM":                                    //2: LSTM
-//                evaluateModelModel.setModelID(2);
-//                return new LSTMModelImpl();
-//            case "RandomForest":                            //3: RandomForest
-//                evaluateModelModel.setModelID(3);
-//                return new RandomForestModelImpl();
-//            case "RandomCommittee":                         //4: RandomCommittee
-//                evaluateModelModel.setModelID(4);
-//                return new RandomCommitteeModelImpl();
-//            case "RandomSubSpace":                          //5: RandomSubSpace
-//                evaluateModelModel.setModelID(5);
-//                return new RandomSubSpaceModelImpl();
-//            case "AdditiveRegression":                      //6: AdditiveRegression
-//                evaluateModelModel.setModelID(6);
-//                return new AdditiveRegressionModelImpl();
-//            case "SMOReg":                                  //7: SMOReg
-//                evaluateModelModel.setModelID(7);
-//                return new SMORegModelImpl();
-//            case "MultilayerPerceptron":                    //8: MultilayerPerceptron
-//                evaluateModelModel.setModelID(8);
-//                return new MultilayerPerceptronModelImpl();
-//            default:
-//                return null;
-//        }
-//    }
-
-
     public void calculateEvaluation(Classifier model, Instances train, Instances test, int modelId, int assetTypeId) throws Exception {
 
 

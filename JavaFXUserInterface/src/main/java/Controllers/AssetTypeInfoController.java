@@ -270,10 +270,8 @@ public class AssetTypeInfoController implements Initializable {
                     for (Model model : modelObservableList){
                         String modelName = model.getModelName();
                         int assetTypeID = Integer.parseInt(assetType.getId());
-                        int from = (int) trainSlider.getValue() + 1;
-                        int to = (int) trainSlider.getValue() + 1 + (int) testSlider.getValue();
-                        List<Asset> trainAssets= assets.subList(0,from-1);
-                        List<Asset> testAssets= assets.subList(from,from+to-1);
+                        int trainAssets = (int) trainSlider.getValue() + 1;
+                        int testAssets = (int) trainSlider.getValue() + 1 + (int) testSlider.getValue();
                         try {
                             ModelStrategy modelStrategy = modelDAO.getModelStrategy(associatedModelID,assetTypeID);
                             modelStrategy.setTrainAssets(trainAssets);
@@ -545,16 +543,13 @@ public class AssetTypeInfoController implements Initializable {
                 List<Asset> assets= assetDAO.getArchivedAssetsFromAssetTypeID(Integer.parseInt(assetType.getId()));
                 List<Asset> trainAssets= assets.subList(0,from-1);
                 List<Asset> testAssets= assets.subList(from,from+to-1);
-                try {
-                    local.ModelDAOImpl dao=new local.ModelDAOImpl();
-                    ModelStrategy modelStrategy = modelDAO.getModelStrategy(model.getModelID(),assetTypeID);
-                    modelStrategy.setTrainAssets(trainAssets);
-                    modelStrategy.setTestAssets(testAssets);
-                    modelDAO.updateModelStrategy(modelStrategy,1,1);
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                }
-//                    EvaluateModel evaluateModel = new EvaluateModel();
+                local.ModelDAOImpl dao=new local.ModelDAOImpl();
+//                    ModelStrategy modelStrategy = modelDAO.getModelStrategy(model.getModelID(),assetTypeID);
+                ModelStrategy modelStrategy = new LinearRegressionModelImpl();
+                modelStrategy.setTrainAssets(from);
+                modelStrategy.setTestAssets(to);
+                modelDAO.updateModelStrategy(modelStrategy,1,1);
+                //                    EvaluateModel evaluateModel = new EvaluateModel();
 //                    evaluateModel.setAssetTypeID(assetTypeID);
 //                    evaluateModel.setModelName(modelName);
 //                    evaluateModel.setFrom(from);

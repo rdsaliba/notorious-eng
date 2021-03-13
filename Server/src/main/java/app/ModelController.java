@@ -26,12 +26,10 @@ public class ModelController {
     private static ModelController instance = null;
     private final AssetDAOImpl assetDaoImpl;
     private final ModelDAOImpl modelDAOImpl;
-    public static ArrayList<EvaluateModel> modelsToEvaluate;
 
     public ModelController() {
         assetDaoImpl = new AssetDAOImpl();
         modelDAOImpl = new ModelDAOImpl();
-        modelsToEvaluate = new ArrayList<EvaluateModel>();
     }
 
     public static ModelController getInstance() {
@@ -39,10 +37,6 @@ public class ModelController {
             instance = new ModelController();
         return instance;
     }
-
-    public void setModelsToEvaluate(ArrayList<EvaluateModel> list){
-        modelsToEvaluate = list;
-    };
 
     /**
      * This is the first thing that gets run when opening the application.
@@ -59,12 +53,6 @@ public class ModelController {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-//                System.out.println("ModelController - initialize - checkModelsToEvaluate - start");
-//                try {
-//                    checkModelsToEvaluate();
-//                } catch (Exception exception) {
-//                    exception.printStackTrace();
-//                }
                 System.out.println("ModelController - initialize - checkModelsToEvaluate - end");
                 System.out.println("ModelController - initialize - checkAsset - start");
                 checkAssets();
@@ -146,7 +134,7 @@ public class ModelController {
 
     public void evaluateAndSave(TrainedModel tm){
         try{
-
+            if(!Objects.isNull(tm.getModelStrategy()));
             modelToEvaluate(tm);
         }
         catch(Exception e){
@@ -252,15 +240,12 @@ public class ModelController {
         ArrayList<String> attributeNames = assetDaoImpl.getAttributesNameFromAssetID(assets.get(0).getId());
         String assetTypeName = assetDaoImpl.getAssetTypeNameFromID(assets.get(0).getAssetTypeID());
 
-        // 1. set up attributes
         attributesVector = new ArrayList<>();
-        // - numeric
         attributesVector.add(new Attribute("Asset_id"));
         attributesVector.add(new Attribute("Time_Cycle"));
         for (String attributeName : attributeNames) {
             attributesVector.add(new Attribute(attributeName));
         }
-        // 2. create Instances object
         data = new Instances(assetTypeName, attributesVector, 0);
 
         for (Asset asset : assets) {
@@ -277,30 +262,12 @@ public class ModelController {
         return data;
     }
 
-//
-//public void checkModelsToEvaluate() throws Exception {
-//
-//    for(EvaluateModel model: modelDAOImpl.getModelsToEvaluate()){
-//        Instances trainDataset = DataPrePreprocessorController.getInstance().addRULCol(createInstancesFromAssets(assetDaoImpl.getAssetsFromAssetTypeID(model.getAssetTypeID()).subList(0, model.getFrom()-1)));
-//        Instances testDataset = DataPrePreprocessorController.getInstance().addRULCol(createInstancesFromAssets(assetDaoImpl.getAssetsFromAssetTypeID(model.getAssetTypeID()).subList(model.getFrom(), model.getFrom()+model.getTom() - 1)));
-////        evaluateModel(model);
-//            Evaluation evaluation = new Evaluation(model,trainDataset,testDataset);
-//            Thread t = new Thread(evaluation);
-//            t.start();
-//    }
-//    modelDAOImpl.deleteToEvaluateTable();
-//    }
     public void modelToEvaluate(TrainedModel trainedModel) throws Exception {
         trainedModel.setAssetTypeID(1);
-        int from =20;
-        int to=10;
-        Instances trainDataset = DataPrePreprocessorController.getInstance().addRULCol(createInstancesFromAssets(assetDaoImpl.getAssetsFromAssetTypeID(trainedModel.getAssetTypeID()).subList(0, from-1)));
-        Instances testDataset = DataPrePreprocessorController.getInstance().addRULCol(createInstancesFromAssets(assetDaoImpl.getAssetsFromAssetTypeID(trainedModel.getAssetTypeID()).subList(from, from+to - 1)));
-//    List<Asset> trainAssets= assets.subList(0,from-1);
-//    List<Asset> testAssets= assets.subList(from,from+to-1);
-//        Instances trainDataset = DataPrePreprocessorController.getInstance().addRULCol(createInstancesFromAssets(trainedModel.getModelStrategy().getTrainsAssets()));
-//        Instances testDataset = DataPrePreprocessorController.getInstance().addRULCol(createInstancesFromAssets(trainedModel.getModelStrategy().getTestAssets()));
-//        evaluateModel(model);
+        int trainAssets =trainedModel.getModelStrategy().getTrainsAssets();
+        int testAssets=trainedModel.getModelStrategy().getTestAssets();
+        Instances trainDataset = DataPrePreprocessorController.getInstance().addRULCol(createInstancesFromAssets(assetDaoImpl.getAssetsFromAssetTypeID(trainedModel.getAssetTypeID()).subList(0, trainAssets-1)));
+        Instances testDataset = DataPrePreprocessorController.getInstance().addRULCol(createInstancesFromAssets(assetDaoImpl.getAssetsFromAssetTypeID(trainedModel.getAssetTypeID()).subList(trainAssets, trainAssets+testAssets - 1)));
         Evaluation evaluation = new Evaluation(trainedModel,trainDataset,testDataset);
         Thread t = new Thread(evaluation);
         t.start();

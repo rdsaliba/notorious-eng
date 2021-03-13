@@ -16,6 +16,7 @@ import weka.classifiers.Classifier;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.sql.Blob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -25,14 +26,11 @@ import java.util.List;
 public class ModelDAOImpl extends DAO implements ModelDAO {
     private static final String GET_MODEL_FROM_ASSET_TYPE_ID = "SELECT * from trained_model, model WHERE trained_model.model_id = model.model_id AND trained_model.asset_type_id = ?";
     private static final String GET_ALL_MODELS = "SELECT * from model";
-    private static final String INSERT_To_EVALUATE = "REPLACE INTO model_to_evlaute SET model_name = ?,asset_type_id = ?, train_value = ?, test_value = ?";
-    private static final String GET_LATEST_RMSE = "select rmse from model_evaluation where model_id=? and asset_type_id=?";
-    private static final String GET_MODEL_EVALUATION = "SELECT rmse FROM model_evaluation WHERE model_id = ? AND asset_type_id = ?";
-    private static final String INSERT_RMSE = "REPLACE INTO model_evaluation SET rmse = ?,model_id = ?, asset_type_id = ? ";
+    private static final String GET_LATEST_RMSE = "select rmse from trained_model where model_id=? and asset_type_id=? and status_id=2";
     private static final String UPDATE_MODEL_FOR_ASSET_TYPE = "UPDATE trained_model set model_id = ? where asset_type_id = ?";
     private static final String UPDATE_RETRAIN = "UPDATE trained_model SET retrain = true WHERE asset_type_id = ?";
-    private static final String GET_MODEL_STRATEGY = "select serialized_model from trained_model where model_id=1 and asset_type_id=1 and status_id=2";
-    private static final String UPDATE_MODEL_STRATEGY = "UPDATE trained_model SET retrain = true, serialized_model  = ? WHERE model_id = ? AND asset_type_id = ? and status_id = 2";
+    private static final String GET_MODEL_STRATEGY = "select serialized_model from trained_model where model_id=? and asset_type_id=? and status_id=2";
+    private static final String UPDATE_MODEL_STRATEGY = "UPDATE trained_model SET serialized_model=?,retrain=true WHERE model_id = ? AND asset_type_id = ? and status_id = 2";
 
     /**
      * Given a asset type id, this function will return the string corresponding
@@ -56,52 +54,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
         return name;
     }
 
-//    /**
-//     * Given the id of an asset type, this function will return the trained model
-//     * corresponding the that asset type. Since only one model can be associated to
-//     * an asset type at a time only one TrainedModel object is returned
-//     *
-//     * @param assetTypeID represents a the id of an asset type
-//     * @author Paul
-//     */
-//    @Override
-//    public TrainedModel getModelsByAssetTypeID(String assetTypeID) {
-//        TrainedModel tm = null;
-//        try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_ASSOCIATED_WITH_ASSET_TYPE)) {
-//            ps.setString(1, assetTypeID);
-//            try (ResultSet queryResult = ps.executeQuery()) {
-//                while (queryResult.next()) {
-//                    tm = createTrainedModelFromResultSet(queryResult, false);
-//                }
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        return tm;
-//    }
 
-    /**
-     * Given a result set object, this function will create the corresponding trained model object
-     * Given a asset type id, this function will return the int corresponding
-     * to the ID of the model in the database associated with the asset type
-     *
-     * @param assetTypeID represents a asset type id
-     * @author Jeremie
-     */
-    // @Override
-    // public int getModelIDFromAssetTypeID(String assetTypeID) {
-    //     int ID = 0;
-    //     try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_FROM_ASSET_TYPE_ID)) {
-    //         ps.setString(1, assetTypeID);
-    //         try (ResultSet rs = ps.executeQuery()) {
-    //             if (rs.next())
-    //                 ID = rs.getInt("model_id");
-    //         }
-    //     } catch (SQLException e) {
-    //         e.printStackTrace();
-    //     }
-    //     return ID;
-    // }
 
     /**
      * Given a RMSE model evaluation value for a specific model applied to a specific asset type,
@@ -203,33 +156,6 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
         }
     }
 
-    public void insertToEvaluate(String modelName, int assetTypeId, int trainvalue, int testValue) {
-        try (PreparedStatement ps = getConnection().prepareStatement(INSERT_To_EVALUATE)) {
-
-            ps.setString(1, modelName);
-            ps.setInt(2, assetTypeId);
-            ps.setInt(3, trainvalue);
-            ps.setInt(4, testValue);
-            ps.executeQuery();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-//    public double getLatestRMSE(int modelID,int assetTypeID){
-//        double estimate = -100000;
-//        try (PreparedStatement ps = getConnection().prepareStatement(GET_LATEST_RMSE)) {
-//            ps.setInt(1, modelID);
-//            ps.setInt(2, assetTypeID);
-//            try (ResultSet rs = ps.executeQuery()) {
-//                if (rs.next())
-//                    estimate = rs.getDouble("rmse");
-//            }
-//        } catch (SQLException throwables) {
-//            throwables.printStackTrace();
-//        }
-//        return estimate;
-//    }
     /**
      * This function sets the model associated with the specified asset type to be retrained. It changes
      * the retrain attribute to true.
@@ -241,7 +167,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     @Override
     public String getGetModelEvaluation(int modelID, String assetTypeID) {
         String rmseValue = null;
-        try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_EVALUATION)) {
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_LATEST_RMSE)) {
             ps.setInt(1, modelID);
             ps.setString(2, assetTypeID);
             try (ResultSet rs = ps.executeQuery()) {
@@ -251,15 +177,16 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return rmseValue;
+        if(rmseValue==null) return "n/a";
+        else return rmseValue;
     }
 
     @Override
     public ModelStrategy getModelStrategy(int modelID, int assetTypeID) throws SQLException {
         ModelStrategy modelStrategy = null;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_STRATEGY)) {
-//            ps.setInt(1,modelID);
-//            ps.setInt(2,assetTypeID);
+            ps.setInt(1,modelID);
+            ps.setInt(2,assetTypeID);
             try(ResultSet rs = ps.executeQuery()){
                 while(rs.next()){
                     try {
@@ -277,12 +204,17 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
         }
         return modelStrategy;
     }
+
     @Override
     public void updateModelStrategy(ModelStrategy modelStrategy, int modelID, int assetTypeID){
         try (PreparedStatement ps = getConnection().prepareStatement(UPDATE_MODEL_STRATEGY)) {
-            ps.setObject(1, modelStrategy);
-            ps.setInt(2, 1);
-            ps.setInt(3, 1);
+            TrainedModel tm = new TrainedModel();
+            tm.setModelStrategy(modelStrategy);
+            tm.setAssetTypeID(assetTypeID);
+            tm.setModelID(modelID);
+            ps.setObject(1, tm.getModelStrategy());
+            ps.setInt(2, tm.getModelID());
+            ps.setInt(3, tm.getAssetTypeID());
             ps.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();
