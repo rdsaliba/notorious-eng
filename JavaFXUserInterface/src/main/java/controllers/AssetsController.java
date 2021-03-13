@@ -305,11 +305,4 @@ public class AssetsController implements Initializable {
         assetsListPane.getChildren().addAll(table);
     }
 
-    /**
-     * Stops the timeline
-     */
-    public void closeTimeline() {
-        if (rulTimeline != null)
-            rulTimeline.stop();
-    }
 }
