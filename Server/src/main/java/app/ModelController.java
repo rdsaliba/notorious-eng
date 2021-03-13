@@ -10,7 +10,6 @@ package app;
 import app.item.*;
 import local.AssetDAOImpl;
 import local.ModelDAOImpl;
-import org.nd4j.linalg.api.ops.impl.transforms.IdentityN;
 import preprocessing.DataPrePreprocessorController;
 import rul.assessment.AssessmentController;
 import rul.models.*;
@@ -125,14 +124,19 @@ public class ModelController {
         trainedModelsToRetrain
                 .stream()
                 .filter(tm -> tm.getStatusID() == Constants.STATUS_EVALUATION)
-                .findFirst().ifPresent(this::evaluateAndSave);
+                .findFirst().ifPresent(this::evaluate);
         trainedModelsToRetrain
                 .stream()
                 .filter(tm -> tm.getStatusID() == Constants.STATUS_EVALUATION)
                 .findFirst().ifPresent(this::trainAndSave);
     }
 
-    public void evaluateAndSave(TrainedModel tm){
+    /**
+     * evaluates a specific model using function 'modelToEvaluate
+     * @param tm
+     * @author talal
+     */
+    public void evaluate(TrainedModel tm){
         try{
             if(!Objects.isNull(tm.getModelStrategy()));
             modelToEvaluate(tm);
@@ -262,6 +266,11 @@ public class ModelController {
         return data;
     }
 
+    /**
+     * evaluates a model on a separate thread using the evaluation class
+     * @param trainedModel
+     * @author talal
+     */
     public void modelToEvaluate(TrainedModel trainedModel) throws Exception {
         trainedModel.setAssetTypeID(1);
         int trainAssets =trainedModel.getModelStrategy().getTrainsAssets();

@@ -80,6 +80,11 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
         return tm;
     }
 
+    /**
+    * This function return Model ID of an asset type id
+    * @param assetTypeID
+     * @author Talal
+    * */
     @Override
     public int getModelIDFromAssetTypeID(String assetTypeID) {
         int ID = 0;
@@ -188,6 +193,13 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
         else return rmseValue;
     }
 
+    /**
+     *  This function returns the model strategy for a specific model of an assettype
+     * @param modelID
+     * @param assetTypeID
+     * @return modelStrategy
+     * @author Talal
+     */
     @Override
     public ModelStrategy getModelStrategy(int modelID, int assetTypeID) throws SQLException {
         ModelStrategy modelStrategy = null;
@@ -212,6 +224,13 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
         return modelStrategy;
     }
 
+    /**
+     * This function updates model strategy for an model
+     * @param modelStrategy
+     * @param modelID
+     * @param assetTypeID
+     * @author talal
+     */
     @Override
     public void updateModelStrategy(ModelStrategy modelStrategy, int modelID, int assetTypeID){
         try (PreparedStatement ps = getConnection().prepareStatement(UPDATE_MODEL_STRATEGY)) {
@@ -228,6 +247,12 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
         }
     }
 
+    /**
+     * This function is used to automatically reteive RMSE when a new value is in the database
+     * @param modelID
+     * @param assetTypeID
+     * @author talal
+     */
     public double getLatestRMSE(int modelID,int assetTypeID){
         double estimate = -100000;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_LATEST_RMSE)) {

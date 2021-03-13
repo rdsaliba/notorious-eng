@@ -66,9 +66,16 @@ public class Evaluation implements Runnable {
         }
     }
 
+    /**
+     * this function is used to calculate the rmse and store the new value in the databse
+     * @param model
+     * @param train
+     * @param test
+     * @param modelId
+     * @param assetTypeId
+     * @author talal
+     */
     public void calculateEvaluation(Classifier model, Instances train, Instances test, int modelId, int assetTypeId) throws Exception {
-
-
         ModelEvaluation modelEvaluation = new ModelEvaluation(model, train, test);
         double rmse = modelEvaluation.evaluateTrainWithTest();
         modelDAOImpl.updateRMSE(rmse, modelId, assetTypeId);

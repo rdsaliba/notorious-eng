@@ -281,14 +281,7 @@ public class AssetTypeInfoController implements Initializable {
                         } catch (SQLException throwables) {
                             throwables.printStackTrace();
                         }
-//                        EvaluateModel evaluateModel = new EvaluateModel();
-//                        evaluateModel.setAssetTypeID(assetTypeID);
-//                        evaluateModel.setModelName(modelName);
-//                        evaluateModel.setFrom(from);
-//                        evaluateModel.setTo(to);
-//                        modelList.add(evaluateModel);
-//                        modelDAO.insertToEvaluate(modelName, assetTypeID, (int) trainSlider.getValue(), (int) testSlider.getValue());
-                    }
+                         }
 
                 });
             } catch (Exception e) {
@@ -539,25 +532,19 @@ public class AssetTypeInfoController implements Initializable {
                 ArrayList<EvaluateModel> modelList = new ArrayList<EvaluateModel>();
                 String modelName = model.getModelName();
                 int assetTypeID = Integer.parseInt(assetType.getId());
-                int from = (int) trainSlider.getValue() + 1;
-                int to = (int) trainSlider.getValue() + 1 + (int) testSlider.getValue();
+                int trainAssets = (int) trainSlider.getValue() + 1;
+                int testAssets = (int) trainSlider.getValue() + 1 + (int) testSlider.getValue();
                 List<Asset> assets= assetDAO.getArchivedAssetsFromAssetTypeID(Integer.parseInt(assetType.getId()));
-                List<Asset> trainAssets= assets.subList(0,from-1);
-                List<Asset> testAssets= assets.subList(from,from+to-1);
                 local.ModelDAOImpl dao=new local.ModelDAOImpl();
-//                    ModelStrategy modelStrategy = modelDAO.getModelStrategy(model.getModelID(),assetTypeID);
-                ModelStrategy modelStrategy = new LinearRegressionModelImpl();
-                modelStrategy.setTrainAssets(from);
-                modelStrategy.setTestAssets(to);
+                ModelStrategy modelStrategy = null;
+                try {
+                    modelStrategy = modelDAO.getModelStrategy(model.getModelID(),assetTypeID);
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+                modelStrategy.setTrainAssets(trainAssets);
+                modelStrategy.setTestAssets(testAssets);
                 modelDAO.updateModelStrategy(modelStrategy,1,1);
-                //                    EvaluateModel evaluateModel = new EvaluateModel();
-//                    evaluateModel.setAssetTypeID(assetTypeID);
-//                    evaluateModel.setModelName(modelName);
-//                    evaluateModel.setFrom(from);
-//                    evaluateModel.setTo(to);
-//                    modelList.add(evaluateModel);
-//                    modelDAO.insertToEvaluate(modelName, assetTypeID, (int) trainSlider.getValue(), (int) testSlider.getValue());
-
             });
 
             //Setting IDs for the elements
