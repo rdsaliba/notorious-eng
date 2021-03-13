@@ -80,7 +80,6 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         AssetInfo newAssetInfo = new AssetInfo();
         StringBuilder preparedStatementPart1 = new StringBuilder();
         StringBuilder preparedStatementPart2 = new StringBuilder();
-        String query = "SELECT `Cycle` " + preparedStatementPart1 + " FROM (SELECT tab.`time` as 'Cycle'" + preparedStatementPart2 + " FROM (SELECT am.attribute_id, am.`time`, am.value FROM attribute_measurements am WHERE asset_id = ?  ORDER BY attribute_id, time) tab) tab2 GROUP BY `CYCLE` asc;";
 
         try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_INFO_FROM_ASSET_ID)) {
             ps.setInt(1, assetID);
@@ -91,7 +90,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
                     preparedStatementPart2.append(", CASE WHEN tab.attribute_id = ").append(newAtt.getId()).append(" THEN tab.value end AS `").append(newAtt.getName()).append("`");
                     newAssetInfo.addAttribute(newAtt);
                 }
-                try (PreparedStatement measurementStatement = getConnection().prepareStatement(query)) {
+                try (PreparedStatement measurementStatement = getConnection().prepareStatement("SELECT `Cycle` " + preparedStatementPart1 + " FROM (SELECT tab.`time` as 'Cycle'" + preparedStatementPart2 + " FROM (SELECT am.attribute_id, am.`time`, am.value FROM attribute_measurements am WHERE asset_id = ?  ORDER BY attribute_id, time) tab) tab2 GROUP BY `CYCLE` asc;")) {
                     measurementStatement.setInt(1, assetID);
                     try (ResultSet measurementQuery = measurementStatement.executeQuery()) {
                         while (measurementQuery.next()) {
@@ -121,7 +120,6 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
     public ResultSet createMeasurementsFromAssetIdAndTime(int assetID, int fromTime) {
         StringBuilder preparedStatementPart1 = new StringBuilder();
         StringBuilder preparedStatementPart2 = new StringBuilder();
-        String query = "SELECT `Cycle` " + preparedStatementPart1 + " FROM (SELECT tab.`time` as 'Cycle'" + preparedStatementPart2 + " FROM (SELECT am.attribute_id, am.`time`, am.value FROM attribute_measurements am WHERE asset_id = ? AND time > ? ORDER BY attribute_id, time) tab) tab2 GROUP BY `CYCLE` asc;";
 
         ResultSet returned = null;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_ATTRIBUTE_DETAILS_FROM_ASSET_ID)) {
@@ -145,7 +143,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
 
             // i'm unsure why but i cannot do setString on the prepared statement, it keeps failing the query.
             // This way is the same in terms of usage and speed and security.
-            try (PreparedStatement measurementStatement = getConnection().prepareStatement(query)) {
+            try (PreparedStatement measurementStatement = getConnection().prepareStatement("SELECT `Cycle` " + preparedStatementPart1 + " FROM (SELECT tab.`time` as 'Cycle'" + preparedStatementPart2 + " FROM (SELECT am.attribute_id, am.`time`, am.value FROM attribute_measurements am WHERE asset_id = ? AND time > ? ORDER BY attribute_id, time) tab) tab2 GROUP BY `CYCLE` asc;")) {
                 measurementStatement.setInt(1, assetID);
                 measurementStatement.setInt(2, fromTime);
                 returned = measurementStatement.executeQuery();
