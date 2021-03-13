@@ -49,7 +49,7 @@ public class LSTMTest
         modelsController = new ModelsController(new LSTMModelImpl());
         resumePara = new BoolParameter("Resume", true);
         filterModePara = new BoolParameter("Filter Mode", true);
-        doNotClearFileSystemCachePara = new BoolParameter("Do Not Clear File System Cache", true);
+        doNotClearFileSystemCachePara = new BoolParameter("Do not Clear File System Cache", true);
         minimizeObjectivePara = new BoolParameter("Minimize Objective", false);
 
         numberOfEpochPara = new IntParameter("Number of Epoch", 1);

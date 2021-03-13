@@ -23,7 +23,6 @@ public class AdditiveRegressionModelImpl extends ModelStrategy
     private final int NUM_ITERATIONS_PARAM_DEFAULT = 10;
     private final String BATCH_SIZE_PARAM_DEFAULT = "100";
 
-
     private BoolParameter minimizeAbsoluteErrorPara;
     private BoolParameter resumePara;
     private FloatParameter shrinkagePara;

@@ -36,15 +36,15 @@ public class RandomSubSpaceModelImpl extends ModelStrategy
 
     public RandomSubSpaceModelImpl()
     {
-     subSpaceSizePara = new FloatParameter("SubSpace Size", SUBSPACE_SIZE_PARAM_DEFAULT);
-     numExecutionSlotsPara = new IntParameter("Number of Execution Slots", NUM_EXECUTION_SLOTS_PARAM_DEFAULT);
-     numIterationsPara = new IntParameter("Number of Iterations", NUM_ITERATIONS_PARAM_DEFAULT);
-     batchSizePara = new StringParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
+        subSpaceSizePara = new FloatParameter("SubSpace Size", SUBSPACE_SIZE_PARAM_DEFAULT);
+        numExecutionSlotsPara = new IntParameter("Number of Execution Slots", NUM_EXECUTION_SLOTS_PARAM_DEFAULT);
+        numIterationsPara = new IntParameter("Number of Iterations", NUM_ITERATIONS_PARAM_DEFAULT);
+        batchSizePara = new StringParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
 
-     addParameter(subSpaceSizePara);
-     addParameter(numExecutionSlotsPara);
-     addParameter(numIterationsPara);
-     addParameter(batchSizePara);
+        addParameter(subSpaceSizePara);
+        addParameter(numExecutionSlotsPara);
+        addParameter(numIterationsPara);
+        addParameter(batchSizePara);
     }
 
     /**
@@ -81,10 +81,10 @@ public class RandomSubSpaceModelImpl extends ModelStrategy
     @Override
     public Map<String, Parameter> getDefaultParameters()
     {
-        FloatParameter subSpaceSizeParaDefault = new FloatParameter("SubSpace Size", SUBSPACE_SIZE_PARAM_DEFAULT);
-        IntParameter numExecutionSlotsParaDefault = new IntParameter("Number of Execution Slots", NUM_EXECUTION_SLOTS_PARAM_DEFAULT);
-        IntParameter    numIterationsParaDefault         = new IntParameter("Number of Iterations", NUM_ITERATIONS_PARAM_DEFAULT);
-        StringParameter batchSizeParaDefault             = new StringParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
+        FloatParameter  subSpaceSizeParaDefault      = new FloatParameter("SubSpace Size", SUBSPACE_SIZE_PARAM_DEFAULT);
+        IntParameter    numExecutionSlotsParaDefault = new IntParameter("Number of Execution Slots", NUM_EXECUTION_SLOTS_PARAM_DEFAULT);
+        IntParameter    numIterationsParaDefault     = new IntParameter("Number of Iterations", NUM_ITERATIONS_PARAM_DEFAULT);
+        StringParameter batchSizeParaDefault         = new StringParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
 
         Map<String, Parameter> parameters = new HashMap<>();
         parameters.put(subSpaceSizeParaDefault.getParamName(), subSpaceSizeParaDefault);

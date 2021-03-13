@@ -18,7 +18,8 @@ import weka.core.Instances;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RandomForestModelImpl extends ModelStrategy {
+public class RandomForestModelImpl extends ModelStrategy
+{
 
     //Default Parameters
     private final boolean STORE_OUT_OF_BAG_PREDICTIONS_PARAM_DEFAULT = false;
@@ -87,7 +88,8 @@ public class RandomForestModelImpl extends ModelStrategy {
      */
 
     @Override
-    public Classifier trainModel(Instances dataToTrain) {
+    public Classifier trainModel(Instances dataToTrain)
+    {
         randomForest = new RandomForest();
         dataToTrain.setClassIndex(dataToTrain.numAttributes() - 1);
 
@@ -108,7 +110,8 @@ public class RandomForestModelImpl extends ModelStrategy {
         {
             randomForest.buildClassifier(dataToTrain);
         }
-        catch (Exception e) {
+        catch(Exception e)
+        {
             e.printStackTrace();
             return null;
         }
@@ -120,16 +123,16 @@ public class RandomForestModelImpl extends ModelStrategy {
     @Override
     public Map<String, Parameter> getDefaultParameters()
     {
-        BoolParameter storeOutOfBagPredictionsParaDefault = new BoolParameter("Store out of Bag Predictions", STORE_OUT_OF_BAG_PREDICTIONS_PARAM_DEFAULT);
-        BoolParameter breakTiesRandomlyParaDefault = new BoolParameter("Break Ties Randomly", BREAK_TIES_RANDOMLY_PARAM_DEFAULT);
-        BoolParameter calcOutBagParaDefault = new BoolParameter("Calc out of Bag", CALC_OUT_BAGS_PARAM_DEFAULT);
+        BoolParameter storeOutOfBagPredictionsParaDefault   = new BoolParameter("Store out of Bag Predictions", STORE_OUT_OF_BAG_PREDICTIONS_PARAM_DEFAULT);
+        BoolParameter breakTiesRandomlyParaDefault          = new BoolParameter("Break Ties Randomly", BREAK_TIES_RANDOMLY_PARAM_DEFAULT);
+        BoolParameter calcOutBagParaDefault                 = new BoolParameter("Calc out of Bag", CALC_OUT_BAGS_PARAM_DEFAULT);
         BoolParameter computeAttributeImportanceParaDefault = new BoolParameter("Compute Attribute Importance", COMPUTE_ATTRIBUTE_IMPORTANCE_PARAM_DEFAULT);
 
-        IntParameter bagSizePercentParaDefault = new IntParameter("Bag Size Percent", BAG_SIZE_PERCENT_PARAM_DEFAULT);
-        IntParameter maxDepthParaDefault = new IntParameter("Max Depth", MAX_DEPTH_PARAM_DEFAULT);
+        IntParameter bagSizePercentParaDefault     = new IntParameter("Bag Size Percent", BAG_SIZE_PERCENT_PARAM_DEFAULT);
+        IntParameter maxDepthParaDefault           = new IntParameter("Max Depth", MAX_DEPTH_PARAM_DEFAULT);
         IntParameter numExecutionSlotsParaDefeault = new IntParameter("Number of Execution Slots", NUM_EXECUTION_SLOTS_PARAM_DEFAULT);
-        IntParameter numFeaturesParaDefault = new IntParameter("Number of Features", NUM_FEATURES_PARAM_DEFAULT);
-        IntParameter numIterationsParaDefault = new IntParameter("Number of Iterations", NUM_ITERATIONS_PARAM_DEFAULT);
+        IntParameter numFeaturesParaDefault        = new IntParameter("Number of Features", NUM_FEATURES_PARAM_DEFAULT);
+        IntParameter numIterationsParaDefault      = new IntParameter("Number of Iterations", NUM_ITERATIONS_PARAM_DEFAULT);
 
         StringParameter batchSizeParaDefault = new StringParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
 

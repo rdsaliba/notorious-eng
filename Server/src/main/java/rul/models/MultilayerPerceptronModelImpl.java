@@ -16,7 +16,8 @@ import weka.core.Instances;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MultilayerPerceptronModelImpl extends ModelStrategy {
+public class MultilayerPerceptronModelImpl extends ModelStrategy
+{
 
     //Default Parameters:
     private final boolean SHOW_GUI_PARAM_DEFAULT = false;
@@ -104,7 +105,8 @@ public class MultilayerPerceptronModelImpl extends ModelStrategy {
      * @author Khaled
      */
     @Override
-    public Classifier trainModel(Instances dataToTrain) {
+    public Classifier trainModel(Instances dataToTrain)
+    {
         multilayerPerceptron = new MultilayerPerceptron();
         dataToTrain.setClassIndex(dataToTrain.numAttributes() - 1);
 
@@ -124,11 +126,13 @@ public class MultilayerPerceptronModelImpl extends ModelStrategy {
         multilayerPerceptron.setValidationSetSize(((IntParameter) getParameters().get(validationSizePara.getParamName())).getIntValue());
         multilayerPerceptron.setValidationThreshold(((IntParameter) getParameters().get(validationThresholdPara.getParamName())).getIntValue());
 
-        try {
+        try
+        {
             multilayerPerceptron.buildClassifier(dataToTrain);
         }
 
-        catch (Exception e) {
+        catch(Exception e)
+        {
             e.printStackTrace();
             return null;
         }
@@ -140,20 +144,20 @@ public class MultilayerPerceptronModelImpl extends ModelStrategy {
     @Override
     public Map<String, Parameter> getDefaultParameters()
     {
-        BoolParameter showGUIParaDefault = new BoolParameter("Show GUI", SHOW_GUI_PARAM_DEFAULT);
-        BoolParameter autoBuildParaDefault = new BoolParameter("Auto Build", AUTO_BUILD_PARAM_DEFAULT);
-        BoolParameter decayParaDefaut = new BoolParameter("Decay", DECAY_PARAM_DEFAULT);
+        BoolParameter showGUIParaDefault               = new BoolParameter("Show GUI", SHOW_GUI_PARAM_DEFAULT);
+        BoolParameter autoBuildParaDefault             = new BoolParameter("Auto Build", AUTO_BUILD_PARAM_DEFAULT);
+        BoolParameter decayParaDefaut                  = new BoolParameter("Decay", DECAY_PARAM_DEFAULT);
         BoolParameter nominalToBinaryFilterParaDefault = new BoolParameter("Nominal to Binary Filter", NOMINAL_TO_BINARY_FILTER_PARAM_DEFAULT);
-        BoolParameter normalizeAttributesParaDefault = new BoolParameter("Normalize Attributes", NORMALIZE_ATTRIBUTE_PARAM_DEFAULT);
+        BoolParameter normalizeAttributesParaDefault   = new BoolParameter("Normalize Attributes", NORMALIZE_ATTRIBUTE_PARAM_DEFAULT);
         BoolParameter normalizeNumericClassParaDefault = new BoolParameter("Normalize Numeric Class", NORMALIZE_NUMERIC_CLASS_PARAM_DEFAULT);
-        BoolParameter resetParaDefault = new BoolParameter("Reset", RESET_PARAM_DEFAULT);
-        BoolParameter resumeParaDefault = new BoolParameter("Resume", RESUME_PARAM_DEFAULT);
+        BoolParameter resetParaDefault                 = new BoolParameter("Reset", RESET_PARAM_DEFAULT);
+        BoolParameter resumeParaDefault                = new BoolParameter("Resume", RESUME_PARAM_DEFAULT);
 
         FloatParameter learningRateParaDefault = new FloatParameter("Learning Rate", LEARNING_RATE_PARAM_DEFAULT);
-        FloatParameter momentumParaDefault = new FloatParameter("Momentum", MOMENTUM_PARAM_DEFAULT);
+        FloatParameter momentumParaDefault     = new FloatParameter("Momentum", MOMENTUM_PARAM_DEFAULT);
 
-        IntParameter trainingTimeParaDefault = new IntParameter("Training Time", TRAINING_TIME_PARAM_DEFAULT);
-        IntParameter validationSizeParaDefault = new IntParameter("Validation Size", VALIDATION_SIZE_PARAM_DEFAULT);
+        IntParameter trainingTimeParaDefault        = new IntParameter("Training Time", TRAINING_TIME_PARAM_DEFAULT);
+        IntParameter validationSizeParaDefault      = new IntParameter("Validation Size", VALIDATION_SIZE_PARAM_DEFAULT);
         IntParameter validationThresholdParaDefault = new IntParameter("Validation Threshold", VALIDATION_THRESHOLD_PARAM_DEFAULT);
 
         batchSizePara = new StringParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);

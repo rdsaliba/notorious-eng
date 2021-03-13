@@ -20,9 +20,10 @@ import weka.core.Instances;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LinearRegressionModelImpl extends ModelStrategy {
+public class LinearRegressionModelImpl extends ModelStrategy
+{
 
-    //Parameters
+    //Default Parameters
     private final boolean USE_QR_DECOMPOSITION_PARAM_DEFAULT = false;
     private final boolean ELIMINATE_COLINEAR_ATTRIBUTES_PARAM_DEFAULT = true;
     private final float RIDGE_PARAM_DEFAULT = 1.0E-8F;
@@ -56,7 +57,8 @@ public class LinearRegressionModelImpl extends ModelStrategy {
      * @author Talal
      */
     @Override
-    public Classifier trainModel(Instances firstTrain) {
+    public Classifier trainModel(Instances firstTrain)
+    {
         firstTrain.setClassIndex(firstTrain.numAttributes() - 1);
         //removeInstances(firstTrain);
         linearRegression = new LinearRegression();
@@ -66,9 +68,12 @@ public class LinearRegressionModelImpl extends ModelStrategy {
         linearRegression.setRidge((((FloatParameter) getParameters().get(ridgePara.getParamName()))).getFloatValue());
         linearRegression.setBatchSize((((StringParameter) getParameters().get(batchSizePara.getParamName()))).getStringValue());
 
-        try {
+        try
+        {
             linearRegression.buildClassifier(firstTrain);
-        } catch (Exception e) {
+        }
+        catch(Exception e)
+        {
             e.printStackTrace();
             return null;
         }
@@ -109,18 +114,22 @@ public class LinearRegressionModelImpl extends ModelStrategy {
      * @author Talal
      */
 
-    public static Instances removeInstances (Instances trainDataset, int threshold) {
-        for (int i = 0; i < trainDataset.numInstances() ; i++) {
+    public static Instances removeInstances(Instances trainDataset, int threshold)
+    {
+        for(int i = 0; i < trainDataset.numInstances(); i++)
+        {
             Instance inst = trainDataset.instance(i);
-            if (inst.value(inst.classAttribute()) > threshold) {
+            if(inst.value(inst.classAttribute()) > threshold)
+            {
                 trainDataset.delete(i);
             }
         }
         return trainDataset;
     }
 
-    public static Instances removeInstances (Instances trainDataset) {
-        return removeInstances(trainDataset,150);
+    public static Instances removeInstances(Instances trainDataset)
+    {
+        return removeInstances(trainDataset, 150);
     }
 
 

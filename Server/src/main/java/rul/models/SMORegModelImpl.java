@@ -17,13 +17,13 @@ import weka.core.Instances;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SMORegModelImpl extends ModelStrategy {
+public class SMORegModelImpl extends ModelStrategy
+{
 
     //Default Parameters
     private final float C_COMPLEXITY_PARAM_DEFAULT = 1.0F;
     private final String BATCH_SIZE_PARAM_DEFAULT = "100";
 
-    //Parameters
     private FloatParameter cComplexityPara;
     private StringParameter batchSizePara;
 
@@ -45,7 +45,8 @@ public class SMORegModelImpl extends ModelStrategy {
      * @author Khaled
      */
     @Override
-    public Classifier trainModel(Instances dataToTrain) {
+    public Classifier trainModel(Instances dataToTrain)
+    {
         smOreg = new SMOreg();
         dataToTrain.setClassIndex(dataToTrain.numAttributes() - 1);
 
@@ -56,7 +57,8 @@ public class SMORegModelImpl extends ModelStrategy {
         {
             smOreg.buildClassifier(dataToTrain);
         }
-        catch (Exception e) {
+        catch(Exception e)
+        {
             e.printStackTrace();
             return null;
         }
@@ -68,8 +70,8 @@ public class SMORegModelImpl extends ModelStrategy {
     @Override
     public Map<String, Parameter> getDefaultParameters()
     {
-        FloatParameter cComplexityParaDefault = new FloatParameter("C Complexity", C_COMPLEXITY_PARAM_DEFAULT);
-        StringParameter batchSizeParaDefault             = new StringParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
+        FloatParameter  cComplexityParaDefault = new FloatParameter("C Complexity", C_COMPLEXITY_PARAM_DEFAULT);
+        StringParameter batchSizeParaDefault   = new StringParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
 
         Map<String, Parameter> parameters = new HashMap<>();
         parameters.put(cComplexityParaDefault.getParamName(), cComplexityParaDefault);

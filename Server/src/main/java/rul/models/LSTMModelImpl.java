@@ -30,40 +30,40 @@ import java.util.Map;
 
 public class LSTMModelImpl extends ModelStrategy
 {
-    //Default boolean Parameters
+    //Default Parameters
     private final boolean RESUME_PARAM_DEFAULT = false;
     private final boolean FILTER_MODE_PARAM_DEFAULT = false;
     private final boolean DO_NOT_CLEAR_FILE_SYSTEM_CACHE_PARAM_DEFAULT = false;
     private final boolean MINIMIZE_OBJECTIVE_PARA_DEFAULT = true;
-    //Default int parameters
+
     private final int NUMBER_OF_EPOCH_PARAM_DEFAULT = 10;
     private final int QUEUE_SIZE_PARAM_DEFAULT = 0;
     private final int NUMBER_OF_GPU_PARAM_DEFAULT = 1;
     private final int AVG_FREQUENCY_PARAM_DEFAULT = 10;
-    //Default String parameters
+
     private final String BATCH_SIZE_PARAM_DEFAULT = "100";
     private final String CACHE_MODE_PARAM_DEFAULT = "MEMORY";
     private final String OPTIMIZATION_ALGO_PARAM_DEFAULT = "STOCHASTIC_GRADIENT_DESCENT";
     private final String WEIGHT_INIT_PARAM_DEFAULT = "XAVIER";
-    //Default float parameter
+
     private final float LEARNING_RATE_PARAM_DEFAULT = 0.001F;
 
-    //BoolParameters
+    //Parameter objects
     private BoolParameter resumePara;
     private BoolParameter filterModePara;
     private BoolParameter doNotClearFileSystemCachePara;
     private BoolParameter minimizeObjectivePara;
-    //IntParameters
+
     private IntParameter numberOfEpochPara;
     private IntParameter numberOfGPUPara;
     private IntParameter avgFrequencyPara;
     private IntParameter queueSizePara;
-    //List & StringParameters
+
     private ListParameter cacheModePara; //options: NONE, MEMORY, FILESYSTEM
     private ListParameter optimizationAlgoPara; //options: STOCHASTIC_GRADIENT_DESCENT, LINE_GRADIENT_DESCENT,
     private ListParameter weightInitPara;     //options: XAVIER, RELU, IDENTITY, NORMAL, UNIFORM, ZERO, DISTRIBUTION
     private StringParameter batchSizePara;
-    //FloatParameter
+
     private FloatParameter learningRatePara;
 
     private Dl4jMlpClassifier dl4jMlpClassifier;
@@ -73,7 +73,7 @@ public class LSTMModelImpl extends ModelStrategy
     {
         resumePara = new BoolParameter("Resume", RESUME_PARAM_DEFAULT);
         filterModePara = new BoolParameter("Filter Mode", FILTER_MODE_PARAM_DEFAULT);
-        doNotClearFileSystemCachePara = new BoolParameter("Do Not Clear File System Cache", DO_NOT_CLEAR_FILE_SYSTEM_CACHE_PARAM_DEFAULT);
+        doNotClearFileSystemCachePara = new BoolParameter("Do not Clear File System Cache", DO_NOT_CLEAR_FILE_SYSTEM_CACHE_PARAM_DEFAULT);
         minimizeObjectivePara = new BoolParameter("Minimize Objective", MINIMIZE_OBJECTIVE_PARA_DEFAULT);
 
         numberOfEpochPara = new IntParameter("Number of Epoch", NUMBER_OF_EPOCH_PARAM_DEFAULT);
@@ -142,13 +142,6 @@ public class LSTMModelImpl extends ModelStrategy
             neuralNetConfiguration.setWeightInit(WeightInit.valueOf((((ListParameter) getParameters().get(weightInitPara.getParamName())).getSelectedValue())));
             dl4jMlpClassifier.setBatchSize(((StringParameter) getParameters().get(batchSizePara.getParamName())).getStringValue());
 
-
-            //network.setSeed(124564);                            //to ensure randomness
-            //network.setNumDecimalPlaces(2);
-
-
-            //Network configurations
-            //neuralNetConfiguration.setOptimizationAlgo(OptimizationAlgorithm.valueOf("STOCHASTIC_GRADIENT_DESCENT"));
             Adam adam = new Adam();
             neuralNetConfiguration.setUpdater(adam);
             adam.setLearningRate(((FloatParameter) getParameters().get(learningRatePara.getParamName())).getFloatValue());
@@ -167,11 +160,11 @@ public class LSTMModelImpl extends ModelStrategy
             outLayer.setLossFn(new LossMSE());                  //Loss function is Mean Square Error
             outLayer.setActivationFunction(new ActivationSwish());      //Activation function
             outLayer.setNOut(1);                                        //Single output
-            ((Dl4jMlpClassifier)dl4jMlpClassifier).setLayers(lstmLayer1, outLayer);                //Two layers for now, LSTM and the output
+            dl4jMlpClassifier.setLayers(lstmLayer1, outLayer);          //Two layers for now, LSTM and the output
 
             //train with the DL4J classifier
+            setClassifier(dl4jMlpClassifier);
             dl4jMlpClassifier.buildClassifier(trainDataset);
-
         }
 
         catch(Exception ex)
@@ -186,22 +179,22 @@ public class LSTMModelImpl extends ModelStrategy
     @Override
     public Map<String, Parameter> getDefaultParameters()
     {
-        BoolParameter resumeParaDefault = new BoolParameter("Resume", RESUME_PARAM_DEFAULT);
-        BoolParameter filterModeParaDefault = new BoolParameter("Filter Mode", FILTER_MODE_PARAM_DEFAULT);
-        BoolParameter doNotClearFileSystemCacheParaDefault = new BoolParameter("Do Not Clear File System Cache", DO_NOT_CLEAR_FILE_SYSTEM_CACHE_PARAM_DEFAULT);
-        BoolParameter minimizeObjectiveParaDefault = new BoolParameter("Minimize Objective", MINIMIZE_OBJECTIVE_PARA_DEFAULT);
+        BoolParameter resumeParaDefault                    = new BoolParameter("Resume", RESUME_PARAM_DEFAULT);
+        BoolParameter filterModeParaDefault                = new BoolParameter("Filter Mode", FILTER_MODE_PARAM_DEFAULT);
+        BoolParameter doNotClearFileSystemCacheParaDefault = new BoolParameter("Do not Clear File System Cache", DO_NOT_CLEAR_FILE_SYSTEM_CACHE_PARAM_DEFAULT);
+        BoolParameter minimizeObjectiveParaDefault         = new BoolParameter("Minimize Objective", MINIMIZE_OBJECTIVE_PARA_DEFAULT);
 
-        IntParameter numberOfGPUParaDefault = new IntParameter("Number of GPU", NUMBER_OF_GPU_PARAM_DEFAULT);
-        IntParameter avgFrequencyParaDefault = new IntParameter("Average Frequency", AVG_FREQUENCY_PARAM_DEFAULT);
+        IntParameter numberOfGPUParaDefault   = new IntParameter("Number of GPU", NUMBER_OF_GPU_PARAM_DEFAULT);
+        IntParameter avgFrequencyParaDefault  = new IntParameter("Average Frequency", AVG_FREQUENCY_PARAM_DEFAULT);
         IntParameter numberOfEpochParaDefault = new IntParameter("Number of Epoch", NUMBER_OF_EPOCH_PARAM_DEFAULT);
-        IntParameter queueSizeParaDefault = new IntParameter("Queue Size", QUEUE_SIZE_PARAM_DEFAULT);
+        IntParameter queueSizeParaDefault     = new IntParameter("Queue Size", QUEUE_SIZE_PARAM_DEFAULT);
 
-        ListParameter cacheModeParaDefault = new ListParameter("Cache Mode", new ArrayList<String>(Arrays.asList("NONE", "MEMORY", "FILESYSTEM")), CACHE_MODE_PARAM_DEFAULT);
-        ListParameter optimizationAlgoParaDefault = new ListParameter("Optimization Algorithm", new ArrayList<String>(Arrays.asList("STOCHASTIC_GRADIENT_DESCENT", "LINE_GRADIENT_DESCENT")), OPTIMIZATION_ALGO_PARAM_DEFAULT);
-        ListParameter weightInitParaDefault = new ListParameter("Weight Initializer", new ArrayList<String>(Arrays.asList("XAVIER", "RELU", "IDENTITY", "NORMAL", "UNIFORM", "ZERO", "DISTRIBUTION")), WEIGHT_INIT_PARAM_DEFAULT);
-        StringParameter batchSizeParaDefault = new StringParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
+        ListParameter   cacheModeParaDefault        = new ListParameter("Cache Mode", new ArrayList<String>(Arrays.asList("NONE", "MEMORY", "FILESYSTEM")), CACHE_MODE_PARAM_DEFAULT);
+        ListParameter   optimizationAlgoParaDefault = new ListParameter("Optimization Algorithm", new ArrayList<String>(Arrays.asList("STOCHASTIC_GRADIENT_DESCENT", "LINE_GRADIENT_DESCENT")), OPTIMIZATION_ALGO_PARAM_DEFAULT);
+        ListParameter   weightInitParaDefault       = new ListParameter("Weight Initializer", new ArrayList<String>(Arrays.asList("XAVIER", "RELU", "IDENTITY", "NORMAL", "UNIFORM", "ZERO", "DISTRIBUTION")), WEIGHT_INIT_PARAM_DEFAULT);
+        StringParameter batchSizeParaDefault        = new StringParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
 
-        FloatParameter learningRateParaDefault = new FloatParameter("learningRate", LEARNING_RATE_PARAM_DEFAULT);
+        FloatParameter learningRateParaDefault = new FloatParameter("Learning Rate", LEARNING_RATE_PARAM_DEFAULT);
 
         Map<String, Parameter> parameters = new HashMap<>();
         parameters.put(resumeParaDefault.getParamName(), resumeParaDefault);

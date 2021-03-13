@@ -17,7 +17,8 @@ import weka.core.Instances;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RandomCommitteeModelImpl extends ModelStrategy {
+public class RandomCommitteeModelImpl extends ModelStrategy
+{
 
     //Default Parameters
     private final int NUM_EXECUTION_SLOTS_PARAM_DEFAULT = 1;
@@ -49,21 +50,22 @@ public class RandomCommitteeModelImpl extends ModelStrategy {
      */
 
     @Override
-    public Classifier trainModel(Instances dataToTrain) {
+    public Classifier trainModel(Instances dataToTrain)
+    {
         randomCommittee = new RandomCommittee();
         dataToTrain.setClassIndex(dataToTrain.numAttributes() - 1);
 
         randomCommittee.setNumExecutionSlots(((IntParameter) getParameters().get(numExecutionSlotsPara.getParamName())).getIntValue());
         randomCommittee.setNumIterations(((IntParameter) getParameters().get(numIterationsPara.getParamName())).getIntValue());
-//        randomCommittee.setNumExecutionSlots(1);
-//        randomCommittee.setNumIterations(10);
         randomCommittee.setBatchSize(((StringParameter) getParameters().get(batchSizePara.getParamName())).getStringValue());
 
-        try {
+        try
+        {
             randomCommittee.buildClassifier(dataToTrain);
         }
 
-        catch (Exception e) {
+        catch(Exception e)
+        {
             e.printStackTrace();
             return null;
         }
@@ -76,9 +78,9 @@ public class RandomCommitteeModelImpl extends ModelStrategy {
     @Override
     public Map<String, Parameter> getDefaultParameters()
     {
-        IntParameter numExecutionSlotsParaDefault = new IntParameter("Number of Execution Slots", NUM_EXECUTION_SLOTS_PARAM_DEFAULT);
-        IntParameter    numIterationsParaDefault         = new IntParameter("Number of Iterations", NUM_ITERATIONS_PARAM_DEFAULT);
-        StringParameter batchSizeParaDefault             = new StringParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
+        IntParameter    numExecutionSlotsParaDefault = new IntParameter("Number of Execution Slots", NUM_EXECUTION_SLOTS_PARAM_DEFAULT);
+        IntParameter    numIterationsParaDefault     = new IntParameter("Number of Iterations", NUM_ITERATIONS_PARAM_DEFAULT);
+        StringParameter batchSizeParaDefault         = new StringParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
 
         Map<String, Parameter> parameters = new HashMap<>();
         parameters.put(batchSizeParaDefault.getParamName(), batchSizeParaDefault);
