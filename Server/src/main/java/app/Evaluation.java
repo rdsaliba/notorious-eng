@@ -1,7 +1,6 @@
 package app;
 
 import app.item.Asset;
-import app.item.EvaluateModel;
 import app.item.TrainedModel;
 import local.AssetDAO;
 import local.AssetDAOImpl;

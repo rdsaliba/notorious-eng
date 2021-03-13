@@ -7,7 +7,6 @@
  */
 package local;
 
-import app.item.EvaluateModel;
 import app.item.TrainedModel;
 import rul.models.ModelStrategy;
 

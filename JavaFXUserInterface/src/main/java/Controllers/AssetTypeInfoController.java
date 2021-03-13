@@ -11,8 +11,6 @@ package Controllers;
 import Utilities.*;
 import app.ModelController;
 import app.item.Asset;
-import app.item.EvaluateModel;
-import app.item.EvaluationList;
 import app.item.Model;
 import external.AssetDAOImpl;
 import external.AssetTypeDAOImpl;
@@ -34,10 +32,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
-import preprocessing.DataPrePreprocessorController;
-import rul.assessment.AssessmentController;
 import rul.models.*;
-import weka.classifiers.Classifier;
 import weka.core.Instances;
 
 import java.net.URL;
@@ -110,7 +105,6 @@ public class AssetTypeInfoController implements Initializable {
     private AssetTypeDAOImpl assetTypeDAO;
     private ModelDAOImpl modelDAO;
     private AssetDAOImpl assetDAO;
-    public static ArrayList<EvaluateModel> evaluateModels;
     private ModelController modelController;
     private Timeline rmseTimeline;
     private Instances trainDataset;
@@ -126,7 +120,6 @@ public class AssetTypeInfoController implements Initializable {
         assetDAO = new AssetDAOImpl();
         modelController = ModelController.getInstance();
         assetsList = new ArrayList<>();
-        evaluateModels = new ArrayList<EvaluateModel>();
         try {
             attachEvents();
         } catch (Exception exception) {
@@ -267,7 +260,6 @@ public class AssetTypeInfoController implements Initializable {
 
             try {
                 evaluateAllModelsBtn.setOnMouseClicked(mouseEvent -> {
-                    ArrayList<EvaluateModel> modelList = new ArrayList<EvaluateModel>();
                     for (Model model : modelObservableList){
                         String modelName = model.getModelName();
                         int assetTypeID = Integer.parseInt(assetType.getId());
@@ -499,7 +491,6 @@ public class AssetTypeInfoController implements Initializable {
             evaluateModelBtn.setDisable(true);
             evaluateButtons.add(evaluateModelBtn);
             evaluateModelBtn.setOnMouseClicked(mouseEvent -> {
-                ArrayList<EvaluateModel> modelList = new ArrayList<EvaluateModel>();
                 String modelName = model.getModelName();
                 int assetTypeID = Integer.parseInt(assetType.getId());
                 int trainAssets = (int) trainSlider.getValue() + 1;
