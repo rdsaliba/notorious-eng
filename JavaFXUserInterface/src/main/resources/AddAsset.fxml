@@ -55,7 +55,7 @@
         </children>
     </VBox>
     <VBox prefHeight="169.0" prefWidth="74.0" style="-fx-background-color: #0C072E;" AnchorPane.topAnchor="0.0" />
-    <AnchorPane layoutX="75.0" prefHeight="712.0" prefWidth="951.0" style="-fx-background-color: #F8F8F8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="75.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+    <AnchorPane fx:id="addAssetPane" id="addAssetPane" layoutX="75.0" prefHeight="712.0" prefWidth="951.0" style="-fx-background-color: #F8F8F8;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="75.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <AnchorPane layoutX="42.0" layoutY="496.0" prefHeight="148.0" prefWidth="867.0" style="-fx-background-color: #FFFFFF; -fx-border-color: #F0F0F0;" AnchorPane.bottomAnchor="68.0" AnchorPane.leftAnchor="42.0" AnchorPane.rightAnchor="42.0" AnchorPane.topAnchor="496.0">
             <Text fill="#0c072e" layoutX="30.0" layoutY="24.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Asset Location">
                 <font>

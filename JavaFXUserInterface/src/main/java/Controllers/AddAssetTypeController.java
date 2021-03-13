@@ -5,6 +5,8 @@
  */
 package Controllers;
 
+import BackgroundTasks.AddAssetService;
+import BackgroundTasks.AddAssetTypeService;
 import Utilities.TextConstants;
 import Utilities.UIUtilities;
 import app.item.AssetType;
@@ -13,10 +15,7 @@ import external.AssetTypeDAOImpl;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextFormatter;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 
@@ -54,6 +53,8 @@ public class AddAssetTypeController implements Initializable {
     private TextField thresholdFailedValue;
     @FXML
     private AnchorPane inputError;
+    @FXML
+    private AnchorPane addAssetType;
 
     private UIUtilities uiUtilities;
     private AssetTypeDAOImpl db;
@@ -94,8 +95,14 @@ public class AddAssetTypeController implements Initializable {
         // Change scenes to Assets.fxml
         cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
         saveBtn.setOnMouseClicked(mouseEvent -> {
+            ProgressIndicator pi= new ProgressIndicator();
+            addAssetType.getChildren().add(pi);
+            AddAssetTypeService addAssetTypeService=new AddAssetTypeService();
+            addAssetTypeService.setAssetType(assembleAssetType());
+            pi.visibleProperty().bind(addAssetTypeService.runningProperty());
             if (formInputValidation()) {
                 if (saveAssetType(assembleAssetType()))
+                    addAssetTypeService.start();
                     uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE);
             }
         });
@@ -150,7 +157,6 @@ public class AddAssetTypeController implements Initializable {
      */
     public boolean saveAssetType(AssetType assetType) {
         if (assetType != null) {
-            db.insertAssetType(assetType);
             return true;
         }
         return false;

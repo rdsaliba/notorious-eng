@@ -5,6 +5,7 @@
  */
 package Controllers;
 
+import BackgroundTasks.AddAssetService;
 import Utilities.CustomDialog;
 import Utilities.TextConstants;
 import Utilities.UIUtilities;
@@ -62,6 +63,8 @@ public class AddAssetController implements Initializable {
     private TextField locationInput;
     @FXML
     private AnchorPane inputError;
+    @FXML
+    private AnchorPane addAssetPane;
 
     private AssetDAOImpl assetDAOImpl;
     private AssetTypeDAOImpl assetTypeDAOImpl;
@@ -101,9 +104,14 @@ public class AddAssetController implements Initializable {
 
         saveBtn.setOnMouseClicked(mouseEvent -> {
             Asset newAsset = assembleAsset();
+            AddAssetService addAssetService= new AddAssetService();
+            addAssetService.setAsset(newAsset);
+            ProgressIndicator pi = new ProgressIndicator();
+            addAssetPane.getChildren().add(pi);
+            pi.visibleProperty().bind(addAssetService.runningProperty());
             if (formInputValidation()){
                 if (!isAssetEmpty(newAsset)) {
-                    saveAsset(newAsset);
+                    addAssetService.start();
                     CustomDialog.addSystemControllerSaveDialog(mouseEvent);
                 }
             }

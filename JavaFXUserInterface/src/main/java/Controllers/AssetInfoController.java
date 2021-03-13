@@ -7,6 +7,7 @@
  */
 package Controllers;
 
+import BackgroundTasks.DeleteAssetService;
 import Utilities.CustomDialog;
 import Utilities.TextConstants;
 import Utilities.UIUtilities;
@@ -96,6 +97,8 @@ public class AssetInfoController implements Initializable {
     private Tab rawDataTab;
     @FXML
     private AnchorPane rawDataListPane;
+    @FXML
+    AnchorPane assetPane;
     private Asset asset;
     private AssetDAOImpl assetDAOImpl;
     private AssetTypeDAOImpl assetTypeDAOImpl;
@@ -235,6 +238,13 @@ public class AssetInfoController implements Initializable {
         deleteBtn.setOnMouseClicked(mouseEvent -> {
             timelines.forEach(Timeline::stop);
             CustomDialog.systemInfoController(mouseEvent, asset.getId());
+            DeleteAssetService  deleteAssetService= new DeleteAssetService();
+            deleteAssetService.setAssetID(asset.getId());
+            deleteAssetService.setMouseEvent(mouseEvent);
+            ProgressIndicator pi= new ProgressIndicator();
+            assetPane.getChildren().add(pi);
+            pi.visibleProperty().bind(deleteAssetService.runningProperty());
+            deleteAssetService.start();
             });
 
         rawDataTab.setOnSelectionChanged(event -> {
