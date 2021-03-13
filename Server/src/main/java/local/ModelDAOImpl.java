@@ -26,7 +26,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     private static final String REMOVE_INFO_FROM_EVALUATE_TABLE = "delete from model_to_evlaute";
     private static final String GET_MODEL_NAME_FROM_ID = "SELECT name from model where model.model_id = ?";
     private static final String GET_MODEL_FROM_ASSET_TYPE = "SELECT * FROM trained_model WHERE asset_type_id = ? and status_id = ?";
-    private static final String GET_MODEL_STRATEGY = "select * from trained_model where model_id=1 and asset_type_id=1 and status_id=2";
+    private static final String GET_MODEL_STRATEGY = "select * from trained_model where model_id=? and asset_type_id=? and status_id=2";
 
     /**
      * Given a model id, this function will return the string corresponding
@@ -166,21 +166,6 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
-
-
-    public ModelStrategy getModelStrategy() throws SQLException {
-        try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_STRATEGY)) {
-            try (ResultSet queryResult = ps.executeQuery()) {
-                while (queryResult.next()) {
-                    return createTrainedModelFromResultSet(queryResult).getModelStrategy();
-                }
-            }
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
 
