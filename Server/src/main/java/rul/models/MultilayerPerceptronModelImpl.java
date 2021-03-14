@@ -131,6 +131,8 @@ public class MultilayerPerceptronModelImpl extends ModelStrategy
         multilayerPerceptron.setValidationSetSize(((IntParameter) getParameters().get(validationSizePara.getParamName())).getIntValue());
         multilayerPerceptron.setValidationThreshold(((IntParameter) getParameters().get(validationThresholdPara.getParamName())).getIntValue());
 
+        multilayerPerceptron.setBatchSize(((StringParameter) getParameters().get(batchSizePara.getParamName())).getStringValue());
+
         try
         {
             multilayerPerceptron.buildClassifier(dataToTrain);
@@ -163,7 +165,7 @@ public class MultilayerPerceptronModelImpl extends ModelStrategy
         IntParameter validationSizeParaDefault      = new IntParameter("Validation Size", VALIDATION_SIZE_PARAM_DEFAULT);
         IntParameter validationThresholdParaDefault = new IntParameter("Validation Threshold", VALIDATION_THRESHOLD_PARAM_DEFAULT);
 
-        batchSizePara = new StringParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
+        StringParameter batchSizeParaDefault = new StringParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
 
         Map<String, Parameter> parameters = new HashMap<>();
         parameters.put(showGUIParaDefault.getParamName(), showGUIParaDefault);
@@ -181,6 +183,8 @@ public class MultilayerPerceptronModelImpl extends ModelStrategy
         parameters.put(trainingTimeParaDefault.getParamName(), trainingTimeParaDefault);
         parameters.put(validationSizeParaDefault.getParamName(), validationSizeParaDefault);
         parameters.put(validationThresholdParaDefault.getParamName(), validationThresholdParaDefault);
+
+        parameters.put(batchSizeParaDefault.getParamName(), batchSizeParaDefault);
 
         return parameters;
     }
