@@ -18,9 +18,7 @@ import java.util.List;
 public interface ModelDAO {
 
     String getModelNameFromAssetTypeID(String assetTypeId);
-
-    TrainedModel createTrainedModelFromResultSet(ResultSet rs, boolean withModel) throws SQLException;
-
+    
      List<Model> getAllModels(int assetTypeID);
 
     void updateModelAssociatedWithAssetType(int modelID, String assetTypeID);
