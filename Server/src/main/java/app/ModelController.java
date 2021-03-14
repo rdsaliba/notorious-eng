@@ -140,8 +140,8 @@ public class ModelController {
      */
     public void evaluate(TrainedModel tm){
         try{
-            if(!Objects.isNull(tm.getModelStrategy()));
-            modelToEvaluate(tm);
+            if(!Objects.isNull(tm.getModelStrategy()))
+                modelToEvaluate(tm);
         }
         catch(Exception e){
             e.printStackTrace();
