@@ -1,11 +1,12 @@
-package Controllers;
+package controllers;
 
-import Utilities.TextConstants;
-import Utilities.UIUtilities;
+import utilities.TextConstants;
+import utilities.UIUtilities;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+
 import java.net.URL;
 import java.util.ResourceBundle;
 
