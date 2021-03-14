@@ -21,6 +21,7 @@ import java.util.List;
 public class AssetDAOImpl extends DAO implements AssetDAO {
 
     private static final String DELETE_ASSET = "DELETE FROM asset WHERE asset_id = ?";
+    private static final String DELETE_MEASUREMENTS_AFTER_TIME_CYCLE = "DELETE FROM attribute_measurements WHERE asset_id = ? AND time > ?";
     private static final String GET_ASSET_INFO_FROM_ASSET_ID = "SELECT DISTINCT att.* FROM attribute_measurements am, attribute att WHERE att.attribute_id=am.attribute_id AND am.asset_id = ?";
     private static final String GET_LIVE_ASSETS_FROM_ASSET_TYPE_ID = "SELECT * FROM asset a WHERE a.archived = false AND a.asset_type_id = ?";
     private static final String GET_ARCHIVED_ASSETS_FROM_ASSET_TYPE_ID = "SELECT * FROM asset a WHERE a.archived = true AND a.asset_type_id = ?";
@@ -296,8 +297,26 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
      */
     @Override
     public void setAssetToBeArchived(int assetID) {
-        try(PreparedStatement ps = getConnection().prepareStatement(UPDATE_ASSET_TO_ARCHIVED)) {
+        try (PreparedStatement ps = getConnection().prepareStatement(UPDATE_ASSET_TO_ARCHIVED)) {
             ps.setInt(1, assetID);
+            ps.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * This functions deletes all measurements of an asset after the specified time cycle
+     *
+     * @param assetID the specific id of the asset
+     * @param time    the time cycle
+     * @author Jeremie
+     */
+    @Override
+    public void deleteAssetMeasurementsAfterTimeCycle(int assetID, int time) {
+        try (PreparedStatement ps = getConnection().prepareStatement(DELETE_MEASUREMENTS_AFTER_TIME_CYCLE)) {
+            ps.setInt(1, assetID);
+            ps.setInt(2, time);
             ps.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();

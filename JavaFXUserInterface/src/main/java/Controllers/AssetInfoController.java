@@ -49,10 +49,7 @@ import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class AssetInfoController implements Initializable {
-    private static final String ALERT_HEADER = "Confirmation of asset deletion";
-    private static final String ALERT_CONTENT = "Are you sure you want to delete this asset?";
     private static final String CYCLE = "Cycle";
-    private static final String ATTRIBUTE_VALUES = "Attribute Values";
 
     private static final int ATTRIBUTE_GRAPH_SIZE = 5;
     @FXML
@@ -227,11 +224,11 @@ public class AssetInfoController implements Initializable {
             timelines.forEach(Timeline::stop);
             CustomDialog.systemInfoController(mouseEvent, asset.getId());
         });
-
         archiveBtn.setOnMouseClicked(mouseEvent -> {
             timelines.forEach(Timeline::stop);
-            CustomDialog.archiveAssetDialogShow(mouseEvent, asset);
+            CustomDialog.archiveAssetDialogShow(mouseEvent, asset, archiveBtn);
         });
+
         rawDataTab.setOnSelectionChanged(event -> {
             rawDataListPane.getChildren().clear();
             generateRawDataTable();
@@ -242,10 +239,6 @@ public class AssetInfoController implements Initializable {
         archiveBtn.setLayoutX(600);
         archiveBtn.setLayoutY(18);
         archiveBtn.setPrefSize(247, 45);
-    }
-
-    private void archiveAsset() {
-        assetDAOImpl.setAssetToBeArchived(asset.getId());
     }
 
     /**
