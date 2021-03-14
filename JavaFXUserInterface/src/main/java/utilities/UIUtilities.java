@@ -11,7 +11,6 @@ import controllers.AssetInfoController;
 import controllers.AssetTypeInfoController;
 import javafx.animation.Timeline;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -150,20 +149,15 @@ public class UIUtilities {
      *
      * @param mouseEvent
      * @param fxmlFileName
+     * @param scene
      * @author Jeff
      */
-    public void changeScene(MouseEvent mouseEvent, String fxmlFileName) {
+    public void changeScene(MouseEvent mouseEvent, String fxmlFileName, Scene scene) {
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource(fxmlFileName + FXML));
-            Parent assetsParent = loader.load();
-            Scene assetInfo = new Scene(assetsParent);
-
-            Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-
-            window.setScene(assetInfo);
-            window.show();
-
+            Parent parent = loader.load();
+            scene.setRoot(parent);
         } catch (IOException e) {
             logger.error("Exception in changeScene(): ", e);
         }
@@ -177,10 +171,10 @@ public class UIUtilities {
      * @param fxmlFileName
      * @author Jeff
      */
-    public void changeScene(MouseEvent mouseEvent, TableRow<Asset> row, String fxmlFileName, Asset asset) {
+    public void changeScene(MouseEvent mouseEvent, TableRow<Asset> row, String fxmlFileName, Asset asset, Scene scene) {
         row.getScene().getWindow();
         if (!row.isEmpty()) {
-            changeScene(mouseEvent, fxmlFileName, asset);
+            changeScene(mouseEvent, fxmlFileName, asset, scene);
         }
     }
 
@@ -192,23 +186,18 @@ public class UIUtilities {
      * @param fxmlFileName
      * @param row
      * @param assetType
-     * @author Najim
+     * @author Najim, Jeff
      */
-    public void changeScene(MouseEvent mouseEvent, TableRow<AssetTypeList> row, String fxmlFileName, AssetTypeList assetType) {
+    public void changeScene(MouseEvent mouseEvent, TableRow<AssetTypeList> row, String fxmlFileName, AssetTypeList assetType, Scene scene) {
         row.getScene().getWindow();
         try {
             if (!row.isEmpty()) {
                 FXMLLoader loader = new FXMLLoader();
                 loader.setLocation(getClass().getResource(fxmlFileName + FXML));
-                Parent assetTypeParent = loader.load();
-                Scene assetTypeInfo = new Scene(assetTypeParent);
-
-                Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-                window.setScene(assetTypeInfo);
+                Parent parent = loader.load();
+                scene.setRoot(parent);
                 AssetTypeInfoController controller = loader.getController();
                 controller.initData(assetType);
-                controller.setImage(assetType.getAssetType().getName());
-                window.show();
             }
         } catch (IOException e) {
             logger.error("Exception in changeScene 2: ", e);
@@ -222,34 +211,34 @@ public class UIUtilities {
      * @param mouseEvent   the mouse click event
      * @param fxmlFileName the name of the fxml file we want to navigate to
      * @param asset        the asset we want to sent to the other page
-     * @author Paul
+     * @author Paul, Jeff
      */
-    public void changeScene(MouseEvent mouseEvent, String fxmlFileName, Asset asset) {
+    public void changeScene(MouseEvent mouseEvent, String fxmlFileName, Asset asset, Scene scene) {
 
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource(fxmlFileName + FXML));
-            Parent assetTypeParent = loader.load();
-            Scene assetTypeInfo = new Scene(assetTypeParent);
-
-            Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-            window.setScene(assetTypeInfo);
+            Parent parent = loader.load();
+            scene.setRoot(parent);
             AssetInfoController controller = loader.getController();
             controller.initData(asset);
-            window.show();
 
         } catch (IOException e) {
             logger.error("Exception in changeScene 3: ", e);
         }
     }
 
-    public void changeScene(List<Timeline> timelines, MouseEvent mouseEvent, String s) {
-        timelines.forEach(Timeline::stop);
-        changeScene(mouseEvent, s);
-    }
-
-    public void changeScene(Timeline timeline, MouseEvent mouseEvent, String s) {
+    /**
+     * Stop the Timeline, and changes the scene.
+     *
+     * @param timeline
+     * @param mouseEvent
+     * @param s
+     * @param scene
+     * @author Jeff
+     */
+    public void changeScene(Timeline timeline, MouseEvent mouseEvent, String s, Scene scene) {
         timeline.stop();
-        changeScene(mouseEvent, s);
+        changeScene(mouseEvent,s, scene);
     }
 }
