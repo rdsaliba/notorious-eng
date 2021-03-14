@@ -7,12 +7,15 @@
 
 package rul.models;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import weka.classifiers.Classifier;
 import weka.classifiers.functions.SMOreg;
 import weka.core.Instances;
 
 public class SMORegModelImpl extends ModelStrategy {
 
+    static Logger logger = LoggerFactory.getLogger(SMORegModelImpl.class);
     /**
      * This function takes the assets as the training dataset, and returns the trained
      * SMOReg classifier.
@@ -27,7 +30,7 @@ public class SMORegModelImpl extends ModelStrategy {
         try {
             smOreg.buildClassifier(dataToTrain);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Exception: ", e);
             return null;
         }
 
