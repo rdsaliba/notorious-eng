@@ -20,6 +20,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -57,11 +58,16 @@ public class AssetTypeController implements Initializable {
     @FXML
     private Button exitMenuBtn;
 
+    @FXML
+    private AnchorPane assetTypePage;
+
     private UIUtilities uiUtilities;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         uiUtilities = new UIUtilities();
+        assetTypePage.setOpacity(0);
+        uiUtilities.fadeInTransition(assetTypePage);
         attachEvents();
         fillAssetTypeTable();
     }
@@ -76,7 +82,7 @@ public class AssetTypeController implements Initializable {
         // When TableRow is clicked, send data to AssetTypeInfo scene.
         tableView.setRowFactory(tv -> {
             TableRow<AssetTypeList> row = new TableRow<>();
-            row.setOnMouseClicked(event -> uiUtilities.changeScene(event, row, "/AssetTypeInfo", row.getItem()));
+            row.setOnMouseClicked(event -> uiUtilities.changeScene(assetTypePage, event, row, "/AssetTypeInfo", row.getItem()));
             return row;
         });
         UIUtilities.autoResizeColumns(tableView);
@@ -130,13 +136,13 @@ public class AssetTypeController implements Initializable {
         //Attach ability to close program
         exitMenuBtn.setOnMouseClicked(mouseEvent -> Platform.exit());
         //Attach link to assetMenuButton to go to Assets.fxml
-        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE));
+        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(assetTypePage, mouseEvent, TextConstants.ASSETS_SCENE));
 
         //Attach link to assetTypeMenuBtn to go to Utilities.AssetTypeList.fxml
-        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
+        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(assetTypePage, mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
 
         //Attach link to addTypeBtn to go to AddAssetType.fxml
-        addTypeBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/AddAssetType"));
+        addTypeBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(assetTypePage, mouseEvent, "/AddAssetType"));
     }
 
     /**

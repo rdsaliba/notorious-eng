@@ -55,6 +55,8 @@ public class AssetsController implements Initializable {
     private final AssetTypeDAOImpl assetTypeDAO;
     private final ModelDAOImpl modelDAO;
     @FXML
+    private AnchorPane assetsPage;
+    @FXML
     private Button assetMenuBtn;
     @FXML
     private Button assetTypeMenuBtn;
@@ -100,7 +102,8 @@ public class AssetsController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         uiUtilities = new UIUtilities();
-
+        assetsPage.setOpacity(0);
+        uiUtilities.fadeInTransition(assetsPage);
         attachEvents();
         updateRULs();
         generateThumbnails();
@@ -147,13 +150,13 @@ public class AssetsController implements Initializable {
         exitMenuBtn.setOnMouseClicked(mouseEvent -> Platform.exit());
 
         //Attach link to assetMenuButton to go to Assets.fxml
-        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(rulTimeline, mouseEvent, TextConstants.ASSETS_SCENE));
+        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(assetsPage, rulTimeline, mouseEvent, TextConstants.ASSETS_SCENE));
 
         //Attach link to assetTypeMenuBtn to go to Utilities.AssetTypeList.fxml
-        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(rulTimeline, mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
+        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(assetsPage, rulTimeline, mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
 
         //Attach link to addAssetButton to go to AddAsset.fxml
-        addAssetBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(rulTimeline, mouseEvent, TextConstants.ADD_ASSETS));
+        addAssetBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(assetsPage, rulTimeline, mouseEvent, TextConstants.ADD_ASSETS));
 
         //Adding items to the choiceBox (drop down list)
         sortAsset.getItems().add(SORT_DEFAULT);
@@ -190,7 +193,7 @@ public class AssetsController implements Initializable {
         for (Asset asset : assets) {
 
             Pane pane = new Pane();
-            pane.setOnMouseClicked(event -> uiUtilities.changeScene(event, "/AssetInfo", asset));
+            pane.setOnMouseClicked(event -> uiUtilities.changeScene(assetsPage, event, "/AssetInfo", asset));
 
             pane.getStyleClass().add("assetPane");
             Text assetName = new Text(asset.getSerialNo());
@@ -248,7 +251,7 @@ public class AssetsController implements Initializable {
         // When TableRow is clicked, send data to AssetInfo scene.
         table.setRowFactory(tv -> {
             TableRow<Asset> row = new TableRow<>();
-            row.setOnMouseClicked(event -> uiUtilities.changeScene(event, row, "/AssetInfo", row.getItem()));
+            row.setOnMouseClicked(event -> uiUtilities.changeScene(assetsPage, event, row, "/AssetInfo", row.getItem()));
             return row;
         });
 

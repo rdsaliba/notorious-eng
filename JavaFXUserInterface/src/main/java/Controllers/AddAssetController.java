@@ -19,13 +19,11 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.util.StringConverter;
 
 import java.net.URL;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class AddAssetController implements Initializable {
@@ -65,6 +63,8 @@ public class AddAssetController implements Initializable {
     private AnchorPane inputError;
     @FXML
     private AnchorPane addAssetPane;
+    @FXML
+    private AnchorPane addAssetPage;
 
     private AssetDAOImpl assetDAOImpl;
     private AssetTypeDAOImpl assetTypeDAOImpl;
@@ -86,6 +86,8 @@ public class AddAssetController implements Initializable {
         assetDAOImpl = new AssetDAOImpl();
         assetTypeDAOImpl = new AssetTypeDAOImpl();
         uiUtilities = new UIUtilities();
+        addAssetPage.setOpacity(0);
+        uiUtilities.fadeInTransition(addAssetPage);
         attachEvents();
         initializeFieldValues();
         assetDescriptionTextArea.setWrapText(true);
@@ -117,15 +119,15 @@ public class AddAssetController implements Initializable {
             }
         });
         // Change scenes to Assets.fxml
-        backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE));
+        backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(addAssetPage, mouseEvent, TextConstants.ASSETS_SCENE));
         //Attach ability to close program
         exitMenuBtn.setOnMouseClicked(mouseEvent -> Platform.exit());
         // Change scenes to Assets.fxml
-        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE));
+        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(addAssetPage, mouseEvent, TextConstants.ASSETS_SCENE));
         //Attach link to assetTypeMenuBtn to go to Utilities.AssetTypeList.fxml
-        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
+        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(addAssetPage, mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
         // Change scenes to Assets.fxml
-        cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE));
+        cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(addAssetPage, mouseEvent, TextConstants.ASSETS_SCENE));
     }
 
 

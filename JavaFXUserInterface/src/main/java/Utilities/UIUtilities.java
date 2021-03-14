@@ -9,6 +9,7 @@ package Utilities;
 import Controllers.AssetInfoController;
 import Controllers.AssetTypeInfoController;
 import app.item.Asset;
+import javafx.animation.FadeTransition;
 import javafx.animation.Timeline;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -19,6 +20,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -68,9 +70,37 @@ public class UIUtilities {
     /**
      * Changes scenes once an element is clicked.
      *
+     * @param rootPane
      * @param mouseEvent
      * @param fxmlFileName
      * @author Jeff
+     */
+    public void changeScene(AnchorPane rootPane, MouseEvent mouseEvent, String fxmlFileName) {
+        FadeTransition ft = fadeOut(rootPane);
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource(fxmlFileName + ".fxml"));
+            Parent assetsParent = loader.load();
+            Scene assetInfo = new Scene(assetsParent);
+
+            Stage window = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
+
+            window.setScene(assetInfo);
+            window.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ft.play();
+    }
+
+    /**
+     * Changes scenes once an element is clicked. Specifically used for changing scenes
+     * via the CustomDialog object.
+     *
+     * @param mouseEvent
+     * @param fxmlFileName
+     * @author Najim
      */
     public void changeScene(MouseEvent mouseEvent, String fxmlFileName) {
         try {
@@ -93,14 +123,15 @@ public class UIUtilities {
      * Changes scenes once an element is clicked, and
      * sends an asset to the new scene's controller.
      *
+     * @param rootPane
      * @param mouseEvent
      * @param fxmlFileName
      * @author Jeff
      */
-    public void changeScene(MouseEvent mouseEvent, TableRow<Asset> row, String fxmlFileName, Asset asset) {
+    public void changeScene(AnchorPane rootPane, MouseEvent mouseEvent, TableRow<Asset> row, String fxmlFileName, Asset asset) {
         row.getScene().getWindow();
         if (!row.isEmpty()) {
-            changeScene(mouseEvent, fxmlFileName, asset);
+            changeScene(rootPane, mouseEvent, fxmlFileName, asset);
         }
     }
 
@@ -108,13 +139,15 @@ public class UIUtilities {
      * Changes scenes once an element is clicked, and
      * sends an asset type to the new scene's controller.
      *
+     * @param rootPane
      * @param mouseEvent
      * @param fxmlFileName
      * @param row
      * @param assetType
      * @author Najim
      */
-    public void changeScene(MouseEvent mouseEvent, TableRow<AssetTypeList> row, String fxmlFileName, AssetTypeList assetType) {
+    public void changeScene(AnchorPane rootPane, MouseEvent mouseEvent, TableRow<AssetTypeList> row, String fxmlFileName, AssetTypeList assetType) {
+        FadeTransition ft = fadeOut(rootPane);
         row.getScene().getWindow();
         try {
             if (!row.isEmpty()) {
@@ -133,19 +166,21 @@ public class UIUtilities {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        ft.play();
     }
 
     /**
      * Changes scenes once an element is clicked, and
      * sends an asset to the new scene's controller.
      *
+     * @param rootPane
      * @param mouseEvent   the mouse click event
      * @param fxmlFileName the name of the fxml file we want to navigate to
      * @param asset        the asset we want to sent to the other page
      * @author Paul
      */
-    public void changeScene(MouseEvent mouseEvent, String fxmlFileName, Asset asset) {
-
+    public void changeScene(AnchorPane rootPane, MouseEvent mouseEvent, String fxmlFileName, Asset asset) {
+        FadeTransition ft = fadeOut(rootPane);
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource(fxmlFileName + ".fxml"));
@@ -161,11 +196,12 @@ public class UIUtilities {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        ft.play();
     }
 
-    public void changeScene(ArrayList<Timeline> timelines, MouseEvent mouseEvent, String s) {
+    public void changeScene(AnchorPane rootPane, ArrayList<Timeline> timelines, MouseEvent mouseEvent, String s) {
         timelines.forEach(Timeline::stop);
-        changeScene(mouseEvent, s);
+        changeScene(rootPane, mouseEvent, s);
     }
 
     /**
@@ -241,8 +277,40 @@ public class UIUtilities {
         return valid;
     }
 
-    public void changeScene(Timeline timeline, MouseEvent mouseEvent, String s) {
+    public void changeScene(AnchorPane rootPane, Timeline timeline, MouseEvent mouseEvent, String s) {
         timeline.stop();
-        changeScene(mouseEvent,s);
+        changeScene(rootPane, mouseEvent, s);
+    }
+
+    /**
+     * Creates a fade out animation
+     *
+     * @param rootPane Root AnchorPane of the view/page
+     * @return FadeTransition object
+     * @author Najim
+     */
+    public FadeTransition fadeOut(AnchorPane rootPane) {
+        FadeTransition ft = new FadeTransition();
+        ft.setDuration(Duration.millis(700));
+        ft.setNode(rootPane);
+        ft.setFromValue(1);
+        ft.setToValue(0);
+
+        return ft;
+    }
+
+    /**
+     * Creates a fade in animation
+     *
+     * @param rootPane Root AnchorPane of the view/page
+     * @author Najim
+     */
+    public void fadeInTransition(AnchorPane rootPane) {
+        FadeTransition ft = new FadeTransition();
+        ft.setDuration(Duration.millis(700));
+        ft.setNode(rootPane);
+        ft.setFromValue(0);
+        ft.setToValue(1);
+        ft.play();
     }
 }

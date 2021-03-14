@@ -27,8 +27,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
-import javafx.scene.Scene;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
@@ -46,7 +44,6 @@ import java.sql.ResultSet;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -99,6 +96,8 @@ public class AssetInfoController implements Initializable {
     private AnchorPane rawDataListPane;
     @FXML
     AnchorPane assetPane;
+    @FXML
+    private AnchorPane assetInfoPage;
     private Asset asset;
     private AssetDAOImpl assetDAOImpl;
     private AssetTypeDAOImpl assetTypeDAOImpl;
@@ -123,6 +122,8 @@ public class AssetInfoController implements Initializable {
         attributeDAOImpl = new AttributeDAOImpl();
         uiUtilities = new UIUtilities();
         timelines = new ArrayList<>();
+        assetInfoPage.setOpacity(0);
+        uiUtilities.fadeInTransition(assetInfoPage);
         attachEvents();
     }
 
@@ -229,19 +230,19 @@ public class AssetInfoController implements Initializable {
      */
     public void attachEvents() {
         // Change scenes to Assets.fxml
-        backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE));
+        backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(assetInfoPage, mouseEvent, TextConstants.ASSETS_SCENE));
         //Attach ability to close program
         exitMenuBtn.setOnMouseClicked(mouseEvent -> Platform.exit());
-        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(timelines, mouseEvent, TextConstants.ASSETS_SCENE));
+        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(assetInfoPage, timelines, mouseEvent, TextConstants.ASSETS_SCENE));
         //Attach link to assetTypeMenuBtn to go to AssetTypeList.fxml
-        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(timelines, mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
+        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(assetInfoPage, timelines, mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
         deleteBtn.setOnMouseClicked(mouseEvent -> {
             timelines.forEach(Timeline::stop);
             CustomDialog.systemInfoController(mouseEvent, asset.getId());
-            DeleteAssetService  deleteAssetService= new DeleteAssetService();
+            DeleteAssetService deleteAssetService = new DeleteAssetService();
             deleteAssetService.setAssetID(asset.getId());
             deleteAssetService.setMouseEvent(mouseEvent);
-            ProgressIndicator pi= new ProgressIndicator();
+            ProgressIndicator pi = new ProgressIndicator();
             assetPane.getChildren().add(pi);
             pi.visibleProperty().bind(deleteAssetService.runningProperty());
             deleteAssetService.start();

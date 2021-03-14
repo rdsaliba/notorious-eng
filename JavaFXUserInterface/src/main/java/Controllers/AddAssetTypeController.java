@@ -5,7 +5,6 @@
  */
 package Controllers;
 
-import BackgroundTasks.AddAssetService;
 import BackgroundTasks.AddAssetTypeService;
 import Utilities.TextConstants;
 import Utilities.UIUtilities;
@@ -54,6 +53,8 @@ public class AddAssetTypeController implements Initializable {
     @FXML
     private AnchorPane inputError;
     @FXML
+    private AnchorPane addAssetTypePage;
+    @FXML
     private AnchorPane addAssetType;
 
     private UIUtilities uiUtilities;
@@ -75,6 +76,8 @@ public class AddAssetTypeController implements Initializable {
         uiUtilities = new UIUtilities();
         db = new AssetTypeDAOImpl();
         assetTypeParameters = new ArrayList<>();
+        addAssetTypePage.setOpacity(0);
+        uiUtilities.fadeInTransition(addAssetTypePage);
         attachEvents();
     }
 
@@ -85,25 +88,25 @@ public class AddAssetTypeController implements Initializable {
      */
     public void attachEvents() {
         // Change scenes to Assets.fxml
-        backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
+        backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(addAssetTypePage, mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
         //Attach ability to close program
         exitMenuBtn.setOnMouseClicked(mouseEvent -> Platform.exit());
         // Change scenes to Assets.fxml
-        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
+        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(addAssetTypePage, mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
         //Attach link to assetTypeMenuBtn to go to Utilities.AssetTypeList.fxml
-        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
+        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(addAssetTypePage, mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
         // Change scenes to Assets.fxml
-        cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
+        cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(addAssetTypePage, mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
         saveBtn.setOnMouseClicked(mouseEvent -> {
-            ProgressIndicator pi= new ProgressIndicator();
+            ProgressIndicator pi = new ProgressIndicator();
             addAssetType.getChildren().add(pi);
-            AddAssetTypeService addAssetTypeService=new AddAssetTypeService();
+            AddAssetTypeService addAssetTypeService = new AddAssetTypeService();
             addAssetTypeService.setAssetType(assembleAssetType());
             pi.visibleProperty().bind(addAssetTypeService.runningProperty());
             if (formInputValidation()) {
                 if (saveAssetType(assembleAssetType()))
                     addAssetTypeService.start();
-                    uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE);
+                uiUtilities.changeScene(addAssetTypePage, mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE);
             }
         });
 
