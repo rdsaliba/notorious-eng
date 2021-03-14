@@ -39,9 +39,6 @@ public class CustomDialog extends Stage {
         bg.setStroke(Color.BLACK);
         bg.setStrokeWidth(1.5);
 
-        bg.setStroke(Color.BLACK);
-        bg.setStrokeWidth(1.5);
-
         Text headerText = new Text(header);
         headerText.setFont(Font.font(20));
 
