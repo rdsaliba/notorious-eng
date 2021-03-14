@@ -28,7 +28,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
@@ -36,6 +39,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import rul.assessment.AssessmentController;
+
 import java.net.URL;
 import java.sql.ResultSet;
 import java.text.DecimalFormat;
@@ -53,6 +57,8 @@ public class AssetInfoController implements Initializable {
     private static final int ATTRIBUTE_GRAPH_SIZE = 5;
     @FXML
     private Button deleteBtn;
+    @FXML
+    private Button archiveBtn;
     @FXML
     private Button backBtn;
     @FXML
@@ -109,6 +115,7 @@ public class AssetInfoController implements Initializable {
         attributeDAOImpl = new AttributeDAOImpl();
         uiUtilities = new UIUtilities();
         timelines = new ArrayList<>();
+        setupArchiveBtn();
         attachEvents();
     }
 
@@ -219,12 +226,26 @@ public class AssetInfoController implements Initializable {
         deleteBtn.setOnMouseClicked(mouseEvent -> {
             timelines.forEach(Timeline::stop);
             CustomDialog.systemInfoController(mouseEvent, asset.getId());
-            });
+        });
 
+        archiveBtn.setOnMouseClicked(mouseEvent -> {
+            timelines.forEach(Timeline::stop);
+            CustomDialog.archiveAssetDialogShow(mouseEvent, asset);
+        });
         rawDataTab.setOnSelectionChanged(event -> {
             rawDataListPane.getChildren().clear();
             generateRawDataTable();
         });
+    }
+
+    private void setupArchiveBtn() {
+        archiveBtn.setLayoutX(600);
+        archiveBtn.setLayoutY(18);
+        archiveBtn.setPrefSize(247, 45);
+    }
+
+    private void archiveAsset() {
+        assetDAOImpl.setAssetToBeArchived(asset.getId());
     }
 
     /**

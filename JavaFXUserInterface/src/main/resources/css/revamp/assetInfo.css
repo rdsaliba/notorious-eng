@@ -117,3 +117,11 @@
 .default-color0.chart-series-line {
     -fx-stroke: #EE6352;
 }
+
+#archiveBtn {
+    -fx-background-color: #013E69;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-family: "Segoe UI Semibold";
+    -fx-font-size: 20px;
+    -fx-padding: 5 15 5 15
+}

@@ -27,6 +27,9 @@ public class TextConstants {
     public static final String ERROR_DIALOG = "Error Dialog";
     public static final String ERROR_HEADER = "Please enter values for all text fields.";
 
+    public static final String ARCHIVE_DIALOG_HEADER = "Archive asset confirmation";
+    public static final String ARCHIVE_DIALOG_CONTENT = "Please select the last time cycle of the asset's useful life";
+
 
 
     public static final String ASSETS_SCENE = "/Assets";

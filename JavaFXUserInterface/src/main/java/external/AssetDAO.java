@@ -34,4 +34,6 @@ public interface AssetDAO {
     List<Asset> getArchivedAssetsFromAssetTypeID(int assetTypeID);
 
     void setAssetToBeUpdated(int assetID);
+
+    void setAssetToBeArchived(int assetID);
 }
