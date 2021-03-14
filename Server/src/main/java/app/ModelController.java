@@ -159,7 +159,7 @@ public class ModelController {
             trainedModel.setModelStrategy(modelStrategy);
         }
         ModelsController modelsController = new ModelsController(modelStrategy);
-        trainedModel.setModelClassifier(modelsController.trainModel(reducedData));
+        modelsController.trainModel(reducedData);
     }
 
     /**

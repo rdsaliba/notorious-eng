@@ -3,8 +3,8 @@ package app.item.parameter;
 public class FloatParameter extends Parameter {
     private float floatValue;
 
-    public FloatParameter(int paramID, String paramName, boolean isLive, boolean isDefault, float floatValue) {
-        super(paramID, paramName, isLive, isDefault);
+    public FloatParameter(String paramName, float floatValue) {
+        super(paramName);
         this.floatValue = floatValue;
     }
 
