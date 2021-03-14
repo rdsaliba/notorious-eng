@@ -7,6 +7,8 @@
 package rul.models;
 
 import app.item.parameter.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import weka.classifiers.Classifier;
 import weka.classifiers.meta.AdditiveRegression;
 import weka.core.Instances;
@@ -46,6 +48,8 @@ public class AdditiveRegressionModelImpl extends ModelStrategy
         addParameter(shrinkagePara);
     }
 
+    static Logger logger = LoggerFactory.getLogger(AdditiveRegressionModelImpl.class);
+
     /**
      * This function takes the assets as the training dataset, and returns the trained
      * Additive Regression classifier.
@@ -67,9 +71,9 @@ public class AdditiveRegressionModelImpl extends ModelStrategy
         {
             additiveRegression.buildClassifier(dataToTrain);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
-            e.printStackTrace();
+            logger.error("Exception:", e);
         }
 
         setClassifier(additiveRegression);

@@ -9,6 +9,8 @@ package rul.models;
 import app.item.parameter.*;
 import org.deeplearning4j.nn.api.OptimizationAlgorithm;
 import org.deeplearning4j.nn.weights.WeightInit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import weka.classifiers.Classifier;
 import weka.classifiers.functions.Dl4jMlpClassifier;
 import weka.core.Instances;
@@ -106,6 +108,8 @@ public class LSTMModelImpl extends ModelStrategy
         addParameter(learningRatePara);
     }
 
+    static Logger logger = LoggerFactory.getLogger(LSTMModelImpl.class);
+
     /**
      * This function takes the filtered training dataset, builds a Neural Network using Weka's Deep Learning 4 Java plugin
      * and trains and returns an LSTM model.
@@ -163,13 +167,12 @@ public class LSTMModelImpl extends ModelStrategy
             dl4jMlpClassifier.setLayers(lstmLayer1, outLayer);          //Two layers for now, LSTM and the output
 
             //train with the DL4J classifier
-            setClassifier(dl4jMlpClassifier);
             dl4jMlpClassifier.buildClassifier(trainDataset);
         }
 
-        catch(Exception ex)
+        catch(Exception e)
         {
-            ex.printStackTrace();
+            logger.error("Exception: ", e);
         }
 
         setClassifier(dl4jMlpClassifier);

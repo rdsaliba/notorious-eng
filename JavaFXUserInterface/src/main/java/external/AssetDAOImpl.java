@@ -20,15 +20,14 @@ import java.util.List;
 
 public class AssetDAOImpl extends DAO implements AssetDAO {
 
+    public static final String ATTRIBUTE_NAME = "attribute_name";
     private static final String DELETE_ASSET = "DELETE FROM asset WHERE asset_id = ?";
     private static final String GET_ASSET_INFO_FROM_ASSET_ID = "SELECT DISTINCT att.* FROM attribute_measurements am, attribute att WHERE att.attribute_id=am.attribute_id AND am.asset_id = ?";
     private static final String GET_LIVE_ASSETS_FROM_ASSET_TYPE_ID = "SELECT * FROM asset a WHERE a.archived = false AND a.asset_type_id = ?";
     private static final String GET_ARCHIVED_ASSETS_FROM_ASSET_TYPE_ID = "SELECT * FROM asset a WHERE a.archived = true AND a.asset_type_id = ?";
-    private static final String GET_ALL_LIVE_ASSETS = "SELECT * FROM asset, asset_type WHERE asset.asset_type_id=asset_type.asset_type_id AND archived = false";
     private static final String INSERT_ASSET = "INSERT INTO asset (name, asset_type_id, description, sn, manufacturer, category, site, location) values(?,?,?,?,?,?,?,?)";
     private static final String SET_UPDATED_TRUE = "UPDATE asset set updated = 1 where asset_id = ?";
     private static final String GET_ATTRIBUTE_DETAILS_FROM_ASSET_ID = "SELECT att.* FROM attribute_measurements am, attribute att WHERE att.attribute_id=am.attribute_id AND am.asset_id = ? GROUP by attribute_id";
-
 
     /**
      * When given an asset ID this will delete the the asset from the database as well as the corresponding
@@ -43,29 +42,9 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
             ps.setInt(1, assetID);
             ps.executeQuery();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception in deleteAssetByID(): ", e);
         }
     }
-
-
-    /**
-     * This will return an arraylist of all assets that are not archived
-     *
-     * @author Paul
-     */
-    @Override
-    public ArrayList<Asset> getAllLiveAssets() {
-        ArrayList<Asset> assets = new ArrayList<>();
-        try (ResultSet rs = nonParamQuery(GET_ALL_LIVE_ASSETS)) {
-            while (rs.next()) {
-                assets.add(createAssetFromQueryResult(rs));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return assets;
-    }
-
 
     /**
      * Inserts an asset in the database.
@@ -85,33 +64,8 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
             ps.setString(8, asset.getLocation());
             ps.executeQuery();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception in insertAsset(): ", e);
         }
-    }
-
-
-    /**
-     * Given a result set of assets, this function will create the Asset object corresponding to the current
-     * result set values
-     *
-     * @param assetsQuery represents the result set of asset query
-     * @author Paul
-     */
-    @Override
-    public Asset createAssetFromQueryResult(ResultSet assetsQuery) throws SQLException {
-        Asset newAsset = new Asset();
-        newAsset.setId(assetsQuery.getInt("asset_id"));
-        newAsset.setName(assetsQuery.getString("name"));
-        newAsset.setAssetTypeID(assetsQuery.getString("asset_type_id"));
-        newAsset.setDescription(assetsQuery.getString("description"));
-        newAsset.setLocation(assetsQuery.getString("location"));
-        newAsset.setCategory(assetsQuery.getString("category"));
-        newAsset.setManufacturer(assetsQuery.getString("manufacturer"));
-        newAsset.setSite(assetsQuery.getString("site"));
-        newAsset.setSerialNo(assetsQuery.getString("sn"));
-        newAsset.setRecommendation(assetsQuery.getString("recommendation"));
-        newAsset.setAssetInfo(createAssetInfo(newAsset.getId()));
-        return newAsset;
     }
 
     /**
@@ -126,11 +80,12 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         AssetInfo newAssetInfo = new AssetInfo();
         StringBuilder preparedStatementPart1 = new StringBuilder();
         StringBuilder preparedStatementPart2 = new StringBuilder();
+
         try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_INFO_FROM_ASSET_ID)) {
             ps.setInt(1, assetID);
             try (ResultSet attributesQuery = ps.executeQuery()) {
                 while (attributesQuery.next()) {
-                    AssetAttribute newAtt = new AssetAttribute(attributesQuery.getInt("attribute_id"), attributesQuery.getString("attribute_name"));
+                    AssetAttribute newAtt = new AssetAttribute(attributesQuery.getInt("attribute_id"), attributesQuery.getString(ATTRIBUTE_NAME));
                     preparedStatementPart1.append(", Coalesce(Sum(`").append(newAtt.getName()).append("`), 0) AS '").append(newAtt.getName()).append("'");
                     preparedStatementPart2.append(", CASE WHEN tab.attribute_id = ").append(newAtt.getId()).append(" THEN tab.value end AS `").append(newAtt.getName()).append("`");
                     newAssetInfo.addAttribute(newAtt);
@@ -148,7 +103,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
             }
             return newAssetInfo;
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception in createAssetInfo(): ", e);
         }
         return null;
     }
@@ -165,23 +120,25 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
     public ResultSet createMeasurementsFromAssetIdAndTime(int assetID, int fromTime) {
         StringBuilder preparedStatementPart1 = new StringBuilder();
         StringBuilder preparedStatementPart2 = new StringBuilder();
+
         ResultSet returned = null;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_ATTRIBUTE_DETAILS_FROM_ASSET_ID)) {
             ps.setInt(1, assetID);
-            ResultSet rs = ps.executeQuery();
+            try (ResultSet rs = ps.executeQuery()) {
 
-            while (rs.next()) {
-                preparedStatementPart1.append(", Coalesce(Sum(`");
-                preparedStatementPart1.append(rs.getString("attribute_name"));
-                preparedStatementPart1.append("`), 0) AS '");
-                preparedStatementPart1.append(rs.getString("attribute_name"));
-                preparedStatementPart1.append("'");
+                while (rs.next()) {
+                    preparedStatementPart1.append(", Coalesce(Sum(`");
+                    preparedStatementPart1.append(rs.getString(ATTRIBUTE_NAME));
+                    preparedStatementPart1.append("`), 0) AS '");
+                    preparedStatementPart1.append(rs.getString(ATTRIBUTE_NAME));
+                    preparedStatementPart1.append("'");
 
-                preparedStatementPart2.append(", CASE WHEN tab.attribute_id = ");
-                preparedStatementPart2.append(rs.getString("attribute_id"));
-                preparedStatementPart2.append(" THEN tab.value end AS `");
-                preparedStatementPart2.append(rs.getString("attribute_name"));
-                preparedStatementPart2.append("`");
+                    preparedStatementPart2.append(", CASE WHEN tab.attribute_id = ");
+                    preparedStatementPart2.append(rs.getString("attribute_id"));
+                    preparedStatementPart2.append(" THEN tab.value end AS `");
+                    preparedStatementPart2.append(rs.getString(ATTRIBUTE_NAME));
+                    preparedStatementPart2.append("`");
+                }
             }
 
             // i'm unsure why but i cannot do setString on the prepared statement, it keeps failing the query.
@@ -192,7 +149,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
                 returned = measurementStatement.executeQuery();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception in createMeasurementsFromAssetIdAndTime(): ", e);
         }
         return returned;
     }
@@ -217,7 +174,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception in getLiveAssetsFromAssetTypeID(): ", e);
         }
         return assets;
     }
@@ -266,7 +223,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception in getArchivedAssetsFromAssetTypeID(): ", e);
         }
         return assets;
     }
@@ -283,7 +240,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
             ps.setInt(1, assetID);
             ps.executeQuery();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception in setAssetToBeUpdated(): ", e);
         }
     }
 }

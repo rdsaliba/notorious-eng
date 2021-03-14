@@ -10,6 +10,8 @@ package rul.models;
 import app.item.parameter.FloatParameter;
 import app.item.parameter.Parameter;
 import app.item.parameter.StringParameter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import weka.classifiers.Classifier;
 import weka.classifiers.functions.SMOreg;
 import weka.core.Instances;
@@ -38,6 +40,8 @@ public class SMORegModelImpl extends ModelStrategy
         addParameter(batchSizePara);
     }
 
+    static Logger logger = LoggerFactory.getLogger(SMORegModelImpl.class);
+
     /**
      * This function takes the assets as the training dataset, and returns the trained
      * SMOReg classifier.
@@ -57,10 +61,9 @@ public class SMORegModelImpl extends ModelStrategy
         {
             smOreg.buildClassifier(dataToTrain);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
-            e.printStackTrace();
-            return null;
+            logger.error("Exception: ", e);
         }
 
         setClassifier(smOreg);

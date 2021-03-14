@@ -1,7 +1,7 @@
 package e2e.com.cbms.app;
 
-import Controllers.AssetInfoController;
-import Controllers.AssetsController;
+import controllers.AssetInfoController;
+import controllers.AssetsController;
 import app.item.Asset;
 import external.AssetDAOImpl;
 import javafx.fxml.FXMLLoader;
@@ -39,36 +39,6 @@ public class AssetInfoTest extends ApplicationTest {
         Parent root = fxmlLoader.load();
         scene = new Scene(root);
         AssetInfoController = fxmlLoader.getController();
-//        Asset asset = new Asset();
-//        asset.setId(123);
-//        asset.setLocation("location");
-//        asset.setAssetTypeID("2");
-//        asset.setSite("site");
-//        asset.setManufacturer("manu");
-//        asset.setCategory("cat");
-//        asset.setName("namename");
-//        asset.setDescription("this is a description");
-//        asset.setSerialNo("3ewff4");
-//        asset.setRecommendation("OK");
-//        AssetAttribute assetAttribute1 = new AssetAttribute();
-//        assetAttribute1.addMeasurement(1, 1.0);
-//        AssetAttribute assetAttribute2 = new AssetAttribute();
-//        assetAttribute2.addMeasurement(2, 2.0);
-//        AssetAttribute assetAttribute3 = new AssetAttribute();
-//        assetAttribute3.addMeasurement(3, 3.0);
-//        ArrayList<AssetAttribute> attributes = new ArrayList<>();
-//        attributes.add(assetAttribute1);
-//        attributes.add(assetAttribute2);
-//        attributes.add(assetAttribute3);
-//        AssetInfo assetInfo = new AssetInfo();
-//        assetInfo.setAssetAttributes(attributes);
-//        asset.setAssetInfo(assetInfo);
-        AssetDAOImpl assetDAOImpl = new AssetDAOImpl();
-        ArrayList<Asset> assets = assetDAOImpl.getAllLiveAssets();
-        AssetInfoController.initData(assets.get(0));
-        stage.setTitle("CBMS");
-        stage.setScene(scene);
-        stage.show();
     }
 
     @After

@@ -11,6 +11,8 @@ import app.item.parameter.FloatParameter;
 import app.item.parameter.IntParameter;
 import app.item.parameter.Parameter;
 import app.item.parameter.StringParameter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import weka.classifiers.Classifier;
 import weka.classifiers.meta.RandomSubSpace;
 import weka.core.Instances;
@@ -47,6 +49,8 @@ public class RandomSubSpaceModelImpl extends ModelStrategy
         addParameter(batchSizePara);
     }
 
+    static Logger logger = LoggerFactory.getLogger(RandomSubSpaceModelImpl.class);
+
     /**
      * This function takes the assets as the training dataset, and returns the trained
      * Random SubSpace classifier.
@@ -68,10 +72,9 @@ public class RandomSubSpaceModelImpl extends ModelStrategy
         {
             randomSubSpace.buildClassifier(dataToTrain);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
-            e.printStackTrace();
-            return null;
+            logger.error("Exception: ", e);
         }
 
         setClassifier(randomSubSpace);

@@ -1,4 +1,4 @@
-/*
+package app;/*
   Implementation of the DAO design pattern.
   This class extends the general DAO object and calculates the RUL
   of assets in real time with new incoming measurements.
@@ -6,6 +6,7 @@
   @author
   @last_edit 02/7/2020
  */
+
 import app.item.Asset;
 import app.item.AssetAttribute;
 import app.item.AssetInfo;
@@ -17,6 +18,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class MeasurementDAO extends DAO {
+
     private static final String GET_MEASUREMENTS = "SELECT * from attribute_measurements where asset_id =? and time > ((SELECT MAX(time) FROM attribute_measurements where asset_id=?) - ?) order by attribute_id";
     private static final String INSERT_MEASUREMENT_FOR_ASSET = "insert into attribute_measurements values (?,?,?,?)";
     private static final String DELETE_MEASUREMENT = "delete from attribute_measurements where asset_id =? and time > ((SELECT MAX(time) FROM attribute_measurements where asset_id=?) - ?) order by attribute_id";
@@ -48,7 +50,7 @@ public class MeasurementDAO extends DAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception getMeasurementsFromID(): ", e);
         }
         toReturn.setAssetAttributes(measurements);
         return toReturn;
@@ -69,7 +71,7 @@ public class MeasurementDAO extends DAO {
             ps.setInt(3, limit);
             ps.executeQuery();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception deleteMeasurementsFromID(): ", e);
         }
     }
 
@@ -93,7 +95,7 @@ public class MeasurementDAO extends DAO {
             }
             ps.executeBatch();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception insertMeasurement(): ", e);
         }
 
     }

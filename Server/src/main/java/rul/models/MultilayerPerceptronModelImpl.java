@@ -9,6 +9,8 @@
 package rul.models;
 
 import app.item.parameter.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import weka.classifiers.Classifier;
 import weka.classifiers.functions.MultilayerPerceptron;
 import weka.core.Instances;
@@ -98,6 +100,8 @@ public class MultilayerPerceptronModelImpl extends ModelStrategy
         addParameter(batchSizePara);
     }
 
+    static Logger logger = LoggerFactory.getLogger(MultilayerPerceptronModelImpl.class);
+
     /**
      * This function takes the assets as the training dataset, and returns the trained
      * Multilayer Perceptron classifier.
@@ -110,6 +114,7 @@ public class MultilayerPerceptronModelImpl extends ModelStrategy
         multilayerPerceptron = new MultilayerPerceptron();
         dataToTrain.setClassIndex(dataToTrain.numAttributes() - 1);
 
+        //Apply parameters
         multilayerPerceptron.setGUI(((BoolParameter) getParameters().get(showGUIPara.getParamName())).getBoolValue());
         multilayerPerceptron.setAutoBuild(((BoolParameter) getParameters().get(autoBuildPara.getParamName())).getBoolValue());
         multilayerPerceptron.setDecay(((BoolParameter) getParameters().get(decayPara.getParamName())).getBoolValue());
@@ -130,11 +135,9 @@ public class MultilayerPerceptronModelImpl extends ModelStrategy
         {
             multilayerPerceptron.buildClassifier(dataToTrain);
         }
-
-        catch(Exception e)
+        catch (Exception e)
         {
-            e.printStackTrace();
-            return null;
+            logger.error("Exception: ", e);
         }
 
         setClassifier(multilayerPerceptron);

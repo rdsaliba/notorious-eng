@@ -12,6 +12,8 @@ import app.item.parameter.BoolParameter;
 import app.item.parameter.FloatParameter;
 import app.item.parameter.Parameter;
 import app.item.parameter.StringParameter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import weka.classifiers.Classifier;
 import weka.classifiers.functions.LinearRegression;
 import weka.core.Instance;
@@ -49,6 +51,8 @@ public class LinearRegressionModelImpl extends ModelStrategy
         addParameter(batchSizePara);
     }
 
+    static Logger logger = LoggerFactory.getLogger(LinearRegressionModelImpl.class);
+
     /**
      * This function takes the filtered training dataset and trains a linear regression regression model,
      * after that it returns the model.
@@ -60,22 +64,20 @@ public class LinearRegressionModelImpl extends ModelStrategy
     public Classifier trainModel(Instances firstTrain)
     {
         firstTrain.setClassIndex(firstTrain.numAttributes() - 1);
-        //removeInstances(firstTrain);
         linearRegression = new LinearRegression();
 
-        linearRegression.setUseQRDecomposition((((BoolParameter) getParameters().get(useQRDecompositionPara.getParamName()))).getBoolValue());
-        linearRegression.setEliminateColinearAttributes((((BoolParameter) getParameters().get(eliminateColinearAttributesPara.getParamName()))).getBoolValue());
-        linearRegression.setRidge((((FloatParameter) getParameters().get(ridgePara.getParamName()))).getFloatValue());
-        linearRegression.setBatchSize((((StringParameter) getParameters().get(batchSizePara.getParamName()))).getStringValue());
+        linearRegression.setUseQRDecomposition(((BoolParameter) getParameters().get(useQRDecompositionPara.getParamName())).getBoolValue());
+        linearRegression.setEliminateColinearAttributes(((BoolParameter) getParameters().get(eliminateColinearAttributesPara.getParamName())).getBoolValue());
+        linearRegression.setRidge(((FloatParameter) getParameters().get(ridgePara.getParamName())).getFloatValue());
+        linearRegression.setBatchSize(((StringParameter) getParameters().get(batchSizePara.getParamName())).getStringValue());
 
         try
         {
             linearRegression.buildClassifier(firstTrain);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
-            e.printStackTrace();
-            return null;
+            logger.error("Exception: ", e);
         }
 
         setClassifier(linearRegression);
@@ -104,20 +106,8 @@ public class LinearRegressionModelImpl extends ModelStrategy
         return this.linearRegression;
     }
 
-    /**
-     * This function removes the outliers (data that can affect the prediction of the model)
-     * from a training dataset.
-     * After outliers are removed, new dataset is returned.
-     * This function is used to improve the performance of a model.
-     * To use this function you need to pass the training dataset as a parameter.
-     *
-     * @author Talal
-     */
-
-    public static Instances removeInstances(Instances trainDataset, int threshold)
-    {
-        for(int i = 0; i < trainDataset.numInstances(); i++)
-        {
+    public static Instances removeInstances(Instances trainDataset, int threshold) {
+        for (int i = 0; i < trainDataset.numInstances(); i++) {
             Instance inst = trainDataset.instance(i);
             if(inst.value(inst.classAttribute()) > threshold)
             {
@@ -127,11 +117,9 @@ public class LinearRegressionModelImpl extends ModelStrategy
         return trainDataset;
     }
 
-    public static Instances removeInstances(Instances trainDataset)
-    {
+    public static Instances removeInstances(Instances trainDataset) {
         return removeInstances(trainDataset, 150);
     }
-
 
 }
 

@@ -11,6 +11,8 @@ import app.item.parameter.BoolParameter;
 import app.item.parameter.IntParameter;
 import app.item.parameter.Parameter;
 import app.item.parameter.StringParameter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import weka.classifiers.Classifier;
 import weka.classifiers.trees.RandomForest;
 import weka.core.Instances;
@@ -20,7 +22,6 @@ import java.util.Map;
 
 public class RandomForestModelImpl extends ModelStrategy
 {
-
     //Default Parameters
     private final boolean STORE_OUT_OF_BAG_PREDICTIONS_PARAM_DEFAULT = false;
     private final boolean BREAK_TIES_RANDOMLY_PARAM_DEFAULT = false;
@@ -80,13 +81,14 @@ public class RandomForestModelImpl extends ModelStrategy
         addParameter(batchSizePara);
     }
 
+    static Logger logger = LoggerFactory.getLogger(RandomForestModelImpl.class);
+
     /**
      * This function takes the assets as the training dataset, and returns the trained
      * Random Forest classifier.
      *
      * @author Khaled
      */
-
     @Override
     public Classifier trainModel(Instances dataToTrain)
     {
@@ -112,8 +114,7 @@ public class RandomForestModelImpl extends ModelStrategy
         }
         catch(Exception e)
         {
-            e.printStackTrace();
-            return null;
+            logger.error("Exception: ", e);
         }
 
         setClassifier(randomForest);

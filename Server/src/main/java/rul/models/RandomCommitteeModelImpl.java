@@ -10,6 +10,9 @@ package rul.models;
 import app.item.parameter.IntParameter;
 import app.item.parameter.Parameter;
 import app.item.parameter.StringParameter;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import weka.classifiers.Classifier;
 import weka.classifiers.meta.RandomCommittee;
 import weka.core.Instances;
@@ -19,7 +22,6 @@ import java.util.Map;
 
 public class RandomCommitteeModelImpl extends ModelStrategy
 {
-
     //Default Parameters
     private final int NUM_EXECUTION_SLOTS_PARAM_DEFAULT = 1;
     private final int NUM_ITERATIONS_PARAM_DEFAULT = 10;
@@ -42,6 +44,8 @@ public class RandomCommitteeModelImpl extends ModelStrategy
         addParameter(batchSizePara);
     }
 
+    static Logger logger = LoggerFactory.getLogger(RandomCommitteeModelImpl.class);
+
     /**
      * This function takes the assets as the training dataset, and returns the trained
      * Random Committee classifier.
@@ -63,11 +67,9 @@ public class RandomCommitteeModelImpl extends ModelStrategy
         {
             randomCommittee.buildClassifier(dataToTrain);
         }
-
         catch(Exception e)
         {
-            e.printStackTrace();
-            return null;
+            logger.error("Exception: ", e);
         }
 
         setClassifier(randomCommittee);
