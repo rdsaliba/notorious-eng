@@ -10,6 +10,8 @@ package app;
 import app.item.*;
 import local.AssetDAOImpl;
 import local.ModelDAOImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import preprocessing.DataPrePreprocessorController;
 import rul.assessment.AssessmentController;
 import rul.models.*;
@@ -22,6 +24,7 @@ import weka.core.Instances;
 import java.util.*;
 
 public class ModelController {
+    static Logger logger = LoggerFactory.getLogger(ModelController.class);
     private static ModelController instance = null;
     private final AssetDAOImpl assetDaoImpl;
     private final ModelDAOImpl modelDAOImpl;
@@ -52,13 +55,12 @@ public class ModelController {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                System.out.println("ModelController - initialize - checkModelsToEvaluate - end");
-                System.out.println("ModelController - initialize - checkAsset - start");
+                logger.info("Initialize - checkAsset - start");
                 checkAssets();
-                System.out.println("ModelController - initialize - checkAsset - end");
-                System.out.println("ModelController - initialize - checkModels - start");
+                logger.info("Initialize - checkAsset - end");
+                logger.info("Initialize - checkModels - start");
                 checkModels();
-                System.out.println("ModelController - initialize - checkModels - end");
+                logger.info("Initialize - checkModels - end");
             }
         }, 0, 2000);
     }
@@ -157,7 +159,7 @@ public class ModelController {
             modelDAOImpl.setModelToTrain(tm);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Exception in trainAndSave(): ", e);
         }
     }
 
@@ -176,8 +178,6 @@ public class ModelController {
         }
         ModelsController modelsController = new ModelsController(modelStrategy);
         trainedModel.setModelClassifier(modelsController.trainModel(reducedData));
-
-
     }
 
     /**
@@ -186,8 +186,8 @@ public class ModelController {
      *
      * @author Paul
      */
-    private ModelStrategy getModelStrategy(TrainedModel trainedModel) {
-        String stratName = modelDAOImpl.getModelNameFromModelID(String.valueOf(trainedModel.getModelID()));
+    private ModelStrategy getModelStrategy(TrainedModel tm) {
+        String stratName = modelDAOImpl.getModelNameFromModelID(String.valueOf(tm.getModelID()));
         switch (stratName) {
             case "Linear":                                  //1: Linear
                 return new LinearRegressionModelImpl();
@@ -225,7 +225,7 @@ public class ModelController {
             toTest = dppc.addRULCol(toTest);
             estimate = assessmentController.estimateRUL(toTest, classifier);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Exception: ", e);
         }
         return estimate;
     }

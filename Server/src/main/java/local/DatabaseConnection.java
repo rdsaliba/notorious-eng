@@ -7,6 +7,8 @@
 package local;
 
 import app.ConfigProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -15,22 +17,24 @@ import java.sql.SQLException;
 
 public class DatabaseConnection {
 
+    static Logger logger = LoggerFactory.getLogger(DatabaseConnection.class);
+
     private static final ConfigProperties properties = new ConfigProperties();
 
     private static DatabaseConnection openConnection;
     private static Connection conn;
 
-    private static String URL = null;
-    private static String USER = null;
-    private static String PASSWORD = null;
+    private static String url = null;
+    private static String user = null;
+    private static String password = null;
 
     static {
         try {
-            URL = properties.getConfigValues("database_url");
-            USER = properties.getConfigValues("database_user");
-            PASSWORD = properties.getConfigValues("database_password");
+            url = properties.getConfigValues("database_url");
+            user = properties.getConfigValues("database_user");
+            password = properties.getConfigValues("database_password");
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Exception: ", e);
         }
     }
 
@@ -47,9 +51,9 @@ public class DatabaseConnection {
     public static Connection getConnection() {
         if (conn == null) {
             try {
-                conn = DriverManager.getConnection(URL, USER, PASSWORD);
+                conn = DriverManager.getConnection(url, user, password);
             } catch (SQLException ex) {
-                ex.printStackTrace();
+                logger.error("Exception: ", ex);
             }
         }
 

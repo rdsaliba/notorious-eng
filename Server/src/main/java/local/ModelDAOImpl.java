@@ -42,7 +42,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
                     name = rs.getString("name");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception getModelNameFromAssetTypeID(): ", e);
         }
         return name;
     }
@@ -64,7 +64,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception getModelsToTrain(): ", e);
         }
         return tms;
     }
@@ -88,7 +88,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception setModelsToTrain(): ", e);
         }
     }
 
@@ -112,7 +112,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception getModelsByAssetTypeID(): ", e);
         }
         return tm;
     }
@@ -136,7 +136,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
                 tm.setModelStrategy((ModelStrategy) new ObjectInputStream(new ByteArrayInputStream(buf)).readObject());
 
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            logger.error("Exception createTrainedModelFromResultSet(): ", e);
             return null;
         }
         return tm;

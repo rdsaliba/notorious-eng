@@ -7,11 +7,15 @@
 
 package rul.models;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import weka.classifiers.Classifier;
 import weka.classifiers.meta.RandomCommittee;
 import weka.core.Instances;
 
 public class RandomCommitteeModelImpl extends ModelStrategy {
+
+    static Logger logger = LoggerFactory.getLogger(RandomCommitteeModelImpl.class);
 
     /**
      * This function takes the assets as the training dataset, and returns the trained
@@ -27,10 +31,8 @@ public class RandomCommitteeModelImpl extends ModelStrategy {
 
         try {
             randomCommittee.buildClassifier(dataToTrain);
-        }
-
-        catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            logger.error("Exception: ", e);
             return null;
         }
 

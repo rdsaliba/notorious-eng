@@ -6,9 +6,8 @@
   @author Jeff, Paul, Roy, Najim
   @last_edit 02/7/2020
  */
-package Controllers;
+package controllers;
 
-import Utilities.*;
 import app.ModelController;
 import app.item.Asset;
 import app.item.Model;
@@ -33,6 +32,12 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import rul.models.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import preprocessing.DataPrePreprocessorController;
+import rul.models.*;
+import utilities.*;
+import weka.classifiers.Classifier;
 import weka.core.Instances;
 
 import java.net.URL;
@@ -43,11 +48,15 @@ import java.util.ResourceBundle;
 
 public class AssetTypeInfoController implements Initializable {
     private static final String RMSE = "RMSE";
+    static Logger logger = LoggerFactory.getLogger(AssetTypeInfoController.class);
     private final Text[] errorMessages = new Text[7];
     private final boolean[] validInput = new boolean[7];
     private final ModelPanes modelPanes = new ModelPanes();
+    boolean validForm = true;
+    int trainSize = 0;
+    int testSize = 0;
     @FXML
-    Tab modelTab;
+    private Tab modelTab;
     @FXML
     private FlowPane modelsThumbPane;
     @FXML
@@ -109,8 +118,6 @@ public class AssetTypeInfoController implements Initializable {
     private Timeline rmseTimeline;
     private Instances trainDataset;
     private Instances testDataset;
-    private int trainSize = 0;
-    private int testSize = 0;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -123,7 +130,7 @@ public class AssetTypeInfoController implements Initializable {
         try {
             attachEvents();
         } catch (Exception exception) {
-            exception.printStackTrace();
+            logger.error("Exception in initialize(): ", exception);
         }
     }
 
@@ -148,7 +155,8 @@ public class AssetTypeInfoController implements Initializable {
             thresholdWarning.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueWarning())));
             thresholdFailed.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueFailed())));
         } catch (NumberFormatException e) {
-            e.printStackTrace();
+            logger.error("NumberFormatException error inside initData");
+            logger.error("Exception initData(): ", e);
         }
         updateRMSE();
     }
@@ -277,10 +285,15 @@ public class AssetTypeInfoController implements Initializable {
 
                 });
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("Exception for evaluateAllModelsBtn.setOnMouseClicked(), e");
             }
         }
 
+        try {
+            modelObservableList = FXCollections.observableArrayList(modelDAO.getAllModels());
+        } catch (Exception e) {
+            logger.error("Exception for modelObservableList, e");
+        }
         modelsThumbPane.getChildren().clear();
         generateThumbnails();
         trainSlider.setOnMouseClicked(mouseEvent -> enableEvaluation(evaluateButtons));
@@ -359,20 +372,8 @@ public class AssetTypeInfoController implements Initializable {
         String assetTypeNameValue = assetTypeName.getText();
         String assetTypeDescValue = assetTypeDesc.getText();
         double horizontalPosition = 0;
-        boolean validForm = true;
 
-        if (assetTypeNameValue.trim().isEmpty()) {
-            validForm = false;
-            validInput[0] = false;
-            UIUtilities.createInputError(inputError, errorMessages, assetTypeName, TextConstants.EMPTY_FIELD_ERROR, 28.0, horizontalPosition, 0);
-        } else if (assetTypeNameValue.length() > 50) {
-            validForm = false;
-            validInput[0] = false;
-            UIUtilities.createInputError(inputError, errorMessages, assetTypeName, TextConstants.MAX_50_CHARACTERS_ERROR, 28.0, horizontalPosition, 0);
-        } else {
-            validInput[0] = true;
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, assetTypeName, 0);
-        }
+        assetTypeNameValidation(assetTypeNameValue, horizontalPosition);
 
         if (assetTypeDescValue.length() > 300) {
             validForm = false;
@@ -459,6 +460,22 @@ public class AssetTypeInfoController implements Initializable {
             UIUtilities.createInputError(inputError, errorMessages, thresholdFailed, "", 0, 0, 6);
         }
         return validForm;
+    }
+
+    private void assetTypeNameValidation(String assetTypeNameValue, double horizontalPosition) {
+        validForm = true;
+        if (assetTypeNameValue.trim().isEmpty()) {
+            validForm = false;
+            validInput[0] = false;
+            UIUtilities.createInputError(inputError, errorMessages, assetTypeName, TextConstants.EMPTY_FIELD_ERROR, 28.0, horizontalPosition, 0);
+        } else if (assetTypeNameValue.length() > 50) {
+            validForm = false;
+            validInput[0] = false;
+            UIUtilities.createInputError(inputError, errorMessages, assetTypeName, TextConstants.MAX_50_CHARACTERS_ERROR, 28.0, horizontalPosition, 0);
+        } else {
+            validInput[0] = true;
+            UIUtilities.removeInputError(inputError, errorMessages, validInput, assetTypeName, 0);
+        }
     }
 
     /**

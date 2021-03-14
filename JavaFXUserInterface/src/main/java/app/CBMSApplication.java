@@ -1,22 +1,25 @@
-/*
+package app;/*
   This class implements the start function which runs first when opening the application.
    It sets the scene / view to the main page.
   @author
   @last_edit 02/7/2020
  */
 
-import app.ModelController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CBMSApplication extends Application {
 
+    static Logger logger = LoggerFactory.getLogger(CBMSApplication.class);
+
     public static void main(String[] args) {
-        System.setProperty("javafx.preloader", SplashScreenPreloader.class.getName());
+        System.setProperty("javafx.preloader", utilities.SplashScreenPreloader.class.getName());
         Application.launch(CBMSApplication.class, args);
     }
 
@@ -24,7 +27,7 @@ public class CBMSApplication extends Application {
      * The main entry point for the JavaFX application.
      *
      * @param primaryStage the primary stage for this application, onto which the application scene can be set
-     * @author
+     * @author Jeff
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -36,8 +39,8 @@ public class CBMSApplication extends Application {
         primaryStage.setOnCloseRequest(e -> {
             try {
                 closeProgram();
-            } catch (Exception exception) {
-                exception.printStackTrace();
+            } catch (Exception ex) {
+                logger.error("Exception: ", ex);
             }
         });
     }
@@ -53,14 +56,15 @@ public class CBMSApplication extends Application {
         try {
             ModelController.getInstance().getAllLiveAssets();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Exception: ", e);
         }
         long loadEndTime = System.currentTimeMillis();
         if ((loadEndTime - loadStartTime) < 1000) {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logger.error("Exception: ", e);
+                Thread.currentThread().interrupt();
             }
         }
     }
@@ -71,7 +75,7 @@ public class CBMSApplication extends Application {
      * @author Najim
      */
     private void closeProgram() {
-        System.out.println("Program closing.");
+        logger.info("Program closing.");
         Platform.exit();
         System.exit(0);
     }

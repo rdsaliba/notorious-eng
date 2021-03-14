@@ -4,13 +4,11 @@
   @author
   @last_edit 02/7/2020
  */
-package Utilities;
+package utilities;
 
 import java.text.DecimalFormat;
 
 public class TextConstants {
-    public static final String SYSTEM_TYPE_LIST = "/SystemTypeList";
-    public static final String SYSTEMS = "/Systems";
 
     public static final String OK_THRESHOLD = "Ok";
     public static final String ADVISORY_THRESHOLD = "Advisory";
@@ -32,7 +30,6 @@ public class TextConstants {
     public static final String ASSETS_SCENE = "/Assets";
     public static final String ADD_ASSETS = "/AddAsset";
     public static final String ASSET_TYPE_LIST_SCENE = "/AssetTypeList";
-    public static final String ALERT_TITLE_DIALOG = "Confirmation Dialog";
     public static final DecimalFormat RULValueFormat = new DecimalFormat("#.##");
     public static final DecimalFormat RMSEValueFormat = new DecimalFormat("#.##");
     public static final DecimalFormat ThresholdValueFormat = new DecimalFormat("#.00");

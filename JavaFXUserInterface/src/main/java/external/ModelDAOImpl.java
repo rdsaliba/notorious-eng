@@ -49,7 +49,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
                     name = rs.getString("name");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception getModelNameFromAssetTypeID(): ", e);
         }
         return name;
     }
@@ -87,17 +87,17 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     * */
     @Override
     public int getModelIDFromAssetTypeID(String assetTypeID) {
-        int ID = 0;
+        int modelID = 0;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_FROM_ASSET_TYPE_ID)) {
             ps.setString(1, assetTypeID);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next())
-                    ID = rs.getInt("model_id");
+                    modelID = rs.getInt("model_id");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception getModelsByAssetTypeID(): ", e);
         }
-        return ID;
+        return modelID;
     }
 
     /**
@@ -127,7 +127,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception getAllModels(): ", e);
         }
         return modelList;
     }
@@ -147,7 +147,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
             ps.setString(2, assetTypeID);
             ps.executeQuery();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception updateRMSE(): ", e);
         }
     }
 
@@ -164,7 +164,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
             ps.setString(1, assetTypeID);
             ps.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception in setModelToTrain()");
         }
     }
 
@@ -187,7 +187,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
                     rmseValue = rs.getString("rmse");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception in getGetModelEvaluation()");
         }
         if(rmseValue==null) return "n/a";
         else return rmseValue;
