@@ -290,7 +290,7 @@ public class AssetTypeInfoController implements Initializable {
         }
 
         try {
-            modelObservableList = FXCollections.observableArrayList(modelDAO.getAllModels());
+            modelObservableList = FXCollections.observableArrayList(modelDAO.getAllModels(Integer.parseInt(assetType.getId())));
         } catch (Exception e) {
             logger.error("Exception for modelObservableList, e");
         }

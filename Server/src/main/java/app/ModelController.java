@@ -126,27 +126,9 @@ public class ModelController {
         trainedModelsToRetrain
                 .stream()
                 .filter(tm -> tm.getStatusID() == Constants.STATUS_EVALUATION)
-                .findFirst().ifPresent(this::evaluate);
-        trainedModelsToRetrain
-                .stream()
-                .filter(tm -> tm.getStatusID() == Constants.STATUS_EVALUATION)
                 .findFirst().ifPresent(this::trainAndSave);
     }
 
-    /**
-     * evaluates a specific model using function 'modelToEvaluate
-     * @param tm
-     * @author talal
-     */
-    public void evaluate(TrainedModel tm){
-        try{
-            if(!Objects.isNull(tm.getModelStrategy()))
-                modelToEvaluate(tm);
-        }
-        catch(Exception e){
-            e.printStackTrace();
-        }
-    }
 
     /**
      * train the specific model and save it in the db
@@ -155,8 +137,12 @@ public class ModelController {
      */
     private void trainAndSave(TrainedModel tm) {
         try {
+            if(!Objects.isNull(tm.getModelStrategy()))
+                modelToEvaluate(tm);
+            else{
             trainModel(tm);
             modelDAOImpl.setModelToTrain(tm);
+            }
 
         } catch (Exception e) {
             logger.error("Exception in trainAndSave(): ", e);
