@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<VBox fx:id="rootContainer" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+      minWidth="-Infinity" prefHeight="712.0" prefWidth="1026.0" styleClass="splash-screen-bg"
+      stylesheets="@css/style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox alignment="CENTER">
+         <children>
+            <ImageView fitHeight="121.0" fitWidth="135.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@imgs/splash_screen_image.png"/>
+               </image>
+            </ImageView>
+         </children>
+      </HBox>
+      <HBox alignment="CENTER">
+         <children>
+            <Label text="M i n e r v a" styleClass="splash-screen-title">
+            </Label>
+         </children>
+      </HBox>
+   </children>
+</VBox>

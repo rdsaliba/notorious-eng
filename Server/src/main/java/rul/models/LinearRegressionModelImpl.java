@@ -8,33 +8,16 @@
  */
 package rul.models;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import weka.classifiers.Classifier;
 import weka.classifiers.functions.LinearRegression;
 import weka.core.Instance;
 import weka.core.Instances;
 
 public class LinearRegressionModelImpl extends ModelStrategy {
-    /**
-     * This function takes the filtered training dataset and trains a linear regression regression model,
-     * after that it returns the model.
-     * To use this method you need to pass the training dataset.
-     *
-     * @author Talal
-     */
-    @Override
-    public Classifier trainModel(Instances firstTrain) {
-        firstTrain.setClassIndex(firstTrain.numAttributes() - 1);
-        //removeInstances(firstTrain);
-        Classifier lr = new LinearRegression();
 
-        try {
-            lr.buildClassifier(firstTrain);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-        return lr;
-    }
+    static Logger logger = LoggerFactory.getLogger(LinearRegressionModelImpl.class);
 
     /**
      * This function removes the outliers (data that can affect the prediction of the model)
@@ -45,9 +28,8 @@ public class LinearRegressionModelImpl extends ModelStrategy {
      *
      * @author Talal
      */
-
-    public static Instances removeInstances (Instances trainDataset, int threshold) {
-        for (int i = 0; i < trainDataset.numInstances() ; i++) {
+    public static Instances removeInstances(Instances trainDataset, int threshold) {
+        for (int i = 0; i < trainDataset.numInstances(); i++) {
             Instance inst = trainDataset.instance(i);
             if (inst.value(inst.classAttribute()) > threshold) {
                 trainDataset.delete(i);
@@ -56,8 +38,29 @@ public class LinearRegressionModelImpl extends ModelStrategy {
         return trainDataset;
     }
 
-    public static Instances removeInstances (Instances trainDataset) {
-        return removeInstances(trainDataset,150);
+    public static Instances removeInstances(Instances trainDataset) {
+        return removeInstances(trainDataset, 150);
+    }
+
+    /**
+     * This function takes the filtered training dataset and trains a linear regression regression model,
+     * after that it returns the model.
+     * To use this method you need to pass the training dataset.
+     *
+     * @author Talal
+     */
+    @Override
+    public Classifier trainModel(Instances firstTrain) {
+        firstTrain.setClassIndex(firstTrain.numAttributes() - 1);
+        Classifier lr = new LinearRegression();
+
+        try {
+            lr.buildClassifier(firstTrain);
+        } catch (Exception e) {
+            logger.error("Exception: ", e);
+            return null;
+        }
+        return lr;
     }
 }
 

@@ -8,11 +8,16 @@
 
 package rul.models;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import weka.classifiers.Classifier;
 import weka.classifiers.functions.MultilayerPerceptron;
 import weka.core.Instances;
 
 public class MultilayerPerceptronModelImpl extends ModelStrategy {
+
+    static Logger logger = LoggerFactory.getLogger(MultilayerPerceptronModelImpl.class);
+
     /**
      * This function takes the assets as the training dataset, and returns the trained
      * Multilayer Perceptron classifier.
@@ -26,10 +31,8 @@ public class MultilayerPerceptronModelImpl extends ModelStrategy {
 
         try {
             mlp.buildClassifier(dataToTrain);
-        }
-
-        catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            logger.error("Exception: ", e);
             return null;
         }
 

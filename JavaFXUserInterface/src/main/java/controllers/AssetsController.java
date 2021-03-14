@@ -6,10 +6,8 @@
   @author Jeff, Paul, Najim
   @last_edit 02/7/2020
  */
-package Controllers;
+package controllers;
 
-import Utilities.TextConstants;
-import Utilities.UIUtilities;
 import app.ModelController;
 import app.item.Asset;
 import external.AssetTypeDAOImpl;
@@ -32,7 +30,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import rul.assessment.AssessmentController;
+import utilities.TextConstants;
+import utilities.UIUtilities;
+
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -51,10 +54,13 @@ public class AssetsController implements Initializable {
     private static final String CATEGORY_COL = "Category";
     private static final String SITE_COL = "Site";
     private static final String DESCRIPTION_COL = "Description";
-
     private final AssetTypeDAOImpl assetTypeDAO;
     private final ModelDAOImpl modelDAO;
-
+    Logger logger = LoggerFactory.getLogger(AssetsController.class);
+    @FXML
+    private Button assetMenuBtn;
+    @FXML
+    private Button assetTypeMenuBtn;
     @FXML
     private Button addAssetBtn;
     @FXML
@@ -70,7 +76,7 @@ public class AssetsController implements Initializable {
     private UIUtilities uiUtilities;
     private ObservableList<Asset> assets;
     private Timeline rulTimeline;
-    private TableView<Asset> table;
+    private final TableView<Asset> table;
 
     public AssetsController() {
         assetTypeDAO = new AssetTypeDAOImpl();
@@ -80,7 +86,7 @@ public class AssetsController implements Initializable {
         try {
             assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Exception: ", e);
         }
     }
 
@@ -271,7 +277,6 @@ public class AssetsController implements Initializable {
             return row;
         });
 
-        String TYPE_COL = "Type";
         TableColumn<Asset, String> assetTypeCol = new TableColumn<>(TYPE_COL);
         assetTypeCol.setCellValueFactory(cellData -> new SimpleStringProperty(
                 cellData.getValue().getAssetTypeName()));
@@ -322,11 +327,4 @@ public class AssetsController implements Initializable {
         assetsListPane.getChildren().addAll(table);
     }
 
-    /**
-     * Stops the timeline
-     */
-    private void closeTimeline() {
-        if (rulTimeline != null)
-            rulTimeline.stop();
-    }
 }
