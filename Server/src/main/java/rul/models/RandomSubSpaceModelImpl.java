@@ -7,11 +7,15 @@
 
 package rul.models;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import weka.classifiers.Classifier;
 import weka.classifiers.meta.RandomSubSpace;
 import weka.core.Instances;
 
 public class RandomSubSpaceModelImpl extends ModelStrategy {
+
+    static Logger logger = LoggerFactory.getLogger(RandomSubSpaceModelImpl.class);
 
     /**
      * This function takes the assets as the training dataset, and returns the trained
@@ -27,7 +31,7 @@ public class RandomSubSpaceModelImpl extends ModelStrategy {
         try {
             randomSubSpace.buildClassifier(dataToTrain);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Exception: ", e);
             return null;
         }
 

@@ -1,8 +1,8 @@
 package e2e.com.cbms.app;
 
-import Controllers.AssetTypeInfoController;
-import Utilities.AssetTypeList;
-import Utilities.TextConstants;
+import controllers.AssetTypeInfoController;
+import utilities.AssetTypeList;
+import utilities.TextConstants;
 import app.item.AssetType;
 import app.item.AssetTypeParameter;
 import javafx.fxml.FXMLLoader;
