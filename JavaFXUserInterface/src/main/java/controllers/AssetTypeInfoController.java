@@ -31,16 +31,11 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
-//import local.AssetDAOImpl;
 import rul.models.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import preprocessing.DataPrePreprocessorController;
-import rul.models.*;
 import utilities.*;
-import weka.classifiers.Classifier;
 import weka.core.Instances;
-
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -115,10 +110,8 @@ public class AssetTypeInfoController implements Initializable {
     private AssetTypeDAOImpl assetTypeDAO;
     private ModelDAOImpl modelDAO;
     private AssetDAOImpl assetDAO;
-    private ModelController modelController;
     private Timeline rmseTimeline;
-    private Instances trainDataset;
-    private Instances testDataset;
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -126,7 +119,6 @@ public class AssetTypeInfoController implements Initializable {
         assetTypeDAO = new AssetTypeDAOImpl();
         modelDAO = new ModelDAOImpl();
         assetDAO = new AssetDAOImpl();
-        modelController = ModelController.getInstance();
         assetsList = new ArrayList<>();
         try {
             attachEvents();
@@ -270,18 +262,7 @@ public class AssetTypeInfoController implements Initializable {
             try {
                 evaluateAllModelsBtn.setOnMouseClicked(mouseEvent -> {
                     for (Model model : modelObservableList){
-                        String modelName = model.getModelName();
-                        int assetTypeID = Integer.parseInt(assetType.getId());
-                        int trainAssets = (int) trainSlider.getValue() + 1;
-                        int testAssets = (int) trainSlider.getValue() + 1 + (int) testSlider.getValue();
-                        try {
-                            ModelStrategy modelStrategy = modelDAO.getModelStrategy(associatedModelID,assetTypeID);
-                            modelStrategy.setTrainAssets(trainAssets);
-                            modelStrategy.setTestAssets(testAssets);
-                            modelDAO.updateModelStrategy(modelStrategy,associatedModelID,assetTypeID);
-                        } catch (SQLException throwables) {
-                            throwables.printStackTrace();
-                        }
+                        saveModelToEvaluate(model);
                          }
 
                 });
@@ -299,6 +280,19 @@ public class AssetTypeInfoController implements Initializable {
         generateThumbnails();
         trainSlider.setOnMouseClicked(mouseEvent -> enableEvaluation(evaluateButtons));
         testSlider.setOnMouseClicked(mouseEvent -> enableEvaluation(evaluateButtons));
+    }
+    public void saveModelToEvaluate(Model model){
+        int assetTypeID = Integer.parseInt(assetType.getId());
+        int trainAssets = (int) trainSlider.getValue() + 1;
+        int testAssets = (int) trainSlider.getValue() + 1 + (int) testSlider.getValue();
+        try {
+            ModelStrategy modelStrategy = modelDAO.getModelStrategy(associatedModelID,assetTypeID);
+            modelStrategy.setTrainAssets(trainAssets);
+            modelStrategy.setTestAssets(testAssets);
+            modelDAO.updateModelStrategy(modelStrategy,associatedModelID,assetTypeID);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
     /**
@@ -509,22 +503,9 @@ public class AssetTypeInfoController implements Initializable {
             evaluateModelBtn.setDisable(true);
             evaluateButtons.add(evaluateModelBtn);
             evaluateModelBtn.setOnMouseClicked(mouseEvent -> {
-                String modelName = model.getModelName();
-                int assetTypeID = Integer.parseInt(assetType.getId());
-                int trainAssets = (int) trainSlider.getValue() + 1;
-                int testAssets = (int) trainSlider.getValue() + 1 + (int) testSlider.getValue();
-                List<Asset> assets= assetDAO.getArchivedAssetsFromAssetTypeID(Integer.parseInt(assetType.getId()));
-                local.ModelDAOImpl dao=new local.ModelDAOImpl();
-                ModelStrategy modelStrategy = null;
-                try {
-                    modelStrategy = modelDAO.getModelStrategy(model.getModelID(),assetTypeID);
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                }
-                modelStrategy.setTrainAssets(trainAssets);
-                modelStrategy.setTestAssets(testAssets);
-                modelDAO.updateModelStrategy(modelStrategy,1,1);
+                saveModelToEvaluate(model);
             });
+
 
             //Setting IDs for the elements
             modelNameLabel.setId("modelNameLabel");

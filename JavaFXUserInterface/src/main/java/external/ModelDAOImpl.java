@@ -11,12 +11,9 @@ package external;
 import app.item.Model;
 import app.item.TrainedModel;
 import rul.models.ModelStrategy;
-import weka.classifiers.Classifier;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.sql.Blob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -52,32 +49,6 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
             logger.error("Exception getModelNameFromAssetTypeID(): ", e);
         }
         return name;
-    }
-
-
-
-    /**
-     * Given a RMSE model evaluation value for a specific model applied to a specific asset type,
-     * this function will updated the RMSE value in the database in the model evaluation table
-     *
-     * @param rs represents the result from a trained model query
-     * @author Paul
-     */
-    @Override
-    public TrainedModel createTrainedModelFromResultSet(ResultSet rs, boolean withModel) throws SQLException {
-        TrainedModel tm = new TrainedModel();
-        tm.setModelID(rs.getInt("model_id"));
-        tm.setAssetTypeID(rs.getInt("asset_type_id"));
-        tm.setRetrain(rs.getBoolean("retrain"));
-        try {
-            if (withModel) {
-                tm.setModelClassifier((Classifier) new ObjectInputStream(new ByteArrayInputStream(rs.getBytes("serialized_model"))).readObject());
-            }
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return tm;
     }
 
     /**
