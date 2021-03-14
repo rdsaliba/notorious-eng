@@ -25,7 +25,7 @@ public class ModelPanes {
      * @author Jeremie
      */
     public void setModelThumbnailsContainerPane(ObservableList<Pane> modelPanesObservableList, FlowPane flowPaneSelector) {
-        flowPaneSelector.setPrefWidth((300.0 + flowPaneSelector.getHgap()) * (modelPanesObservableList.size()) + (2 * flowPaneSelector.getHgap()));
+        flowPaneSelector.setPrefWidth((modelPanesObservableList.get(0).getPrefWidth() + flowPaneSelector.getHgap()) * (modelPanesObservableList.size()) + (2 * flowPaneSelector.getHgap()));
         flowPaneSelector.getChildren().addAll(modelPanesObservableList);
         flowPaneSelector.setOnMouseClicked(mouseEvent -> handleModelSelectionChange(modelPanesObservableList, selectedModel.getModelID()));
     }
