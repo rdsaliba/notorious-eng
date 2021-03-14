@@ -1,91 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="712.0" prefWidth="1026.0" stylesheets="@css/assets.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AssetTypeController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="834.0"
+            prefWidth="1194.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.AssetTypeController">
     <children>
-        <VBox layoutY="114.0" prefHeight="601.0" prefWidth="74.0" style="-fx-background-color: #0C072E;" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="169.0">
+        <fx:include source="Navigation.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+        <AnchorPane prefHeight="200.0" prefWidth="200.0" styleClass="container" AnchorPane.bottomAnchor="0.0"
+                    AnchorPane.leftAnchor="59.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
-                <Button fx:id="assetMenuBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0" prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css" text="Assets" textAlignment="CENTER" textFill="#f0f0f0">
-                    <font>
-                        <Font name="Segoe UI Bold" size="14.0" />
-                    </font>
-                    <graphic>
-                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@imgs/outline_dvr_white_18dp.png" />
-                                <Image url="@imgs/outline_dvr_white_18dp.png" />
-                            </image>
-                        </ImageView>
-                    </graphic>
-                </Button>
-                <Button fx:id="assetTypeMenuBtn" contentDisplay="TOP" mnemonicParsing="false" prefHeight="74.0" prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css" text="Asset&#10;Types" textAlignment="CENTER" textFill="#f0f0f0" translateY="15.0">
-                    <font>
-                        <Font name="Segoe UI Bold" size="14.0" />
-                    </font>
-                    <graphic>
-                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@imgs/outline_type_white.png" />
-                            </image>
-                        </ImageView>
-                    </graphic>
-                </Button>
-                <Button fx:id="exitMenuBtn" contentDisplay="TOP" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="74.0" prefWidth="74.0" style="-fx-background-radius: 0;" stylesheets="@css/style.css" text="Exit" textAlignment="CENTER" textFill="#f0f0f0" translateY="290.0">
-                    <font>
-                        <Font name="Segoe UI Bold" size="14.0" />
-                    </font>
-                    <graphic>
-                        <ImageView fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@imgs/outline_exit_to_app_white_18dp.png" />
-                            </image>
-                        </ImageView>
-                    </graphic>
-                </Button>
-            </children>
-        </VBox>
-        <VBox prefHeight="169.0" prefWidth="74.0" style="-fx-background-color: #0C072E;" AnchorPane.topAnchor="0.0" />
-        <AnchorPane layoutX="74.0" maxHeight="42.0" prefHeight="42.0" prefWidth="952.0" AnchorPane.leftAnchor="74.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-            <children>
-                <Text fx:id="assetTypesTitle" fill="#0c072e" layoutX="14.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Asset Types">
-                    <font>
-                        <Font name="Segoe UI Bold" size="18.0" />
-                    </font>
-                </Text>
-                <Button fx:id="addTypeBtn" layoutX="914.0" layoutY="10.0" mnemonicParsing="false" stylesheets="@css/style.css" text="Add Type" textFill="WHITE" AnchorPane.rightAnchor="14.0">
-                    <font>
-                        <Font name="Segoe UI Bold" size="12.0" />
-                    </font>
-                    <padding>
-                        <Insets bottom="5.0" left="15.0" right="15.0" top="5.0" />
-                    </padding>
-                </Button>
-            </children>
-        </AnchorPane>
-        <AnchorPane layoutX="74.0" layoutY="42.0" prefHeight="42.0" prefWidth="952.0" style="-fx-border-style: hidden hidden solid hidden; -fx-border-color: F0F0F0;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="74.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="39.0">
-            <children>
-                <AnchorPane fx:id="assetTypesListPane" layoutX="27.0" layoutY="3.0" minHeight="0.0" minWidth="0.0" prefHeight="665.0" prefWidth="906.0">
+                <AnchorPane prefHeight="80.0" prefWidth="952.0" styleClass="titleBar" AnchorPane.leftAnchor="0.0"
+                            AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <children>
-                        <TableView fx:id="tableView" layoutX="9.0" layoutY="5.0" prefHeight="665.6" prefWidth="906.4" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <Text fx:id="assetName" fill="#0c072e" layoutX="26.0" layoutY="51.0" strokeType="OUTSIDE"
+                              strokeWidth="0.0" styleClass="header" text="Asset Types">
+                            <font>
+                                <Font name="Segoe UI Bold" size="18.0"/>
+                            </font>
+                        </Text>
+                        <Button id="addAssetTypeBtn" fx:id="addTypeBtn" layoutX="860.0" layoutY="18.0"
+                                mnemonicParsing="false" prefHeight="45.0" prefWidth="247.0" text="Add Type"
+                                textFill="WHITE" AnchorPane.rightAnchor="28.0">
+                            <font>
+                                <Font name="Segoe UI Semibold" size="20.0"/>
+                            </font>
+                            <padding>
+                                <Insets bottom="5.0" left="15.0" right="15.0" top="5.0"/>
+                            </padding>
+                        </Button>
+                    </children>
+                </AnchorPane>
+                <AnchorPane fx:id="assetTypesListPane" layoutX="77.0" layoutY="94.0" minHeight="0.0" minWidth="0.0"
+                            prefHeight="740.0" prefWidth="1135.0" AnchorPane.bottomAnchor="0.0"
+                            AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="81.0">
+                    <children>
+                        <TableView fx:id="tableView" layoutX="9.0" layoutY="5.0" prefHeight="665.6" prefWidth="906.4"
+                                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                   AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <columns>
-                                <TableColumn fx:id="columnName" text="Name" />
-                                <TableColumn fx:id="columnArchivedAssets" text="Archived Assets" />
-                                <TableColumn fx:id="columnLiveAssets" text="Live Assets" />
-                                <TableColumn fx:id="columnFailed" text="Failed" />
-                                <TableColumn fx:id="columnWarning" text="Warning" />
-                                <TableColumn fx:id="columnCaution" text="Caution" />
-                                <TableColumn fx:id="columnAdvisory" text="Advisory" />
-                                <TableColumn fx:id="columnOk" text="OK" />
+                                <TableColumn fx:id="columnName" prefWidth="120.0" text="Name"/>
+                                <TableColumn fx:id="columnArchivedAssets" prefWidth="103.0" text="Archived Assets"/>
+                                <TableColumn fx:id="columnLiveAssets" prefWidth="89.0" text="Live Assets"/>
+                                <TableColumn fx:id="columnFailed" prefWidth="67.0" text="Failed"/>
+                                <TableColumn fx:id="columnWarning" prefWidth="81.0" text="Warning"/>
+                                <TableColumn fx:id="columnCaution" prefWidth="84.0" text="Caution"/>
+                                <TableColumn fx:id="columnAdvisory" prefWidth="90.0" text="Advisory"/>
+                                <TableColumn fx:id="columnOk" prefWidth="70.0" text="OK"/>
                             </columns>
                         </TableView>
                     </children>
@@ -93,4 +61,8 @@
             </children>
         </AnchorPane>
     </children>
+    <stylesheets>
+        <URL value="@css/revamp/assetType.css"/>
+        <URL value="@css/revamp/style.css"/>
+    </stylesheets>
 </AnchorPane>

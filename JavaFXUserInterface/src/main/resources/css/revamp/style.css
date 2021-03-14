@@ -1,0 +1,10 @@
+.header {
+    -fx-fill: #3A3A3A;
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-font-family: 'Segoe UI';
+}
+
+.container {
+    -fx-background-color: #FFFFFF;
+}

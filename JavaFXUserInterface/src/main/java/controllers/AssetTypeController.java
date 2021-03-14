@@ -7,7 +7,6 @@ package controllers;
 
 import app.item.AssetType;
 import external.AssetTypeDAOImpl;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -49,13 +48,7 @@ public class AssetTypeController implements Initializable {
 
     //Configure buttons
     @FXML
-    private Button assetMenuBtn;
-    @FXML
-    private Button assetTypeMenuBtn;
-    @FXML
     private Button addTypeBtn;
-    @FXML
-    private Button exitMenuBtn;
 
     private UIUtilities uiUtilities;
 
@@ -76,7 +69,7 @@ public class AssetTypeController implements Initializable {
         // When TableRow is clicked, send data to AssetTypeInfo scene.
         tableView.setRowFactory(tv -> {
             TableRow<AssetTypeList> row = new TableRow<>();
-            row.setOnMouseClicked(event -> uiUtilities.changeScene(event, row, "/AssetTypeInfo", row.getItem()));
+            row.setOnMouseClicked(event -> uiUtilities.changeScene(event, row, "/AssetTypeInfo", row.getItem(), row.getScene()));
             return row;
         });
         UIUtilities.autoResizeColumns(tableView);
@@ -127,16 +120,9 @@ public class AssetTypeController implements Initializable {
     public void attachEvents() {
         //set up the columns in the table
         attachColumnEvents();
-        //Attach ability to close program
-        exitMenuBtn.setOnMouseClicked(mouseEvent -> Platform.exit());
-        //Attach link to assetMenuButton to go to Assets.fxml
-        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE));
-
-        //Attach link to assetTypeMenuBtn to go to Utilities.AssetTypeList.fxml
-        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE));
 
         //Attach link to addTypeBtn to go to AddAssetType.fxml
-        addTypeBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/AddAssetType"));
+        addTypeBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/AddAssetType", addTypeBtn.getScene()));
     }
 
     /**

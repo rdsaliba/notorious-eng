@@ -1,5 +1,6 @@
 package app.item.parameter;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,10 +8,10 @@ public class ListParameter extends Parameter {
     private List<String> listValues;
     private String selectedValue;
 
-    public ListParameter(int paramID, String paramName, boolean isLive, boolean isDefault) {
-        super(paramID, paramName, isLive, isDefault);
-        this.listValues = new ArrayList<>();
-        this.selectedValue = null;
+    public ListParameter(String paramName, ArrayList<String> listValues, String selectedValue) {
+        super(paramName);
+        this.listValues = listValues;
+        this.selectedValue = selectedValue;
     }
 
     public void addToList(String value){
