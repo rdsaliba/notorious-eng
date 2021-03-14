@@ -272,7 +272,7 @@ public class AssetTypeInfoController implements Initializable {
         int trainAssets = (int) trainSlider.getValue() + 1;
         int testAssets = (int) trainSlider.getValue() + 1 + (int) testSlider.getValue();
         try {
-            ModelStrategy modelStrategy = modelDAO.getModelStrategy(associatedModelID,assetTypeID);
+            ModelStrategy modelStrategy = modelDAO.getModelStrategy(model.getModelID(),assetTypeID);
             modelStrategy.setTrainAssets(trainAssets);
             modelStrategy.setTestAssets(testAssets);
             modelDAO.updateModelStrategy(modelStrategy,associatedModelID,assetTypeID);
@@ -464,7 +464,7 @@ public class AssetTypeInfoController implements Initializable {
             Text RMSEValue = new Text();
             String rmseValueObject = modelDAO.getGetModelEvaluation(model.getModelID(), assetType.getId());
             SimpleStringProperty observableRMSEValue = new SimpleStringProperty(rmseValueObject);
-            rmseValue.textProperty().bind(observableRMSEValue);
+            RMSEValue.textProperty().bind(observableRMSEValue);
 
             HBox rmsePane = new HBox();
             rmsePane.getStyleClass().add("rmsePane");
@@ -488,8 +488,8 @@ public class AssetTypeInfoController implements Initializable {
             SimpleStringProperty s = model.getRMSE();
             RMSELabel.textProperty().bind(s);
             evaluateModelBtn.setId("SelectBtn");
-            rmseLabel.getStyleClass().add("rmseLabel");
-            rmseValue.getStyleClass().add("rmseValue");
+            RMSELabel.getStyleClass().add("rmseLabel");
+            RMSEValue.getStyleClass().add("rmseValue");
             evaluateModelBtn.getStyleClass().add("selectBtn");
 
             //Setting the Layout of the elements
@@ -497,19 +497,19 @@ public class AssetTypeInfoController implements Initializable {
             modelNameLabel.setLayoutY(35.0);
             modelDescriptionText.setLayoutX(15.0);
             modelDescriptionText.setLayoutY(80.0);
-            rmseLabel.setLayoutX(47.0);
-            rmseLabel.setLayoutY(239.0);
+            RMSELabel.setLayoutX(47.0);
+            RMSELabel.setLayoutY(239.0);
             rmsePane.setLayoutX(15.0);
             rmsePane.setLayoutY(243.0);
-            rmseValue.setLayoutX(50.0);
-            rmseValue.setLayoutY(100.0);
+            RMSEValue.setLayoutX(50.0);
+            RMSEValue.setLayoutY(100.0);
             evaluateModelBtn.setLayoutX(133.0);
             evaluateModelBtn.setLayoutY(243.0);
 
             modelPane.getChildren().add(modelNameLabel);
             modelPane.getChildren().add(modelDescriptionText);
-            rmsePane.getChildren().add(rmseValue);
-            modelPane.getChildren().add(rmseLabel);
+            rmsePane.getChildren().add(RMSEValue);
+            modelPane.getChildren().add(RMSELabel);
             modelPane.getChildren().add(rmsePane);
             modelPane.getChildren().add(evaluateModelBtn);
 
