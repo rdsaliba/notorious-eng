@@ -223,7 +223,6 @@ public class ModelController {
      * @author Paul
      */
     public Instances createInstancesFromAssets(List<Asset> assets) {
-        System.out.println("in create");
         ArrayList<Attribute> attributesVector;
         Instances data;
         double[] values;
