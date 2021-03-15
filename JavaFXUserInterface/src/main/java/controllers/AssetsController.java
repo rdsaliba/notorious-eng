@@ -153,7 +153,7 @@ public class AssetsController implements Initializable {
         });
 
         //Attach link to addAssetButton to go to AddAsset.fxml
-        addAssetBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(rulTimeline, mouseEvent, TextConstants.ADD_ASSETS, addAssetBtn.getScene()));
+        addAssetBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(rulTimeline, mouseEvent, TextConstants.ADD_ASSETS_SCENE, addAssetBtn.getScene()));
 
         sortingSetUp();
     }
