@@ -17,9 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ModelDAOImpl extends DAO implements ModelDAO {
-    private static final String GET_MODEL_FROM_ASSET_TYPE_ID = "SELECT * from trained_model, model WHERE trained_model.model_id = model.model_id AND trained_model.asset_type_id = ?";
-    private static final String GET_ALL_MODELS = "SELECT * from model";
-    private static final String GET_MODEL_EVALUATION = "SELECT rmse FROM model_evaluation WHERE model_id = ? AND asset_type_id = ?";
+    private static final String GET_MODEL_FROM_ASSET_TYPE_ID = "SELECT * from trained_model, model WHERE trained_model.model_id = model.model_id AND trained_model.asset_type_id = ? AND model.archived = 0";
+    private static final String GET_ALL_MODELS = "SELECT * from model WHERE archived = 0";
+    private static final String GET_MODEL_EVALUATION = "SELECT rmse FROM model_evaluation, model WHERE model_evaluation.model_id = model.model_id AND model_evaluation.model_id = ? AND model_evaluation.asset_type_id = ? AND model.archived = 0";
     private static final String INSERT_RMSE = "REPLACE INTO model_evaluation SET rmse = ?,model_id = ?, asset_type_id = ? ";
     private static final String UPDATE_MODEL_FOR_ASSET_TYPE = "UPDATE trained_model set model_id = ? where asset_type_id = ? AND status_id = 1";
     private static final String UPDATE_RETRAIN = "UPDATE trained_model SET retrain = true WHERE asset_type_id = ? AND status_id = 1";
