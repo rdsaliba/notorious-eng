@@ -7,37 +7,29 @@
         <artifactId>cbms</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-
     <artifactId>Server</artifactId>
     <packaging>jar</packaging>
     <version>1.0-SNAPSHOT</version>
-
     <modelVersion>4.0.0</modelVersion>
-
-
     <repositories>
         <repository>
             <id>local-maven-repo</id>
-            <url>file:///${project.basedir}\local-maven-repo</url>
+            <url>file:///${project.basedir}/local-maven-repo</url>
         </repository>
     </repositories>
-
     <dependencies>
-
         <dependency>
             <groupId>nz.ac.waikato.cms.weka</groupId>
             <artifactId>wekaDeeplearning4j</artifactId>
             <version>1.7.0</version>
             <scope>system</scope>
-            <systemPath>${pom.basedir}\local-maven-repo\nz\ac\waikato\cms\weka\wekaDeeplearning4j\1.7.0\wekaDeeplearning4j-1.7.0.jar
-            </systemPath>
+            <systemPath>${pom.basedir}/local-maven-repo/nz/ac/waikato/cms/weka/wekaDeeplearning4j/1.7.0/wekaDeeplearning4j-1.7.0.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>nz.ac.waikato.cms.weka</groupId>
             <artifactId>weka-stable</artifactId>
             <version>3.8.5</version>
         </dependency>
-
         <dependency>
             <groupId>org.deeplearning4j</groupId>
             <artifactId>deeplearning4j-parallel-wrapper</artifactId>
@@ -53,7 +45,6 @@
             <artifactId>reflections</artifactId>
             <version>0.9.10</version>
         </dependency>
-
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
@@ -85,11 +76,19 @@
             <artifactId>nd4j-native</artifactId>
             <version>1.0.0-beta7</version>
         </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.9</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.9</version>
+        </dependency>
     </dependencies>
-
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
-
 </project>

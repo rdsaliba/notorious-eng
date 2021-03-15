@@ -21,8 +21,8 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     private static final String GET_ALL_MODELS = "SELECT * from model";
     private static final String GET_MODEL_EVALUATION = "SELECT rmse FROM model_evaluation WHERE model_id = ? AND asset_type_id = ?";
     private static final String INSERT_RMSE = "REPLACE INTO model_evaluation SET rmse = ?,model_id = ?, asset_type_id = ? ";
-    private static final String UPDATE_MODEL_FOR_ASSET_TYPE = "UPDATE trained_model set model_id = ? where asset_type_id = ?";
-    private static final String UPDATE_RETRAIN = "UPDATE trained_model SET retrain = true WHERE asset_type_id = ?";
+    private static final String UPDATE_MODEL_FOR_ASSET_TYPE = "UPDATE trained_model set model_id = ? where asset_type_id = ? AND status_id = 1";
+    private static final String UPDATE_RETRAIN = "UPDATE trained_model SET retrain = true WHERE asset_type_id = ? AND status_id = 1";
 
     /**
      * Given a asset type id, this function will return the string corresponding
@@ -41,7 +41,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
                     name = rs.getString("name");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception getModelNameFromAssetTypeID(): ", e);
         }
         return name;
     }
@@ -55,17 +55,17 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
      */
     @Override
     public int getModelIDFromAssetTypeID(String assetTypeID) {
-        int ID = 0;
+        int modelID = 0;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_FROM_ASSET_TYPE_ID)) {
             ps.setString(1, assetTypeID);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next())
-                    ID = rs.getInt("model_id");
+                    modelID = rs.getInt("model_id");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception getModelsByAssetTypeID(): ", e);
         }
-        return ID;
+        return modelID;
     }
 
     /**
@@ -86,7 +86,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
 
             ps.executeQuery();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception in updateRMSE(), e");
         }
     }
 
@@ -110,7 +110,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception getAllModels(): ", e);
         }
         return modelList;
     }
@@ -130,7 +130,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
             ps.setString(2, assetTypeID);
             ps.executeQuery();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception updateRMSE(): ", e);
         }
     }
 
@@ -147,7 +147,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
             ps.setString(1, assetTypeID);
             ps.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception in setModelToTrain()");
         }
     }
 
@@ -170,7 +170,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
                     rmseValue = rs.getString("rmse");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception in getGetModelEvaluation()");
         }
         return rmseValue;
     }

@@ -4,7 +4,7 @@
   @author
   @last_edit 02/7/2020
  */
-package Utilities;
+package utilities;
 
 import java.text.DecimalFormat;
 

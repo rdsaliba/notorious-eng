@@ -6,10 +6,8 @@
   @author Jeff, Paul, Najim
   @last_edit 02/7/2020
  */
-package Controllers;
+package controllers;
 
-import Utilities.TextConstants;
-import Utilities.UIUtilities;
 import app.ModelController;
 import app.item.Asset;
 import external.AssetTypeDAOImpl;
@@ -32,14 +30,23 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import rul.assessment.AssessmentController;
+import utilities.TextConstants;
+import utilities.UIUtilities;
+
 import java.net.URL;
+import java.util.Comparator;
 import java.util.ResourceBundle;
 
 public class AssetsController implements Initializable {
+
     private static final String SORT_DEFAULT = "Order";
     private static final String SORT_RUL_ASC = "Ascending RUL";
     private static final String SORT_RUL_DESC = "Descending RUL";
+    private static final String SORT_CRITICAL_ASC = "Less Critical";
+    private static final String SORT_CRITICAL_DESC = "Most Critical";
     private static final String RECOMMENDATION = "Recommendation";
     private static final String LINEAR_RUL = "Linear RUL";
     private static final String TYPE_COL = "Type";
@@ -51,10 +58,15 @@ public class AssetsController implements Initializable {
     private static final String CATEGORY_COL = "Category";
     private static final String SITE_COL = "Site";
     private static final String DESCRIPTION_COL = "Description";
-
     private final AssetTypeDAOImpl assetTypeDAO;
     private final ModelDAOImpl modelDAO;
 
+    Logger logger = LoggerFactory.getLogger(AssetsController.class);
+
+    @FXML
+    private Button assetMenuBtn;
+    @FXML
+    private Button assetTypeMenuBtn;
     @FXML
     private Button addAssetBtn;
     @FXML
@@ -67,10 +79,11 @@ public class AssetsController implements Initializable {
     private Tab listTab;
     @FXML
     private ChoiceBox<String> sortAsset;
+
     private UIUtilities uiUtilities;
     private ObservableList<Asset> assets;
     private Timeline rulTimeline;
-    private TableView<Asset> table;
+    private final TableView<Asset> table;
 
     public AssetsController() {
         assetTypeDAO = new AssetTypeDAOImpl();
@@ -80,7 +93,7 @@ public class AssetsController implements Initializable {
         try {
             assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Exception: ", e);
         }
     }
 
@@ -142,10 +155,17 @@ public class AssetsController implements Initializable {
         //Attach link to addAssetButton to go to AddAsset.fxml
         addAssetBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(rulTimeline, mouseEvent, TextConstants.ADD_ASSETS, addAssetBtn.getScene()));
 
+        sortingSetUp();
+    }
+
+    private void sortingSetUp() {
         //Adding items to the choiceBox (drop down list)
         sortAsset.getItems().add(SORT_DEFAULT);
         sortAsset.getItems().add(SORT_RUL_ASC);
         sortAsset.getItems().add(SORT_RUL_DESC);
+        sortAsset.getItems().add(SORT_CRITICAL_ASC);
+        sortAsset.getItems().add(SORT_CRITICAL_DESC);
+
         //Default Value
         sortAsset.setValue(SORT_DEFAULT);
         //Listener on the sort ChoiceBox. Depending on the sort selected, all systems panes are cleared and generated again
@@ -158,10 +178,14 @@ public class AssetsController implements Initializable {
                     FXCollections.sort(assets, (asset, t1) -> Double.valueOf(asset.getRul().getValue()).compareTo(Double.valueOf(t1.getRul().getValue())));
                 } else if (newValue.equals(SORT_RUL_DESC)) {
                     FXCollections.sort(assets, (asset, t1) -> Double.valueOf(t1.getRul().getValue()).compareTo(Double.valueOf(asset.getRul().getValue())));
+                } else if (newValue.equals(SORT_CRITICAL_ASC)) {
+                    FXCollections.sort(assets, Comparator.comparingInt(Asset::mapCriticality));
+                } else if (newValue.equals(SORT_CRITICAL_DESC)) {
+                    FXCollections.sort(assets, (asset, t1) -> Integer.compare(t1.mapCriticality(), asset.mapCriticality()));
                 }
+
                 assetsThumbPane.getChildren().clear();
                 generateThumbnails();
-
             }
         });
     }
@@ -207,15 +231,15 @@ public class AssetsController implements Initializable {
             recommendationLabel.getStyleClass().add("statusLabel");
             recommendation.getStyleClass().add("statusValue");
             statusPane.getStyleClass().add("statusPane");
-            if(asset.getRecommendation().equals("Ok"))
+            if (asset.getRecommendation().equals("Ok"))
                 statusPane.getStyleClass().add("ok");
-            else if(asset.getRecommendation().equals("Advisory"))
+            else if (asset.getRecommendation().equals("Advisory"))
                 statusPane.getStyleClass().add("advisory");
-            else if(asset.getRecommendation().equals("Caution"))
+            else if (asset.getRecommendation().equals("Caution"))
                 statusPane.getStyleClass().add("caution");
-            else if(asset.getRecommendation().equals("Warning"))
+            else if (asset.getRecommendation().equals("Warning"))
                 statusPane.getStyleClass().add("warning");
-            else if(asset.getRecommendation().equals("Failed"))
+            else if (asset.getRecommendation().equals("Failed"))
                 statusPane.getStyleClass().add("failed");
             else
                 statusPane.getStyleClass().add("none");
@@ -271,7 +295,6 @@ public class AssetsController implements Initializable {
             return row;
         });
 
-        String TYPE_COL = "Type";
         TableColumn<Asset, String> assetTypeCol = new TableColumn<>(TYPE_COL);
         assetTypeCol.setCellValueFactory(cellData -> new SimpleStringProperty(
                 cellData.getValue().getAssetTypeName()));
@@ -322,11 +345,4 @@ public class AssetsController implements Initializable {
         assetsListPane.getChildren().addAll(table);
     }
 
-    /**
-     * Stops the timeline
-     */
-    private void closeTimeline() {
-        if (rulTimeline != null)
-            rulTimeline.stop();
-    }
 }

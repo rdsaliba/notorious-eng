@@ -8,12 +8,18 @@
  */
 package external;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class DAO {
+
+    static Logger logger = LoggerFactory.getLogger(DAO.class);
+
     DatabaseConnection databaseConnection;
 
     public DAO() {
@@ -29,7 +35,7 @@ public class DAO {
         try (PreparedStatement ps = getConnection().prepareStatement(query)) {
             rs = ps.executeQuery();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception: ", e);
         }
         return rs;
     }

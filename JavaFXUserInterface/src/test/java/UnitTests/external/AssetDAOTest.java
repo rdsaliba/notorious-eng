@@ -30,10 +30,4 @@ public class AssetDAOTest {
         assertEquals(100, archivedAssetList.size());
         assertEquals(97, liveAssetList.size());
     }
-
-    @Test
-    public void getAllLiveAssetsTest() {
-        List<Asset> allLiveAssetList = assetDAO.getAllLiveAssets();
-        assertEquals(704, allLiveAssetList.size());
-    }
 }

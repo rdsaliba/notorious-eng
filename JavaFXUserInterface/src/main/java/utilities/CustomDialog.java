@@ -1,4 +1,4 @@
-package Utilities;
+package utilities;
 
 
 import app.item.Asset;
@@ -94,14 +94,15 @@ public class CustomDialog extends Stage {
         dialog.openDialog();
 
     }
+
     /**
      * This static functions creates and shows a custom dialog meant for archiving assets. It gets shown whenever
      * the archive button is pressed. The user will be able to determine the last RUL time cycle for the asset
      * specified. Saving the selection will delete all time cycles after the selected one and will archive the
      * asset.
      *
-     * @param mouseEvent click mouse event
-     * @param asset is the asset to be archived
+     * @param mouseEvent     click mouse event
+     * @param asset          is the asset to be archived
      * @param parentSceneBtn is a button from the parent scene of the custom dialog window
      * @author Jeremie
      */
@@ -127,8 +128,8 @@ public class CustomDialog extends Stage {
      * the given asset to return the list of time cycles with attribute values available for that asset. This
      * functions allows to keep track of the selected time cycle.
      *
-     * @param asset is the asset to be archived
-     * @param dialog is the parent custom dialog holding the label and ComboBox
+     * @param asset         is the asset to be archived
+     * @param dialog        is the parent custom dialog holding the label and ComboBox
      * @param selectedCycle is the selected option in the ComboBox list
      * @author Jeremie
      */

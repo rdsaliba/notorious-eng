@@ -5,11 +5,8 @@
   @author Jeff, Paul, Roy
   @last_edit 02/7/2020
  */
-package Controllers;
+package controllers;
 
-import Utilities.CustomDialog;
-import Utilities.TextConstants;
-import Utilities.UIUtilities;
 import app.item.Asset;
 import app.item.AssetAttribute;
 import app.item.Measurement;
@@ -38,10 +35,16 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import rul.assessment.AssessmentController;
+import utilities.CustomDialog;
+import utilities.TextConstants;
+import utilities.UIUtilities;
 
 import java.net.URL;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -52,6 +55,7 @@ public class AssetInfoController implements Initializable {
     private static final String CYCLE = "Cycle";
 
     private static final int ATTRIBUTE_GRAPH_SIZE = 5;
+    static Logger logger = LoggerFactory.getLogger(AssetInfoController.class);
     @FXML
     private Button deleteBtn;
     @FXML
@@ -242,30 +246,20 @@ public class AssetInfoController implements Initializable {
     }
 
     /**
-     * Send the asset ID to the Database class in order for it to be deleted.
-     *
-     * @author Jeff
-     */
-    public void deleteAsset() {
-        assetDAOImpl.deleteAssetByID(asset.getId());
-    }
-
-    /**
      * Fill the raw data table with the current measurement for the asset and update the list every
      * second with new measurement as they come in
      *
      * @author Paul
      */
     public void generateRawDataTable() {
-        TableView<ObservableList> tableview = new TableView<>();
-        ObservableList<ObservableList> data = FXCollections.observableArrayList();
+        TableView<ObservableList<String>> tableview = new TableView<>();
+        ObservableList<ObservableList<String>> data = FXCollections.observableArrayList();
         AtomicInteger lastCycle = new AtomicInteger();
-        ResultSet resultSet = assetDAOImpl.createMeasurementsFromAssetIdAndTime(asset.getId(), lastCycle.get());
-        try {
+        try (ResultSet resultSet = assetDAOImpl.createMeasurementsFromAssetIdAndTime(asset.getId(), lastCycle.get())) {
             for (int i = 0; i < resultSet.getMetaData().getColumnCount(); i++) {
                 final int j = i;
-                TableColumn<ObservableList, String> col = new TableColumn(resultSet.getMetaData().getColumnName(i + 1));
-                col.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(j).toString()));
+                TableColumn<ObservableList<String>, String> col = new TableColumn<>(resultSet.getMetaData().getColumnName(i + 1));
+                col.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(j)));
                 tableview.getColumns().addAll(col);
             }
 
@@ -279,9 +273,9 @@ public class AssetInfoController implements Initializable {
             timelines.add(timeline);
 
             tableview.setItems(data);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Error on Building Data");
+        } catch (SQLException e) {
+            logger.error("Error on Building Data");
+            logger.error("Exception: ", e);
         }
 
 
@@ -303,9 +297,8 @@ public class AssetInfoController implements Initializable {
      *
      * @author Paul
      */
-    private void updateRawTableView(ObservableList<ObservableList> data, AtomicInteger lastCycle) {
-        ResultSet rs = assetDAOImpl.createMeasurementsFromAssetIdAndTime(asset.getId(), lastCycle.get());
-        try {
+    private void updateRawTableView(ObservableList<ObservableList<String>> data, AtomicInteger lastCycle) {
+        try (ResultSet rs = assetDAOImpl.createMeasurementsFromAssetIdAndTime(asset.getId(), lastCycle.get())) {
             while (rs.next()) {
                 ObservableList<String> row = FXCollections.observableArrayList();
                 for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
@@ -313,9 +306,8 @@ public class AssetInfoController implements Initializable {
                 }
                 data.add(0, row);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            System.out.println("Error on Building Data");
+        } catch (SQLException e) {
+            logger.error("Error on Building Data: ", e);
         }
         lastCycle.set(data.size());
     }

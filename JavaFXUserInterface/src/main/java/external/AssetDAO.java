@@ -12,18 +12,13 @@ import app.item.AssetInfo;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public interface AssetDAO {
 
     void deleteAssetByID(int assetID);
 
-    ArrayList<Asset> getAllLiveAssets();
-
     void insertAsset(Asset asset);
-
-    Asset createAssetFromQueryResult(ResultSet assetsQuery) throws SQLException;
 
     AssetInfo createAssetInfo(int assetID);
 
