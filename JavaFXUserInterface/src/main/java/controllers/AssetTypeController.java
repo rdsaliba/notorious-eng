@@ -16,6 +16,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import utilities.AssetTypeList;
 import utilities.TextConstants;
 import utilities.UIUtilities;
@@ -49,12 +50,16 @@ public class AssetTypeController implements Initializable {
     //Configure buttons
     @FXML
     private Button addTypeBtn;
+    @FXML
+    private AnchorPane root;
 
     private UIUtilities uiUtilities;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         uiUtilities = new UIUtilities();
+        root.setOpacity(0);
+        uiUtilities.fadeInTransition(root);
         attachEvents();
         fillAssetTypeTable();
     }

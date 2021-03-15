@@ -92,6 +92,8 @@ public class AssetTypeInfoController implements Initializable {
     private ArrayList<Button> evaluateButtons;
     @FXML
     private Label associatedModelLabel;
+    @FXML
+    private AnchorPane root;
     private ObservableList<Model> modelObservableList;
     private int associatedModelID;
     private UIUtilities uiUtilities;
@@ -110,6 +112,8 @@ public class AssetTypeInfoController implements Initializable {
         modelDAO = new ModelDAOImpl();
         assetDAO = new AssetDAOImpl();
         assetsList = new ArrayList<>();
+        root.setOpacity(0);
+        uiUtilities.fadeInTransition(root);
         try {
             attachEvents();
         } catch (Exception exception) {

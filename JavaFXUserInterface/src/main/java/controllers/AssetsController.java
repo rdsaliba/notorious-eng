@@ -79,6 +79,8 @@ public class AssetsController implements Initializable {
     private Tab listTab;
     @FXML
     private ChoiceBox<String> sortAsset;
+    @FXML
+    private AnchorPane root;
 
     private UIUtilities uiUtilities;
     private ObservableList<Asset> assets;
@@ -91,7 +93,7 @@ public class AssetsController implements Initializable {
         table = new TableView<>();
 
         try {
-            assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
+            assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets().subList(0, 40));
         } catch (Exception e) {
             logger.error("Exception: ", e);
         }
@@ -108,7 +110,8 @@ public class AssetsController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         uiUtilities = new UIUtilities();
-
+        root.setOpacity(0);
+        uiUtilities.fadeInTransition(root);
         attachEvents();
         updateRULs();
         generateThumbnails();

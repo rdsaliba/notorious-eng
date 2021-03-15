@@ -92,6 +92,8 @@ public class AssetInfoController implements Initializable {
     private Tab rawDataTab;
     @FXML
     private AnchorPane rawDataListPane;
+    @FXML
+    private AnchorPane root;
     private Asset asset;
     private AssetDAOImpl assetDAOImpl;
     private AssetTypeDAOImpl assetTypeDAOImpl;
@@ -116,6 +118,8 @@ public class AssetInfoController implements Initializable {
         attributeDAOImpl = new AttributeDAOImpl();
         uiUtilities = new UIUtilities();
         timelines = new ArrayList<>();
+        root.setOpacity(0);
+        uiUtilities.fadeInTransition(root);
         setupArchiveBtn();
         attachEvents();
     }

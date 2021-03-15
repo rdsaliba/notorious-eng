@@ -61,6 +61,9 @@ public class AddAssetController implements Initializable {
     private TextField locationInput;
     @FXML
     private AnchorPane inputError;
+    @FXML
+    private AnchorPane root;
+
     private AssetDAOImpl assetDAOImpl;
     private AssetTypeDAOImpl assetTypeDAOImpl;
     private UIUtilities uiUtilities;
@@ -79,6 +82,8 @@ public class AddAssetController implements Initializable {
         assetDAOImpl = new AssetDAOImpl();
         assetTypeDAOImpl = new AssetTypeDAOImpl();
         uiUtilities = new UIUtilities();
+        root.setOpacity(0);
+        uiUtilities.fadeInTransition(root);
         attachEvents();
         initializeFieldValues();
         assetDescriptionTextArea.setWrapText(true);

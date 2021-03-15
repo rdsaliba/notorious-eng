@@ -48,6 +48,8 @@ public class AddAssetTypeController implements Initializable {
     private TextField thresholdFailedValue;
     @FXML
     private AnchorPane inputError;
+    @FXML
+    private AnchorPane root;
     private UIUtilities uiUtilities;
     private AssetTypeDAOImpl db;
     private ArrayList<AssetTypeParameter> assetTypeParameters;
@@ -67,6 +69,8 @@ public class AddAssetTypeController implements Initializable {
         uiUtilities = new UIUtilities();
         db = new AssetTypeDAOImpl();
         assetTypeParameters = new ArrayList<>();
+        root.setOpacity(0);
+        uiUtilities.fadeInTransition(root);
         attachEvents();
     }
 

@@ -9,6 +9,7 @@ package utilities;
 import app.item.Asset;
 import controllers.AssetInfoController;
 import controllers.AssetTypeInfoController;
+import javafx.animation.FadeTransition;
 import javafx.animation.Timeline;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -17,6 +18,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -151,6 +153,8 @@ public class UIUtilities {
      * @author Jeff
      */
     public void changeScene(MouseEvent mouseEvent, String fxmlFileName, Scene scene) {
+        AnchorPane rootPane = (AnchorPane) scene.getRoot().lookup("root");
+        FadeTransition ft = fadeOut(rootPane);
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource(fxmlFileName + FXML));
@@ -159,6 +163,7 @@ public class UIUtilities {
         } catch (IOException e) {
             logger.error("Exception in changeScene(): ", e);
         }
+        ft.play();
     }
 
     /**
@@ -187,6 +192,8 @@ public class UIUtilities {
      * @author Najim, Jeff
      */
     public void changeScene(MouseEvent mouseEvent, TableRow<AssetTypeList> row, String fxmlFileName, AssetTypeList assetType, Scene scene) {
+        AnchorPane rootPane = (AnchorPane) scene.getRoot().lookup("root");
+        FadeTransition ft = fadeOut(rootPane);
         row.getScene().getWindow();
         try {
             if (!row.isEmpty()) {
@@ -200,6 +207,7 @@ public class UIUtilities {
         } catch (IOException e) {
             logger.error("Exception in changeScene 2: ", e);
         }
+        ft.play();
     }
 
     /**
@@ -212,7 +220,8 @@ public class UIUtilities {
      * @author Paul, Jeff
      */
     public void changeScene(MouseEvent mouseEvent, String fxmlFileName, Asset asset, Scene scene) {
-
+        AnchorPane rootPane = (AnchorPane) scene.getRoot().lookup("root");
+        FadeTransition ft = fadeOut(rootPane);
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource(fxmlFileName + FXML));
@@ -224,6 +233,7 @@ public class UIUtilities {
         } catch (IOException e) {
             logger.error("Exception in changeScene 3: ", e);
         }
+        ft.play();
     }
 
     /**
@@ -238,5 +248,37 @@ public class UIUtilities {
     public void changeScene(Timeline timeline, MouseEvent mouseEvent, String s, Scene scene) {
         timeline.stop();
         changeScene(mouseEvent, s, scene);
+    }
+
+    /**
+     * Creates a fade out animation
+     *
+     * @param rootPane Root AnchorPane of the view/page
+     * @return FadeTransition object
+     * @author Najim
+     */
+    public FadeTransition fadeOut(AnchorPane rootPane) {
+        FadeTransition ft = new FadeTransition();
+        ft.setDuration(Duration.millis(700));
+        ft.setNode(rootPane);
+        ft.setFromValue(1);
+        ft.setToValue(0);
+
+        return ft;
+    }
+
+    /**
+     * Creates a fade in animation
+     *
+     * @param rootPane Root AnchorPane of the view/page
+     * @author Najim
+     */
+    public void fadeInTransition(AnchorPane rootPane) {
+        FadeTransition ft = new FadeTransition();
+        ft.setDuration(Duration.millis(700));
+        ft.setNode(rootPane);
+        ft.setFromValue(0);
+        ft.setToValue(1);
+        ft.play();
     }
 }
