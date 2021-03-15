@@ -94,6 +94,8 @@ public class AssetTypeInfoController extends Controller implements Initializable
 
     private ObservableList<TrainedModel> modelObservableList;
     private ObservableList<Pane> modelPaneObservableList;
+    @javafx.fxml.FXML
+    private AnchorPane root;
     private int associatedModelID;
 
     private UIUtilities uiUtilities;
@@ -111,6 +113,8 @@ public class AssetTypeInfoController extends Controller implements Initializable
         modelDAO = new ModelDAOImpl();
         assetDAO = new AssetDAOImpl();
         assetsList = new ArrayList<>();
+        root.setOpacity(0);
+        uiUtilities.fadeInTransition(root);
         try {
             attachEvents();
         } catch (Exception exception) {

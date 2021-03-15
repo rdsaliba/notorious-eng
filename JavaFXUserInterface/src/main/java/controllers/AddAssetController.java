@@ -66,6 +66,11 @@ public class AddAssetController extends Controller implements Initializable {
     private ImageView imageView;
     @FXML
     private AnchorPane addAssetInformationAnchorPane;
+    @FXML
+    private AnchorPane inputError;
+    @FXML
+    private AnchorPane root;
+
     private AssetDAOImpl assetDAOImpl;
     private AssetTypeDAOImpl assetTypeDAOImpl;
     private UIUtilities uiUtilities;
@@ -90,6 +95,8 @@ public class AddAssetController extends Controller implements Initializable {
         assetDAOImpl = new AssetDAOImpl();
         assetTypeDAOImpl = new AssetTypeDAOImpl();
         uiUtilities = new UIUtilities();
+        root.setOpacity(0);
+        uiUtilities.fadeInTransition(root);
         attachEvents();
         initializeFieldValues();
         assetDescriptionInput.setWrapText(true);

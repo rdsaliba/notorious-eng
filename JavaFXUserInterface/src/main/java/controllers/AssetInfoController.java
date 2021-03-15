@@ -100,7 +100,9 @@ public class AssetInfoController extends Controller implements Initializable {
     private AnchorPane assetInfoPane;
     @FXML
     private ImageView imageView;
-  
+
+    @FXML
+    private AnchorPane root;
     private Asset asset;
     private AssetDAOImpl assetDAOImpl;
     private AssetTypeDAOImpl assetTypeDAOImpl;
@@ -124,6 +126,8 @@ public class AssetInfoController extends Controller implements Initializable {
         modelDAO = new ModelDAOImpl();
         attributeDAOImpl = new AttributeDAOImpl();
         uiUtilities = new UIUtilities();
+        root.setOpacity(0);
+        uiUtilities.fadeInTransition(root);
         setupArchiveBtn();
         attachEvents();
     }

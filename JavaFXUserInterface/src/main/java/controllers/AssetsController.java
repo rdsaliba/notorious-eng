@@ -89,6 +89,9 @@ public class AssetsController extends Controller implements Initializable {
     @FXML
     private TabPane assetsTabPane;
     private String searchMatch = "No Search"; // search states to help display the right asset list: No Search / Match / No Match
+    @FXML
+    private AnchorPane root;
+
     private UIUtilities uiUtilities;
     private ObservableList<Asset> assets;
     private ObservableList<Asset> searchedAssets;
@@ -102,7 +105,7 @@ public class AssetsController extends Controller implements Initializable {
         assetTypeFilterCondition = new HashMap<>();
         thresholdFilterCondition = new HashMap<>();
         try {
-            assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
+            assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets().subList(0, 40));
         } catch (Exception e) {
             logger.error("Exception: ", e);
         }
@@ -119,7 +122,8 @@ public class AssetsController extends Controller implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         uiUtilities = new UIUtilities();
-
+        root.setOpacity(0);
+        uiUtilities.fadeInTransition(root);
         attachEvents();
         updateRULs();
         generateThumbnails();
