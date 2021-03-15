@@ -272,7 +272,7 @@ public class AssetTypeInfoController implements Initializable {
         int trainAssets = (int) trainSlider.getValue() + 1;
         int testAssets = (int) trainSlider.getValue() + 1 + (int) testSlider.getValue();
         try {
-            ModelStrategy modelStrategy = modelDAO.getModelStrategy(model.getModelID(),assetTypeID);
+            ModelStrategy modelStrategy = modelDAO.getModelStrategy(associatedModelID,assetTypeID);
             modelStrategy.setTrainAssets(trainAssets);
             modelStrategy.setTestAssets(testAssets);
             modelDAO.updateModelStrategy(modelStrategy,associatedModelID,assetTypeID);
@@ -488,6 +488,11 @@ public class AssetTypeInfoController implements Initializable {
             SimpleStringProperty s = model.getRMSE();
             RMSELabel.textProperty().bind(s);
             evaluateModelBtn.setId("SelectBtn");
+
+            modelPane.getChildren().add(modelNameLabel);
+            modelPane.getChildren().add(modelDescriptionText);
+            modelPane.getChildren().add(RMSELabel);
+            modelPane.getChildren().add(RMSEValue);
             RMSELabel.getStyleClass().add("rmseLabel");
             RMSEValue.getStyleClass().add("rmseValue");
             evaluateModelBtn.getStyleClass().add("selectBtn");
@@ -505,12 +510,6 @@ public class AssetTypeInfoController implements Initializable {
             RMSEValue.setLayoutY(100.0);
             evaluateModelBtn.setLayoutX(133.0);
             evaluateModelBtn.setLayoutY(243.0);
-
-            modelPane.getChildren().add(modelNameLabel);
-            modelPane.getChildren().add(modelDescriptionText);
-            rmsePane.getChildren().add(RMSEValue);
-            modelPane.getChildren().add(RMSELabel);
-            modelPane.getChildren().add(rmsePane);
             modelPane.getChildren().add(evaluateModelBtn);
 
             modelPaneObservableList.add(modelPane);

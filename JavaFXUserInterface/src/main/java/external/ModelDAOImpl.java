@@ -26,8 +26,6 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     private static final String GET_LATEST_RMSE = "SELECT rmse from trained_model WHERE model_id=? AND asset_type_id=? AND status_id=2";
     private static final String GET_MODEL_STRATEGY = "SELECT serialized_model from trained_model WHERE model_id=? AND asset_type_id=? AND status_id=2";
     private static final String UPDATE_MODEL_STRATEGY = "UPDATE trained_model SET serialized_model=?,retrain=true WHERE model_id = ? AND asset_type_id = ? and status_id = 2";
-    private static final String GET_MODEL_EVALUATION = "SELECT rmse FROM model_evaluation WHERE model_id = ? AND asset_type_id = ?";
-    private static final String INSERT_RMSE = "REPLACE INTO model_evaluation SET rmse = ?,model_id = ?, asset_type_id = ? ";
     private static final String UPDATE_MODEL_FOR_ASSET_TYPE = "UPDATE trained_model set model_id = ? where asset_type_id = ? AND status_id = 1";
     private static final String UPDATE_RETRAIN = "UPDATE trained_model SET retrain = true WHERE asset_type_id = ? AND status_id = 1";
 

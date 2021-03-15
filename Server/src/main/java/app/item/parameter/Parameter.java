@@ -1,6 +1,8 @@
 package app.item.parameter;
 
-public class Parameter {
+import java.io.Serializable;
+
+public class Parameter implements Serializable {
     private String paramName;
 
     public Parameter(String paramName) {
