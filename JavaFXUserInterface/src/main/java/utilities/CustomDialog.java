@@ -24,6 +24,9 @@ import javafx.stage.StageStyle;
 
 public class CustomDialog extends Stage {
 
+    // Labels Constants
+    private static final String SAVE_LABEL = "Save";
+    private static final String TIME_CYCLE_LABEL = "Time cycle:";
     private static final UIUtilities uiUtilities = new UIUtilities();
     private final Button btn;
     private final Pane root;
@@ -113,7 +116,7 @@ public class CustomDialog extends Stage {
 
         generateTimeCycleSelection(asset, dialog, selectedCycle);
 
-        dialog.getOkButton().setText("Save");
+        dialog.getOkButton().setText(SAVE_LABEL);
         dialog.getOkButton().setOnAction(e -> {
             assetDAO.deleteAssetMeasurementsAfterTimeCycle(asset.getId(), selectedCycle[0]);
             assetDAO.setAssetToBeArchived(asset.getId());
@@ -135,7 +138,7 @@ public class CustomDialog extends Stage {
      */
     private static void generateTimeCycleSelection(Asset asset, CustomDialog dialog, Integer[] selectedCycle) {
         // Time Cycle Label Creation and Configuration
-        Label timeCycleLabel = new Label("Time Cycle:");
+        Label timeCycleLabel = new Label(TIME_CYCLE_LABEL);
         timeCycleLabel.setLayoutX(50);
         timeCycleLabel.setLayoutY(105);
 

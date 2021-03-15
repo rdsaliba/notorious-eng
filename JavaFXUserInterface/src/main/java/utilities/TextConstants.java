@@ -12,7 +12,7 @@ public class TextConstants {
 
     // Scene Text Constants
     public static final String ASSETS_SCENE = "/Assets";
-    public static final String ADD_ASSETS = "/AddAsset";
+    public static final String ADD_ASSETS_SCENE = "/AddAsset";
     public static final String ASSET_TYPE_LIST_SCENE = "/AssetTypeList";
 
     // Asset Type Thresholds Text Constants
@@ -22,7 +22,7 @@ public class TextConstants {
     public static final String WARNING_THRESHOLD = "Warning";
     public static final String FAILED_THRESHOLD = "Failed";
 
-    // Custom Dialog Test Constants
+    // Custom Dialog Text Constants
     public static final String ALERT_HEADER = "Confirmation of system deletion";
     public static final String ALERT_CONTENT = "Are you sure you want to delete this system?";
 
