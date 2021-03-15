@@ -446,7 +446,7 @@ public class AssetTypeInfoController implements Initializable {
      * @author Jeremie
      */
     public void generateThumbnails() {
-        ObservableList<Pane> modelPaneObservableList = FXCollections.observableArrayList();
+            ObservableList<Pane> modelPaneObservableList = FXCollections.observableArrayList();
 
         for (Model model : modelObservableList) {
             // Creating a Thumbnail element
@@ -460,11 +460,11 @@ public class AssetTypeInfoController implements Initializable {
             // Generating items to display for the Thumbnail
             Text modelNameLabel = new Text(model.getModelName());
             Text modelDescriptionText = new Text(model.getDescription());
-            Text RMSELabel = new Text(RMSE + ": ");
-            Text RMSEValue = new Text();
+            Text rmseLabel = new Text(RMSE);
+            Text rmseValue = new Text();
             String rmseValueObject = modelDAO.getGetModelEvaluation(model.getModelID(), assetType.getId());
             SimpleStringProperty observableRMSEValue = new SimpleStringProperty(rmseValueObject);
-            RMSEValue.textProperty().bind(observableRMSEValue);
+            rmseValue.textProperty().bind(observableRMSEValue);
 
             HBox rmsePane = new HBox();
             rmsePane.getStyleClass().add("rmsePane");
@@ -478,23 +478,13 @@ public class AssetTypeInfoController implements Initializable {
                 saveModelToEvaluate(model);
             });
 
-
             //Setting IDs for the elements
             modelNameLabel.getStyleClass().add("modelName");
             modelDescriptionText.setId("modelDescriptionText");
-            RMSELabel.setId("RMSELabel");
-            RMSEValue.setId("RMSEValue");
-            RMSELabel.setId("RMSEText");
+            rmseLabel.getStyleClass().add("rmseLabel");
+            rmseValue.getStyleClass().add("rmseValue");
             SimpleStringProperty s = model.getRMSE();
-            RMSELabel.textProperty().bind(s);
-            evaluateModelBtn.setId("SelectBtn");
-
-            modelPane.getChildren().add(modelNameLabel);
-            modelPane.getChildren().add(modelDescriptionText);
-            modelPane.getChildren().add(RMSELabel);
-            modelPane.getChildren().add(RMSEValue);
-            RMSELabel.getStyleClass().add("rmseLabel");
-            RMSEValue.getStyleClass().add("rmseValue");
+            rmseValue.textProperty().bind(s);
             evaluateModelBtn.getStyleClass().add("selectBtn");
 
             //Setting the Layout of the elements
@@ -502,25 +492,26 @@ public class AssetTypeInfoController implements Initializable {
             modelNameLabel.setLayoutY(35.0);
             modelDescriptionText.setLayoutX(15.0);
             modelDescriptionText.setLayoutY(80.0);
-            RMSELabel.setLayoutX(47.0);
-            RMSELabel.setLayoutY(239.0);
+            rmseLabel.setLayoutX(47.0);
+            rmseLabel.setLayoutY(239.0);
             rmsePane.setLayoutX(15.0);
             rmsePane.setLayoutY(243.0);
-            RMSEValue.setLayoutX(50.0);
-            RMSEValue.setLayoutY(100.0);
+            rmseValue.setLayoutX(30.0);
+            rmseValue.setLayoutY(265.0);
             evaluateModelBtn.setLayoutX(133.0);
             evaluateModelBtn.setLayoutY(243.0);
+
+            modelPane.getChildren().add(modelNameLabel);
+            modelPane.getChildren().add(modelDescriptionText);
+            modelPane.getChildren().add(rmseLabel);
+            modelPane.getChildren().add(rmsePane);
+            modelPane.getChildren().add(rmseValue);
             modelPane.getChildren().add(evaluateModelBtn);
 
             modelPaneObservableList.add(modelPane);
         }
         modelPanes.setModelThumbnailsContainerPane(modelPaneObservableList, modelsThumbPane);
         modelPanes.highlightAssociatedModel(modelPaneObservableList, associatedModelID);
-    }
-
-    private void updateThumbnails() {
-        modelsThumbPane.getChildren().removeAll();
-        generateThumbnails();
     }
 
     /**
