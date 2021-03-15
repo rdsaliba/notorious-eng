@@ -9,6 +9,7 @@ package local;
 
 import app.item.TrainedModel;
 import rul.models.ModelStrategy;
+import utilities.Constants;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -23,6 +24,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     private static final String GET_SERIALIZE_OBJECT = "SELECT * FROM trained_model, model WHERE trained_model.model_id = model.model_id AND trained_model.retrain = true AND model.archived = 0";
     private static final String GET_MODEL_NAME_FROM_ID = "SELECT name from model where model.model_id = ? AND model.archived = 0";
     private static final String GET_MODEL_FROM_ASSET_TYPE = "SELECT * FROM trained_model, model WHERE trained_model.model_id = model.model_id AND trained_model.asset_type_id = ? and trained_model.status_id = ? AND model.archived = 0";
+    private static final String INSERT_RMSE = "UPDATE trained_model SET rmse = ?, retrain = 0 WHERE model_id = ? AND asset_type_id = ? AND status_id=? ";
 
     /**
      * Given a model id, this function will return the string corresponding
@@ -77,15 +79,12 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
      */
     @Override
     public void setModelToTrain(TrainedModel tm) {
-        try {
-            try (PreparedStatement ps = getConnection().prepareStatement(UPDATE_SERIALIZE_OBJECT)) {
-                ps.setObject(1, tm.getModelStrategy());
-                ps.setInt(2, tm.getModelID());
-                ps.setInt(3, tm.getAssetTypeID());
-                ps.setInt(4, tm.getStatusID());
-                ps.executeUpdate();
-            }
-
+        try (PreparedStatement ps = getConnection().prepareStatement(UPDATE_SERIALIZE_OBJECT)) {
+            ps.setObject(1, tm.getModelStrategy());
+            ps.setInt(2, tm.getModelID());
+            ps.setInt(3, tm.getAssetTypeID());
+            ps.setInt(4, tm.getStatusID());
+            ps.executeUpdate();
         } catch (SQLException e) {
             logger.error("Exception setModelsToTrain(): ", e);
         }
@@ -139,5 +138,28 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
             return null;
         }
         return tm;
+    }
+
+    /**
+     * Given a RMSE model evaluation value for a specific model applied to a specific asset type,
+     * this function will updated the RMSE value in the database in the trained model table.
+     *
+     * @param rmse        is the value of the model evaluation (root mean square error)
+     * @param modelId     is the model ID of the specific model
+     * @param assetTypeId is the asset type ID of the specific asset type
+     * @author Talal
+     */
+    @Override
+    public void updateEvaluationRMSE(Double rmse, int modelId, int assetTypeId) {
+        try (PreparedStatement ps = getConnection().prepareStatement(INSERT_RMSE)) {
+            ps.setDouble(1, rmse);
+            ps.setInt(2, modelId);
+            ps.setInt(3, assetTypeId);
+            ps.setInt(4, Constants.STATUS_EVALUATION);
+
+            ps.executeQuery();
+        } catch (SQLException e) {
+            logger.error("SQL Exception in updateEvaluationRMSE", e);
+        }
     }
 }

@@ -24,7 +24,6 @@ import javafx.stage.StageStyle;
 
 public class CustomDialog extends Stage {
 
-    // Labels Constants
     private static final String SAVE_LABEL = "Save";
     private static final String TIME_CYCLE_LABEL = "Time cycle:";
     private static final UIUtilities uiUtilities = new UIUtilities();
@@ -72,6 +71,15 @@ public class CustomDialog extends Stage {
             uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE, dialog.getScene());
             dialog.closeDialog();
         });
+        dialog.openDialog();
+    }
+    public static void nullModelAlert(MouseEvent mouseEvent){
+        CustomDialog dialog = new CustomDialog(TextConstants.NO_MODEL_ALERT_HEADER, TextConstants.NO_MODEL_ALERT_CONTENT);
+        dialog.getOkButton().setOnAction(e -> {
+            uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_INFO_SCENE, dialog.getScene());
+            dialog.closeDialog();
+        });
+        dialog.getRoot().getChildren().remove(3);
         dialog.openDialog();
     }
 

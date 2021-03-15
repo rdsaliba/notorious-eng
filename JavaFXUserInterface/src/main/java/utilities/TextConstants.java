@@ -14,6 +14,7 @@ public class TextConstants {
     public static final String ASSETS_SCENE = "/Assets";
     public static final String ADD_ASSETS_SCENE = "/AddAsset";
     public static final String ASSET_TYPE_LIST_SCENE = "/AssetTypeList";
+    public static final String ASSET_TYPE_INFO_SCENE = "/AssetTypeInfo";
 
     // Asset Type Thresholds Text Constants
     public static final String OK_THRESHOLD = "Ok";
@@ -32,7 +33,11 @@ public class TextConstants {
     public static final String ARCHIVE_DIALOG_HEADER = "Archive asset confirmation";
     public static final String ARCHIVE_DIALOG_CONTENT = "Please select the last time cycle of the asset's useful life";
 
+    public static final String NO_MODEL_ALERT_HEADER = "Error No Model Available";
+    public static final String NO_MODEL_ALERT_CONTENT = "You should run server before you evaluate";
+
     public static final DecimalFormat RULValueFormat = new DecimalFormat("#.##");
+    public static final DecimalFormat RMSEValueFormat = new DecimalFormat("#.##");
     public static final DecimalFormat ThresholdValueFormat = new DecimalFormat("#.00");
 
     //Input Validation Constants

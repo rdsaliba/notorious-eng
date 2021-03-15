@@ -1,17 +1,29 @@
 package app.item;
 
+import javafx.beans.property.SimpleStringProperty;
+
 public class Model {
     private String modelName;
     private int modelID;
     private String description;
+    private SimpleStringProperty rmse;
 
     public Model() {
+        rmse = new SimpleStringProperty();
     }
 
     public Model(String modelName, int modelID, String description) {
         this.modelName = modelName;
         this.modelID = modelID;
         this.description = description;
+    }
+
+    public SimpleStringProperty getRMSE() {
+        return rmse;
+    }
+
+    public void setRMSE(String rmse) {
+        this.rmse.setValue(rmse);
     }
 
     public String getModelName() {

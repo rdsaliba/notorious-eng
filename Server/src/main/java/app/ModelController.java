@@ -66,7 +66,6 @@ public class ModelController {
         }, 0, 2000);
     }
 
-
     /**
      * This function will return an list of all live assets
      *
@@ -76,7 +75,6 @@ public class ModelController {
     public List<Asset> getAllLiveAssets() {
         return assetDaoImpl.getAllLiveAssets();
     }
-
 
     /**
      * this function checks all Assets for updated status
@@ -137,9 +135,12 @@ public class ModelController {
      */
     private void trainAndSave(TrainedModel tm) {
         try {
-            trainModel(tm);
-            modelDAOImpl.setModelToTrain(tm);
-
+            if (!Objects.isNull(tm.getModelStrategy()))
+                modelToEvaluate(tm);
+            else {
+                trainModel(tm);
+                modelDAOImpl.setModelToTrain(tm);
+            }
         } catch (Exception e) {
             logger.error("Exception in trainAndSave(): ", e);
         }
@@ -192,7 +193,6 @@ public class ModelController {
         }
     }
 
-
     /**
      * Given an asset and the classifier, this will return the double value of the estimation
      *
@@ -225,15 +225,12 @@ public class ModelController {
         ArrayList<String> attributeNames = assetDaoImpl.getAttributesNameFromAssetID(assets.get(0).getId());
         String assetTypeName = assetDaoImpl.getAssetTypeNameFromID(assets.get(0).getAssetTypeID());
 
-        // 1. set up attributes
         attributesVector = new ArrayList<>();
-        // - numeric
         attributesVector.add(new Attribute("Asset_id"));
         attributesVector.add(new Attribute("Time_Cycle"));
         for (String attributeName : attributeNames) {
             attributesVector.add(new Attribute(attributeName));
         }
-        // 2. create Instances object
         data = new Instances(assetTypeName, attributesVector, 0);
 
         for (Asset asset : assets) {
@@ -249,4 +246,22 @@ public class ModelController {
         }
         return data;
     }
+
+    /**
+     * evaluates a trained model on a separate thread using the evaluation class
+     *
+     * @param trainedModel is the trained model to be evaluated
+     * @author talal
+     */
+    public void modelToEvaluate(TrainedModel trainedModel) throws Exception {
+        trainedModel.setAssetTypeID(1);
+        int trainAssets = trainedModel.getModelStrategy().getTrainsAssets();
+        int testAssets = trainedModel.getModelStrategy().getTestAssets();
+        Instances trainDataset = DataPrePreprocessorController.getInstance().addRULCol(createInstancesFromAssets(assetDaoImpl.getAssetsFromAssetTypeID(trainedModel.getAssetTypeID()).subList(0, trainAssets - 1)));
+        Instances testDataset = DataPrePreprocessorController.getInstance().addRULCol(createInstancesFromAssets(assetDaoImpl.getAssetsFromAssetTypeID(trainedModel.getAssetTypeID()).subList(trainAssets, trainAssets + testAssets - 1)));
+        Evaluation evaluation = new Evaluation(trainedModel, trainDataset, testDataset);
+        Thread t = new Thread(evaluation);
+        t.start();
+    }
 }
+

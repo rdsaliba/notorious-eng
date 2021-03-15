@@ -13,55 +13,66 @@ import weka.classifiers.Classifier;
 import weka.core.Instances;
 
 import java.io.Serializable;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
-public abstract class ModelStrategy implements Serializable
-{
+public abstract class ModelStrategy implements Serializable {
     private Classifier classifier;
     private Map<String, Parameter> parameters;
     private Instances dataToTrain;
+    private int trainAssets;
+    private int testAssets;
 
-    public ModelStrategy()
-    {
-        parameters = new HashMap();
+
+    public ModelStrategy() {
+        parameters = new HashMap<>();
+    }
+
+    public int getTrainsAssets() {
+        return trainAssets;
+    }
+
+    public void setTrainAssets(int trainAssets) {
+        this.trainAssets = trainAssets;
+    }
+
+    public int getTestAssets() {
+        return testAssets;
+    }
+
+    public void setTestAssets(int testAssets) {
+        this.testAssets = testAssets;
     }
 
     public abstract Classifier trainModel(Instances reducedData);
+
     public abstract Map<String, Parameter> getDefaultParameters();
 
-    public Classifier getClassifier()
-    {
+    public Classifier getClassifier() {
         return classifier;
     }
 
-    public void setClassifier(Classifier classifier)
-    {
+    public void setClassifier(Classifier classifier) {
         this.classifier = classifier;
     }
 
-    public Instances getDataToTrain()
-    {
+    public Instances getDataToTrain() {
         return dataToTrain;
     }
 
-    public void setDataToTrain(Instances dataToTrain)
-    {
+    public void setDataToTrain(Instances dataToTrain) {
         this.dataToTrain = dataToTrain;
     }
 
-    public Map<String, Parameter> getParameters()
-    {
+    public Map<String, Parameter> getParameters() {
         return this.parameters;
     }
 
-    public void setParameters(Map<String, Parameter> parameters)
-    {
+    public void setParameters(Map<String, Parameter> parameters) {
         this.parameters = parameters;
     }
 
-    public void addParameter(Parameter newParam)
-    {
+    public void addParameter(Parameter newParam) {
         this.parameters.put(newParam.getParamName(), newParam);
     }
 }
