@@ -47,11 +47,10 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
             } catch (SQLException e) {
                 logger.error("Exception in getAssetsToUpdate: ", e);
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException e) {
+            logger.error("Exception in getAssetsToUpdate: ", e);
         }
         return assets;
-
     }
 
 
@@ -74,7 +73,6 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         } catch (SQLException e) {
             logger.error("Exception: in getAttributesNameFromAssetID", e);
         }
-
         return attributeNames;
     }
 

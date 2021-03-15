@@ -8,7 +8,6 @@
  */
 package controllers;
 
-import app.ModelController;
 import app.item.Asset;
 import app.item.Model;
 import external.AssetDAOImpl;
@@ -17,7 +16,6 @@ import external.ModelDAOImpl;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -31,13 +29,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
-import rul.models.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import rul.models.ModelStrategy;
 import utilities.*;
-import weka.core.Instances;
+
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -102,7 +99,6 @@ public class AssetTypeInfoController implements Initializable {
     private AssetTypeDAOImpl assetTypeDAO;
     private ModelDAOImpl modelDAO;
     private AssetDAOImpl assetDAO;
-    private Timeline rmseTimeline;
 
 
     @Override
@@ -226,7 +222,7 @@ public class AssetTypeInfoController implements Initializable {
         evaluateButtons.add(evaluateAllModelsBtn);
 
         if (modelTab.getId().equals("modelTab")) {
-            List<Asset> assets= assetDAO.getArchivedAssetsFromAssetTypeID(Integer.parseInt(assetType.getId()));
+            List<Asset> assets = assetDAO.getArchivedAssetsFromAssetTypeID(Integer.parseInt(assetType.getId()));
             int nbOfAssets = assets.size();
             trainSlider.setMax(nbOfAssets);
             trainValue.setText(String.valueOf(trainSlider.getValue()));
@@ -244,13 +240,11 @@ public class AssetTypeInfoController implements Initializable {
                 testSize = (int) testSlider.getValue();
             });
 
-
             try {
                 evaluateAllModelsBtn.setOnMouseClicked(mouseEvent -> {
-                    for (Model model : modelObservableList){
+                    for (Model model : modelObservableList) {
                         saveModelToEvaluate(model);
-                         }
-
+                    }
                 });
             } catch (Exception e) {
                 logger.error("Exception for evaluateAllModelsBtn.setOnMouseClicked(), e");
@@ -267,18 +261,16 @@ public class AssetTypeInfoController implements Initializable {
         trainSlider.setOnMouseClicked(mouseEvent -> enableEvaluation(evaluateButtons));
         testSlider.setOnMouseClicked(mouseEvent -> enableEvaluation(evaluateButtons));
     }
-    public void saveModelToEvaluate(Model model){
+
+
+    public void saveModelToEvaluate(Model model) {
         int assetTypeID = Integer.parseInt(assetType.getId());
         int trainAssets = (int) trainSlider.getValue() + 1;
         int testAssets = (int) trainSlider.getValue() + 1 + (int) testSlider.getValue();
-        try {
-            ModelStrategy modelStrategy = modelDAO.getModelStrategy(associatedModelID,assetTypeID);
-            modelStrategy.setTrainAssets(trainAssets);
-            modelStrategy.setTestAssets(testAssets);
-            modelDAO.updateModelStrategy(modelStrategy,associatedModelID,assetTypeID);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+        ModelStrategy modelStrategy = modelDAO.getModelStrategy(model.getModelID(), assetTypeID);
+        modelStrategy.setTrainAssets(trainAssets);
+        modelStrategy.setTestAssets(testAssets);
+        modelDAO.updateModelStrategy(modelStrategy, model.getModelID(), assetTypeID);
     }
 
     /**
@@ -446,7 +438,7 @@ public class AssetTypeInfoController implements Initializable {
      * @author Jeremie
      */
     public void generateThumbnails() {
-            ObservableList<Pane> modelPaneObservableList = FXCollections.observableArrayList();
+        ObservableList<Pane> modelPaneObservableList = FXCollections.observableArrayList();
 
         for (Model model : modelObservableList) {
             // Creating a Thumbnail element
@@ -462,9 +454,6 @@ public class AssetTypeInfoController implements Initializable {
             Text modelDescriptionText = new Text(model.getDescription());
             Text rmseLabel = new Text(RMSE);
             Text rmseValue = new Text();
-            String rmseValueObject = modelDAO.getGetModelEvaluation(model.getModelID(), assetType.getId());
-            SimpleStringProperty observableRMSEValue = new SimpleStringProperty(rmseValueObject);
-            rmseValue.textProperty().bind(observableRMSEValue);
 
             HBox rmsePane = new HBox();
             rmsePane.getStyleClass().add("rmsePane");
@@ -474,9 +463,7 @@ public class AssetTypeInfoController implements Initializable {
             evaluateModelBtn.setText("Evaluate");
             evaluateModelBtn.setDisable(true);
             evaluateButtons.add(evaluateModelBtn);
-            evaluateModelBtn.setOnMouseClicked(mouseEvent -> {
-                saveModelToEvaluate(model);
-            });
+            evaluateModelBtn.setOnMouseClicked(mouseEvent -> saveModelToEvaluate(model));
 
             //Setting IDs for the elements
             modelNameLabel.getStyleClass().add("modelName");
@@ -540,18 +527,19 @@ public class AssetTypeInfoController implements Initializable {
             assetDAO.setAssetToBeUpdated(asset.getId());
         }
     }
-    public void updateRMSE(){
+
+
+    public void updateRMSE() {
         modelObservableList = FXCollections.observableArrayList(modelDAO.getAllModels(Integer.parseInt(assetType.getId())));
         for (Model model : modelObservableList) {
-            model.setRMSE(String.valueOf(TextConstants.RMSEValueFormat.format(modelDAO.getLatestRMSE(Integer.valueOf(model.getModelID()),Integer.valueOf(assetType.getId())))));
+            model.setRMSE(String.valueOf(TextConstants.RMSEValueFormat.format(modelDAO.getLatestRMSE(model.getModelID(), Integer.parseInt(assetType.getId())))));
         }
-        rmseTimeline =
-                new Timeline(new KeyFrame(Duration.millis(3000), e ->
-                {
-                    for (Model model : modelObservableList) {
-                        model.setRMSE(String.valueOf(TextConstants.RMSEValueFormat.format(modelDAO.getLatestRMSE(Integer.valueOf(model.getModelID()),Integer.valueOf(assetType.getId())))));
-                    }
-                }));
+        Timeline rmseTimeline = new Timeline(new KeyFrame(Duration.millis(3000), e ->
+        {
+            for (Model model : modelObservableList) {
+                model.setRMSE(String.valueOf(TextConstants.RMSEValueFormat.format(modelDAO.getLatestRMSE(model.getModelID(), Integer.parseInt(assetType.getId())))));
+            }
+        }));
 
         rmseTimeline.setCycleCount(Animation.INDEFINITE); // loop forever
         rmseTimeline.play();

@@ -7,7 +7,8 @@
  */
 package app;
 
-import app.item.*;
+import app.item.Asset;
+import app.item.TrainedModel;
 import local.AssetDAOImpl;
 import local.ModelDAOImpl;
 import org.slf4j.Logger;
@@ -65,7 +66,6 @@ public class ModelController {
         }, 0, 2000);
     }
 
-
     /**
      * This function will return an list of all live assets
      *
@@ -75,7 +75,6 @@ public class ModelController {
     public List<Asset> getAllLiveAssets() {
         return assetDaoImpl.getAllLiveAssets();
     }
-
 
     /**
      * this function checks all Assets for updated status
@@ -129,7 +128,6 @@ public class ModelController {
                 .findFirst().ifPresent(this::trainAndSave);
     }
 
-
     /**
      * train the specific model and save it in the db
      *
@@ -137,13 +135,12 @@ public class ModelController {
      */
     private void trainAndSave(TrainedModel tm) {
         try {
-            if(!Objects.isNull(tm.getModelStrategy()))
+            if (!Objects.isNull(tm.getModelStrategy()))
                 modelToEvaluate(tm);
-            else{
-            trainModel(tm);
-            modelDAOImpl.setModelToTrain(tm);
+            else {
+                trainModel(tm);
+                modelDAOImpl.setModelToTrain(tm);
             }
-
         } catch (Exception e) {
             logger.error("Exception in trainAndSave(): ", e);
         }
@@ -195,7 +192,6 @@ public class ModelController {
                 return null;
         }
     }
-
 
     /**
      * Given an asset and the classifier, this will return the double value of the estimation
@@ -252,17 +248,18 @@ public class ModelController {
     }
 
     /**
-     * evaluates a model on a separate thread using the evaluation class
-     * @param trainedModel
+     * evaluates a trained model on a separate thread using the evaluation class
+     *
+     * @param trainedModel is the trained model to be evaluated
      * @author talal
      */
     public void modelToEvaluate(TrainedModel trainedModel) throws Exception {
         trainedModel.setAssetTypeID(1);
-        int trainAssets =trainedModel.getModelStrategy().getTrainsAssets();
-        int testAssets=trainedModel.getModelStrategy().getTestAssets();
-        Instances trainDataset = DataPrePreprocessorController.getInstance().addRULCol(createInstancesFromAssets(assetDaoImpl.getAssetsFromAssetTypeID(trainedModel.getAssetTypeID()).subList(0, trainAssets-1)));
-        Instances testDataset = DataPrePreprocessorController.getInstance().addRULCol(createInstancesFromAssets(assetDaoImpl.getAssetsFromAssetTypeID(trainedModel.getAssetTypeID()).subList(trainAssets, trainAssets+testAssets - 1)));
-        Evaluation evaluation = new Evaluation(trainedModel,trainDataset,testDataset);
+        int trainAssets = trainedModel.getModelStrategy().getTrainsAssets();
+        int testAssets = trainedModel.getModelStrategy().getTestAssets();
+        Instances trainDataset = DataPrePreprocessorController.getInstance().addRULCol(createInstancesFromAssets(assetDaoImpl.getAssetsFromAssetTypeID(trainedModel.getAssetTypeID()).subList(0, trainAssets - 1)));
+        Instances testDataset = DataPrePreprocessorController.getInstance().addRULCol(createInstancesFromAssets(assetDaoImpl.getAssetsFromAssetTypeID(trainedModel.getAssetTypeID()).subList(trainAssets, trainAssets + testAssets - 1)));
+        Evaluation evaluation = new Evaluation(trainedModel, trainDataset, testDataset);
         Thread t = new Thread(evaluation);
         t.start();
     }

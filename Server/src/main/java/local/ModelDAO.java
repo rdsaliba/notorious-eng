@@ -19,7 +19,8 @@ public interface ModelDAO {
 
     String getModelNameFromModelID(String modelID);
 
-    void updateRMSE(Double rmse, int modelId, int assetTypeId);
+    void updateEvaluationRMSE(Double rmse, int modelId, int assetTypeId);
+
     TrainedModel getModelsByAssetTypeID(String assetTypeID, int statusID);
 
     TrainedModel createTrainedModelFromResultSet(ResultSet rs) throws SQLException;

@@ -11,6 +11,7 @@ package external;
 import app.item.Model;
 import app.item.TrainedModel;
 import rul.models.ModelStrategy;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -52,10 +53,11 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     }
 
     /**
-    * This function return Model ID of an asset type id
-    * @param assetTypeID
+     * This function return Model ID of an asset type id
+     *
+     * @param assetTypeID is the Asset type Id of the asset
      * @author Talal
-    * */
+     **/
     @Override
     public int getModelIDFromAssetTypeID(String assetTypeID) {
         int modelID = 0;
@@ -81,7 +83,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     public List<Model> getAllModels(int assetTypeID) {
         ArrayList<Model> modelList = new ArrayList<>();
         try (PreparedStatement ps = getConnection().prepareStatement(GET_ALL_MODELS)) {
-            ps.setInt(1,assetTypeID);
+            ps.setInt(1, assetTypeID);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Model newModel = new Model();
@@ -155,50 +157,53 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
         } catch (SQLException e) {
             logger.error("Exception in getGetModelEvaluation()");
         }
-        if(rmseValue==null) return "n/a";
+        if (rmseValue == null) return "n/a";
         else return rmseValue;
     }
 
     /**
-     *  This function returns the model strategy for a specific model of an assettype
-     * @param modelID
-     * @param assetTypeID
+     * This function returns the model strategy for a specific model of an asset type
+     *
+     * @param modelID     is the model's ID
+     * @param assetTypeID is the asset type'S ID
      * @return modelStrategy
      * @author Talal
      */
     @Override
-    public ModelStrategy getModelStrategy(int modelID, int assetTypeID) throws SQLException {
+    public ModelStrategy getModelStrategy(int modelID, int assetTypeID) {
         ModelStrategy modelStrategy = null;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_STRATEGY)) {
-            ps.setInt(1,modelID);
-            ps.setInt(2,assetTypeID);
-            try(ResultSet rs = ps.executeQuery()){
-                while(rs.next()){
+            ps.setInt(1, modelID);
+            ps.setInt(2, assetTypeID);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
                     try {
                         byte[] buf = rs.getBytes("serialized_model");
                         if (buf != null)
-                            modelStrategy =(ModelStrategy) new ObjectInputStream(new ByteArrayInputStream(buf)).readObject();
+                            modelStrategy = (ModelStrategy) new ObjectInputStream(new ByteArrayInputStream(buf)).readObject();
 
                     } catch (IOException | ClassNotFoundException e) {
-                        e.printStackTrace();
+                        logger.error("IOException or ClassNotFoundException in getModelStrategy", e);
                         return null;
-                    }}
+                    }
+                }
             }
-        } catch(SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            logger.error("SQL Exception in getModelStrategy", e);
         }
         return modelStrategy;
     }
 
     /**
-     * This function updates model strategy for an model
-     * @param modelStrategy
-     * @param modelID
-     * @param assetTypeID
+     * This function updates model strategy for a model
+     *
+     * @param modelStrategy is the model strategy to be applied for a model
+     * @param modelID       is the model ID of the model on which the model strategy will apply
+     * @param assetTypeID   is the asset type ID of the asset type for which the model is trained
      * @author talal
      */
     @Override
-    public void updateModelStrategy(ModelStrategy modelStrategy, int modelID, int assetTypeID){
+    public void updateModelStrategy(ModelStrategy modelStrategy, int modelID, int assetTypeID) {
         try (PreparedStatement ps = getConnection().prepareStatement(UPDATE_MODEL_STRATEGY)) {
             TrainedModel tm = new TrainedModel();
             tm.setModelStrategy(modelStrategy);
@@ -209,17 +214,19 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
             ps.setInt(3, tm.getAssetTypeID());
             ps.executeQuery();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("SQL Exception in updateModelStrategy()", e);
         }
     }
 
     /**
-     * This function is used to automatically reteive RMSE when a new value is in the database
-     * @param modelID
-     * @param assetTypeID
+     * This function is used to automatically retrieve the RMSE value from the database whenever
+     * it gets updated in the database.
+     *
+     * @param modelID     is the model's ID
+     * @param assetTypeID is the asset type's ID
      * @author talal
      */
-    public double getLatestRMSE(int modelID,int assetTypeID){
+    public double getLatestRMSE(int modelID, int assetTypeID) {
         double estimate = -100000;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_LATEST_RMSE)) {
             ps.setInt(1, modelID);
@@ -229,7 +236,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
                     estimate = rs.getDouble("rmse");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("SQL Exception in getLatestRMSE()", e);
         }
         return estimate;
     }

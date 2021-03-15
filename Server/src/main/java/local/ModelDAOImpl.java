@@ -78,15 +78,12 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
      */
     @Override
     public void setModelToTrain(TrainedModel tm) {
-        try {
-            try (PreparedStatement ps = getConnection().prepareStatement(UPDATE_SERIALIZE_OBJECT)) {
-                ps.setObject(1, tm.getModelStrategy());
-                ps.setInt(2, tm.getModelID());
-                ps.setInt(3, tm.getAssetTypeID());
-                ps.setInt(4, tm.getStatusID());
-                ps.executeUpdate();
-            }
-
+        try (PreparedStatement ps = getConnection().prepareStatement(UPDATE_SERIALIZE_OBJECT)) {
+            ps.setObject(1, tm.getModelStrategy());
+            ps.setInt(2, tm.getModelID());
+            ps.setInt(3, tm.getAssetTypeID());
+            ps.setInt(4, tm.getStatusID());
+            ps.executeUpdate();
         } catch (SQLException e) {
             logger.error("Exception setModelsToTrain(): ", e);
         }
@@ -142,10 +139,9 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
         return tm;
     }
 
-
     /**
      * Given a RMSE model evaluation value for a specific model applied to a specific asset type,
-     * this function will updated the RMSE value in the database in the model evaluation table
+     * this function will updated the RMSE value in the database in the trained model table.
      *
      * @param rmse        is the value of the model evaluation (root mean square error)
      * @param modelId     is the model ID of the specific model
@@ -153,7 +149,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
      * @author Talal
      */
     @Override
-    public void updateRMSE(Double rmse, int modelId, int assetTypeId) {
+    public void updateEvaluationRMSE(Double rmse, int modelId, int assetTypeId) {
         try (PreparedStatement ps = getConnection().prepareStatement(INSERT_RMSE)) {
             ps.setDouble(1, rmse);
             ps.setInt(2, modelId);
@@ -161,9 +157,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
 
             ps.executeQuery();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("SQL Exception in updateEvaluationRMSE", e);
         }
     }
-
-
 }
