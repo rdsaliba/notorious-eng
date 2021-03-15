@@ -8,6 +8,7 @@
  */
 package controllers;
 
+import BackgroundTasks.GetModelStrategyService;
 import app.item.Asset;
 import app.item.Model;
 import external.AssetDAOImpl;
@@ -32,13 +33,11 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import rul.models.ModelStrategy;
 import utilities.*;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class AssetTypeInfoController implements Initializable {
@@ -103,6 +102,7 @@ public class AssetTypeInfoController implements Initializable {
     private AssetTypeDAOImpl assetTypeDAO;
     private ModelDAOImpl modelDAO;
     private AssetDAOImpl assetDAO;
+    private Pane modelPane;
 
 
     @Override
@@ -277,18 +277,19 @@ public class AssetTypeInfoController implements Initializable {
      * @author Tala, Jeremie
      */
     public void saveModelToEvaluate(Model model, MouseEvent mouseEvent) {
-        int assetTypeID = Integer.parseInt(assetType.getId());
         int trainAssets = (int) trainSlider.getValue() + 1;
         int testAssets = (int) trainSlider.getValue() + 1 + (int) testSlider.getValue();
-        ModelStrategy modelStrategy = modelDAO.getModelStrategy(model.getModelID(), assetTypeID);
-        if(!Objects.isNull(modelStrategy)){
-            modelStrategy.setTrainAssets(trainAssets);
-            modelStrategy.setTestAssets(testAssets);
-            modelDAO.updateModelStrategy(modelStrategy, model.getModelID(), assetTypeID);
-        }
-        else{
-            CustomDialog.nullModelAlert(mouseEvent);
-        }
+        GetModelStrategyService getModelStrategyService = new GetModelStrategyService();
+        getModelStrategyService.setModelID(model.getModelID());
+        getModelStrategyService.setAssetTypeID(Integer.parseInt(assetType.getId()));
+        getModelStrategyService.setTestAssets(testAssets);
+        getModelStrategyService.setTrainAssets(trainAssets);
+        getModelStrategyService.setMouseEvent(mouseEvent);
+        ProgressIndicator pi = new ProgressIndicator();
+        modelPane.getChildren().add(pi);
+        pi.setVisible(true);
+        pi.visibleProperty().bind(getModelStrategyService.runningProperty());
+        getModelStrategyService.start();
     }
 
     /**
@@ -459,7 +460,7 @@ public class AssetTypeInfoController implements Initializable {
 
         for (Model model : modelObservableList) {
             // Creating a Thumbnail element
-            Pane modelPane = new Pane();
+             modelPane= new Pane();
             modelPane.getStyleClass().add("modelPane");
             modelPane.setOnMouseClicked(mouseEvent -> {
                 modelPanes.handleModelSelection(model, modelPane);

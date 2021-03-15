@@ -5,6 +5,7 @@
  */
 package controllers;
 
+import BackgroundTasks.AddAssetService;
 import app.item.Asset;
 import app.item.AssetType;
 import external.AssetDAOImpl;
@@ -13,10 +14,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.util.StringConverter;
@@ -62,8 +60,9 @@ public class AddAssetController implements Initializable {
     @FXML
     private AnchorPane inputError;
     @FXML
+    private AnchorPane addAssetPane;
+    @FXML
     private AnchorPane root;
-
     private AssetDAOImpl assetDAOImpl;
     private AssetTypeDAOImpl assetTypeDAOImpl;
     private UIUtilities uiUtilities;
@@ -102,8 +101,13 @@ public class AddAssetController implements Initializable {
 
         saveBtn.setOnMouseClicked(mouseEvent -> {
             Asset newAsset = assembleAsset();
+            AddAssetService addAssetService= new AddAssetService();
+            addAssetService.setAsset(newAsset);
+            ProgressIndicator pi = new ProgressIndicator();
+            addAssetPane.getChildren().add(pi);
+            pi.visibleProperty().bind(addAssetService.runningProperty());
             if (formInputValidation() && !isAssetEmpty(newAsset)) {
-                saveAsset(newAsset);
+                addAssetService.start();
                 CustomDialog.addSystemControllerSaveDialog(mouseEvent);
             }
         });
