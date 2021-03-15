@@ -464,7 +464,7 @@ public class AssetTypeInfoController implements Initializable {
             Text RMSEValue = new Text();
             String rmseValueObject = modelDAO.getGetModelEvaluation(model.getModelID(), assetType.getId());
             SimpleStringProperty observableRMSEValue = new SimpleStringProperty(rmseValueObject);
-            rmseValue.textProperty().bind(observableRMSEValue);
+            RMSEValue.textProperty().bind(observableRMSEValue);
 
             HBox rmsePane = new HBox();
             rmsePane.getStyleClass().add("rmsePane");
