@@ -30,6 +30,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import rul.assessment.AssessmentController;
 import utilities.TextConstants;
 import utilities.UIUtilities;
@@ -39,6 +41,7 @@ import java.util.Comparator;
 import java.util.ResourceBundle;
 
 public class AssetsController implements Initializable {
+
     private static final String SORT_DEFAULT = "Order";
     private static final String SORT_RUL_ASC = "Ascending RUL";
     private static final String SORT_RUL_DESC = "Descending RUL";
@@ -57,7 +60,9 @@ public class AssetsController implements Initializable {
     private static final String DESCRIPTION_COL = "Description";
     private final AssetTypeDAOImpl assetTypeDAO;
     private final ModelDAOImpl modelDAO;
+
     Logger logger = LoggerFactory.getLogger(AssetsController.class);
+
     @FXML
     private Button assetMenuBtn;
     @FXML
@@ -74,8 +79,7 @@ public class AssetsController implements Initializable {
     private Tab listTab;
     @FXML
     private ChoiceBox<String> sortAsset;
-    @FXML
-    private ChoiceBox<String> sortRecommendation;
+
     private UIUtilities uiUtilities;
     private ObservableList<Asset> assets;
     private Timeline rulTimeline;
