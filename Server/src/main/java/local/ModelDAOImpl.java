@@ -22,7 +22,7 @@ import java.util.ArrayList;
 public class ModelDAOImpl extends DAO implements ModelDAO {
     private static final String UPDATE_SERIALIZE_OBJECT = "UPDATE trained_model SET retrain = false, serialized_model  = ? WHERE model_id = ? AND asset_type_id = ? and status_id = ?";
     private static final String GET_SERIALIZE_OBJECT = "SELECT * FROM trained_model WHERE retrain = true";
-    private static final String INSERT_RMSE = "UPDATE  trained_model SET rmse = ?,model_id = ?, retrain=0 WHERE asset_type_id = ? AND status_id=? ";
+    private static final String INSERT_RMSE = "UPDATE trained_model SET rmse = ?, retrain = 0 WHERE model_id = ? AND asset_type_id = ? AND status_id=? ";
     private static final String GET_MODEL_NAME_FROM_ID = "SELECT name from model where model.model_id = ?";
     private static final String GET_MODEL_FROM_ASSET_TYPE = "SELECT * FROM trained_model WHERE asset_type_id = ? AND status_id = ?";
 
@@ -151,12 +151,11 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
      */
     @Override
     public void updateEvaluationRMSE(Double rmse, int modelId, int assetTypeId) {
-        int eval=Constants.STATUS_EVALUATION;
         try (PreparedStatement ps = getConnection().prepareStatement(INSERT_RMSE)) {
             ps.setDouble(1, rmse);
             ps.setInt(2, modelId);
             ps.setInt(3, assetTypeId);
-            ps.setInt(4,eval);
+            ps.setInt(4, Constants.STATUS_EVALUATION);
 
             ps.executeQuery();
         } catch (SQLException e) {

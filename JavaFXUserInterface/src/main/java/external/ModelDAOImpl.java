@@ -85,10 +85,9 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     @Override
     public List<Model> getAllModelsForEvaluation(int assetTypeID) {
         ArrayList<Model> modelList = new ArrayList<>();
-        int eval= Constants.STATUS_EVALUATION;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_ALL_MODELS_FOR_EVALUATION)) {
             ps.setInt(1, assetTypeID);
-            ps.setInt(2,eval);
+            ps.setInt(2, Constants.STATUS_EVALUATION);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Model newModel = new Model();
@@ -152,11 +151,10 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     @Override
     public String getGetModelEvaluation(int modelID, String assetTypeID) {
         String rmseValue = null;
-        int eval=Constants.STATUS_EVALUATION;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_LATEST_RMSE)) {
             ps.setInt(1, modelID);
             ps.setString(2, assetTypeID);
-            ps.setInt(3,eval);
+            ps.setInt(3, Constants.STATUS_EVALUATION);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next())
                     rmseValue = rs.getString("rmse");
@@ -235,11 +233,10 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
      */
     public double getLatestRMSE(int modelID, int assetTypeID) {
         double estimate = -100000;
-        int eval=Constants.STATUS_EVALUATION;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_LATEST_RMSE)) {
             ps.setInt(1, modelID);
             ps.setInt(2, assetTypeID);
-            ps.setInt(3,eval);
+            ps.setInt(3, Constants.STATUS_EVALUATION);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next())
                     estimate = rs.getDouble("rmse");
