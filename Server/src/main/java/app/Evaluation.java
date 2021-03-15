@@ -10,6 +10,8 @@ import rul.models.ModelsController;
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 
+import java.util.Objects;
+
 public class Evaluation implements Runnable {
     static Logger logger = LoggerFactory.getLogger(Evaluation.class);
     private final ModelDAOImpl modelDAOImpl;
@@ -50,8 +52,7 @@ public class Evaluation implements Runnable {
         trainDataset.setClassIndex(trainDataset.numAttributes() - 1);
         testDataset.setClassIndex(testDataset.numAttributes() - 1);
         ModelStrategy evaluateStrategy = model.getModelStrategy();
-
-        if (evaluateStrategy != null) {
+        if (!Objects.isNull(evaluateStrategy)) {
             ModelsController modelsController = new ModelsController(evaluateStrategy);
             model.setModelClassifier(modelsController.trainModel(trainDataset));
             calculateEvaluation(model.getModelClassifier(), trainDataset, testDataset, model.getModelID(), model.getAssetTypeID());
