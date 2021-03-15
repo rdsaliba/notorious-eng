@@ -4,8 +4,8 @@ public class IntParameter extends Parameter {
     private int intValue;
 
 
-    public IntParameter(int paramID, String paramName, boolean isLive, boolean isDefault, int intValue) {
-        super(paramID, paramName, isLive, isDefault);
+    public IntParameter(String paramName, int intValue) {
+        super(paramName);
         this.intValue = intValue;
     }
 
