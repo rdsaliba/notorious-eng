@@ -7,6 +7,7 @@
  */
 package controllers;
 
+import BackgroundTasks.DeleteAssetService;
 import app.item.Asset;
 import app.item.AssetAttribute;
 import app.item.Measurement;
@@ -25,10 +26,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.Button;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
@@ -56,6 +54,8 @@ public class AssetInfoController implements Initializable {
 
     private static final int ATTRIBUTE_GRAPH_SIZE = 5;
     static Logger logger = LoggerFactory.getLogger(AssetInfoController.class);
+    @FXML
+    AnchorPane assetPane;
     @FXML
     private Button deleteBtn;
     @FXML
@@ -227,6 +227,12 @@ public class AssetInfoController implements Initializable {
         deleteBtn.setOnMouseClicked(mouseEvent -> {
             timelines.forEach(Timeline::stop);
             CustomDialog.systemInfoController(mouseEvent, asset.getId());
+            DeleteAssetService deleteAssetService= new DeleteAssetService();
+            deleteAssetService.setAssetID(asset.getId());
+            ProgressIndicator pi= new ProgressIndicator();
+            assetPane.getChildren().add(pi);
+            pi.visibleProperty().bind(deleteAssetService.runningProperty());
+            deleteAssetService.start();
         });
         archiveBtn.setOnMouseClicked(mouseEvent -> {
             timelines.forEach(Timeline::stop);

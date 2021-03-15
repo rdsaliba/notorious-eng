@@ -84,11 +84,9 @@ public class CustomDialog extends Stage {
     }
 
     public static void systemInfoController(MouseEvent mouseEvent, int systemID) {
-        AssetDAOImpl assetDAOImpl = new AssetDAOImpl();
         CustomDialog dialog = new CustomDialog(TextConstants.ALERT_HEADER, TextConstants.ALERT_CONTENT);
         //Set the functionality of the btn
         dialog.getOkButton().setOnAction(e -> {
-            assetDAOImpl.deleteAssetByID(systemID);
             uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE, dialog.getScene());
             dialog.closeDialog();
         });
