@@ -11,6 +11,7 @@ package external;
 import app.item.Model;
 import app.item.TrainedModel;
 import rul.models.ModelStrategy;
+import utilities.Constants;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -23,8 +24,8 @@ import java.util.List;
 
 public class ModelDAOImpl extends DAO implements ModelDAO {
     private static final String GET_MODEL_FROM_ASSET_TYPE_ID = "SELECT * from trained_model, model WHERE trained_model.model_id = model.model_id AND trained_model.asset_type_id = ?";
-    private static final String GET_ALL_MODELS_FOR_EVALUATION = "SELECT trained_model.*, model.name, model.description from trained_model, model where trained_model.model_id=model.model_id AND asset_type_id=? AND status_id=2";
-    private static final String GET_LATEST_RMSE = "SELECT rmse from trained_model WHERE model_id=? AND asset_type_id=? AND status_id=2";
+    private static final String GET_ALL_MODELS_FOR_EVALUATION = "SELECT trained_model.*, model.name, model.description from trained_model, model where trained_model.model_id=model.model_id AND asset_type_id=? AND status_id=?";
+    private static final String GET_LATEST_RMSE = "SELECT rmse from trained_model WHERE model_id=? AND asset_type_id=? AND status_id=?";
     private static final String GET_MODEL_STRATEGY = "SELECT serialized_model from trained_model WHERE model_id=? AND asset_type_id=? AND status_id=2";
     private static final String UPDATE_MODEL_STRATEGY = "UPDATE trained_model SET serialized_model=?,retrain=true WHERE model_id = ? AND asset_type_id = ? and status_id = 2";
     private static final String UPDATE_MODEL_FOR_ASSET_TYPE = "UPDATE trained_model set model_id = ? where asset_type_id = ? AND status_id = 1";
@@ -84,8 +85,10 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     @Override
     public List<Model> getAllModelsForEvaluation(int assetTypeID) {
         ArrayList<Model> modelList = new ArrayList<>();
+        int eval= Constants.STATUS_EVALUATION;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_ALL_MODELS_FOR_EVALUATION)) {
             ps.setInt(1, assetTypeID);
+            ps.setInt(2,eval);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Model newModel = new Model();
@@ -149,9 +152,11 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     @Override
     public String getGetModelEvaluation(int modelID, String assetTypeID) {
         String rmseValue = null;
+        int eval=Constants.STATUS_EVALUATION;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_LATEST_RMSE)) {
             ps.setInt(1, modelID);
             ps.setString(2, assetTypeID);
+            ps.setInt(3,eval);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next())
                     rmseValue = rs.getString("rmse");
@@ -230,9 +235,11 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
      */
     public double getLatestRMSE(int modelID, int assetTypeID) {
         double estimate = -100000;
+        int eval=Constants.STATUS_EVALUATION;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_LATEST_RMSE)) {
             ps.setInt(1, modelID);
             ps.setInt(2, assetTypeID);
+            ps.setInt(3,eval);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next())
                     estimate = rs.getDouble("rmse");
