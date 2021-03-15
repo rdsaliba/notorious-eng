@@ -208,9 +208,9 @@ public class AssetTypeInfoController implements Initializable {
 
     private void attachEventsModelTab() {
         try {
-            modelObservableList = FXCollections.observableArrayList(modelDAO.getAllModels(Integer.parseInt(assetType.getId())));
+            modelObservableList = FXCollections.observableArrayList(modelDAO.getAllModelsForEvaluation(Integer.parseInt(assetType.getId())));
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Exception in getting all the models list", e);
         }
         modelSaveBtn.setDisable(true);
         modelSaveBtn.setOnMouseClicked(mouseEvent -> {
@@ -252,7 +252,7 @@ public class AssetTypeInfoController implements Initializable {
         }
 
         try {
-            modelObservableList = FXCollections.observableArrayList(modelDAO.getAllModels(Integer.parseInt(assetType.getId())));
+            modelObservableList = FXCollections.observableArrayList(modelDAO.getAllModelsForEvaluation(Integer.parseInt(assetType.getId())));
         } catch (Exception e) {
             logger.error("Exception for modelObservableList, e");
         }
@@ -262,7 +262,14 @@ public class AssetTypeInfoController implements Initializable {
         testSlider.setOnMouseClicked(mouseEvent -> enableEvaluation(evaluateButtons));
     }
 
-
+    /**
+     * This attaches the training and testing assets from the sliders to the model strategy
+     * to be evaluated and saves that whole object (classifier) in the database. It updates
+     * the serialized object for evaluation only.
+     *
+     * @param model is the model to be evaluated
+     * @author Tala, Jeremie
+     */
     public void saveModelToEvaluate(Model model) {
         int assetTypeID = Integer.parseInt(assetType.getId());
         int trainAssets = (int) trainSlider.getValue() + 1;
@@ -290,7 +297,6 @@ public class AssetTypeInfoController implements Initializable {
             }
         }
     }
-
 
     /**
      * Handle the text change of the user fields to turn on or off the save functionality
@@ -528,9 +534,13 @@ public class AssetTypeInfoController implements Initializable {
         }
     }
 
-
+    /**
+     * This function continuously updates the RMSE values for the different models that are used for evaluation
+     *
+     * @author Talal
+     */
     public void updateRMSE() {
-        modelObservableList = FXCollections.observableArrayList(modelDAO.getAllModels(Integer.parseInt(assetType.getId())));
+        modelObservableList = FXCollections.observableArrayList(modelDAO.getAllModelsForEvaluation(Integer.parseInt(assetType.getId())));
         for (Model model : modelObservableList) {
             model.setRMSE(String.valueOf(TextConstants.RMSEValueFormat.format(modelDAO.getLatestRMSE(model.getModelID(), Integer.parseInt(assetType.getId())))));
         }

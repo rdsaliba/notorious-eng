@@ -23,7 +23,7 @@ import java.util.List;
 
 public class ModelDAOImpl extends DAO implements ModelDAO {
     private static final String GET_MODEL_FROM_ASSET_TYPE_ID = "SELECT * from trained_model, model WHERE trained_model.model_id = model.model_id AND trained_model.asset_type_id = ?";
-    private static final String GET_ALL_MODELS = "SELECT trained_model.*, model.name, model.description from trained_model, model where trained_model.model_id=model.model_id AND asset_type_id=? AND status_id=2";
+    private static final String GET_ALL_MODELS_FOR_EVALUATION = "SELECT trained_model.*, model.name, model.description from trained_model, model where trained_model.model_id=model.model_id AND asset_type_id=? AND status_id=2";
     private static final String GET_LATEST_RMSE = "SELECT rmse from trained_model WHERE model_id=? AND asset_type_id=? AND status_id=2";
     private static final String GET_MODEL_STRATEGY = "SELECT serialized_model from trained_model WHERE model_id=? AND asset_type_id=? AND status_id=2";
     private static final String UPDATE_MODEL_STRATEGY = "UPDATE trained_model SET serialized_model=?,retrain=true WHERE model_id = ? AND asset_type_id = ? and status_id = 2";
@@ -36,6 +36,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
      *
      * @param assetTypeID represents a asset type id
      * @author Paul
+     *
      */
     @Override
     public String getModelNameFromAssetTypeID(String assetTypeID) {
@@ -53,10 +54,11 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     }
 
     /**
-     * This function return Model ID of an asset type id
+     * Given a asset type id, this function will return the int corresponding
+     * to the ID of the model in the database associated with the asset type
      *
      * @param assetTypeID is the Asset type Id of the asset
-     * @author Talal
+     * @author Talal, Jeremie
      **/
     @Override
     public int getModelIDFromAssetTypeID(String assetTypeID) {
@@ -80,9 +82,9 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
      * @author Jeremie
      */
     @Override
-    public List<Model> getAllModels(int assetTypeID) {
+    public List<Model> getAllModelsForEvaluation(int assetTypeID) {
         ArrayList<Model> modelList = new ArrayList<>();
-        try (PreparedStatement ps = getConnection().prepareStatement(GET_ALL_MODELS)) {
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_ALL_MODELS_FOR_EVALUATION)) {
             ps.setInt(1, assetTypeID);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -241,5 +243,3 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
         return estimate;
     }
 }
-
-

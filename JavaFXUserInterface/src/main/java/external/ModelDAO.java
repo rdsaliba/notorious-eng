@@ -9,14 +9,16 @@ package external;
 
 import app.item.Model;
 import rul.models.ModelStrategy;
+
 import java.sql.SQLException;
 import java.util.List;
 
 public interface ModelDAO {
 
     String getModelNameFromAssetTypeID(String assetTypeId);
-    
-     List<Model> getAllModels(int assetTypeID);
+
+    List<Model> getAllModelsForEvaluation(int assetTypeID);
+
     void updateModelAssociatedWithAssetType(int modelID, String assetTypeID);
 
     void setModelToTrain(String assetTypeID);
@@ -24,6 +26,8 @@ public interface ModelDAO {
     String getGetModelEvaluation(int modelID, String assetTypeID);
 
     int getModelIDFromAssetTypeID(String assetTypeID);
-    public ModelStrategy getModelStrategy(int modelID, int assetTypeID) throws SQLException;
-    public void updateModelStrategy(ModelStrategy modelStrategy, int modelID, int assetTypeID);
+
+    ModelStrategy getModelStrategy(int modelID, int assetTypeID) throws SQLException;
+
+    void updateModelStrategy(ModelStrategy modelStrategy, int modelID, int assetTypeID);
 }
