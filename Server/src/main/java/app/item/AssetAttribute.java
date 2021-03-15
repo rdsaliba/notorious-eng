@@ -43,6 +43,14 @@ public class AssetAttribute {
         return null;
     }
 
+    public List<Integer> getTimeCyclesList() {
+        List<Integer> timeCyclesList = new ArrayList<>();
+        for (Measurement measurement : measurements) {
+            timeCyclesList.add(measurement.getTime());
+        }
+        return timeCyclesList;
+    }
+
     public int getId() {
         return id;
     }
