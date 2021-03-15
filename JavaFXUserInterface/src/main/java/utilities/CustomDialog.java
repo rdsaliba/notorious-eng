@@ -68,6 +68,15 @@ public class CustomDialog extends Stage {
         });
         dialog.openDialog();
     }
+    public static void nullModelAlert(MouseEvent mouseEvent){
+        CustomDialog dialog = new CustomDialog(TextConstants.NO_MODEL_ALERT_HEADER, TextConstants.NO_MODEL_ALERT_CONTENT);
+        dialog.getOkButton().setOnAction(e -> {
+            uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_INFO_SCENE, dialog.getScene());
+            dialog.closeDialog();
+        });
+        dialog.getRoot().getChildren().remove(3);
+        dialog.openDialog();
+    }
 
     public static void systemInfoController(MouseEvent mouseEvent, int systemID) {
         AssetDAOImpl assetDAOImpl = new AssetDAOImpl();

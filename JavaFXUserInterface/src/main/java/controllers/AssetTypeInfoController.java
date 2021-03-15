@@ -23,6 +23,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
@@ -37,6 +38,7 @@ import utilities.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class AssetTypeInfoController implements Initializable {
@@ -243,7 +245,7 @@ public class AssetTypeInfoController implements Initializable {
             try {
                 evaluateAllModelsBtn.setOnMouseClicked(mouseEvent -> {
                     for (Model model : modelObservableList) {
-                        saveModelToEvaluate(model);
+                        saveModelToEvaluate(model, mouseEvent);
                     }
                 });
             } catch (Exception e) {
@@ -270,14 +272,19 @@ public class AssetTypeInfoController implements Initializable {
      * @param model is the model to be evaluated
      * @author Tala, Jeremie
      */
-    public void saveModelToEvaluate(Model model) {
+    public void saveModelToEvaluate(Model model, MouseEvent mouseEvent) {
         int assetTypeID = Integer.parseInt(assetType.getId());
         int trainAssets = (int) trainSlider.getValue() + 1;
         int testAssets = (int) trainSlider.getValue() + 1 + (int) testSlider.getValue();
         ModelStrategy modelStrategy = modelDAO.getModelStrategy(model.getModelID(), assetTypeID);
-        modelStrategy.setTrainAssets(trainAssets);
-        modelStrategy.setTestAssets(testAssets);
-        modelDAO.updateModelStrategy(modelStrategy, model.getModelID(), assetTypeID);
+        if(!Objects.isNull(modelStrategy)){
+            modelStrategy.setTrainAssets(trainAssets);
+            modelStrategy.setTestAssets(testAssets);
+            modelDAO.updateModelStrategy(modelStrategy, model.getModelID(), assetTypeID);
+        }
+        else{
+            CustomDialog.nullModelAlert(mouseEvent);
+        }
     }
 
     /**
@@ -469,7 +476,7 @@ public class AssetTypeInfoController implements Initializable {
             evaluateModelBtn.setText("Evaluate");
             evaluateModelBtn.setDisable(true);
             evaluateButtons.add(evaluateModelBtn);
-            evaluateModelBtn.setOnMouseClicked(mouseEvent -> saveModelToEvaluate(model));
+            evaluateModelBtn.setOnMouseClicked(mouseEvent -> saveModelToEvaluate(model, mouseEvent));
 
             //Setting IDs for the elements
             modelNameLabel.getStyleClass().add("modelName");

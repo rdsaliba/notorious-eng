@@ -15,7 +15,8 @@ public class TextConstants {
     public static final String CAUTION_THRESHOLD = "Caution";
     public static final String WARNING_THRESHOLD = "Warning";
     public static final String FAILED_THRESHOLD = "Failed";
-
+    public static final String NO_MODEL_ALERT_HEADER="Error No Model Available";
+    public static final String NO_MODEL_ALERT_CONTENT="You should run server before you evaluate";
     public static final String ALERT_HEADER = "Confirmation of system deletion";
     public static final String ALERT_CONTENT = "Are you sure you want to delete this system?";
 
@@ -28,6 +29,7 @@ public class TextConstants {
     public static final String ASSETS_SCENE = "/Assets";
     public static final String ADD_ASSETS = "/AddAsset";
     public static final String ASSET_TYPE_LIST_SCENE = "/AssetTypeList";
+    public static final String ASSET_TYPE_INFO_SCENE = "/AssetTypeInfo";
     public static final DecimalFormat RULValueFormat = new DecimalFormat("#.##");
     public static final DecimalFormat RMSEValueFormat = new DecimalFormat("#.##");
     public static final DecimalFormat ThresholdValueFormat = new DecimalFormat("#.00");
