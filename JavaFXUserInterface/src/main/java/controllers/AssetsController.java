@@ -345,7 +345,6 @@ public class AssetsController implements Initializable {
 
         table.setItems(assets);
         table.setId("listTable");
-        table.getColumns().add(modelCol);
         table.getColumns().addAll(assetTypeCol, serialNoCol, modelCol, modelRULCol, recommendationCol, locationCol, siteCol, categoryCol, manufacturerCol, descriptionCol);
         AnchorPane.setBottomAnchor(table, 0.0);
         AnchorPane.setTopAnchor(table, 5.0);
