@@ -107,7 +107,6 @@ public class AddAssetController implements Initializable {
         cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(TextConstants.ASSETS_SCENE, cancelBtn.getScene()));
     }
 
-
     /**
      * Initializes the default and possible values for all fields that can accept user input. For example,
      * it establishes the possible dropdown values for the asset type selection.
