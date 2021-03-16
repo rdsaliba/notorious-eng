@@ -23,18 +23,18 @@ import java.util.Map;
 public class RandomForestModelImpl extends ModelStrategy
 {
     //Default Parameters
-    private final boolean STORE_OUT_OF_BAG_PREDICTIONS_PARAM_DEFAULT = false;
-    private final boolean BREAK_TIES_RANDOMLY_PARAM_DEFAULT = false;
-    private final boolean CALC_OUT_BAGS_PARAM_DEFAULT = false;
-    private final boolean COMPUTE_ATTRIBUTE_IMPORTANCE_PARAM_DEFAULT = false;
+    private static final boolean STORE_OUT_OF_BAG_PREDICTIONS_PARAM_DEFAULT = false;
+    private static final boolean BREAK_TIES_RANDOMLY_PARAM_DEFAULT = false;
+    private static final boolean CALC_OUT_BAGS_PARAM_DEFAULT = false;
+    private static final boolean COMPUTE_ATTRIBUTE_IMPORTANCE_PARAM_DEFAULT = false;
 
-    private final int BAG_SIZE_PERCENT_PARAM_DEFAULT = 100;
-    private final int MAX_DEPTH_PARAM_DEFAULT = 0;
-    private final int NUM_EXECUTION_SLOTS_PARAM_DEFAULT = 1;
-    private final int NUM_FEATURES_PARAM_DEFAULT = 0;
-    private final int NUM_ITERATIONS_PARAM_DEFAULT = 100;
+    private static final int BAG_SIZE_PERCENT_PARAM_DEFAULT = 100;
+    private static final int MAX_DEPTH_PARAM_DEFAULT = 0;
+    private static final int NUM_EXECUTION_SLOTS_PARAM_DEFAULT = 1;
+    private static final int NUM_FEATURES_PARAM_DEFAULT = 0;
+    private static final int NUM_ITERATIONS_PARAM_DEFAULT = 100;
 
-    private final String BATCH_SIZE_PARAM_DEFAULT = "100";
+    private static final String BATCH_SIZE_PARAM_DEFAULT = "100";
 
     //Parameters
     private BoolParameter storeOutOfBagPredictionsPara;
@@ -131,7 +131,7 @@ public class RandomForestModelImpl extends ModelStrategy
 
         IntParameter bagSizePercentParaDefault     = new IntParameter("Bag Size Percent", BAG_SIZE_PERCENT_PARAM_DEFAULT);
         IntParameter maxDepthParaDefault           = new IntParameter("Max Depth", MAX_DEPTH_PARAM_DEFAULT);
-        IntParameter numExecutionSlotsParaDefeault = new IntParameter("Number of Execution Slots", NUM_EXECUTION_SLOTS_PARAM_DEFAULT);
+        IntParameter numExecutionSlotsParaDefault = new IntParameter("Number of Execution Slots", NUM_EXECUTION_SLOTS_PARAM_DEFAULT);
         IntParameter numFeaturesParaDefault        = new IntParameter("Number of Features", NUM_FEATURES_PARAM_DEFAULT);
         IntParameter numIterationsParaDefault      = new IntParameter("Number of Iterations", NUM_ITERATIONS_PARAM_DEFAULT);
 
@@ -145,7 +145,7 @@ public class RandomForestModelImpl extends ModelStrategy
 
         parameters.put(bagSizePercentParaDefault.getParamName(), bagSizePercentParaDefault);
         parameters.put(maxDepthParaDefault.getParamName(), maxDepthParaDefault);
-        parameters.put(numExecutionSlotsParaDefeault.getParamName(), numExecutionSlotsParaDefeault);
+        parameters.put(numExecutionSlotsParaDefault.getParamName(), numExecutionSlotsParaDefault);
         parameters.put(numFeaturesParaDefault.getParamName(), numFeaturesParaDefault);
         parameters.put(numIterationsParaDefault.getParamName(), numIterationsParaDefault);
 

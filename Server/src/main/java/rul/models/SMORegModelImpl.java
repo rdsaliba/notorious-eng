@@ -23,8 +23,8 @@ public class SMORegModelImpl extends ModelStrategy
 {
 
     //Default Parameters
-    private final float C_COMPLEXITY_PARAM_DEFAULT = 1.0F;
-    private final String BATCH_SIZE_PARAM_DEFAULT = "100";
+    private static final float C_COMPLEXITY_PARAM_DEFAULT = 1.0F;
+    private static final String BATCH_SIZE_PARAM_DEFAULT = "100";
 
     private FloatParameter cComplexityPara;
     private StringParameter batchSizePara;

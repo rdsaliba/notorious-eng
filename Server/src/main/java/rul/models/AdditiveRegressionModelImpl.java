@@ -19,11 +19,11 @@ import java.util.Map;
 public class AdditiveRegressionModelImpl extends ModelStrategy
 {
     //Default Parameters
-    private final boolean MINIMIZE_ABSOLUTE_ERROR_PARAM_DEFAULT = false;
-    private final boolean RESUME_PARAM_DEFAULT = false;
-    private final float SHRINKAGE_PARAM_DEFAULT = 1.0F;
-    private final int NUM_ITERATIONS_PARAM_DEFAULT = 10;
-    private final String BATCH_SIZE_PARAM_DEFAULT = "100";
+    private static final boolean MINIMIZE_ABSOLUTE_ERROR_PARAM_DEFAULT = false;
+    private static final boolean RESUME_PARAM_DEFAULT = false;
+    private static final float SHRINKAGE_PARAM_DEFAULT = 1.0F;
+    private static final int NUM_ITERATIONS_PARAM_DEFAULT = 10;
+    private static final String BATCH_SIZE_PARAM_DEFAULT = "100";
 
     private BoolParameter minimizeAbsoluteErrorPara;
     private BoolParameter resumePara;

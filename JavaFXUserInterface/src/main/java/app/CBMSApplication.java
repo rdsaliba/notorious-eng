@@ -40,30 +40,28 @@ public class CBMSApplication extends Application {
             try {
                 closeProgram();
             } catch (Exception ex) {
-                logger.error("Exception: ", ex);
+                logger.error("Exception in starting the application: ", ex);
             }
         });
     }
 
     /**
      * Loads all live assets before starting the application
-     *
-     * @throws Exception
      */
     @Override
-    public void init() throws Exception {
+    public void init() {
         long loadStartTime = System.currentTimeMillis();
         try {
             ModelController.getInstance().getAllLiveAssets();
         } catch (Exception e) {
-            logger.error("Exception: ", e);
+            logger.error("Exception in initializing the application: ", e);
         }
         long loadEndTime = System.currentTimeMillis();
         if ((loadEndTime - loadStartTime) < 1000) {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
-                logger.error("Exception: ", e);
+                logger.error("Exception in putting to sleep the threads: ", e);
                 Thread.currentThread().interrupt();
             }
         }

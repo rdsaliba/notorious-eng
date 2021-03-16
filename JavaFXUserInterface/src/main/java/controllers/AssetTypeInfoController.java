@@ -23,7 +23,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
@@ -102,7 +101,6 @@ public class AssetTypeInfoController implements Initializable {
     private ModelDAOImpl modelDAO;
     private AssetDAOImpl assetDAO;
 
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         uiUtilities = new UIUtilities();
@@ -145,28 +143,36 @@ public class AssetTypeInfoController implements Initializable {
     }
 
     /**
-     * Attaches events to elements in the scene.
+     * Attaches events to elements in the scene and specifically on the information tab
      *
      * @author Najim, Paul
      * Edit: added all the text proprety listeners and text formaters for all the fields
      */
     public void attachEvents() {
-
         // Change scenes to Assets.fxml
-        backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE, backBtn.getScene()));
+        backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(TextConstants.ASSET_TYPE_LIST_SCENE, backBtn.getScene()));
 
-        modelTab.setOnSelectionChanged(event -> attachEventsModelTab());
-
-        infoDeleteBtn.setOnMouseClicked(mouseEvent -> CustomDialog.systemTypeInfoControllerDialog(mouseEvent, assetType.getId()));
+        infoDeleteBtn.setOnMouseClicked(mouseEvent -> CustomDialog.systemTypeInfoControllerDialog(assetType.getId()));
 
         infoSaveBtn.setDisable(true);
         infoSaveBtn.setOnMouseClicked(mouseEvent -> {
             if (formInputValidation()) {
                 assetTypeDAO.updateAssetType(assetType.toAssetType());
-                uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE, infoSaveBtn.getScene());
+                uiUtilities.changeScene(TextConstants.ASSET_TYPE_LIST_SCENE, infoSaveBtn.getScene());
             }
         });
 
+        attachAssetTypeTextFieldsEvents();
+        modelTab.setOnSelectionChanged(event -> initializeModelTab());
+    }
+
+    /**
+     * This attaches an event listener for every asset type information input field. It will handle
+     * the text or value change on all those fields.
+     *
+     * @author Paul
+     */
+    private void attachAssetTypeTextFieldsEvents() {
         assetTypeName.textProperty().addListener((obs, oldText, newText) -> {
             if (handleTextChange(newText, originalAssetType.getName()))
                 assetType.getAssetType().setName(newText);
@@ -205,53 +211,25 @@ public class AssetTypeInfoController implements Initializable {
                 assetType.setValueFailed(newText);
         });
         thresholdFailed.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
-
     }
 
-    private void attachEventsModelTab() {
+    /**
+     * This initializes all the data and UI components for the model Tab
+     *
+     * @author Talal, Jeremie
+     */
+    private void initializeModelTab() {
         try {
             modelObservableList = FXCollections.observableArrayList(modelDAO.getAllModelsForEvaluation(Integer.parseInt(assetType.getId())));
         } catch (Exception e) {
             logger.error("Exception in getting all the models list", e);
         }
         modelSaveBtn.setDisable(true);
-        modelSaveBtn.setOnMouseClicked(mouseEvent -> {
-            saveSelectedModelAssociation();
-            uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE, modelSaveBtn.getScene());
-        });
         evaluateAllModelsBtn.setDisable(true);
         evaluateButtons = new ArrayList<>();
         evaluateButtons.add(evaluateAllModelsBtn);
 
-        if (modelTab.getId().equals("modelTab")) {
-            List<Asset> assets = assetDAO.getArchivedAssetsFromAssetTypeID(Integer.parseInt(assetType.getId()));
-            int nbOfAssets = assets.size();
-            trainSlider.setMax(nbOfAssets);
-            trainValue.setText(String.valueOf(trainSlider.getValue()));
-            testSlider.setMax(nbOfAssets);
-            testValue.setText(String.valueOf(testSlider.getValue()));
-
-            trainSlider.valueProperty().addListener((observableValue, number, t1) -> {
-                trainValue.setText(Integer.toString((int) trainSlider.getValue()));
-                testSlider.setMax(nbOfAssets - trainSlider.getValue());
-                trainSize = (int) trainSlider.getValue();
-            });
-            testSlider.valueProperty().addListener((observableValue, number, t1) -> {
-                testValue.setText(Integer.toString((int) testSlider.getValue()));
-                trainSlider.setMax(nbOfAssets - testSlider.getValue());
-                testSize = (int) testSlider.getValue();
-            });
-
-            try {
-                evaluateAllModelsBtn.setOnMouseClicked(mouseEvent -> {
-                    for (Model model : modelObservableList) {
-                        saveModelToEvaluate(model, mouseEvent);
-                    }
-                });
-            } catch (Exception e) {
-                logger.error("Exception for evaluateAllModelsBtn.setOnMouseClicked(), e");
-            }
-        }
+        setTestAndTrainSliders();
 
         try {
             modelObservableList = FXCollections.observableArrayList(modelDAO.getAllModelsForEvaluation(Integer.parseInt(assetType.getId())));
@@ -260,6 +238,58 @@ public class AssetTypeInfoController implements Initializable {
         }
         modelsThumbPane.getChildren().clear();
         generateThumbnails();
+        attachEventsModelTab();
+    }
+
+    /**
+     * This sets configures the test and train sliders to hold values based on the specific asset
+     * type. It also adds an event listener to keep track of the current selection (input) of one
+     * of the sliders to adjust the maximum value of the other so the number of assets used in total
+     * is always the correct one.
+     *
+     * @author Talal
+     */
+    private void setTestAndTrainSliders() {
+        List<Asset> assets = assetDAO.getArchivedAssetsFromAssetTypeID(Integer.parseInt(assetType.getId()));
+        int nbOfAssets = assets.size();
+        trainSlider.setMax(nbOfAssets);
+        trainValue.setText(String.valueOf(trainSlider.getValue()));
+        testSlider.setMax(nbOfAssets);
+        testValue.setText(String.valueOf(testSlider.getValue()));
+
+        trainSlider.valueProperty().addListener((observableValue, number, t1) -> {
+            trainValue.setText(Integer.toString((int) trainSlider.getValue()));
+            testSlider.setMax(nbOfAssets - trainSlider.getValue());
+            trainSize = (int) trainSlider.getValue();
+        });
+        testSlider.valueProperty().addListener((observableValue, number, t1) -> {
+            testValue.setText(Integer.toString((int) testSlider.getValue()));
+            trainSlider.setMax(nbOfAssets - testSlider.getValue());
+            testSize = (int) testSlider.getValue();
+        });
+    }
+
+    /**
+     * This attaches all the events to the UI components for the model tab
+     *
+     * @author Talal, Jeremie
+     */
+    private void attachEventsModelTab() {
+        modelSaveBtn.setOnMouseClicked(mouseEvent -> {
+            saveSelectedModelAssociation();
+            uiUtilities.changeScene(TextConstants.ASSET_TYPE_LIST_SCENE, modelSaveBtn.getScene());
+        });
+
+        try {
+            evaluateAllModelsBtn.setOnMouseClicked(mouseEvent -> {
+                for (Model model : modelObservableList) {
+                    saveModelToEvaluate(model);
+                }
+            });
+        } catch (Exception e) {
+            logger.error("Exception for evaluateAllModelsBtn.setOnMouseClicked(), e");
+        }
+
         trainSlider.setOnMouseClicked(mouseEvent -> enableEvaluation(evaluateButtons));
         testSlider.setOnMouseClicked(mouseEvent -> enableEvaluation(evaluateButtons));
     }
@@ -270,20 +300,19 @@ public class AssetTypeInfoController implements Initializable {
      * the serialized object for evaluation only.
      *
      * @param model is the model to be evaluated
-     * @author Tala, Jeremie
+     * @author Talal, Jeremie
      */
-    public void saveModelToEvaluate(Model model, MouseEvent mouseEvent) {
+    public void saveModelToEvaluate(Model model) {
         int assetTypeID = Integer.parseInt(assetType.getId());
         int trainAssets = (int) trainSlider.getValue() + 1;
         int testAssets = (int) trainSlider.getValue() + 1 + (int) testSlider.getValue();
         ModelStrategy modelStrategy = modelDAO.getModelStrategy(model.getModelID(), assetTypeID);
-        if(!Objects.isNull(modelStrategy)){
+        if (!Objects.isNull(modelStrategy)) {
             modelStrategy.setTrainAssets(trainAssets);
             modelStrategy.setTestAssets(testAssets);
             modelDAO.updateModelStrategy(modelStrategy, model.getModelID(), assetTypeID);
-        }
-        else{
-            CustomDialog.nullModelAlert(mouseEvent);
+        } else {
+            CustomDialog.nullModelAlert();
         }
     }
 
@@ -476,7 +505,7 @@ public class AssetTypeInfoController implements Initializable {
             evaluateModelBtn.setText("Evaluate");
             evaluateModelBtn.setDisable(true);
             evaluateButtons.add(evaluateModelBtn);
-            evaluateModelBtn.setOnMouseClicked(mouseEvent -> saveModelToEvaluate(model, mouseEvent));
+            evaluateModelBtn.setOnMouseClicked(mouseEvent -> saveModelToEvaluate(model));
 
             //Setting IDs for the elements
             modelNameLabel.getStyleClass().add("modelName");

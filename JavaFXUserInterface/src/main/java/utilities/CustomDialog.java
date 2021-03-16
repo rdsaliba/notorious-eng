@@ -11,7 +11,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -63,43 +62,43 @@ public class CustomDialog extends Stage {
         setScene(new Scene(root, null));
     }
 
-    public static void systemTypeInfoControllerDialog(MouseEvent mouseEvent, String systemID) {
+    public static void systemTypeInfoControllerDialog(String systemID) {
         AssetTypeDAOImpl assetTypeDAO = new AssetTypeDAOImpl();
         CustomDialog dialog = new CustomDialog(TextConstants.ALERT_HEADER, TextConstants.ALERT_CONTENT);
         dialog.getOkButton().setOnAction(e -> {
             assetTypeDAO.deleteAssetTypeByID(systemID);
-            uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE, dialog.getScene());
+            uiUtilities.changeScene(TextConstants.ASSETS_SCENE, dialog.getScene());
             dialog.closeDialog();
         });
         dialog.openDialog();
     }
-    public static void nullModelAlert(MouseEvent mouseEvent){
+    public static void nullModelAlert(){
         CustomDialog dialog = new CustomDialog(TextConstants.NO_MODEL_ALERT_HEADER, TextConstants.NO_MODEL_ALERT_CONTENT);
         dialog.getOkButton().setOnAction(e -> {
-            uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_INFO_SCENE, dialog.getScene());
+            uiUtilities.changeScene(TextConstants.ASSET_TYPE_INFO_SCENE, dialog.getScene());
             dialog.closeDialog();
         });
         dialog.getRoot().getChildren().remove(3);
         dialog.openDialog();
     }
 
-    public static void systemInfoController(MouseEvent mouseEvent, int systemID) {
+    public static void systemInfoController(int systemID) {
         AssetDAOImpl assetDAOImpl = new AssetDAOImpl();
         CustomDialog dialog = new CustomDialog(TextConstants.ALERT_HEADER, TextConstants.ALERT_CONTENT);
         //Set the functionality of the btn
         dialog.getOkButton().setOnAction(e -> {
             assetDAOImpl.deleteAssetByID(systemID);
-            uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE, dialog.getScene());
+            uiUtilities.changeScene(TextConstants.ASSETS_SCENE, dialog.getScene());
             dialog.closeDialog();
         });
         dialog.openDialog();
     }
 
-    public static void addSystemControllerSaveDialog(MouseEvent mouseEvent) {
+    public static void addSystemControllerSaveDialog() {
         CustomDialog dialog = new CustomDialog(TextConstants.SAVE_DIALOG, TextConstants.SAVE_HEADER);
         dialog.getRoot().getChildren().remove(dialog.getCancelBtn());
         dialog.getOkButton().setOnAction(e -> {
-            uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE, dialog.getScene());
+            uiUtilities.changeScene(TextConstants.ASSETS_SCENE, dialog.getScene());
             dialog.closeDialog();
         });
         dialog.openDialog();
@@ -112,12 +111,11 @@ public class CustomDialog extends Stage {
      * specified. Saving the selection will delete all time cycles after the selected one and will archive the
      * asset.
      *
-     * @param mouseEvent     click mouse event
      * @param asset          is the asset to be archived
      * @param parentSceneBtn is a button from the parent scene of the custom dialog window
      * @author Jeremie
      */
-    public static void archiveAssetDialogShow(MouseEvent mouseEvent, Asset asset, Button parentSceneBtn) {
+    public static void archiveAssetDialogShow(Asset asset, Button parentSceneBtn) {
         CustomDialog dialog = new CustomDialog(TextConstants.ARCHIVE_DIALOG_HEADER, TextConstants.ARCHIVE_DIALOG_CONTENT);
         final Integer[] selectedCycle = new Integer[1];
         AssetDAOImpl assetDAO = new AssetDAOImpl();
@@ -128,7 +126,7 @@ public class CustomDialog extends Stage {
         dialog.getOkButton().setOnAction(e -> {
             assetDAO.deleteAssetMeasurementsAfterTimeCycle(asset.getId(), selectedCycle[0]);
             assetDAO.setAssetToBeArchived(asset.getId());
-            uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE, parentSceneBtn.getScene());
+            uiUtilities.changeScene(TextConstants.ASSETS_SCENE, parentSceneBtn.getScene());
             dialog.closeDialog();
         });
         dialog.openDialog();
