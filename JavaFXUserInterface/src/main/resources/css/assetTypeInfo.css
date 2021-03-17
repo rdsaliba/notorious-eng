@@ -1,0 +1,34 @@
+.tab {
+    -fx-background-color: transparent;
+    -fx-font-family: 'Segoe UI';
+    -fx-font-size: 16px;
+    -fx-padding: 0 40px 0 40px;
+    -fx-border-width: 2px;
+    -fx-border-color: transparent transparent transparent transparent;
+}
+
+.tab:selected {
+    -fx-border-color: transparent transparent #CBCBCB transparent;
+    -fx-focus-color: transparent;
+}
+
+.tab-header-background {
+    -fx-background-color: transparent;
+}
+
+.tab-label {
+    /*-fx-text-fill: -fx-secondary;*/
+    -fx-font-size: 10pt;
+}
+
+.tab-main {
+    -fx-pref-height: 60;
+    -fx-max-height: 60;
+}
+
+.modelPane
+{
+    -fx-background-color: #FFFFFF;
+    -fx-pref-height: 200.0;
+    -fx-pref-width: 300.0;
+}

@@ -3,11 +3,12 @@
   the Process function will reduce the data and store it in the reducedDataSet variable
 
   @author Paul Micu
-  @version 1.0
   @last_edit 11/01/2020
  */
 package preprocessing;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import weka.attributeSelection.BestFirst;
 import weka.attributeSelection.CfsSubsetEval;
 import weka.core.Attribute;
@@ -23,10 +24,12 @@ import weka.filters.unsupervised.attribute.Remove;
 import java.util.ArrayList;
 
 public class DataPreProcessorImpl implements DataPreProcessor {
-    private Instances originalDataset;
+
+    private final Instances originalDataset;
+    private final ArrayList<Integer> removedIndex;
+    Logger logger = LoggerFactory.getLogger(DataPreProcessorImpl.class);
     private Instances reducedDataset;
     private Instances minimallyReducedDataset;
-    private final ArrayList<Integer> removedIndex;
 
     public DataPreProcessorImpl(Instances originalDataset) {
         this.originalDataset = originalDataset;
@@ -35,15 +38,15 @@ public class DataPreProcessorImpl implements DataPreProcessor {
         this.removedIndex = new ArrayList<>();
     }
 
-    /**  this will add the RUL to the training instances object, this is needed for the model training
+    /**
+     * this will add the RUL to the training instances object, this is needed for the model training
      *
      * @author Khaled
-     * */
+     */
     private static Instances addRUL(Instances trainingData, ArrayList<Double> maxCycles) {
 
         Instance firstRow = trainingData.firstInstance();
         double assetID = firstRow.value(0);
-        //int engineNum = 1;
         Attribute engine = trainingData.attribute("Asset_id");
         Instance row;
 
@@ -69,8 +72,9 @@ public class DataPreProcessorImpl implements DataPreProcessor {
     /**
      * This method takes in instances and parses the maximum cycle of each engine (assetID) in those instances and
      * returns it in an ArrayList.
+     *
      * @author Khaled
-     * */
+     */
     private static ArrayList<Double> getMaxCycles(Instances data) {
         Attribute engine = data.attribute("Asset_id");
         Attribute timeCycle = data.attribute("Time_Cycle");
@@ -90,79 +94,22 @@ public class DataPreProcessorImpl implements DataPreProcessor {
                 Instance prevRow = data.instance(i - 1);
                 maxCycles.add(prevRow.value(timeCycle));
                 assetID++;
-            }
-
-            else if (assetID == lastAssetID) {
+            } else if (assetID == lastAssetID) {
                 Instance last = data.lastInstance();
                 maxCycles.add(last.value(timeCycle));
                 break;
-            }
-
-            else if(row.value(engine) != assetID) {
+            } else if (row.value(engine) != assetID) {
                 assetID++;
             }
         }
         return maxCycles;
     }
 
-
     /**
-     * This method will filter the attributes and remove the ones that do not provide useful information
-     * To use this method you need to choose an evaluation method and a search method
-     * for now i choose the default CfsSubsetEval for the evaluator and BestFirst for the search method
-     * the Weka docs contains other types of evaluators and search methods we can try in the future
-     *
-     * @author Paul
-     */
-    @Override
-    public void processFullReduction() throws Exception {
-        AttributeSelection filter = new AttributeSelection();  // a filter needs an evaluator and a search method
-        CfsSubsetEval eval = new CfsSubsetEval(); // the evaluator chosen is the CfsSubsetEval
-        BestFirst search = new BestFirst(); // the search method used is BestFirst
-
-        filter.setEvaluator(eval); // set the filter evaluator and search method
-        filter.setSearch(search);
-
-        filter.setInputFormat(originalDataset);
-        reducedDataset = Filter.useFilter(originalDataset, filter); // this is what takes the data and applies the filter to reduce it
-
-        if (reducedDataset.attribute("RUL") == null)
-            reducedDataset = addRULCol(reducedDataset);
-    }
-
-    /**
-     * Using the AttributeSelection filter from Weka library can eliminate attributes that could potentially hold information
-     * that aren't insignificant. The following method guarantees that ONLY the attributes that have no fluctuation (i.e
-     * standard deviation of 0) are removed and the rest are kept to produce a dataset that is minimally reduced.
+     * Given an Instance object, this will add an RUL attribute at the end of the other attributes
      *
      * @author Khaled
      */
-    @Override
-    public void processMinimalReduction() throws Exception {
-
-        for (int i = 0; i < originalDataset.numAttributes(); i++) {
-            AttributeStats as = originalDataset.attributeStats(i);
-            Stats stats = as.numericStats;
-
-            if (stats.stdDev < 0.001)        //want to remove only the attributes that are 0 or very close to 0
-                removedIndex.add(i);         //add the index to the list
-        }
-
-        //Remove filter to remove the attributes
-        Remove remove = new Remove();
-        int[] indicesToDelete = removedIndex.stream().mapToInt(i -> i).toArray();   //convert Integer list to int array
-        remove.setAttributeIndicesArray(indicesToDelete);
-
-        remove.setInputFormat(originalDataset);
-        minimallyReducedDataset = Filter.useFilter(originalDataset, remove);
-        if (minimallyReducedDataset.attribute("RUL") == null)
-            minimallyReducedDataset = addRULCol(minimallyReducedDataset);
-    }
-
-    /**Given an Instance object, this will add an RUL attribute at the end of the other attributes
-     *
-     * @author Khaled
-     * */
     public static Instances addRULCol(Instances newData) throws Exception {
         Add filter = new Add();
         filter.setAttributeIndex("last");
@@ -177,10 +124,11 @@ public class DataPreProcessorImpl implements DataPreProcessor {
         return addRUL(newData, maxCycles);
     }
 
-    /**Given 2 instances Object, it will remove the attributes that are not shared between the two and return the test set
+    /**
+     * Given 2 instances Object, it will remove the attributes that are not shared between the two and return the test set
      *
      * @author Paul Micu
-     * */
+     */
     public static Instances removeAttributes(Instances trainDataset, Instances testDataset) throws Exception {
         ArrayList<Integer> indexes = new ArrayList<>();
         for (int i = 0; i < testDataset.numAttributes(); i++) {
@@ -199,6 +147,10 @@ public class DataPreProcessorImpl implements DataPreProcessor {
         return Filter.useFilter(testDataset, remove);
     }
 
+    /*
+        Helper method for removeAttributes to check if the attributes are contained in the
+        dataset.
+     */
     private static boolean setContains(Instances dataset, Attribute att) {
         for (int i = 0; i < dataset.numAttributes(); i++) {
             if (att.name().equals(dataset.attribute(i).name())) {
@@ -207,6 +159,69 @@ public class DataPreProcessorImpl implements DataPreProcessor {
 
         }
         return false;
+    }
+
+    /**
+     * This method will filter the attributes and remove the ones that do not provide useful information
+     * To use this method you need to choose an evaluation method and a search method
+     * for now i choose the default CfsSubsetEval for the evaluator and BestFirst for the search method
+     * the Weka docs contains other types of evaluators and search methods we can try in the future
+     *
+     * @author Paul
+     */
+    @Override
+    public void processFullReduction() {
+        AttributeSelection filter = new AttributeSelection();  // a filter needs an evaluator and a search method
+        CfsSubsetEval eval = new CfsSubsetEval(); // the evaluator chosen is the CfsSubsetEval
+        BestFirst search = new BestFirst(); // the search method used is BestFirst
+
+        try {
+            filter.setEvaluator(eval); // set the filter evaluator and search method
+            filter.setSearch(search);
+
+            filter.setInputFormat(originalDataset);
+            reducedDataset = Filter.useFilter(originalDataset, filter); // this is what takes the data and applies the filter to reduce it
+
+            if (reducedDataset.attribute("RUL") == null)
+                reducedDataset = addRULCol(reducedDataset);
+        } catch (Exception e) {
+            logger.error("Exception processFullReduction(): ", e);
+        }
+
+    }
+
+    /**
+     * Using the AttributeSelection filter from Weka library can eliminate attributes that could potentially hold information
+     * that aren't insignificant. The following method guarantees that ONLY the attributes that have no fluctuation (i.e
+     * standard deviation of 0) are removed and the rest are kept to produce a dataset that is minimally reduced.
+     *
+     * @author Khaled
+     */
+    @Override
+    public void processMinimalReduction() {
+
+        for (int i = 0; i < originalDataset.numAttributes(); i++) {
+            AttributeStats as = originalDataset.attributeStats(i);
+            Stats stats = as.numericStats;
+
+            if (stats.stdDev < 0.001)        //want to remove only the attributes that are 0 or very close to 0
+                removedIndex.add(i);         //add the index to the list
+        }
+
+        //Remove filter to remove the attributes
+        Remove remove = new Remove();
+        int[] indicesToDelete = removedIndex.stream().mapToInt(i -> i).toArray();   //convert Integer list to int array
+        remove.setAttributeIndicesArray(indicesToDelete);
+
+        try {
+            remove.setInputFormat(originalDataset);
+            minimallyReducedDataset = Filter.useFilter(originalDataset, remove);
+            if (minimallyReducedDataset.attribute("RUL") == null)
+                minimallyReducedDataset = addRULCol(minimallyReducedDataset);
+        } catch (Exception e) {
+            logger.error("Exception processMinimalReduction(): ", e);
+        }
+
     }
 
     @Override
@@ -219,13 +234,21 @@ public class DataPreProcessorImpl implements DataPreProcessor {
         return minimallyReducedDataset;
     }
 
+    /*
+        Returns the remove filter after applying the indices that should be deleted.
+     */
     @Override
-    public Remove getRemovedIndexList() throws Exception {
+    public Remove getRemovedIndexList() {
         Remove remove = new Remove();
         int[] indicesToDelete = removedIndex.stream().mapToInt(i -> i).toArray();   //convert Integer list to int array
         remove.setAttributeIndicesArray(indicesToDelete);
 
-        remove.setInputFormat(originalDataset);
+        try {
+            remove.setInputFormat(originalDataset);
+        } catch (Exception e) {
+            logger.error("Exception getRemovedIndexList(): ", e);
+        }
+
         return remove;
     }
 

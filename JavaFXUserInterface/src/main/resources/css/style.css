@@ -23,7 +23,7 @@
     -fx-background-color: #FB3860;
 }
 
-#addSystemBtn {
+#addAssetBtn {
     -fx-background-color: #48C774;
 }
 
@@ -35,25 +35,47 @@
     -fx-background-color: #48C774;
 }
 
-#sortSystem {
+#sortAsset {
     -fx-background-color: #48C774;
     -fx-mark-color: white;
     -fx-pref-width: 117;
     -fx-pref-height: 27;
 }
 
-#sortSystem .menu-item:focused {
+#sortAsset .menu-item:focused {
     -fx-background-color: #48C774;
 }
 
-#sortSystem .menu-item:focused > .label {
+#sortAsset .menu-item:focused > .label {
     -fx-text-fill: white;
 }
 
-#sortSystem > .label {
+#sortAsset > .label {
     -fx-text-fill: white;
 }
 
 .scroll-pane {
     -fx-background-color: transparent;
+}
+
+.error-message {
+    -fx-font-weight: bold;
+    -fx-fill: red;
+    -fx-font-size: 11.0;
+}
+
+.input-error {
+    -fx-border-color: red;
+    -fx-border-width: 2px;
+}
+
+.splash-screen-bg {
+    -fx-background-color: linear-gradient(to top right, rgba(22, 53, 96, 1) 0%, rgba(63, 143, 204, 1) 85%);;
+}
+
+.splash-screen-title {
+    -fx-alignment: CENTER;
+    -fx-text-fill: WHITE;
+    -fx-font-family: Futura;
+    -fx-font-size: 55.0;
 }

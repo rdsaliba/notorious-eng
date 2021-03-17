@@ -1,27 +1,46 @@
+/*
+  Creates the connection to the MariaDB database.
+
+  @author Najim, Roy
+  @last_edit 02/7/2020
+ */
 package local;
 
+import app.ConfigProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DatabaseConnection {
-    private static final String URL = "jdbc:mariadb://127.0.0.1:3306/cbms?";
-    //Make sure to set the user and password to the proper values.
-    //Credentials should be set to that which you are using on your local DB server.
-    private static final String USER = "root"; // todo  use username and password specific to your machine
-    private static final String PASSWORD = "";
+
+    static Logger logger = LoggerFactory.getLogger(DatabaseConnection.class);
+
+    private static final ConfigProperties properties = new ConfigProperties();
+
     private static DatabaseConnection openConnection;
     private static Connection conn;
+
+    private static String url = null;
+    private static String user = null;
+    private static String password = null;
+
+    static {
+        try {
+            url = properties.getConfigValues("database_url");
+            user = properties.getConfigValues("database_user");
+            password = properties.getConfigValues("database_password");
+        } catch (IOException e) {
+            logger.error("Exception: ", e);
+        }
+    }
 
     private DatabaseConnection() {
     }
 
-    /**
-     * Creates an instance of the class. Does not allow for more than one instance of the class.
-     *
-     * @return An instance of the class.
-     * @author Najim
-     */
     public static DatabaseConnection getInstance() {
         if (openConnection == null) {
             openConnection = new DatabaseConnection();
@@ -29,19 +48,12 @@ public class DatabaseConnection {
         return openConnection;
     }
 
-
-    /**
-     * Getter
-     *
-     * @return A Connection object
-     * @author Najim
-     */
     public static Connection getConnection() {
         if (conn == null) {
             try {
-                conn = DriverManager.getConnection(URL, USER, PASSWORD);
+                conn = DriverManager.getConnection(url, user, password);
             } catch (SQLException ex) {
-                ex.printStackTrace();
+                logger.error("Exception: ", ex);
             }
         }
 

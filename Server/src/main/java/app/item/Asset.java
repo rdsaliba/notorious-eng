@@ -2,13 +2,17 @@
   Model for the assets of the predictive system.
 
   @author Roy Saliba
-  @version 1.0
-  @last_edit 11/07/2020
+  @last_edit 02/7/2020
  */
 package app.item;
 
+import javafx.beans.property.SimpleStringProperty;
+
+import static utilities.Constants.*;
+
 public class Asset extends Item {
 
+    private final SimpleStringProperty rul;
     private String serialNo;
     private String name;
     private String assetTypeID;
@@ -18,7 +22,12 @@ public class Asset extends Item {
     private String manufacturer;
     private String category;
     private String site;
+    private String assetTypeName;
     private AssetInfo assetInfo;
+
+    public Asset() {
+        rul = new SimpleStringProperty();
+    }
 
     public String getSerialNo() {
         return serialNo;
@@ -28,9 +37,13 @@ public class Asset extends Item {
         this.serialNo = serialNo;
     }
 
-    public String getName() { return name; }
+    public String getName() {
+        return name;
+    }
 
-    public void setName(String name) { this.name = name; }
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public String getAssetTypeID() {
         return assetTypeID;
@@ -64,9 +77,13 @@ public class Asset extends Item {
         this.assetInfo = assetInfo;
     }
 
-    public String getRecommendation() { return recommendation; }
+    public String getRecommendation() {
+        return recommendation;
+    }
 
-    public void setRecommendation(String recommendation) { this.recommendation = recommendation; }
+    public void setRecommendation(String recommendation) {
+        this.recommendation = recommendation;
+    }
 
     public String getManufacturer() {
         return manufacturer;
@@ -90,6 +107,40 @@ public class Asset extends Item {
 
     public void setSite(String site) {
         this.site = site;
+    }
+
+    public SimpleStringProperty getRul() {
+        return rul;
+    }
+
+    public void setRul(String rul) {
+        this.rul.setValue(rul);
+    }
+
+    public String getAssetTypeName() {
+        return assetTypeName;
+    }
+
+    public void setAssetTypeName(String assetTypeName) {
+        this.assetTypeName = assetTypeName;
+    }
+
+    public int mapCriticality() {
+        switch (this.getRecommendation()) {
+            case OK_THRESHOLD:
+                return 1;
+            case ADVISORY_THRESHOLD:
+                return 2;
+            case CAUTION_THRESHOLD:
+                return 3;
+            case WARNING_THRESHOLD:
+                return 4;
+            case FAILED_THRESHOLD:
+                return 5;
+
+            default:
+                return 0;
+        }
     }
 
     @Override

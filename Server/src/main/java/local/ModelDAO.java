@@ -2,7 +2,6 @@
   Interface for the ModelDAO object
 
   @author Paul Micu
-  @version 1.0
   @last_edit 12/27/2020
  */
 package local;
@@ -16,11 +15,13 @@ import java.util.ArrayList;
 public interface ModelDAO {
     ArrayList<TrainedModel> getModelsToTrain();
 
-    void setModelsToTrain(ArrayList<TrainedModel> tms);
+    void setModelToTrain(TrainedModel tm);
 
-    TrainedModel getModelsByAssetTypeID(String assetTypeID);
+    String getModelNameFromModelID(String modelID);
 
-    String getModelNameFromModelID(int modelID);
+    void updateEvaluationRMSE(Double rmse, int modelId, int assetTypeId);
 
-    TrainedModel createTrainedModelFromResultSet(ResultSet rs, Boolean withModel) throws SQLException;
+    TrainedModel getModelsByAssetTypeID(String assetTypeID, int statusID);
+
+    TrainedModel createTrainedModelFromResultSet(ResultSet rs) throws SQLException;
 }

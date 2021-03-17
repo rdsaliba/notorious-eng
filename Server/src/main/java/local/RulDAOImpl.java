@@ -3,7 +3,6 @@
   This class extends the general DAO object and implements the RulDAO interface
 
   @author      Paul Micu
-  @version     1.0
   @last_edit   12/27/2020
  */
 package local;
@@ -13,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class RulDAOImpl extends DAO implements RulDAO {
+
     public static final String GET_LATEST_RUL_FROM_ASSET_ID = "SELECT value FROM asset_model_calculation where asset_id = ? ORDER BY `timestamp` desc LIMIT 1";
 
     /**
@@ -32,7 +32,7 @@ public class RulDAOImpl extends DAO implements RulDAO {
                     estimate = rs.getDouble("value");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception: ", e);
         }
         return estimate;
     }

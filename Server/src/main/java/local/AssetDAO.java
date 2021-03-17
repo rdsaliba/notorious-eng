@@ -2,8 +2,7 @@
   Interface for the assetDAO object
 
   @author Paul Micu
-  @version 1.0
-  @last_edit 12/27/2020
+  @last_edit 02/7/2020
  */
 package local;
 
@@ -18,8 +17,6 @@ import java.util.ArrayList;
 public interface AssetDAO {
     ArrayList<Asset> getAssetsToUpdate();
 
-    void deleteAssetByID(int assetID);
-
     ArrayList<Asset> getAssetsFromAssetTypeID(int assetTypeID);
 
     ArrayList<String> getAttributesNameFromAssetID(int assetID);
@@ -28,17 +25,15 @@ public interface AssetDAO {
 
     ArrayList<Asset> getAllLiveAssets();
 
-    ArrayList<Asset> getAllLiveAssetsDes();
-
     void addRULEstimation(Double estimation, Asset asset, TrainedModel model);
-
-    void insertAsset(Asset asset);
 
     void resetAssetUpdate(int assetID);
 
     void setAssetUpdate(int assetID);
 
     Asset createAssetFromQueryResult(ResultSet assetsQuery) throws SQLException;
+
+    Asset createFullAssetFromQueryResult(ResultSet assetsQuery) throws SQLException;
 
     AssetInfo createAssetInfo(int assetID);
 

@@ -1,28 +1,36 @@
 /*
-  The asset Attribute class contains all the details of the asset attribute (sensors, operational settings, etc).
+  The asset Attribute class contains all the details of the asset attribute (attributes, operational settings, etc).
   This includes the id of the asset, its name and all the measurements we have for it.
 
   @author Paul Micu, Jeremie Chouteau
-  @version 2.0
-  @last_edit 24/12/2020
+  @last_edit 02/7/2020
  */
 package app.item;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AssetAttribute {
+    private final ArrayList<Measurement> measurements;
     private int id;
     private String name;
-    private final ArrayList<Measurement> measurements;
 
-    public AssetAttribute() {measurements = new ArrayList<>();}
+    public AssetAttribute() {
+        this.measurements = new ArrayList<>();
+    }
+
+    public AssetAttribute(int id, String name) {
+        this.measurements = new ArrayList<>();
+        this.id = id;
+        this.name = name;
+    }
 
     public void addMeasurement(int time, double value) {
         Measurement mNew = new Measurement(time, value);
         measurements.add(mNew);
     }
 
-    public ArrayList<Measurement> getMeasurements() {
+    public List<Measurement> getMeasurements() {
         return measurements;
     }
 
@@ -33,6 +41,14 @@ public class AssetAttribute {
             }
         }
         return null;
+    }
+
+    public List<Integer> getTimeCyclesList() {
+        List<Integer> timeCyclesList = new ArrayList<>();
+        for (Measurement measurement : measurements) {
+            timeCyclesList.add(measurement.getTime());
+        }
+        return timeCyclesList;
     }
 
     public int getId() {
