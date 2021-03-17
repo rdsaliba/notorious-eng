@@ -127,8 +127,8 @@ public class AssetTypeInfoController implements Initializable {
         this.originalAssetType = new AssetTypeList(assetType);
         assetTypeName.setText(assetType.getAssetType().getName());
         assetTypeDesc.setText(assetType.getAssetType().getDescription());
-        associatedModelID = modelDAO.getModelIDFromAssetTypeID(assetType.getId());
-        associatedModelLabel.setText(modelDAO.getModelNameFromAssetTypeID(assetType.getId()));
+        associatedModelID = modelDAO.getModelIDAssociatedWithAssetType(assetType.getId());
+        associatedModelLabel.setText(modelDAO.getModelNameAssociatedWithAssetType(assetType.getId()));
         try {
             thresholdOK.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueOk())));
             thresholdAdvisory.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueAdvisory())));
@@ -219,11 +219,6 @@ public class AssetTypeInfoController implements Initializable {
      * @author Talal, Jeremie
      */
     private void initializeModelTab() {
-        try {
-            modelObservableList = FXCollections.observableArrayList(modelDAO.getAllModelsForEvaluation(Integer.parseInt(assetType.getId())));
-        } catch (Exception e) {
-            logger.error("Exception in getting all the models list", e);
-        }
         modelSaveBtn.setDisable(true);
         evaluateAllModelsBtn.setDisable(true);
         evaluateButtons = new ArrayList<>();
@@ -234,7 +229,7 @@ public class AssetTypeInfoController implements Initializable {
         try {
             modelObservableList = FXCollections.observableArrayList(modelDAO.getAllModelsForEvaluation(Integer.parseInt(assetType.getId())));
         } catch (Exception e) {
-            logger.error("Exception for modelObservableList, e");
+            logger.error("Exception in getting all the models list", e);
         }
         modelsThumbPane.getChildren().clear();
         generateThumbnails();

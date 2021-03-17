@@ -39,15 +39,15 @@ public class ModelDAOTest {
 
     @Test
     public void getModelFromAssetTypeTest() {
-        int modelID = modelDAO.getModelIDFromAssetTypeID("4");
-        String modelName = modelDAO.getModelNameFromAssetTypeID("4");
+        int modelID = modelDAO.getModelIDAssociatedWithAssetType("4");
+        String modelName = modelDAO.getModelNameAssociatedWithAssetType("4");
         assertEquals(1, modelID);
         assertEquals("Linear", modelName);
     }
 
     @Test
     public void getModelEvaluationTest() {
-        String RMSE = modelDAO.getGetModelEvaluation(8, "4");
-        assertNull(RMSE);
+        double RMSE = modelDAO.getLatestRMSE(8, 4);
+        assertEquals(-1000000,RMSE,0.5);
     }
 }
