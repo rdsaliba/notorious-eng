@@ -174,7 +174,6 @@ public class AssetInfoController implements Initializable {
             xAxis.setLabel(CYCLE);
             xAxis.setAnimated(false);
             final LineChart<String, String> attributeChart = new LineChart<>(xAxis, yAxis);
-            //attributeChart.setTitle(ATTRIBUTE_VALUES);
             attributeChart.setAnimated(false);
 
             XYChart.Series<String, String> series = new XYChart.Series<>();
@@ -223,14 +222,14 @@ public class AssetInfoController implements Initializable {
      */
     public void attachEvents() {
         // Change scenes to Assets.fxml
-        backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE, backBtn.getScene()));
+        backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(TextConstants.ASSETS_SCENE, backBtn.getScene()));
         deleteBtn.setOnMouseClicked(mouseEvent -> {
             timelines.forEach(Timeline::stop);
-            CustomDialog.systemInfoController(mouseEvent, asset.getId());
+            CustomDialog.systemInfoController(asset.getId());
         });
         archiveBtn.setOnMouseClicked(mouseEvent -> {
             timelines.forEach(Timeline::stop);
-            CustomDialog.archiveAssetDialogShow(mouseEvent, asset, archiveBtn);
+            CustomDialog.archiveAssetDialogShow(asset, archiveBtn);
         });
 
         rawDataTab.setOnSelectionChanged(event -> {

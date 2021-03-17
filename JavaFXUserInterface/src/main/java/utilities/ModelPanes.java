@@ -41,8 +41,6 @@ public class ModelPanes {
         for (int i = 0; i < modelPanes.size(); i++) {
             if ((i + 1) == modelID) {
                 modelPanes.get(i).setStyle("-fx-border-color: red");
-            } else if ((i + 1) != modelID) {
-                //modelPanes.get(i).setStyle("-fx-background-color: #e0e0eb");
             }
         }
     }

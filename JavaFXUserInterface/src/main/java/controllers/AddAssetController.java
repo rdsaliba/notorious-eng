@@ -99,14 +99,13 @@ public class AddAssetController implements Initializable {
             Asset newAsset = assembleAsset();
             if (formInputValidation() && !isAssetEmpty(newAsset)) {
                 saveAsset(newAsset);
-                CustomDialog.addSystemControllerSaveDialog(mouseEvent);
+                CustomDialog.addSystemControllerSaveDialog();
             }
         });
         // Change scenes to Assets.fxml
-        backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE, backBtn.getScene()));
-        cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE, cancelBtn.getScene()));
+        backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(TextConstants.ASSETS_SCENE, backBtn.getScene()));
+        cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(TextConstants.ASSETS_SCENE, cancelBtn.getScene()));
     }
-
 
     /**
      * Initializes the default and possible values for all fields that can accept user input. For example,

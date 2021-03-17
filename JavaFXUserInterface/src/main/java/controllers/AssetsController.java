@@ -10,6 +10,7 @@ package controllers;
 
 import app.ModelController;
 import app.item.Asset;
+import app.item.Item;
 import external.AssetTypeDAOImpl;
 import external.ModelDAOImpl;
 import javafx.animation.Animation;
@@ -48,7 +49,6 @@ public class AssetsController implements Initializable {
     private static final String SORT_CRITICAL_ASC = "Less Critical";
     private static final String SORT_CRITICAL_DESC = "Most Critical";
     private static final String RECOMMENDATION = "Recommendation";
-    private static final String LINEAR_RUL = "Linear RUL";
     private static final String TYPE_COL = "Type";
     private static final String SERIAL_NO_COL = "Serial No.";
     private static final String MODEL_COL = "Model";
@@ -60,13 +60,8 @@ public class AssetsController implements Initializable {
     private static final String DESCRIPTION_COL = "Description";
     private final AssetTypeDAOImpl assetTypeDAO;
     private final ModelDAOImpl modelDAO;
-
+    private final TableView<Asset> table;
     Logger logger = LoggerFactory.getLogger(AssetsController.class);
-
-    @FXML
-    private Button assetMenuBtn;
-    @FXML
-    private Button assetTypeMenuBtn;
     @FXML
     private Button addAssetBtn;
     @FXML
@@ -79,11 +74,9 @@ public class AssetsController implements Initializable {
     private Tab listTab;
     @FXML
     private ChoiceBox<String> sortAsset;
-
     private UIUtilities uiUtilities;
     private ObservableList<Asset> assets;
     private Timeline rulTimeline;
-    private final TableView<Asset> table;
 
     public AssetsController() {
         assetTypeDAO = new AssetTypeDAOImpl();
@@ -153,7 +146,7 @@ public class AssetsController implements Initializable {
         });
 
         //Attach link to addAssetButton to go to AddAsset.fxml
-        addAssetBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(rulTimeline, mouseEvent, TextConstants.ADD_ASSETS_SCENE, addAssetBtn.getScene()));
+        addAssetBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(rulTimeline, TextConstants.ADD_ASSETS_SCENE, addAssetBtn.getScene()));
 
         sortingSetUp();
     }
@@ -172,18 +165,25 @@ public class AssetsController implements Initializable {
         //with the appropriate sort applied.
         sortAsset.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
             if (!oldValue.equals(newValue)) {
-                if (newValue.equals(SORT_DEFAULT)) {
-                    FXCollections.sort(assets, (asset, t1) -> asset.getId() - t1.getId());
-                } else if (newValue.equals(SORT_RUL_ASC)) {
-                    FXCollections.sort(assets, (asset, t1) -> Double.valueOf(asset.getRul().getValue()).compareTo(Double.valueOf(t1.getRul().getValue())));
-                } else if (newValue.equals(SORT_RUL_DESC)) {
-                    FXCollections.sort(assets, (asset, t1) -> Double.valueOf(t1.getRul().getValue()).compareTo(Double.valueOf(asset.getRul().getValue())));
-                } else if (newValue.equals(SORT_CRITICAL_ASC)) {
-                    FXCollections.sort(assets, Comparator.comparingInt(Asset::mapCriticality));
-                } else if (newValue.equals(SORT_CRITICAL_DESC)) {
-                    FXCollections.sort(assets, (asset, t1) -> Integer.compare(t1.mapCriticality(), asset.mapCriticality()));
+                switch (newValue) {
+                    case SORT_DEFAULT:
+                        FXCollections.sort(assets, Comparator.comparingInt(Item::getId));
+                        break;
+                    case SORT_RUL_ASC:
+                        FXCollections.sort(assets, Comparator.comparing(asset -> Double.valueOf(asset.getRul().getValue())));
+                        break;
+                    case SORT_RUL_DESC:
+                        FXCollections.sort(assets, (asset, t1) -> Double.valueOf(t1.getRul().getValue()).compareTo(Double.valueOf(asset.getRul().getValue())));
+                        break;
+                    case SORT_CRITICAL_ASC:
+                        FXCollections.sort(assets, Comparator.comparingInt(Asset::mapCriticality));
+                        break;
+                    case SORT_CRITICAL_DESC:
+                        FXCollections.sort(assets, (asset, t1) -> Integer.compare(t1.mapCriticality(), asset.mapCriticality()));
+                        break;
+                    default:
+                        break;
                 }
-
                 assetsThumbPane.getChildren().clear();
                 generateThumbnails();
             }
@@ -201,7 +201,7 @@ public class AssetsController implements Initializable {
         for (Asset asset : assets) {
 
             Pane pane = new Pane();
-            pane.setOnMouseClicked(event -> uiUtilities.changeScene(event, "/AssetInfo", asset, pane.getScene()));
+            pane.setOnMouseClicked(event -> uiUtilities.changeScene("/AssetInfo", asset, pane.getScene()));
             pane.getStyleClass().add("assetPane");
 
             Pane imagePlaceholder = new Pane();
@@ -231,18 +231,26 @@ public class AssetsController implements Initializable {
             recommendationLabel.getStyleClass().add("statusLabel");
             recommendation.getStyleClass().add("statusValue");
             statusPane.getStyleClass().add("statusPane");
-            if (asset.getRecommendation().equals("Ok"))
-                statusPane.getStyleClass().add("ok");
-            else if (asset.getRecommendation().equals("Advisory"))
-                statusPane.getStyleClass().add("advisory");
-            else if (asset.getRecommendation().equals("Caution"))
-                statusPane.getStyleClass().add("caution");
-            else if (asset.getRecommendation().equals("Warning"))
-                statusPane.getStyleClass().add("warning");
-            else if (asset.getRecommendation().equals("Failed"))
-                statusPane.getStyleClass().add("failed");
-            else
-                statusPane.getStyleClass().add("none");
+            switch (asset.getRecommendation()) {
+                case TextConstants.OK_THRESHOLD:
+                    statusPane.getStyleClass().add("ok");
+                    break;
+                case TextConstants.ADVISORY_THRESHOLD:
+                    statusPane.getStyleClass().add("advisory");
+                    break;
+                case TextConstants.CAUTION_THRESHOLD:
+                    statusPane.getStyleClass().add("caution");
+                    break;
+                case TextConstants.WARNING_THRESHOLD:
+                    statusPane.getStyleClass().add("warning");
+                    break;
+                case TextConstants.FAILED_THRESHOLD:
+                    statusPane.getStyleClass().add("failed");
+                    break;
+                default:
+                    statusPane.getStyleClass().add("none");
+                    break;
+            }
 
             statusPane.setAlignment(Pos.CENTER);
             rulPane.setAlignment(Pos.CENTER);
@@ -291,7 +299,7 @@ public class AssetsController implements Initializable {
         // When TableRow is clicked, send data to AssetInfo scene.
         table.setRowFactory(tv -> {
             TableRow<Asset> row = new TableRow<>();
-            row.setOnMouseClicked(event -> uiUtilities.changeScene(event, row, "/AssetInfo", row.getItem(), row.getScene()));
+            row.setOnMouseClicked(event -> uiUtilities.changeScene(row, "/AssetInfo", row.getItem(), row.getScene()));
             return row;
         });
 

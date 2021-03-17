@@ -25,6 +25,8 @@ import java.util.ResourceBundle;
 
 public class AddAssetTypeController implements Initializable {
 
+    private final Text[] errorMessages = new Text[7];
+    private final boolean[] validInput = new boolean[7];
     boolean validForm = true;
     @FXML
     private Button cancelBtn;
@@ -51,8 +53,6 @@ public class AddAssetTypeController implements Initializable {
     private UIUtilities uiUtilities;
     private AssetTypeDAOImpl db;
     private ArrayList<AssetTypeParameter> assetTypeParameters;
-    private final Text[] errorMessages = new Text[7];
-    private final boolean[] validInput = new boolean[7];
 
     /**
      * Initialize runs before the scene is displayed.
@@ -77,12 +77,12 @@ public class AddAssetTypeController implements Initializable {
      */
     public void attachEvents() {
         // Change scenes to Assets.fxml
-        backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE, backBtn.getScene()));
+        backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(TextConstants.ASSET_TYPE_LIST_SCENE, backBtn.getScene()));
         // Change scenes to Assets.fxml
-        cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE, cancelBtn.getScene()));
+        cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(TextConstants.ASSET_TYPE_LIST_SCENE, cancelBtn.getScene()));
         saveBtn.setOnMouseClicked(mouseEvent -> {
             if (assetTypeFormInputValidation() && saveAssetType(assembleAssetType())) {
-                uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE, saveBtn.getScene());
+                uiUtilities.changeScene(TextConstants.ASSET_TYPE_LIST_SCENE, saveBtn.getScene());
             }
         });
 

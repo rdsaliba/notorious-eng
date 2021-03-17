@@ -39,13 +39,9 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
     @Override
     public ArrayList<Asset> getAssetsToUpdate() {
         ArrayList<Asset> assets = new ArrayList<>();
-        try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSETS_TO_UPDATE)) {
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    assets.add(createFullAssetFromQueryResult(rs));
-                }
-            } catch (SQLException e) {
-                logger.error("Exception in getAssetsToUpdate: ", e);
+        try (ResultSet rs = nonParamQuery(GET_ASSETS_TO_UPDATE)) {
+            while (rs.next()) {
+                assets.add(createFullAssetFromQueryResult(rs));
             }
         } catch (SQLException e) {
             logger.error("Exception in getAssetsToUpdate: ", e);

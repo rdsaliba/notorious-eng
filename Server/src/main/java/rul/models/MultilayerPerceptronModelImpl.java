@@ -1,5 +1,5 @@
 /* A Feed Forward Neural Network, unlike LSTM which is Recurrent. Multilayer Perceptron (MLP)
- * is learnt using back propogation to classify instances. It's part of Weka's Classifiers and
+ * is learnt using back propagation to classify instances. It's part of Weka's Classifiers and
  * not part of DL4J.
  *
  * @author Khaled
@@ -22,23 +22,23 @@ public class MultilayerPerceptronModelImpl extends ModelStrategy
 {
 
     //Default Parameters:
-    private final boolean SHOW_GUI_PARAM_DEFAULT = false;
-    private final boolean AUTO_BUILD_PARAM_DEFAULT = true;
-    private final boolean DECAY_PARAM_DEFAULT = false;
-    private final boolean NOMINAL_TO_BINARY_FILTER_PARAM_DEFAULT = true;
-    private final boolean NORMALIZE_ATTRIBUTE_PARAM_DEFAULT = true;
-    private final boolean NORMALIZE_NUMERIC_CLASS_PARAM_DEFAULT = true;
-    private final boolean RESET_PARAM_DEFAULT = true;
-    private final boolean RESUME_PARAM_DEFAULT = false;
+    private static final boolean SHOW_GUI_PARAM_DEFAULT = false;
+    private static final boolean AUTO_BUILD_PARAM_DEFAULT = true;
+    private static final boolean DECAY_PARAM_DEFAULT = false;
+    private static final boolean NOMINAL_TO_BINARY_FILTER_PARAM_DEFAULT = true;
+    private static final boolean NORMALIZE_ATTRIBUTE_PARAM_DEFAULT = true;
+    private static final boolean NORMALIZE_NUMERIC_CLASS_PARAM_DEFAULT = true;
+    private static final boolean RESET_PARAM_DEFAULT = true;
+    private static final boolean RESUME_PARAM_DEFAULT = false;
 
-    private final float LEARNING_RATE_PARAM_DEFAULT = 0.3F;
-    private final float MOMENTUM_PARAM_DEFAULT = 0.2F;
+    private static final float LEARNING_RATE_PARAM_DEFAULT = 0.3F;
+    private static final float MOMENTUM_PARAM_DEFAULT = 0.2F;
 
-    private final int TRAINING_TIME_PARAM_DEFAULT = 500;
-    private final int VALIDATION_SIZE_PARAM_DEFAULT = 0;
-    private final int VALIDATION_THRESHOLD_PARAM_DEFAULT = 20;
+    private static final int TRAINING_TIME_PARAM_DEFAULT = 500;
+    private static final int VALIDATION_SIZE_PARAM_DEFAULT = 0;
+    private static final int VALIDATION_THRESHOLD_PARAM_DEFAULT = 20;
 
-    private final String BATCH_SIZE_PARAM_DEFAULT = "100";
+    private static final String BATCH_SIZE_PARAM_DEFAULT = "100";
 
     //Parameters
     private BoolParameter showGUIPara;
@@ -151,7 +151,7 @@ public class MultilayerPerceptronModelImpl extends ModelStrategy
     {
         BoolParameter showGUIParaDefault               = new BoolParameter("Show GUI", SHOW_GUI_PARAM_DEFAULT);
         BoolParameter autoBuildParaDefault             = new BoolParameter("Auto Build", AUTO_BUILD_PARAM_DEFAULT);
-        BoolParameter decayParaDefaut                  = new BoolParameter("Decay", DECAY_PARAM_DEFAULT);
+        BoolParameter decayParaDefault                  = new BoolParameter("Decay", DECAY_PARAM_DEFAULT);
         BoolParameter nominalToBinaryFilterParaDefault = new BoolParameter("Nominal to Binary Filter", NOMINAL_TO_BINARY_FILTER_PARAM_DEFAULT);
         BoolParameter normalizeAttributesParaDefault   = new BoolParameter("Normalize Attributes", NORMALIZE_ATTRIBUTE_PARAM_DEFAULT);
         BoolParameter normalizeNumericClassParaDefault = new BoolParameter("Normalize Numeric Class", NORMALIZE_NUMERIC_CLASS_PARAM_DEFAULT);
@@ -170,7 +170,7 @@ public class MultilayerPerceptronModelImpl extends ModelStrategy
         Map<String, Parameter> parameters = new HashMap<>();
         parameters.put(showGUIParaDefault.getParamName(), showGUIParaDefault);
         parameters.put(autoBuildParaDefault.getParamName(), autoBuildParaDefault);
-        parameters.put(decayParaDefaut.getParamName(), decayParaDefaut);
+        parameters.put(decayParaDefault.getParamName(), decayParaDefault);
         parameters.put(nominalToBinaryFilterParaDefault.getParamName(), nominalToBinaryFilterParaDefault);
         parameters.put(normalizeAttributesParaDefault.getParamName(), normalizeAttributesParaDefault);
         parameters.put(normalizeNumericClassParaDefault.getParamName(), normalizeNumericClassParaDefault);

@@ -69,7 +69,7 @@ public class AssetTypeController implements Initializable {
         // When TableRow is clicked, send data to AssetTypeInfo scene.
         tableView.setRowFactory(tv -> {
             TableRow<AssetTypeList> row = new TableRow<>();
-            row.setOnMouseClicked(event -> uiUtilities.changeScene(event, row, "/AssetTypeInfo", row.getItem(), row.getScene()));
+            row.setOnMouseClicked(event -> uiUtilities.changeScene(row, "/AssetTypeInfo", row.getItem(), row.getScene()));
             return row;
         });
         UIUtilities.autoResizeColumns(tableView);
@@ -122,7 +122,7 @@ public class AssetTypeController implements Initializable {
         attachColumnEvents();
 
         //Attach link to addTypeBtn to go to AddAssetType.fxml
-        addTypeBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, "/AddAssetType", addTypeBtn.getScene()));
+        addTypeBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene("/AddAssetType", addTypeBtn.getScene()));
     }
 
     /**

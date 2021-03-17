@@ -14,7 +14,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import org.slf4j.Logger;
@@ -34,6 +33,7 @@ public class UIUtilities {
     /**
      * Given a tableView this function will set the width to fit the largest content
      *
+     * @param table is the table view object that will be resized
      * @author Paul
      */
     public static void autoResizeColumns(TableView<?> table) {
@@ -58,6 +58,8 @@ public class UIUtilities {
     /**
      * This function validates an input of a change on a text field to only allow the change if it fits the DecimalFormat
      *
+     * @param format is the decimal format to be applied to the field
+     * @param c      is the text formatter change
      * @author Paul
      */
     public static TextFormatter.Change checkFormat(DecimalFormat format, TextFormatter.Change c) {
@@ -145,12 +147,11 @@ public class UIUtilities {
     /**
      * Changes scenes once an element is clicked.
      *
-     * @param mouseEvent
-     * @param fxmlFileName
-     * @param scene
+     * @param fxmlFileName is the name of the resource file for the scene
+     * @param scene        is the screen that will app will be changed to
      * @author Jeff
      */
-    public void changeScene(MouseEvent mouseEvent, String fxmlFileName, Scene scene) {
+    public void changeScene(String fxmlFileName, Scene scene) {
         try {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource(fxmlFileName + FXML));
@@ -165,14 +166,13 @@ public class UIUtilities {
      * Changes scenes once an element is clicked, and
      * sends an asset to the new scene's controller.
      *
-     * @param mouseEvent
-     * @param fxmlFileName
+     * @param fxmlFileName the name of the fxml file that will be loaded for the scene
      * @author Jeff
      */
-    public void changeScene(MouseEvent mouseEvent, TableRow<Asset> row, String fxmlFileName, Asset asset, Scene scene) {
+    public void changeScene(TableRow<Asset> row, String fxmlFileName, Asset asset, Scene scene) {
         row.getScene().getWindow();
         if (!row.isEmpty()) {
-            changeScene(mouseEvent, fxmlFileName, asset, scene);
+            changeScene(fxmlFileName, asset, scene);
         }
     }
 
@@ -180,13 +180,12 @@ public class UIUtilities {
      * Changes scenes once an element is clicked, and
      * sends an asset type to the new scene's controller.
      *
-     * @param mouseEvent
-     * @param fxmlFileName
-     * @param row
-     * @param assetType
+     * @param fxmlFileName the name of the fxml file that will be loaded for the scene
+     * @param row          is the table row of an asset type
+     * @param assetType    is the asset type being observed
      * @author Najim, Jeff
      */
-    public void changeScene(MouseEvent mouseEvent, TableRow<AssetTypeList> row, String fxmlFileName, AssetTypeList assetType, Scene scene) {
+    public void changeScene(TableRow<AssetTypeList> row, String fxmlFileName, AssetTypeList assetType, Scene scene) {
         row.getScene().getWindow();
         try {
             if (!row.isEmpty()) {
@@ -206,12 +205,11 @@ public class UIUtilities {
      * Changes scenes once an element is clicked, and
      * sends an asset to the new scene's controller.
      *
-     * @param mouseEvent   the mouse click event
-     * @param fxmlFileName the name of the fxml file we want to navigate to
+     * @param fxmlFileName the name of the fxml file that will be loaded for the scene
      * @param asset        the asset we want to sent to the other page
      * @author Paul, Jeff
      */
-    public void changeScene(MouseEvent mouseEvent, String fxmlFileName, Asset asset, Scene scene) {
+    public void changeScene(String fxmlFileName, Asset asset, Scene scene) {
 
         try {
             FXMLLoader loader = new FXMLLoader();
@@ -229,14 +227,13 @@ public class UIUtilities {
     /**
      * Stop the Timeline, and changes the scene.
      *
-     * @param timeline
-     * @param mouseEvent
-     * @param s
-     * @param scene
+     * @param timeline     the timeline being used on the previous scene
+     * @param fxmlFileName the name of the fxml file that will be loaded for the scene
+     * @param scene        is the screen that will app will be changed to
      * @author Jeff
      */
-    public void changeScene(Timeline timeline, MouseEvent mouseEvent, String s, Scene scene) {
+    public void changeScene(Timeline timeline, String fxmlFileName, Scene scene) {
         timeline.stop();
-        changeScene(mouseEvent, s, scene);
+        changeScene(fxmlFileName, scene);
     }
 }

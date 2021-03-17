@@ -258,7 +258,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
             ps.setInt(1, assetID);
             ps.executeQuery();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception in setAssetToBeArchived(): ", e);
         }
     }
 
@@ -276,7 +276,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
             ps.setInt(2, time);
             ps.executeQuery();
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Exception in deleteAssetMeasurementsAfterTimeCycle: ", e);
         }
     }
 }

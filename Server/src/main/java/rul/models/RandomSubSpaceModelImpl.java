@@ -23,10 +23,10 @@ import java.util.Map;
 public class RandomSubSpaceModelImpl extends ModelStrategy
 {
     //Default Parameters
-    private final float SUBSPACE_SIZE_PARAM_DEFAULT = 0.5F;
-    private final int NUM_EXECUTION_SLOTS_PARAM_DEFAULT = 1;
-    private final int NUM_ITERATIONS_PARAM_DEFAULT = 10;
-    private final String BATCH_SIZE_PARAM_DEFAULT = "100";
+    private static final float SUBSPACE_SIZE_PARAM_DEFAULT = 0.5F;
+    private static final int NUM_EXECUTION_SLOTS_PARAM_DEFAULT = 1;
+    private static final int NUM_ITERATIONS_PARAM_DEFAULT = 10;
+    private static final String BATCH_SIZE_PARAM_DEFAULT = "100";
 
     //Parameters
     private FloatParameter subSpaceSizePara;

@@ -184,17 +184,14 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
             ps.setInt(3, Constants.STATUS_EVALUATION);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    try {
-                        byte[] buf = rs.getBytes("serialized_model");
-                        if (buf != null)
-                            modelStrategy = (ModelStrategy) new ObjectInputStream(new ByteArrayInputStream(buf)).readObject();
-
-                    } catch (IOException | ClassNotFoundException e) {
-                        logger.error("IOException or ClassNotFoundException in getModelStrategy", e);
-                        return null;
-                    }
+                    byte[] buf = rs.getBytes("serialized_model");
+                    if (buf != null)
+                        modelStrategy = (ModelStrategy) new ObjectInputStream(new ByteArrayInputStream(buf)).readObject();
                 }
             }
+        } catch (IOException | ClassNotFoundException e) {
+            logger.error("IOException or ClassNotFoundException in getModelStrategy", e);
+            return null;
         } catch (SQLException e) {
             logger.error("SQL Exception in getModelStrategy", e);
         }

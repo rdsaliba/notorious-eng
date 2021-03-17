@@ -26,10 +26,10 @@ public class LinearRegressionModelImpl extends ModelStrategy
 {
 
     //Default Parameters
-    private final boolean USE_QR_DECOMPOSITION_PARAM_DEFAULT = false;
-    private final boolean ELIMINATE_COLINEAR_ATTRIBUTES_PARAM_DEFAULT = true;
-    private final float RIDGE_PARAM_DEFAULT = 1.0E-8F;
-    private final String BATCH_SIZE_PARAM_DEFAULT = "100";
+    private static final boolean USE_QR_DECOMPOSITION_PARAM_DEFAULT = false;
+    private static final boolean ELIMINATE_COLINEAR_ATTRIBUTES_PARAM_DEFAULT = true;
+    private static final float RIDGE_PARAM_DEFAULT = 1.0E-8F;
+    private static final String BATCH_SIZE_PARAM_DEFAULT = "100";
 
     private BoolParameter useQRDecompositionPara;
     private BoolParameter eliminateColinearAttributesPara;

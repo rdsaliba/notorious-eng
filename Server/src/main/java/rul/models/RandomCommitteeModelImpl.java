@@ -23,9 +23,9 @@ import java.util.Map;
 public class RandomCommitteeModelImpl extends ModelStrategy
 {
     //Default Parameters
-    private final int NUM_EXECUTION_SLOTS_PARAM_DEFAULT = 1;
-    private final int NUM_ITERATIONS_PARAM_DEFAULT = 10;
-    private final String BATCH_SIZE_PARAM_DEFAULT = "100";
+    private static final int NUM_EXECUTION_SLOTS_PARAM_DEFAULT = 1;
+    private static final int NUM_ITERATIONS_PARAM_DEFAULT = 10;
+    private static final String BATCH_SIZE_PARAM_DEFAULT = "100";
 
     private IntParameter numExecutionSlotsPara;
     private IntParameter numIterationsPara;
