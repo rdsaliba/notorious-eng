@@ -152,7 +152,7 @@ public class ModelController {
      * @author Paul
      */
     private void trainModel(TrainedModel trainedModel) throws Exception {
-        Instances trainingSet = createInstancesFromAssets(assetDaoImpl.getAssetsFromAssetTypeID(trainedModel.getAssetTypeID()));
+        Instances trainingSet = createInstancesFromAssets(assetDaoImpl.getAssetsFromAssetTypeID(trainedModel.getAssetTypeID()).subList(0, 10));
         Instances reducedData = DataPrePreprocessorController.getInstance().addRULCol(trainingSet);
         ModelStrategy modelStrategy = trainedModel.getModelStrategy();
         if (modelStrategy == null) {

@@ -10,6 +10,8 @@ package controllers;
 
 import app.item.Asset;
 import app.item.Model;
+import app.item.TrainedModel;
+import app.item.parameter.*;
 import external.AssetDAOImpl;
 import external.AssetTypeDAOImpl;
 import external.ModelDAOImpl;
@@ -35,10 +37,7 @@ import rul.models.ModelStrategy;
 import utilities.*;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class AssetTypeInfoController implements Initializable {
     private static final String RMSE = "RMSE";
@@ -91,7 +90,10 @@ public class AssetTypeInfoController implements Initializable {
     private ArrayList<Button> evaluateButtons;
     @FXML
     private Label associatedModelLabel;
-    private ObservableList<Model> modelObservableList;
+    @FXML
+    private FlowPane modelParameters;
+
+    private ObservableList<TrainedModel> modelObservableList;
     private int associatedModelID;
     private UIUtilities uiUtilities;
     private AssetTypeList assetType;
@@ -220,7 +222,7 @@ public class AssetTypeInfoController implements Initializable {
      */
     private void initializeModelTab() {
         try {
-            modelObservableList = FXCollections.observableArrayList(modelDAO.getAllModelsForEvaluation(Integer.parseInt(assetType.getId())));
+            modelObservableList = FXCollections.observableArrayList(modelDAO.getModelsByAssetTypeID(assetType.getId(), Constants.STATUS_EVALUATION));
         } catch (Exception e) {
             logger.error("Exception in getting all the models list", e);
         }
@@ -232,7 +234,7 @@ public class AssetTypeInfoController implements Initializable {
         setTestAndTrainSliders();
 
         try {
-            modelObservableList = FXCollections.observableArrayList(modelDAO.getAllModelsForEvaluation(Integer.parseInt(assetType.getId())));
+            modelObservableList = FXCollections.observableArrayList(modelDAO.getModelsByAssetTypeID(assetType.getId(), Constants.STATUS_EVALUATION));
         } catch (Exception e) {
             logger.error("Exception for modelObservableList, e");
         }
@@ -282,7 +284,7 @@ public class AssetTypeInfoController implements Initializable {
 
         try {
             evaluateAllModelsBtn.setOnMouseClicked(mouseEvent -> {
-                for (Model model : modelObservableList) {
+                for (TrainedModel model : modelObservableList) {
                     saveModelToEvaluate(model);
                 }
             });
@@ -302,7 +304,7 @@ public class AssetTypeInfoController implements Initializable {
      * @param model is the model to be evaluated
      * @author Talal, Jeremie
      */
-    public void saveModelToEvaluate(Model model) {
+    public void saveModelToEvaluate(TrainedModel model) {
         int assetTypeID = Integer.parseInt(assetType.getId());
         int trainAssets = (int) trainSlider.getValue() + 1;
         int testAssets = (int) trainSlider.getValue() + 1 + (int) testSlider.getValue();
@@ -482,12 +484,13 @@ public class AssetTypeInfoController implements Initializable {
     public void generateThumbnails() {
         ObservableList<Pane> modelPaneObservableList = FXCollections.observableArrayList();
 
-        for (Model model : modelObservableList) {
+        for (TrainedModel model : modelObservableList) {
             // Creating a Thumbnail element
             Pane modelPane = new Pane();
             modelPane.getStyleClass().add("modelPane");
             modelPane.setOnMouseClicked(mouseEvent -> {
                 modelPanes.handleModelSelection(model, modelPane);
+                generateParameters(model.getModelStrategy().getParameters());
                 modelSaveBtn.setDisable(false);
             });
 
@@ -543,6 +546,46 @@ public class AssetTypeInfoController implements Initializable {
         modelPanes.highlightAssociatedModel(modelPaneObservableList, associatedModelID);
     }
 
+    public void generateParameters(Map<String, Parameter> params) {
+        Iterator iterator = params.keySet().iterator();
+        while (iterator.hasNext()) {
+            String name = (String) iterator.next();
+            Parameter parameter = params.get(name);
+
+            System.out.println("Name: " + name);
+            Pane pane = new Pane();
+            Label paramName = new Label();
+            paramName.setText(name);
+            pane.getChildren().add(paramName);
+
+            if (parameter instanceof BoolParameter) {
+                System.out.println("BoolParameter: " + ((BoolParameter) parameter).getBoolValue());
+
+            } else if (parameter instanceof StringParameter) {
+                System.out.println("StringParameter: " + ((StringParameter) parameter).getStringValue());
+                TextField tf = new TextField();
+                pane.getChildren().add(tf);
+
+            } else if (parameter instanceof IntParameter) {
+                System.out.println("IntParameter: " + ((IntParameter) parameter).getIntValue());
+                TextField tf = new TextField();
+                pane.getChildren().add(tf);
+            } else if (parameter instanceof ListParameter) {
+                System.out.println("ListParameter: " + ((ListParameter) parameter).getSelectedValue());
+
+            } else if (parameter instanceof FloatParameter) {
+                System.out.println("FloatParameter: " + ((FloatParameter) parameter).getFloatValue());
+                TextField tf = new TextField();
+                pane.getChildren().add(tf);
+            }
+            modelParameters.getChildren().add(pane);
+
+
+        }
+
+
+    }
+
     /**
      * Saves the association between the selected model and the current asset type in the database.
      * This function also set the retrain tag to true to indicate that the model chosen for the asset
@@ -576,7 +619,7 @@ public class AssetTypeInfoController implements Initializable {
      * @author Talal
      */
     public void updateRMSE() {
-        modelObservableList = FXCollections.observableArrayList(modelDAO.getAllModelsForEvaluation(Integer.parseInt(assetType.getId())));
+        modelObservableList = FXCollections.observableArrayList(modelDAO.getModelsByAssetTypeID(assetType.getId(), Constants.STATUS_EVALUATION));
         for (Model model : modelObservableList) {
             model.setRMSE(String.valueOf(TextConstants.RMSEValueFormat.format(modelDAO.getLatestRMSE(model.getModelID(), Integer.parseInt(assetType.getId())))));
         }

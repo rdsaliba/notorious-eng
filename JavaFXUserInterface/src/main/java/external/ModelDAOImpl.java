@@ -30,6 +30,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     private static final String UPDATE_MODEL_STRATEGY = "UPDATE trained_model tm, model m SET tm.serialized_model=?, tm.retrain=true WHERE tm.model_id = ? AND tm.asset_type_id = ? AND tm.status_id = ? AND tm.model_id=m.model_id AND m.archived = 0";
     private static final String UPDATE_MODEL_FOR_ASSET_TYPE = "UPDATE trained_model tm, model m SET tm.model_id = ? WHERE tm.asset_type_id = ? AND status_id = ? AND tm.model_id=m.model_id AND m.archived = 0";
     private static final String UPDATE_RETRAIN = "UPDATE trained_model tm, model m SET retrain = true WHERE tm.asset_type_id = ? AND tm.status_id = ? AND tm.model_id=m.model_id AND m.archived = 0";
+    private static final String GET_MODEL_FROM_ASSET_TYPE = "SELECT * FROM trained_model, model WHERE trained_model.model_id = model.model_id AND trained_model.asset_type_id = ? and trained_model.status_id = ? AND model.archived = 0";
 
     /**
      * Given a asset type id, this function will return the string corresponding
@@ -88,17 +89,34 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
             ps.setInt(1, assetTypeID);
             ps.setInt(2, Constants.STATUS_EVALUATION);
             try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    Model newModel = new Model();
-                    newModel.setModelID(rs.getInt("model_id"));
-                    newModel.setModelName(rs.getString("name"));
-                    newModel.setDescription(rs.getString("description"));
-                    newModel.setRMSE(rs.getString("rmse"));
-                    modelList.add(newModel);
-                }
             }
         } catch (SQLException e) {
             logger.error("Exception getAllModels(): ", e);
+        }
+        return modelList;
+    }
+
+    /**
+     * Given the id of an asset type, this function will return the trained model
+     * corresponding the that asset type. Since only one model can be associated to
+     * an asset type at a time only one TrainedModel object is returned
+     *
+     * @param assetTypeID represents a the id of an asset type
+     * @author Paul
+     */
+    @Override
+    public ArrayList<TrainedModel> getModelsByAssetTypeID(String assetTypeID, int statusID) {
+        ArrayList<TrainedModel> modelList = new ArrayList<>();
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_FROM_ASSET_TYPE)) {
+            ps.setString(1, assetTypeID);
+            ps.setInt(2, statusID);
+            try (ResultSet queryResult = ps.executeQuery()) {
+                while (queryResult.next()) {
+                    modelList.add(createTrainedModelFromResultSet(queryResult));
+                }
+            }
+        } catch (SQLException e) {
+            logger.error("Exception getModelsByAssetTypeID(): ", e);
         }
         return modelList;
     }
@@ -246,4 +264,32 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
         }
         return estimate;
     }
+
+    /**
+     * Given a result set object, this function will create the corresponding trained model object
+     *
+     * @param rs represents the result from a trained model query
+     * @author Paul
+     */
+    public TrainedModel createTrainedModelFromResultSet(ResultSet rs) throws SQLException {
+        TrainedModel tm = new TrainedModel();
+        tm.setModelID(rs.getInt("model_id"));
+        tm.setModelName(rs.getString("name"));
+        tm.setDescription(rs.getString("description"));
+        tm.setRMSE(rs.getString("rmse"));
+        tm.setAssetTypeID(rs.getInt("asset_type_id"));
+        tm.setRetrain(rs.getBoolean("retrain"));
+        tm.setStatusID(rs.getInt("status_id"));
+        try {
+            byte[] buf = rs.getBytes("serialized_model");
+            if (buf != null)
+                tm.setModelStrategy((ModelStrategy) new ObjectInputStream(new ByteArrayInputStream(buf)).readObject());
+
+        } catch (IOException | ClassNotFoundException e) {
+            logger.error("Exception createTrainedModelFromResultSet(): ", e);
+            return null;
+        }
+        return tm;
+    }
+
 }

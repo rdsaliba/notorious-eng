@@ -1,7 +1,7 @@
 package UnitTests.Utilities;
 
-import utilities.ModelPanes;
 import app.item.Model;
+import app.item.TrainedModel;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.layout.FlowPane;
@@ -9,6 +9,7 @@ import javafx.scene.layout.Pane;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import utilities.ModelPanes;
 
 import static org.junit.Assert.*;
 
@@ -16,8 +17,8 @@ public class ModelPanesTest {
     private ModelPanes modelPanes;
     private FlowPane flowPane;
     private ObservableList<Pane> modelPanesObservableList;
-    private Model model1;
-    private Model model2;
+    private TrainedModel model1;
+    private TrainedModel model2;
     private Pane pane1;
     private Pane pane2;
 
@@ -27,8 +28,8 @@ public class ModelPanesTest {
         flowPane = new FlowPane();
         flowPane.setHgap(10);
         modelPanesObservableList = FXCollections.observableArrayList();
-        model1 = new Model("Model 1 Name", 1, "Model 1 Description");
-        model2 = new Model("Model 2 Name", 2, "Model 2 Description");
+        model1 = new TrainedModel("Model 1 Name", 1, "Model 1 Description");
+        model2 = new TrainedModel("Model 2 Name", 2, "Model 2 Description");
         pane1 = new Pane();
         pane2 = new Pane();
         modelPanesObservableList.addAll(pane1, pane2);

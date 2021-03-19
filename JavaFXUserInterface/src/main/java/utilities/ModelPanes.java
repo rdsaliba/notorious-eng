@@ -1,6 +1,7 @@
 package utilities;
 
 import app.item.Model;
+import app.item.TrainedModel;
 import javafx.collections.ObservableList;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
@@ -52,7 +53,7 @@ public class ModelPanes {
      * @param pane  is the pane containing the selected model
      * @author Jeremie
      */
-    public void handleModelSelection(Model model, Pane pane) {
+    public void handleModelSelection(TrainedModel model, Pane pane) {
         pane.setStyle("-fx-border-color: red");
         setSelectedModel(model);
     }
