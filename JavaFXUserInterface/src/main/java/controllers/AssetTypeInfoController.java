@@ -91,7 +91,7 @@ public class AssetTypeInfoController implements Initializable {
     @FXML
     private Label associatedModelLabel;
     @FXML
-    private FlowPane modelParameters;
+    private AnchorPane modelParameters;
 
     private ObservableList<TrainedModel> modelObservableList;
     private int associatedModelID;
@@ -525,13 +525,13 @@ public class AssetTypeInfoController implements Initializable {
             modelDescriptionText.setLayoutX(15.0);
             modelDescriptionText.setLayoutY(80.0);
             rmseLabel.setLayoutX(47.0);
-            rmseLabel.setLayoutY(239.0);
+            rmseLabel.setLayoutY(151.0);
             rmsePane.setLayoutX(15.0);
-            rmsePane.setLayoutY(243.0);
+            rmsePane.setLayoutY(155.0);
             rmseValue.setLayoutX(30.0);
-            rmseValue.setLayoutY(265.0);
+            rmseValue.setLayoutY(177.0);
             evaluateModelBtn.setLayoutX(133.0);
-            evaluateModelBtn.setLayoutY(243.0);
+            evaluateModelBtn.setLayoutY(155.0);
 
             modelPane.getChildren().add(modelNameLabel);
             modelPane.getChildren().add(modelDescriptionText);
@@ -546,29 +546,51 @@ public class AssetTypeInfoController implements Initializable {
         modelPanes.highlightAssociatedModel(modelPaneObservableList, associatedModelID);
     }
 
+    /**
+     *
+     *
+     * @param params
+     * @author Jeff, Paul
+     */
     public void generateParameters(Map<String, Parameter> params) {
+        modelParameters.getChildren().clear();
         Iterator iterator = params.keySet().iterator();
+        double layoutX = 10.0;
+        double layoutY = 20.0;
         while (iterator.hasNext()) {
             String name = (String) iterator.next();
             Parameter parameter = params.get(name);
 
             System.out.println("Name: " + name);
             Pane pane = new Pane();
+            pane.getStyleClass().add("paramPane");
+            pane.setLayoutX(layoutX);
+            pane.setLayoutY(layoutY);
             Label paramName = new Label();
             paramName.setText(name);
             pane.getChildren().add(paramName);
 
             if (parameter instanceof BoolParameter) {
                 System.out.println("BoolParameter: " + ((BoolParameter) parameter).getBoolValue());
+                CheckBox checkBox = new CheckBox();
+                checkBox.setLayoutX(75.0);
+                checkBox.setLayoutY(0.0);
+                pane.getChildren().addAll(checkBox);
 
             } else if (parameter instanceof StringParameter) {
                 System.out.println("StringParameter: " + ((StringParameter) parameter).getStringValue());
                 TextField tf = new TextField();
+                tf.getStyleClass().add("paramTextField");
+                tf.setLayoutX(50.0);
+                tf.setLayoutY(00.0);
                 pane.getChildren().add(tf);
 
             } else if (parameter instanceof IntParameter) {
                 System.out.println("IntParameter: " + ((IntParameter) parameter).getIntValue());
                 TextField tf = new TextField();
+                tf.getStyleClass().add("paramTextField");
+                tf.setLayoutX(50.0);
+                tf.setLayoutY(0.0);
                 pane.getChildren().add(tf);
             } else if (parameter instanceof ListParameter) {
                 System.out.println("ListParameter: " + ((ListParameter) parameter).getSelectedValue());
@@ -576,10 +598,17 @@ public class AssetTypeInfoController implements Initializable {
             } else if (parameter instanceof FloatParameter) {
                 System.out.println("FloatParameter: " + ((FloatParameter) parameter).getFloatValue());
                 TextField tf = new TextField();
+                tf.getStyleClass().add("paramTextField");
+                tf.setLayoutX(50.0);
+                tf.setLayoutY(0.0);
                 pane.getChildren().add(tf);
             }
             modelParameters.getChildren().add(pane);
-
+            layoutY += 30.0;
+            if(layoutY > 200) {
+                layoutY = 20.0;
+                layoutX = 400.0;
+            }
 
         }
 

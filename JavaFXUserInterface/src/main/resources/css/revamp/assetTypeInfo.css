@@ -40,7 +40,6 @@
 }
 
 .tab-label {
-    /*-fx-text-fill: -fx-secondary;*/
     -fx-font-size: 18px;
     -fx-font-family: "Segoe UI";
     -fx-font-weight: bold;
@@ -119,7 +118,7 @@
 .modelPane {
     -fx-background-color: #FFFFFF;
     -fx-pref-width: 247px;
-    -fx-pref-height: 288px;
+    -fx-pref-height: 200px;
     -fx-border-radius: 5px;
     -fx-background-radius: 5px;
 }
@@ -180,3 +179,14 @@
     -fx-border-color: #D3D3D3;
 }
 
+.paramPane {
+    -fx-background-color: transparent;
+    -fx-border-width: 1px;
+    -fx-border-color: #D3D3D3;
+    -fx-pref-height: 30px;
+    -fx-pref-width: 200px;
+}
+
+.paramTextField {
+    -fx-pref-width: 50px;
+}
