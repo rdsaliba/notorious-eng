@@ -23,8 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ModelDAOImpl extends DAO implements ModelDAO {
-    private static final String GET_MODEL_ASSOCIATED_WITH_ASSET_TYPE = "SELECT * from trained_model tm, model m WHERE tm.asset_type_id = ? AND tm.status_id = ? AND tm.model_id = m.model_id AND m.archived = 0";
-    private static final String GET_ALL_MODELS_FOR_EVALUATION = "SELECT trained_model.*, model.name, model.description from trained_model, model where trained_model.model_id=model.model_id AND asset_type_id=? AND status_id=? AND model.archived = 0";
+    private static final String GET_MODELS_FOR_ASSET_TYPE = "SELECT tm.*, m.name, m.description FROM trained_model tm, model m WHERE tm.model_id = m.model_id AND tm.asset_type_id = ? AND tm.status_id = ? AND m.archived = 0";
     private static final String GET_LATEST_RMSE = "SELECT rmse FROM trained_model tm, model m WHERE tm.model_id=? AND tm.asset_type_id=? AND tm.status_id=? AND tm.model_id = m.model_id AND m.archived=0";
     private static final String GET_MODEL_STRATEGY = "SELECT serialized_model FROM trained_model tm, model m WHERE tm.model_id=? AND tm.asset_type_id=? AND tm.status_id=? AND tm.model_id=m.model_id AND m.archived = 0";
     private static final String UPDATE_MODEL_STRATEGY = "UPDATE trained_model tm, model m SET tm.serialized_model=?, tm.retrain=true WHERE tm.model_id = ? AND tm.asset_type_id = ? AND tm.status_id = ? AND tm.model_id=m.model_id AND m.archived = 0";
@@ -41,7 +40,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     @Override
     public String getModelNameAssociatedWithAssetType(String assetTypeID) {
         String name = null;
-        try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_ASSOCIATED_WITH_ASSET_TYPE)) {
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_MODELS_FOR_ASSET_TYPE)) {
             ps.setString(1, assetTypeID);
             ps.setInt(2, Constants.STATUS_LIVE);
             try (ResultSet rs = ps.executeQuery()) {
@@ -49,7 +48,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
                     name = rs.getString("name");
             }
         } catch (SQLException e) {
-            logger.error("Exception getModelNameFromAssetTypeID(): ", e);
+            logger.error("SQL Exception in getModelNameAssociatedWithAssetType(): ", e);
         }
         return name;
     }
@@ -64,7 +63,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     @Override
     public int getModelIDAssociatedWithAssetType(String assetTypeID) {
         int modelID = 0;
-        try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_ASSOCIATED_WITH_ASSET_TYPE)) {
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_MODELS_FOR_ASSET_TYPE)) {
             ps.setString(1, assetTypeID);
             ps.setInt(2, Constants.STATUS_LIVE);
             try (ResultSet rs = ps.executeQuery()) {
@@ -72,7 +71,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
                     modelID = rs.getInt("model_id");
             }
         } catch (SQLException e) {
-            logger.error("Exception getModelsByAssetTypeID(): ", e);
+            logger.error("SQL Exception in getModelIDAssociatedWithAssetType(): ", e);
         }
         return modelID;
     }
@@ -86,7 +85,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     @Override
     public List<Model> getAllModelsForEvaluation(int assetTypeID) {
         ArrayList<Model> modelList = new ArrayList<>();
-        try (PreparedStatement ps = getConnection().prepareStatement(GET_ALL_MODELS_FOR_EVALUATION)) {
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_MODELS_FOR_ASSET_TYPE)) {
             ps.setInt(1, assetTypeID);
             ps.setInt(2, Constants.STATUS_EVALUATION);
             try (ResultSet rs = ps.executeQuery()) {
@@ -100,7 +99,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
                 }
             }
         } catch (SQLException e) {
-            logger.error("Exception getAllModels(): ", e);
+            logger.error("SQL Exception in getAllModelsForEvaluation(): ", e);
         }
         return modelList;
     }
@@ -121,7 +120,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
             ps.setInt(3, Constants.STATUS_LIVE);
             ps.executeQuery();
         } catch (SQLException e) {
-            logger.error("Exception updateRMSE(): ", e);
+            logger.error("SQL Exception in updateModelAssociatedWithAssetType(): ", e);
         }
     }
 
@@ -139,7 +138,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
             ps.setInt(2, Constants.STATUS_LIVE);
             ps.executeUpdate();
         } catch (SQLException e) {
-            logger.error("Exception in setModelToTrain()");
+            logger.error("SQL Exception in setModelToTrain()");
         }
     }
 
