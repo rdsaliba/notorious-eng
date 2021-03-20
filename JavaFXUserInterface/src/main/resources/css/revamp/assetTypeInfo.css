@@ -83,8 +83,6 @@
 
 .footerBar {
     -fx-background-color: #FFFFFF;
-    -fx-border-width: 1px 0 0 0;
-    -fx-border-color: #D3D3D3;
 }
 
 .saveBtn {
@@ -181,12 +179,26 @@
 
 .paramPane {
     -fx-background-color: transparent;
-    -fx-border-width: 1px;
-    -fx-border-color: #D3D3D3;
-    -fx-pref-height: 30px;
-    -fx-pref-width: 200px;
+    -fx-pref-height: 40px;
+    -fx-pref-width: 450px;
+    -fx-padding: 10px;
 }
 
 .paramTextField {
-    -fx-pref-width: 50px;
+    -fx-pref-width: 150px;
 }
+
+#modelsThumbPane {
+    -fx-padding: 10px;
+}
+
+.paramLabel {
+    -fx-font-family: "Segoe UI Semibold";
+    -fx-font-size: 14px;
+    -fx-text-fill: #3A3A3A;
+}
+
+#parametersScrollPane {
+    -fx-background-color: #FFFFFF;
+}
+
