@@ -31,8 +31,11 @@ public class CBMSApplication extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/Assets.fxml"));
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("/Assets.fxml"));
+        Parent root = loader.load();
         Scene scene = new Scene(root);
+        scene.setUserData(loader);
         primaryStage.setTitle("Minerva");
         primaryStage.setScene(scene);
         primaryStage.show();

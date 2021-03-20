@@ -1,4 +1,5 @@
 /*
+/*
   This class contains methods which are often reused withing the UI.
 
   @author
@@ -9,6 +10,8 @@ package utilities;
 import app.item.Asset;
 import controllers.AssetInfoController;
 import controllers.AssetTypeInfoController;
+import controllers.AssetsController;
+import controllers.Controller;
 import javafx.animation.Timeline;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -22,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.ParsePosition;
+import java.util.ArrayList;
 
 public class UIUtilities {
 
@@ -153,10 +157,12 @@ public class UIUtilities {
      */
     public void changeScene(String fxmlFileName, Scene scene) {
         try {
+            ((Controller) ((FXMLLoader) scene.getUserData()).getController()).getTimelines().forEach(Timeline::stop);
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource(fxmlFileName + FXML));
             Parent parent = loader.load();
             scene.setRoot(parent);
+            scene.setUserData(loader);
         } catch (IOException e) {
             logger.error("Exception in changeScene(): ", e);
         }
@@ -186,13 +192,14 @@ public class UIUtilities {
      * @author Najim, Jeff
      */
     public void changeScene(TableRow<AssetTypeList> row, String fxmlFileName, AssetTypeList assetType, Scene scene) {
-        row.getScene().getWindow();
         try {
             if (!row.isEmpty()) {
+                ((Controller) ((FXMLLoader) scene.getUserData()).getController()).getTimelines().forEach(Timeline::stop);
                 FXMLLoader loader = new FXMLLoader();
                 loader.setLocation(getClass().getResource(fxmlFileName + FXML));
                 Parent parent = loader.load();
                 scene.setRoot(parent);
+                scene.setUserData(loader);
                 AssetTypeInfoController controller = loader.getController();
                 controller.initData(assetType);
             }
@@ -210,30 +217,18 @@ public class UIUtilities {
      * @author Paul, Jeff
      */
     public void changeScene(String fxmlFileName, Asset asset, Scene scene) {
-
         try {
+            ((Controller) ((FXMLLoader) scene.getUserData()).getController()).getTimelines().forEach(Timeline::stop);
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource(fxmlFileName + FXML));
             Parent parent = loader.load();
             scene.setRoot(parent);
+            scene.setUserData(loader);
             AssetInfoController controller = loader.getController();
             controller.initData(asset);
 
         } catch (IOException e) {
             logger.error("Exception in changeScene 3: ", e);
         }
-    }
-
-    /**
-     * Stop the Timeline, and changes the scene.
-     *
-     * @param timeline     the timeline being used on the previous scene
-     * @param fxmlFileName the name of the fxml file that will be loaded for the scene
-     * @param scene        is the screen that will app will be changed to
-     * @author Jeff
-     */
-    public void changeScene(Timeline timeline, String fxmlFileName, Scene scene) {
-        timeline.stop();
-        changeScene(fxmlFileName, scene);
     }
 }

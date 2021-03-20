@@ -38,10 +38,11 @@ import utilities.TextConstants;
 import utilities.UIUtilities;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.ResourceBundle;
 
-public class AssetsController implements Initializable {
+public class AssetsController extends Controller implements Initializable {
 
     private static final String SORT_DEFAULT = "Order";
     private static final String SORT_RUL_ASC = "Ascending RUL";
@@ -74,15 +75,14 @@ public class AssetsController implements Initializable {
     private Tab listTab;
     @FXML
     private ChoiceBox<String> sortAsset;
+
     private UIUtilities uiUtilities;
     private ObservableList<Asset> assets;
-    private Timeline rulTimeline;
 
     public AssetsController() {
         assetTypeDAO = new AssetTypeDAOImpl();
         modelDAO = new ModelDAOImpl();
         table = new TableView<>();
-
         try {
             assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
         } catch (Exception e) {
@@ -116,17 +116,20 @@ public class AssetsController implements Initializable {
         for (Asset asset : assets) {
             asset.setRul(String.valueOf(TextConstants.RULValueFormat.format(AssessmentController.getLatestEstimate(asset.getId()))));
         }
-        rulTimeline =
+        Timeline rulTimeline =
                 new Timeline(new KeyFrame(Duration.millis(3000), e ->
                 {
                     for (Asset asset : assets) {
                         asset.setRul(String.valueOf(TextConstants.RULValueFormat.format(AssessmentController.getLatestEstimate(asset.getId()))));
                     }
                     table.refresh();
+
+                System.out.println("Assets timelines :"+ Math.random());
                 }));
 
         rulTimeline.setCycleCount(Animation.INDEFINITE); // loop forever
         rulTimeline.play();
+        addTimeline(rulTimeline);
     }
 
     /**
@@ -146,7 +149,7 @@ public class AssetsController implements Initializable {
         });
 
         //Attach link to addAssetButton to go to AddAsset.fxml
-        addAssetBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(rulTimeline, TextConstants.ADD_ASSETS_SCENE, addAssetBtn.getScene()));
+        addAssetBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(TextConstants.ADD_ASSETS_SCENE, addAssetBtn.getScene()));
 
         sortingSetUp();
     }
@@ -352,5 +355,4 @@ public class AssetsController implements Initializable {
         AnchorPane.setLeftAnchor(table, 0.0);
         assetsListPane.getChildren().addAll(table);
     }
-
 }
