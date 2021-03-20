@@ -215,6 +215,8 @@
                                                 <children>
                                                     <Label layoutX="28.0" layoutY="16.0" styleClass="panelTitle"
                                                            text="Select a Model" AnchorPane.leftAnchor="26.0"/>
+                                                    <Label layoutX="593.0" layoutY="16.0" styleClass="panelTitle"
+                                                           text="Parameters"/>
                                                 </children>
                                             </AnchorPane>
                                             <ScrollPane fx:id="modelScrollPane" fitToHeight="true" fitToWidth="true"
@@ -227,18 +229,22 @@
                                                               prefWidth="561.0" vgap="10.0"/>
                                                 </content>
                                             </ScrollPane>
-                                            <AnchorPane layoutX="565.0" layoutY="170.0"
+                                            <AnchorPane fx:id="parameterContainer" layoutX="565.0" layoutY="170.0"
                                                         prefHeight="464.0" prefWidth="568.0"
-                                                        AnchorPane.bottomAnchor="81.0" AnchorPane.rightAnchor="0.0"
-                                                        AnchorPane.topAnchor="167.0">
+                                                        styleClass="parametersContainer" AnchorPane.bottomAnchor="81.0"
+                                                        AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="167.0">
                                                 <children>
-                                                    <ScrollPane fx:id="parameterScrollPane" hbarPolicy="NEVER" prefHeight="466.0" prefWidth="571.0"
+                                                    <ScrollPane fx:id="parameterScrollPane" hbarPolicy="NEVER"
+                                                                prefHeight="466.0" prefWidth="571.0"
+                                                                styleClass="parametersScrollPane"
                                                                 AnchorPane.bottomAnchor="0.0"
                                                                 AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
                                                                 AnchorPane.topAnchor="0.0">
                                                         <content>
-                                                            <AnchorPane fx:id="modelParameters" minHeight="0.0" minWidth="0.0"
-                                                                        prefHeight="200.0" prefWidth="200.0"/>
+                                                            <AnchorPane fx:id="modelParameters"
+                                                                        styleClass="modelParameters" minHeight="0.0"
+                                                                        minWidth="0.0" prefHeight="461.0"
+                                                                        prefWidth="568.0"/>
                                                         </content>
                                                     </ScrollPane>
                                                 </children>
@@ -262,6 +268,19 @@
                                                             mnemonicParsing="false" styleClass="saveBtn" text="Save"
                                                             textFill="WHITE" AnchorPane.bottomAnchor="15.0"
                                                             AnchorPane.rightAnchor="26.0">
+                                                        <font>
+                                                            <Font name="Segoe UI Semibold" size="20.0"/>
+                                                        </font>
+                                                    </Button>
+                                                    <Button fx:id="Reset" layoutX="247.0" layoutY="21.0"
+                                                            mnemonicParsing="false" styleClass="resetBtn" text="Reset">
+                                                        <font>
+                                                            <Font name="Segoe UI Semibold" size="20.0"/>
+                                                        </font>
+                                                    </Button>
+                                                    <Button fx:id="modelDefault" layoutX="92.0" layoutY="21.0"
+                                                            mnemonicParsing="false" styleClass="defaultBtn"
+                                                            text="Default">
                                                         <font>
                                                             <Font name="Segoe UI Semibold" size="20.0"/>
                                                         </font>

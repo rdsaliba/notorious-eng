@@ -24,6 +24,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
@@ -38,8 +39,9 @@ import utilities.*;
 
 import java.net.URL;
 import java.util.*;
+import java.util.stream.Collectors;
 
-public class AssetTypeInfoController implements Initializable {
+public class AssetTypeInfoController extends Controller implements Initializable {
     private static final String RMSE = "RMSE";
     static Logger logger = LoggerFactory.getLogger(AssetTypeInfoController.class);
     private final Text[] errorMessages = new Text[7];
@@ -94,6 +96,7 @@ public class AssetTypeInfoController implements Initializable {
     private AnchorPane modelParameters;
 
     private ObservableList<TrainedModel> modelObservableList;
+    private Map<String, Parameter> currentParams;
     private int associatedModelID;
     private UIUtilities uiUtilities;
     private AssetTypeList assetType;
@@ -308,7 +311,8 @@ public class AssetTypeInfoController implements Initializable {
         int assetTypeID = Integer.parseInt(assetType.getId());
         int trainAssets = (int) trainSlider.getValue() + 1;
         int testAssets = (int) trainSlider.getValue() + 1 + (int) testSlider.getValue();
-        ModelStrategy modelStrategy = modelDAO.getModelStrategy(model.getModelID(), assetTypeID);
+        ModelStrategy modelStrategy = model.getModelStrategy();
+        //modelStrategy.setParameters(getParameters();
         if (!Objects.isNull(modelStrategy)) {
             modelStrategy.setTrainAssets(trainAssets);
             modelStrategy.setTestAssets(testAssets);
@@ -547,16 +551,16 @@ public class AssetTypeInfoController implements Initializable {
     }
 
     /**
-     *
-     *
      * @param params
      * @author Jeff, Paul
      */
     public void generateParameters(Map<String, Parameter> params) {
+        currentParams = params;
         modelParameters.getChildren().clear();
         Iterator iterator = params.keySet().iterator();
-        double layoutX = 10.0;
+        double layoutX = 50.0;
         double layoutY = 20.0;
+        double tfLayoutX = 300.0;
         while (iterator.hasNext()) {
             String name = (String) iterator.next();
             Parameter parameter = params.get(name);
@@ -567,52 +571,57 @@ public class AssetTypeInfoController implements Initializable {
             pane.setLayoutX(layoutX);
             pane.setLayoutY(layoutY);
             Label paramName = new Label();
+            paramName.getStyleClass().add("paramLabel");
             paramName.setText(name);
             pane.getChildren().add(paramName);
 
             if (parameter instanceof BoolParameter) {
                 System.out.println("BoolParameter: " + ((BoolParameter) parameter).getBoolValue());
                 CheckBox checkBox = new CheckBox();
-                checkBox.setLayoutX(75.0);
+                checkBox.setSelected(((BoolParameter) parameter).getBoolValue());
+                checkBox.setLayoutX(tfLayoutX);
                 checkBox.setLayoutY(0.0);
                 pane.getChildren().addAll(checkBox);
 
             } else if (parameter instanceof StringParameter) {
                 System.out.println("StringParameter: " + ((StringParameter) parameter).getStringValue());
                 TextField tf = new TextField();
+                tf.setText(((StringParameter) parameter).getStringValue());
                 tf.getStyleClass().add("paramTextField");
-                tf.setLayoutX(50.0);
-                tf.setLayoutY(00.0);
+                tf.setLayoutX(tfLayoutX);
+                tf.setLayoutY(0.0);
                 pane.getChildren().add(tf);
 
             } else if (parameter instanceof IntParameter) {
                 System.out.println("IntParameter: " + ((IntParameter) parameter).getIntValue());
                 TextField tf = new TextField();
+                tf.setText(String.valueOf(((IntParameter) parameter).getIntValue()));
                 tf.getStyleClass().add("paramTextField");
-                tf.setLayoutX(50.0);
+                tf.setLayoutX(tfLayoutX);
                 tf.setLayoutY(0.0);
                 pane.getChildren().add(tf);
             } else if (parameter instanceof ListParameter) {
                 System.out.println("ListParameter: " + ((ListParameter) parameter).getSelectedValue());
+                ChoiceBox<String> listBox = new ChoiceBox();
+                listBox.setItems(FXCollections.observableArrayList(((ListParameter) parameter).getListValues()));
+                listBox.setValue(((ListParameter) parameter).getSelectedValue());
+                listBox.getStyleClass().add("paramTextField");
+                listBox.setLayoutX(tfLayoutX);
+                listBox.setLayoutY(0.0);
+                pane.getChildren().add(listBox);
 
             } else if (parameter instanceof FloatParameter) {
                 System.out.println("FloatParameter: " + ((FloatParameter) parameter).getFloatValue());
                 TextField tf = new TextField();
+                tf.setText(String.valueOf(((FloatParameter) parameter).getFloatValue()));
                 tf.getStyleClass().add("paramTextField");
-                tf.setLayoutX(50.0);
+                tf.setLayoutX(tfLayoutX);
                 tf.setLayoutY(0.0);
                 pane.getChildren().add(tf);
             }
             modelParameters.getChildren().add(pane);
-            layoutY += 30.0;
-            if(layoutY > 200) {
-                layoutY = 20.0;
-                layoutX = 400.0;
-            }
-
+            layoutY += 40.0;
         }
-
-
     }
 
     /**
@@ -661,5 +670,20 @@ public class AssetTypeInfoController implements Initializable {
 
         rmseTimeline.setCycleCount(Animation.INDEFINITE); // loop forever
         rmseTimeline.play();
+        addTimeline(rmseTimeline);
     }
+
+
+/*     public Map<String, Parameter> getParameters() {
+        ObservableList<Node> nodes = modelParameters.getChildren();
+        Map<String, Parameter> newParams = new HashMap<>();
+
+        for (Node node: nodes){
+            currentParams
+        }
+
+
+        return  newParams;
+    } */
+
 }
