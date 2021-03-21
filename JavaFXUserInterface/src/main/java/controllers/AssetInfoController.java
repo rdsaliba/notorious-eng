@@ -192,8 +192,6 @@ public class AssetInfoController extends Controller implements Initializable {
 
                 if (data.size() > ATTRIBUTE_GRAPH_SIZE)
                     data.remove(0, data.size() - ATTRIBUTE_GRAPH_SIZE);
-
-                System.out.println("Timelines :"+ Math.random());
             }));
             timeline.setCycleCount(Animation.INDEFINITE);
             timeline.play();
@@ -224,12 +222,8 @@ public class AssetInfoController extends Controller implements Initializable {
     public void attachEvents() {
         // Change scenes to Assets.fxml
         backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(TextConstants.ASSETS_SCENE, backBtn.getScene()));
-        deleteBtn.setOnMouseClicked(mouseEvent -> {
-            CustomDialog.systemInfoController(asset.getId());
-        });
-        archiveBtn.setOnMouseClicked(mouseEvent -> {
-            CustomDialog.archiveAssetDialogShow(asset, archiveBtn);
-        });
+        deleteBtn.setOnMouseClicked(mouseEvent -> CustomDialog.systemInfoController(asset.getId()));
+        archiveBtn.setOnMouseClicked(mouseEvent -> CustomDialog.archiveAssetDialogShow(asset, archiveBtn));
 
         rawDataTab.setOnSelectionChanged(event -> {
             rawDataListPane.getChildren().clear();

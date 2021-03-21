@@ -41,28 +41,27 @@ public class MultilayerPerceptronModelImpl extends ModelStrategy
     private static final String BATCH_SIZE_PARAM_DEFAULT = "100";
 
     //Parameters
-    private BoolParameter showGUIPara;
-    private BoolParameter autoBuildPara;
-    private BoolParameter decayPara;
-    private BoolParameter nominalToBinaryFilterPara;
-    private BoolParameter normalizeAttributesPara;
-    private BoolParameter normalizeNumericClassPara;
-    private BoolParameter resetPara;
-    private BoolParameter resumePara;
+    private final BoolParameter showGUIPara;
+    private final BoolParameter autoBuildPara;
+    private final BoolParameter decayPara;
+    private final BoolParameter nominalToBinaryFilterPara;
+    private final BoolParameter normalizeAttributesPara;
+    private final BoolParameter normalizeNumericClassPara;
+    private final BoolParameter resetPara;
+    private final BoolParameter resumePara;
 
-    private FloatParameter learningRatePara;
-    private FloatParameter momentumPara;
+    private final FloatParameter learningRatePara;
+    private final FloatParameter momentumPara;
 
-    private IntParameter trainingTimePara;
-    private IntParameter validationSizePara;
-    private IntParameter validationThresholdPara;
+    private final IntParameter trainingTimePara;
+    private final IntParameter validationSizePara;
+    private final IntParameter validationThresholdPara;
 
-    private StringParameter batchSizePara;
+    private final StringParameter batchSizePara;
 
     private MultilayerPerceptron multilayerPerceptron;
 
-    public MultilayerPerceptronModelImpl()
-    {
+    public MultilayerPerceptronModelImpl() {
         showGUIPara = new BoolParameter("Show GUI", SHOW_GUI_PARAM_DEFAULT);
         autoBuildPara = new BoolParameter("Auto Build", AUTO_BUILD_PARAM_DEFAULT);
         decayPara = new BoolParameter("Decay", DECAY_PARAM_DEFAULT);

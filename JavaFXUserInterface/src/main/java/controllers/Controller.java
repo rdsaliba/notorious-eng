@@ -5,8 +5,7 @@ import javafx.animation.Timeline;
 import java.util.ArrayList;
 
 public class Controller {
-    private ArrayList<Timeline> timelines;
-
+    private final ArrayList<Timeline> timelines;
 
     public Controller() {
         timelines = new ArrayList<>();

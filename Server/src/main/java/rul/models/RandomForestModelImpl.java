@@ -37,23 +37,22 @@ public class RandomForestModelImpl extends ModelStrategy
     private static final String BATCH_SIZE_PARAM_DEFAULT = "100";
 
     //Parameters
-    private BoolParameter storeOutOfBagPredictionsPara;
-    private BoolParameter breakTiesRandomlyPara;
-    private BoolParameter calcOutBagPara;
-    private BoolParameter computeAttributeImportancePara;
+    private final BoolParameter storeOutOfBagPredictionsPara;
+    private final BoolParameter breakTiesRandomlyPara;
+    private final BoolParameter calcOutBagPara;
+    private final BoolParameter computeAttributeImportancePara;
 
-    private IntParameter bagSizePercentPara;
-    private IntParameter maxDepthPara;
-    private IntParameter numExecutionSlotsPara;
-    private IntParameter numFeaturesPara;
-    private IntParameter numIterationsPara;
+    private final IntParameter bagSizePercentPara;
+    private final IntParameter maxDepthPara;
+    private final IntParameter numExecutionSlotsPara;
+    private final IntParameter numFeaturesPara;
+    private final IntParameter numIterationsPara;
 
-    private StringParameter batchSizePara;
+    private final StringParameter batchSizePara;
 
     private RandomForest randomForest;
 
-    public RandomForestModelImpl()
-    {
+    public RandomForestModelImpl() {
         storeOutOfBagPredictionsPara = new BoolParameter("Store out of Bag Predictions", STORE_OUT_OF_BAG_PREDICTIONS_PARAM_DEFAULT);
         breakTiesRandomlyPara = new BoolParameter("Break Ties Randomly", BREAK_TIES_RANDOMLY_PARAM_DEFAULT);
         calcOutBagPara = new BoolParameter("Calc out of Bag", CALC_OUT_BAGS_PARAM_DEFAULT);

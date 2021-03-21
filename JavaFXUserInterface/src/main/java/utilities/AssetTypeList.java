@@ -12,18 +12,18 @@ import java.util.ArrayList;
 
 public class AssetTypeList {
     private AssetType assetType;
-    private int liveAssets;
-    private int archivedAssets;
+    private final int liveAssets;
+    private final int archivedAssets;
     private String valueOk;
-    private int countOk;
+    private final int countOk;
     private String valueCaution;
-    private int countCaution;
+    private final int countCaution;
     private String valueAdvisory;
-    private int countAdvisory;
+    private final int countAdvisory;
     private String valueWarning;
-    private int countWarning;
+    private final int countWarning;
     private String valueFailed;
-    private int countFailed;
+    private final int countFailed;
 
     public AssetTypeList(AssetType assetType, int liveAssets, int archivedAssets, String valueOk, int countOk, String valueCaution, int countCaution, String valueAdvisory, int countAdvisory, String valueWarning, int countWarning, String valueFailed, int countFailed) {
         this.assetType = assetType;

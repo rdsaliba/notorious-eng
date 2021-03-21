@@ -1,22 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.Slider?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.FlowPane?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
-
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import java.net.URL?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="834.0"
             prefWidth="1194.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="controllers.AssetTypeInfoController">
@@ -272,13 +262,13 @@
                                                             <Font name="Segoe UI Semibold" size="20.0"/>
                                                         </font>
                                                     </Button>
-                                                    <Button fx:id="Reset" layoutX="247.0" layoutY="21.0"
+                                                    <Button fx:id="resetBtn" layoutX="247.0" layoutY="21.0"
                                                             mnemonicParsing="false" styleClass="resetBtn" text="Reset">
                                                         <font>
                                                             <Font name="Segoe UI Semibold" size="20.0"/>
                                                         </font>
                                                     </Button>
-                                                    <Button fx:id="modelDefault" layoutX="92.0" layoutY="21.0"
+                                                    <Button fx:id="modelDefaultBtn" layoutX="92.0" layoutY="21.0"
                                                             mnemonicParsing="false" styleClass="defaultBtn"
                                                             text="Default">
                                                         <font>

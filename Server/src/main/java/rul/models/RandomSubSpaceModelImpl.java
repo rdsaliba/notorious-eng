@@ -20,8 +20,7 @@ import weka.core.Instances;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RandomSubSpaceModelImpl extends ModelStrategy
-{
+public class RandomSubSpaceModelImpl extends ModelStrategy {
     //Default Parameters
     private static final float SUBSPACE_SIZE_PARAM_DEFAULT = 0.5F;
     private static final int NUM_EXECUTION_SLOTS_PARAM_DEFAULT = 1;
@@ -29,15 +28,14 @@ public class RandomSubSpaceModelImpl extends ModelStrategy
     private static final String BATCH_SIZE_PARAM_DEFAULT = "100";
 
     //Parameters
-    private FloatParameter subSpaceSizePara;
-    private IntParameter numExecutionSlotsPara;
-    private IntParameter numIterationsPara;
-    private StringParameter batchSizePara;
+    private final FloatParameter subSpaceSizePara;
+    private final IntParameter numExecutionSlotsPara;
+    private final IntParameter numIterationsPara;
+    private final StringParameter batchSizePara;
 
     private RandomSubSpace randomSubSpace;
 
-    public RandomSubSpaceModelImpl()
-    {
+    public RandomSubSpaceModelImpl() {
         subSpaceSizePara = new FloatParameter("SubSpace Size", SUBSPACE_SIZE_PARAM_DEFAULT);
         numExecutionSlotsPara = new IntParameter("Number of Execution Slots", NUM_EXECUTION_SLOTS_PARAM_DEFAULT);
         numIterationsPara = new IntParameter("Number of Iterations", NUM_ITERATIONS_PARAM_DEFAULT);

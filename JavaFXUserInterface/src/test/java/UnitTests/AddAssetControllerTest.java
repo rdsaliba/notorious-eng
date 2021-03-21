@@ -1,7 +1,7 @@
 package UnitTests;
 
-import controllers.AddAssetController;
 import app.item.Asset;
+import controllers.AddAssetController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -14,7 +14,8 @@ import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class AddAssetControllerTest extends ApplicationTest {
 
@@ -28,7 +29,7 @@ public class AddAssetControllerTest extends ApplicationTest {
         FXMLLoader fxmlLoader = new FXMLLoader(AddAssetController.class.getResource("/AddAsset.fxml"));
         Parent root = fxmlLoader.load();
         scene = new Scene(root);
-        addAssetController = (AddAssetController) fxmlLoader.getController();
+        addAssetController = fxmlLoader.getController();
         stage.setTitle("CBMS");
         stage.setScene(scene);
         stage.show();

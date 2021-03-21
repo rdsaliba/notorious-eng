@@ -38,7 +38,6 @@ import utilities.TextConstants;
 import utilities.UIUtilities;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.ResourceBundle;
 
@@ -123,8 +122,6 @@ public class AssetsController extends Controller implements Initializable {
                         asset.setRul(String.valueOf(TextConstants.RULValueFormat.format(AssessmentController.getLatestEstimate(asset.getId()))));
                     }
                     table.refresh();
-
-                System.out.println("Assets timelines :"+ Math.random());
                 }));
 
         rulTimeline.setCycleCount(Animation.INDEFINITE); // loop forever

@@ -19,20 +19,18 @@ import weka.core.Instances;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SMORegModelImpl extends ModelStrategy
-{
+public class SMORegModelImpl extends ModelStrategy {
 
     //Default Parameters
     private static final float C_COMPLEXITY_PARAM_DEFAULT = 1.0F;
     private static final String BATCH_SIZE_PARAM_DEFAULT = "100";
 
-    private FloatParameter cComplexityPara;
-    private StringParameter batchSizePara;
+    private final FloatParameter cComplexityPara;
+    private final StringParameter batchSizePara;
 
     private SMOreg smOreg;
 
-    public SMORegModelImpl()
-    {
+    public SMORegModelImpl() {
         cComplexityPara = new FloatParameter("C Complexity", C_COMPLEXITY_PARAM_DEFAULT);
         batchSizePara = new StringParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
 

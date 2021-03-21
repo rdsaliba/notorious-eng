@@ -49,28 +49,27 @@ public class LSTMModelImpl extends ModelStrategy
     private static final float LEARNING_RATE_PARAM_DEFAULT = 0.001F;
 
     //Parameter objects
-    private BoolParameter resumePara;
-    private BoolParameter filterModePara;
-    private BoolParameter doNotClearFileSystemCachePara;
-    private BoolParameter minimizeObjectivePara;
+    private final BoolParameter resumePara;
+    private final BoolParameter filterModePara;
+    private final BoolParameter doNotClearFileSystemCachePara;
+    private final BoolParameter minimizeObjectivePara;
 
-    private IntParameter numberOfEpochPara;
-    private IntParameter numberOfGPUPara;
-    private IntParameter avgFrequencyPara;
-    private IntParameter queueSizePara;
+    private final IntParameter numberOfEpochPara;
+    private final IntParameter numberOfGPUPara;
+    private final IntParameter avgFrequencyPara;
+    private final IntParameter queueSizePara;
 
-    private ListParameter cacheModePara; //options: NONE, MEMORY, FILESYSTEM
-    private ListParameter optimizationAlgoPara; //options: STOCHASTIC_GRADIENT_DESCENT, LINE_GRADIENT_DESCENT,
-    private ListParameter weightInitPara;     //options: XAVIER, RELU, IDENTITY, NORMAL, UNIFORM, ZERO, DISTRIBUTION
-    private StringParameter batchSizePara;
+    private final ListParameter cacheModePara; //options: NONE, MEMORY, FILESYSTEM
+    private final ListParameter optimizationAlgoPara; //options: STOCHASTIC_GRADIENT_DESCENT, LINE_GRADIENT_DESCENT,
+    private final ListParameter weightInitPara;     //options: XAVIER, RELU, IDENTITY, NORMAL, UNIFORM, ZERO, DISTRIBUTION
+    private final StringParameter batchSizePara;
 
-    private FloatParameter learningRatePara;
+    private final FloatParameter learningRatePara;
 
     private Dl4jMlpClassifier dl4jMlpClassifier;
     private NeuralNetConfiguration neuralNetConfiguration;
 
-    public LSTMModelImpl()
-    {
+    public LSTMModelImpl() {
         resumePara = new BoolParameter("Resume", RESUME_PARAM_DEFAULT);
         filterModePara = new BoolParameter("Filter Mode", FILTER_MODE_PARAM_DEFAULT);
         doNotClearFileSystemCachePara = new BoolParameter("Do not Clear File System Cache", DO_NOT_CLEAR_FILE_SYSTEM_CACHE_PARAM_DEFAULT);

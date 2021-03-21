@@ -24,7 +24,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
@@ -39,7 +38,6 @@ import utilities.*;
 
 import java.net.URL;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class AssetTypeInfoController extends Controller implements Initializable {
     private static final String RMSE = "RMSE";
@@ -89,6 +87,10 @@ public class AssetTypeInfoController extends Controller implements Initializable
     @FXML
     private Button modelSaveBtn;
     @FXML
+    private Button resetBtn;
+    @FXML
+    private Button modelDefaultBtn;
+    @FXML
     private ArrayList<Button> evaluateButtons;
     @FXML
     private Label associatedModelLabel;
@@ -96,7 +98,6 @@ public class AssetTypeInfoController extends Controller implements Initializable
     private AnchorPane modelParameters;
 
     private ObservableList<TrainedModel> modelObservableList;
-    private Map<String, Parameter> currentParams;
     private int associatedModelID;
     private UIUtilities uiUtilities;
     private AssetTypeList assetType;
@@ -284,6 +285,16 @@ public class AssetTypeInfoController extends Controller implements Initializable
             saveSelectedModelAssociation();
             uiUtilities.changeScene(TextConstants.ASSET_TYPE_LIST_SCENE, modelSaveBtn.getScene());
         });
+        resetBtn.setOnMouseClicked(mouseEvent -> modelObservableList.stream()
+                .filter(trainedModel -> trainedModel.getModelID() == modelPanes.getSelectedModel().getModelID())
+                .findFirst().ifPresent(selected -> {
+                    selected.setModelStrategy((modelDAO.getModelStrategy(selected.getModelID(), selected.getAssetTypeID())));
+                    generateParameters(selected, false);
+                }));
+        modelDefaultBtn.setOnMouseClicked(mouseEvent -> modelObservableList.stream()
+                .filter(trainedModel -> trainedModel.getModelID() == modelPanes.getSelectedModel().getModelID())
+                .findFirst()
+                .ifPresent(selected -> generateParameters(selected, true)));
 
         try {
             evaluateAllModelsBtn.setOnMouseClicked(mouseEvent -> {
@@ -312,10 +323,10 @@ public class AssetTypeInfoController extends Controller implements Initializable
         int trainAssets = (int) trainSlider.getValue() + 1;
         int testAssets = (int) trainSlider.getValue() + 1 + (int) testSlider.getValue();
         ModelStrategy modelStrategy = model.getModelStrategy();
-        //modelStrategy.setParameters(getParameters();
         if (!Objects.isNull(modelStrategy)) {
             modelStrategy.setTrainAssets(trainAssets);
             modelStrategy.setTestAssets(testAssets);
+            modelStrategy.setParameters(model.getModelStrategy().getParameters());
             modelDAO.updateModelStrategy(modelStrategy, model.getModelID(), assetTypeID);
         } else {
             CustomDialog.nullModelAlert();
@@ -494,7 +505,7 @@ public class AssetTypeInfoController extends Controller implements Initializable
             modelPane.getStyleClass().add("modelPane");
             modelPane.setOnMouseClicked(mouseEvent -> {
                 modelPanes.handleModelSelection(model, modelPane);
-                generateParameters(model.getModelStrategy().getParameters());
+                generateParameters(model, false);
                 modelSaveBtn.setDisable(false);
             });
 
@@ -551,72 +562,75 @@ public class AssetTypeInfoController extends Controller implements Initializable
     }
 
     /**
-     * @param params
+     * @param model         the model currently selected
+     * @param defaultParams true if we want the default parameters, false otherwise
      * @author Jeff, Paul
      */
-    public void generateParameters(Map<String, Parameter> params) {
-        currentParams = params;
+    public void generateParameters(TrainedModel model, boolean defaultParams) {
         modelParameters.getChildren().clear();
-        Iterator iterator = params.keySet().iterator();
+        Map<String, Parameter> params = (defaultParams) ? model.getModelStrategy().getDefaultParameters() : model.getModelStrategy().getParameters();
+        model.getModelStrategy().setParameters(params);
+        Iterator<String> iterator = params.keySet().iterator();
         double layoutX = 50.0;
         double layoutY = 20.0;
         double tfLayoutX = 300.0;
-        while (iterator.hasNext()) {
-            String name = (String) iterator.next();
-            Parameter parameter = params.get(name);
 
-            System.out.println("Name: " + name);
+        while (iterator.hasNext()) {
+            String paramName = iterator.next();
+            Parameter parameter = params.get(paramName);
+
+            //make the pane
             Pane pane = new Pane();
             pane.getStyleClass().add("paramPane");
             pane.setLayoutX(layoutX);
             pane.setLayoutY(layoutY);
-            Label paramName = new Label();
-            paramName.getStyleClass().add("paramLabel");
-            paramName.setText(name);
-            pane.getChildren().add(paramName);
 
+            // Make the label itself
+            Label paramNameLabel = new Label();
+            paramNameLabel.getStyleClass().add("paramLabel");
+            paramNameLabel.setText(paramName);
+            pane.getChildren().add(paramNameLabel);
+
+            // Depending on the parameter type, generate corresponding input field
             if (parameter instanceof BoolParameter) {
-                System.out.println("BoolParameter: " + ((BoolParameter) parameter).getBoolValue());
                 CheckBox checkBox = new CheckBox();
                 checkBox.setSelected(((BoolParameter) parameter).getBoolValue());
                 checkBox.setLayoutX(tfLayoutX);
                 checkBox.setLayoutY(0.0);
+                checkBox.selectedProperty().addListener((ov, old_val, new_val) -> ((BoolParameter) params.get(paramName)).setBoolValue(new_val));
                 pane.getChildren().addAll(checkBox);
-
             } else if (parameter instanceof StringParameter) {
-                System.out.println("StringParameter: " + ((StringParameter) parameter).getStringValue());
                 TextField tf = new TextField();
                 tf.setText(((StringParameter) parameter).getStringValue());
                 tf.getStyleClass().add("paramTextField");
                 tf.setLayoutX(tfLayoutX);
                 tf.setLayoutY(0.0);
+                tf.textProperty().addListener((ov, old_val, new_val) -> ((StringParameter) params.get(paramName)).setStringValue(new_val));
                 pane.getChildren().add(tf);
-
             } else if (parameter instanceof IntParameter) {
-                System.out.println("IntParameter: " + ((IntParameter) parameter).getIntValue());
                 TextField tf = new TextField();
                 tf.setText(String.valueOf(((IntParameter) parameter).getIntValue()));
                 tf.getStyleClass().add("paramTextField");
                 tf.setLayoutX(tfLayoutX);
                 tf.setLayoutY(0.0);
+                tf.textProperty().addListener((ov, old_val, new_val) -> ((IntParameter) params.get(paramName)).setIntValue(Integer.parseInt(new_val)));
                 pane.getChildren().add(tf);
             } else if (parameter instanceof ListParameter) {
-                System.out.println("ListParameter: " + ((ListParameter) parameter).getSelectedValue());
-                ChoiceBox<String> listBox = new ChoiceBox();
+                ChoiceBox<String> listBox = new ChoiceBox<>();
                 listBox.setItems(FXCollections.observableArrayList(((ListParameter) parameter).getListValues()));
                 listBox.setValue(((ListParameter) parameter).getSelectedValue());
                 listBox.getStyleClass().add("paramTextField");
                 listBox.setLayoutX(tfLayoutX);
                 listBox.setLayoutY(0.0);
+                listBox.getSelectionModel().selectedItemProperty().addListener((ov, old_val, new_val) -> ((ListParameter) params.get(paramName)).setSelectedValue(new_val));
                 pane.getChildren().add(listBox);
-
             } else if (parameter instanceof FloatParameter) {
-                System.out.println("FloatParameter: " + ((FloatParameter) parameter).getFloatValue());
                 TextField tf = new TextField();
                 tf.setText(String.valueOf(((FloatParameter) parameter).getFloatValue()));
                 tf.getStyleClass().add("paramTextField");
                 tf.setLayoutX(tfLayoutX);
                 tf.setLayoutY(0.0);
+                tf.textProperty().addListener((ov, old_val, new_val) -> ((FloatParameter) params.get(paramName)).setFloatValue(Float.parseFloat(new_val)));
                 pane.getChildren().add(tf);
             }
             modelParameters.getChildren().add(pane);
@@ -672,18 +686,6 @@ public class AssetTypeInfoController extends Controller implements Initializable
         rmseTimeline.play();
         addTimeline(rmseTimeline);
     }
-
-
-/*     public Map<String, Parameter> getParameters() {
-        ObservableList<Node> nodes = modelParameters.getChildren();
-        Map<String, Parameter> newParams = new HashMap<>();
-
-        for (Node node: nodes){
-            currentParams
-        }
-
-
-        return  newParams;
-    } */
-
 }
+
+

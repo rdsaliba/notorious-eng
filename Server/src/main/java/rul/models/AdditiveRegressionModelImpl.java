@@ -16,8 +16,7 @@ import weka.core.Instances;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AdditiveRegressionModelImpl extends ModelStrategy
-{
+public class AdditiveRegressionModelImpl extends ModelStrategy {
     //Default Parameters
     private static final boolean MINIMIZE_ABSOLUTE_ERROR_PARAM_DEFAULT = false;
     private static final boolean RESUME_PARAM_DEFAULT = false;
@@ -25,16 +24,15 @@ public class AdditiveRegressionModelImpl extends ModelStrategy
     private static final int NUM_ITERATIONS_PARAM_DEFAULT = 10;
     private static final String BATCH_SIZE_PARAM_DEFAULT = "100";
 
-    private BoolParameter minimizeAbsoluteErrorPara;
-    private BoolParameter resumePara;
-    private FloatParameter shrinkagePara;
-    private IntParameter numIterationsPara;
-    private StringParameter batchSizePara;
+    private final BoolParameter minimizeAbsoluteErrorPara;
+    private final BoolParameter resumePara;
+    private final FloatParameter shrinkagePara;
+    private final IntParameter numIterationsPara;
+    private final StringParameter batchSizePara;
 
     private AdditiveRegression additiveRegression;
 
-    public AdditiveRegressionModelImpl()
-    {
+    public AdditiveRegressionModelImpl() {
         batchSizePara = new StringParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
         minimizeAbsoluteErrorPara = new BoolParameter("Minimize Absolute Error", MINIMIZE_ABSOLUTE_ERROR_PARAM_DEFAULT);
         numIterationsPara = new IntParameter("Number of Iterations", NUM_ITERATIONS_PARAM_DEFAULT);

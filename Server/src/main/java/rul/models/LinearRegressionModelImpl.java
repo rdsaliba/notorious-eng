@@ -22,8 +22,7 @@ import weka.core.Instances;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LinearRegressionModelImpl extends ModelStrategy
-{
+public class LinearRegressionModelImpl extends ModelStrategy {
 
     //Default Parameters
     private static final boolean USE_QR_DECOMPOSITION_PARAM_DEFAULT = false;
@@ -31,15 +30,14 @@ public class LinearRegressionModelImpl extends ModelStrategy
     private static final float RIDGE_PARAM_DEFAULT = 1.0E-8F;
     private static final String BATCH_SIZE_PARAM_DEFAULT = "100";
 
-    private BoolParameter useQRDecompositionPara;
-    private BoolParameter eliminateColinearAttributesPara;
-    private FloatParameter ridgePara;
-    private StringParameter batchSizePara;
+    private final BoolParameter useQRDecompositionPara;
+    private final BoolParameter eliminateColinearAttributesPara;
+    private final FloatParameter ridgePara;
+    private final StringParameter batchSizePara;
 
     private LinearRegression linearRegression;
 
-    public LinearRegressionModelImpl()
-    {
+    public LinearRegressionModelImpl() {
         useQRDecompositionPara = new BoolParameter("Use QR Decomposition", USE_QR_DECOMPOSITION_PARAM_DEFAULT);
         eliminateColinearAttributesPara = new BoolParameter("Eliminate Colinear Attributes", ELIMINATE_COLINEAR_ATTRIBUTES_PARAM_DEFAULT);
         ridgePara = new FloatParameter("Ridge", RIDGE_PARAM_DEFAULT);
