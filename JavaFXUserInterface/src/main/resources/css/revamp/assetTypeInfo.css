@@ -171,6 +171,10 @@
     -fx-background-color: transparent;
 }
 
+.modelFlowPane {
+    -fx-padding: 10 0 26 26;
+}
+
 .selectModelHeaderPane {
     -fx-background-color: transparent;
     -fx-border-width: 1px 0 1px 0;
@@ -179,7 +183,7 @@
 
 .paramPane {
     -fx-background-color: transparent;
-    -fx-pref-height: 40px;
+    -fx-min-height: 45px;
     -fx-pref-width: 450px;
     -fx-padding: 10px;
 }
@@ -214,6 +218,7 @@
     -fx-background-color: #FFFFFF;
     -fx-border-width: 0px;
     -fx-border-color: #FFFFFF;
+    -fx-padding: 10 0 0 26;
 }
 
 .resetBtn {

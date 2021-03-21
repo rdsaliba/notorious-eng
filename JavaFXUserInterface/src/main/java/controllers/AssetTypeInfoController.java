@@ -25,10 +25,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import org.slf4j.Logger;
@@ -95,7 +92,7 @@ public class AssetTypeInfoController extends Controller implements Initializable
     @FXML
     private Label associatedModelLabel;
     @FXML
-    private AnchorPane modelParameters;
+    private VBox modelParameters;
 
     private ObservableList<TrainedModel> modelObservableList;
     private int associatedModelID;

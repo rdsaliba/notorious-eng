@@ -1,12 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
-<?import java.net.URL?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="834.0"
             prefWidth="1194.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="controllers.AssetTypeInfoController">
@@ -206,7 +217,7 @@
                                                     <Label layoutX="28.0" layoutY="16.0" styleClass="panelTitle"
                                                            text="Select a Model" AnchorPane.leftAnchor="26.0"/>
                                                     <Label layoutX="593.0" layoutY="16.0" styleClass="panelTitle"
-                                                           text="Parameters"/>
+                                                           text="Parameters" AnchorPane.rightAnchor="433.0"/>
                                                 </children>
                                             </AnchorPane>
                                             <ScrollPane fx:id="modelScrollPane" fitToHeight="true" fitToWidth="true"
@@ -215,8 +226,9 @@
                                                         AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
                                                         AnchorPane.rightAnchor="569.0" AnchorPane.topAnchor="167.0">
                                                 <content>
-                                                    <FlowPane fx:id="modelsThumbPane" hgap="10.0" prefHeight="541.0"
-                                                              prefWidth="561.0" vgap="10.0"/>
+                                                    <FlowPane fx:id="modelsThumbPane" styleClass="modelFlowPane"
+                                                              hgap="10.0" prefHeight="541.0" prefWidth="561.0"
+                                                              vgap="10.0"/>
                                                 </content>
                                             </ScrollPane>
                                             <AnchorPane fx:id="parameterContainer" layoutX="565.0" layoutY="170.0"
@@ -224,17 +236,15 @@
                                                         styleClass="parametersContainer" AnchorPane.bottomAnchor="81.0"
                                                         AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="167.0">
                                                 <children>
-                                                    <ScrollPane fx:id="parameterScrollPane" hbarPolicy="NEVER"
-                                                                prefHeight="466.0" prefWidth="571.0"
-                                                                styleClass="parametersScrollPane"
+                                                    <ScrollPane fx:id="parameterScrollPane" fitToHeight="true"
+                                                                fitToWidth="true" hbarPolicy="NEVER" prefHeight="466.0"
+                                                                prefWidth="571.0" styleClass="parametersScrollPane"
                                                                 AnchorPane.bottomAnchor="0.0"
                                                                 AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
                                                                 AnchorPane.topAnchor="0.0">
                                                         <content>
-                                                            <AnchorPane fx:id="modelParameters"
-                                                                        styleClass="modelParameters" minHeight="0.0"
-                                                                        minWidth="0.0" prefHeight="461.0"
-                                                                        prefWidth="568.0"/>
+                                                            <VBox fx:id="modelParameters" styleClass="modelParameters"
+                                                                  prefHeight="200.0" prefWidth="100.0"/>
                                                         </content>
                                                     </ScrollPane>
                                                 </children>
