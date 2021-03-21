@@ -138,7 +138,7 @@ public class AssetInfoController implements Initializable {
         manufacturerOutput.setText(asset.getManufacturer());
         locationOutput.setText(asset.getLocation());
         siteOutput.setText(asset.getSite());
-        modelOutput.setText(modelDAO.getModelNameFromAssetTypeID(asset.getAssetTypeID()));
+        modelOutput.setText(modelDAO.getModelNameAssociatedWithAssetType(asset.getAssetTypeID()));
         categoryOutput.setText(asset.getCategory());
 
         rulOutput.setText(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(asset.getId())));
@@ -285,7 +285,6 @@ public class AssetInfoController implements Initializable {
         AnchorPane.setLeftAnchor(tableview, 0.0);
         rawDataListPane.getChildren().addAll(tableview);
     }
-
 
     /**
      * this function fills the row of the raw table view given the table object and

@@ -288,7 +288,6 @@ public class AssetsController implements Initializable {
         assetsThumbPane.getChildren().addAll(boxes);
     }
 
-
     /**
      * Creates a table element to list all the assets.
      *
@@ -313,7 +312,7 @@ public class AssetsController implements Initializable {
 
         TableColumn<Asset, String> modelCol = new TableColumn<>(MODEL_COL);
         modelCol.setCellValueFactory(cellData -> new SimpleStringProperty(
-                modelDAO.getModelNameFromAssetTypeID(cellData.getValue().getAssetTypeID())));
+                modelDAO.getModelNameAssociatedWithAssetType(cellData.getValue().getAssetTypeID())));
 
         TableColumn<Asset, Number> modelRULCol = new TableColumn<>(RUL_COL);
         modelRULCol.setCellValueFactory(cellData -> new SimpleDoubleProperty(

@@ -15,7 +15,9 @@ import java.util.List;
 
 public interface ModelDAO {
 
-    String getModelNameFromAssetTypeID(String assetTypeId);
+    String getModelNameAssociatedWithAssetType(String assetTypeId);
+
+    int getModelIDAssociatedWithAssetType(String assetTypeID);
 
     List<Model> getAllModelsForEvaluation(int assetTypeID);
 
@@ -23,11 +25,9 @@ public interface ModelDAO {
 
     void setModelToTrain(String assetTypeID);
 
-    String getGetModelEvaluation(int modelID, String assetTypeID);
-
-    int getModelIDFromAssetTypeID(String assetTypeID);
-
     ModelStrategy getModelStrategy(int modelID, int assetTypeID) throws SQLException;
 
     void updateModelStrategy(ModelStrategy modelStrategy, int modelID, int assetTypeID);
+
+    double getLatestRMSE(int modelID, int assetTypeID);
 }
