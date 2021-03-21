@@ -139,9 +139,9 @@ public class AssetTypeInfoController implements Initializable {
             if (assetType.getValueCaution() != null)
                 thresholdCaution.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueCaution())));
             if (assetType.getValueWarning() != null)
-                thresholdWarning.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueAdvisory())));
+                thresholdWarning.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueWarning())));
             if (assetType.getValueFailed() != null)
-                thresholdFailed.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueAdvisory())));
+                thresholdFailed.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueFailed())));
         } catch (NumberFormatException e) {
             logger.error("NumberFormatException error inside initData");
             logger.error("Exception initData(): ", e);
