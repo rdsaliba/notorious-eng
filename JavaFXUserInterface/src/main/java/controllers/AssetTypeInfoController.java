@@ -92,7 +92,6 @@ public class AssetTypeInfoController implements Initializable {
     @FXML
     private Label associatedModelLabel;
     private ObservableList<Model> modelObservableList;
-    private int associatedModelID;
     private UIUtilities uiUtilities;
     private AssetTypeList assetType;
     private AssetTypeList originalAssetType;
@@ -127,18 +126,30 @@ public class AssetTypeInfoController implements Initializable {
         this.originalAssetType = new AssetTypeList(assetType);
         assetTypeName.setText(assetType.getAssetType().getName());
         assetTypeDesc.setText(assetType.getAssetType().getDescription());
-        associatedModelID = modelDAO.getModelIDAssociatedWithAssetType(assetType.getId());
         associatedModelLabel.setText(modelDAO.getModelNameAssociatedWithAssetType(assetType.getId()));
+
+        // Initializing Data for the threshold text fields
+        ObservableList<TextField> thresholdTextFieldList = FXCollections.observableArrayList();
+        thresholdTextFieldList.addAll(thresholdOK, thresholdAdvisory, thresholdCaution, thresholdWarning, thresholdFailed);
         try {
-            thresholdOK.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueOk())));
-            thresholdAdvisory.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueAdvisory())));
-            thresholdCaution.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueCaution())));
-            thresholdWarning.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueWarning())));
-            thresholdFailed.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueFailed())));
+            if (assetType.getValueOk() != null)
+                thresholdOK.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueOk())));
+            if (assetType.getValueAdvisory() != null)
+                thresholdAdvisory.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueAdvisory())));
+            if (assetType.getValueCaution() != null)
+                thresholdCaution.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueCaution())));
+            if (assetType.getValueWarning() != null)
+                thresholdWarning.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueAdvisory())));
+            if (assetType.getValueFailed() != null)
+                thresholdFailed.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueAdvisory())));
         } catch (NumberFormatException e) {
             logger.error("NumberFormatException error inside initData");
             logger.error("Exception initData(): ", e);
         }
+        for (TextField thresholdTextField : thresholdTextFieldList) {
+            thresholdTextField.setPromptText("No current value for " + thresholdTextField.getId() + ". Please enter a value.");
+        }
+
         updateRMSE();
     }
 
@@ -335,7 +346,15 @@ public class AssetTypeInfoController implements Initializable {
      * @author Paul
      */
     private boolean handleTextChange(String newText, String field) {
-        if ((field).equals(originalAssetType.getName()) || field.equals(originalAssetType.getDescription())) {
+        if (field == null) {
+            if (!newText.isEmpty()) {
+                infoSaveBtn.setDisable(false);
+                return true;
+            } else {
+                infoSaveBtn.setDisable(true);
+                return false;
+            }
+        } else if ((field).equals(originalAssetType.getName()) || field.equals(originalAssetType.getDescription())) {
             if (!newText.isEmpty() && !newText.equals(field)) {
                 infoSaveBtn.setDisable(false);
                 return true;
@@ -343,7 +362,7 @@ public class AssetTypeInfoController implements Initializable {
                 infoSaveBtn.setDisable(true);
                 return false;
             }
-        } else if (!newText.isEmpty() && !field.equals("-") && Double.parseDouble(newText) == Double.parseDouble(field)) {
+        } else if (!newText.isEmpty() && Double.parseDouble(newText) == Double.parseDouble(field)) {
             infoSaveBtn.setDisable(true);
             return false;
         } else {
@@ -535,7 +554,7 @@ public class AssetTypeInfoController implements Initializable {
             modelPaneObservableList.add(modelPane);
         }
         modelPanes.setModelThumbnailsContainerPane(modelPaneObservableList, modelsThumbPane);
-        modelPanes.highlightAssociatedModel(modelPaneObservableList, associatedModelID);
+        modelPanes.highlightAssociatedModel(modelPaneObservableList, modelDAO.getModelIDAssociatedWithAssetType(assetType.getId()));
     }
 
     /**
