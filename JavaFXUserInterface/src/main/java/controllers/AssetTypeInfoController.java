@@ -132,15 +132,15 @@ public class AssetTypeInfoController implements Initializable {
         ObservableList<TextField> thresholdTextFieldList = FXCollections.observableArrayList();
         thresholdTextFieldList.addAll(thresholdOK, thresholdAdvisory, thresholdCaution, thresholdWarning, thresholdFailed);
         try {
-            if (assetType.getValueOk() != null)
+            if (assetType.getValueOk() != null && !assetType.getValueOk().equalsIgnoreCase("null"))
                 thresholdOK.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueOk())));
-            if (assetType.getValueAdvisory() != null)
+            if (assetType.getValueAdvisory() != null && !assetType.getValueAdvisory().equalsIgnoreCase("null"))
                 thresholdAdvisory.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueAdvisory())));
-            if (assetType.getValueCaution() != null)
+            if (assetType.getValueCaution() != null && !assetType.getValueCaution().equalsIgnoreCase("null"))
                 thresholdCaution.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueCaution())));
-            if (assetType.getValueWarning() != null)
+            if (assetType.getValueWarning() != null && !assetType.getValueWarning().equalsIgnoreCase("null"))
                 thresholdWarning.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueWarning())));
-            if (assetType.getValueFailed() != null)
+            if (assetType.getValueFailed() != null && !assetType.getValueFailed().equalsIgnoreCase("null"))
                 thresholdFailed.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueFailed())));
         } catch (NumberFormatException e) {
             logger.error("NumberFormatException error inside initData");
