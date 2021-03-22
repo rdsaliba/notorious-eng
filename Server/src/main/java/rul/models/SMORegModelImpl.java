@@ -8,8 +8,8 @@
 package rul.models;
 
 import app.item.parameter.FloatParameter;
+import app.item.parameter.IntParameter;
 import app.item.parameter.Parameter;
-import app.item.parameter.StringParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import weka.classifiers.Classifier;
@@ -23,16 +23,16 @@ public class SMORegModelImpl extends ModelStrategy {
 
     //Default Parameters
     private static final float C_COMPLEXITY_PARAM_DEFAULT = 1.0F;
-    private static final String BATCH_SIZE_PARAM_DEFAULT = "100";
+    private static final int BATCH_SIZE_PARAM_DEFAULT = 100;
 
     private final FloatParameter cComplexityPara;
-    private final StringParameter batchSizePara;
+    private final IntParameter batchSizePara;
 
     private SMOreg smOreg;
 
     public SMORegModelImpl() {
         cComplexityPara = new FloatParameter("C Complexity", C_COMPLEXITY_PARAM_DEFAULT);
-        batchSizePara = new StringParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
+        batchSizePara = new IntParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
 
         addParameter(cComplexityPara);
         addParameter(batchSizePara);
@@ -47,20 +47,16 @@ public class SMORegModelImpl extends ModelStrategy {
      * @author Khaled
      */
     @Override
-    public Classifier trainModel(Instances dataToTrain)
-    {
+    public Classifier trainModel(Instances dataToTrain) {
         smOreg = new SMOreg();
         dataToTrain.setClassIndex(dataToTrain.numAttributes() - 1);
 
         smOreg.setC(((FloatParameter) getParameters().get(cComplexityPara.getParamName())).getFloatValue());
-        smOreg.setBatchSize(((StringParameter) getParameters().get(batchSizePara.getParamName())).getStringValue());
+        smOreg.setBatchSize(String.valueOf(((IntParameter) getParameters().get(batchSizePara.getParamName())).getIntValue()));
 
-        try
-        {
+        try {
             smOreg.buildClassifier(dataToTrain);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             logger.error("Exception: ", e);
         }
 
@@ -69,10 +65,9 @@ public class SMORegModelImpl extends ModelStrategy {
     }
 
     @Override
-    public Map<String, Parameter> getDefaultParameters()
-    {
-        FloatParameter  cComplexityParaDefault = new FloatParameter("C Complexity", C_COMPLEXITY_PARAM_DEFAULT);
-        StringParameter batchSizeParaDefault   = new StringParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
+    public Map<String, Parameter> getDefaultParameters() {
+        FloatParameter cComplexityParaDefault = new FloatParameter("C Complexity", C_COMPLEXITY_PARAM_DEFAULT);
+        IntParameter batchSizeParaDefault = new IntParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
 
         Map<String, Parameter> parameters = new HashMap<>();
         parameters.put(cComplexityParaDefault.getParamName(), cComplexityParaDefault);
@@ -81,8 +76,7 @@ public class SMORegModelImpl extends ModelStrategy {
         return parameters;
     }
 
-    public SMOreg getSmOregObject()
-    {
+    public SMOreg getSmOregObject() {
         return this.smOreg;
     }
 

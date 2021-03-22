@@ -9,7 +9,6 @@ package rul.models;
 
 import app.item.parameter.IntParameter;
 import app.item.parameter.Parameter;
-import app.item.parameter.StringParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import weka.classifiers.Classifier;
@@ -23,18 +22,18 @@ public class RandomCommitteeModelImpl extends ModelStrategy {
     //Default Parameters
     private static final int NUM_EXECUTION_SLOTS_PARAM_DEFAULT = 1;
     private static final int NUM_ITERATIONS_PARAM_DEFAULT = 10;
-    private static final String BATCH_SIZE_PARAM_DEFAULT = "100";
+    private static final int BATCH_SIZE_PARAM_DEFAULT = 100;
 
     private final IntParameter numExecutionSlotsPara;
     private final IntParameter numIterationsPara;
-    private final StringParameter batchSizePara;
+    private final IntParameter batchSizePara;
 
     private RandomCommittee randomCommittee;
 
     public RandomCommitteeModelImpl() {
         numExecutionSlotsPara = new IntParameter("Number of Execution Slots", NUM_EXECUTION_SLOTS_PARAM_DEFAULT);
         numIterationsPara = new IntParameter("Number of Iterations", NUM_ITERATIONS_PARAM_DEFAULT);
-        batchSizePara = new StringParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
+        batchSizePara = new IntParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
 
         addParameter(numExecutionSlotsPara);
         addParameter(numIterationsPara);
@@ -58,7 +57,7 @@ public class RandomCommitteeModelImpl extends ModelStrategy {
 
         randomCommittee.setNumExecutionSlots(((IntParameter) getParameters().get(numExecutionSlotsPara.getParamName())).getIntValue());
         randomCommittee.setNumIterations(((IntParameter) getParameters().get(numIterationsPara.getParamName())).getIntValue());
-        randomCommittee.setBatchSize(((StringParameter) getParameters().get(batchSizePara.getParamName())).getStringValue());
+        randomCommittee.setBatchSize(String.valueOf(((IntParameter) getParameters().get(batchSizePara.getParamName())).getIntValue()));
 
         try
         {
@@ -79,7 +78,7 @@ public class RandomCommitteeModelImpl extends ModelStrategy {
     {
         IntParameter    numExecutionSlotsParaDefault = new IntParameter("Number of Execution Slots", NUM_EXECUTION_SLOTS_PARAM_DEFAULT);
         IntParameter    numIterationsParaDefault     = new IntParameter("Number of Iterations", NUM_ITERATIONS_PARAM_DEFAULT);
-        StringParameter batchSizeParaDefault         = new StringParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
+        IntParameter batchSizeParaDefault         = new IntParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
 
         Map<String, Parameter> parameters = new HashMap<>();
         parameters.put(batchSizeParaDefault.getParamName(), batchSizeParaDefault);

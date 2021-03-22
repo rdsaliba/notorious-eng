@@ -11,7 +11,7 @@ package rul.models;
 import app.item.parameter.BoolParameter;
 import app.item.parameter.FloatParameter;
 import app.item.parameter.Parameter;
-import app.item.parameter.StringParameter;
+import app.item.parameter.IntParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import weka.classifiers.Classifier;
@@ -28,12 +28,12 @@ public class LinearRegressionModelImpl extends ModelStrategy {
     private static final boolean USE_QR_DECOMPOSITION_PARAM_DEFAULT = false;
     private static final boolean ELIMINATE_COLINEAR_ATTRIBUTES_PARAM_DEFAULT = true;
     private static final float RIDGE_PARAM_DEFAULT = 1.0E-8F;
-    private static final String BATCH_SIZE_PARAM_DEFAULT = "100";
+    private static final int BATCH_SIZE_PARAM_DEFAULT = 100;
 
     private final BoolParameter useQRDecompositionPara;
     private final BoolParameter eliminateColinearAttributesPara;
     private final FloatParameter ridgePara;
-    private final StringParameter batchSizePara;
+    private final IntParameter batchSizePara;
 
     private LinearRegression linearRegression;
 
@@ -41,7 +41,7 @@ public class LinearRegressionModelImpl extends ModelStrategy {
         useQRDecompositionPara = new BoolParameter("Use QR Decomposition", USE_QR_DECOMPOSITION_PARAM_DEFAULT);
         eliminateColinearAttributesPara = new BoolParameter("Eliminate Colinear Attributes", ELIMINATE_COLINEAR_ATTRIBUTES_PARAM_DEFAULT);
         ridgePara = new FloatParameter("Ridge", RIDGE_PARAM_DEFAULT);
-        batchSizePara = new StringParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
+        batchSizePara = new IntParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
 
         addParameter(useQRDecompositionPara);
         addParameter(eliminateColinearAttributesPara);
@@ -67,7 +67,7 @@ public class LinearRegressionModelImpl extends ModelStrategy {
         linearRegression.setUseQRDecomposition(((BoolParameter) getParameters().get(useQRDecompositionPara.getParamName())).getBoolValue());
         linearRegression.setEliminateColinearAttributes(((BoolParameter) getParameters().get(eliminateColinearAttributesPara.getParamName())).getBoolValue());
         linearRegression.setRidge(((FloatParameter) getParameters().get(ridgePara.getParamName())).getFloatValue());
-        linearRegression.setBatchSize(((StringParameter) getParameters().get(batchSizePara.getParamName())).getStringValue());
+        linearRegression.setBatchSize(String.valueOf(((IntParameter) getParameters().get(batchSizePara.getParamName())).getIntValue()));
 
         try
         {
@@ -88,7 +88,7 @@ public class LinearRegressionModelImpl extends ModelStrategy {
         BoolParameter   useQRDecompositionParaDefault          = new BoolParameter("Use QR Decomposition", USE_QR_DECOMPOSITION_PARAM_DEFAULT);
         BoolParameter   eliminateColinearAttributesParaDefault = new BoolParameter("Eliminate Colinear Attributes", ELIMINATE_COLINEAR_ATTRIBUTES_PARAM_DEFAULT);
         FloatParameter  ridgeParaDefault                       = new FloatParameter("Ridge", RIDGE_PARAM_DEFAULT);
-        StringParameter batchSizeParaDefault                   = new StringParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
+        IntParameter batchSizeParaDefault                   = new IntParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
 
         Map<String, Parameter> parameters = new HashMap<>();
         parameters.put(useQRDecompositionParaDefault.getParamName(), useQRDecompositionParaDefault);

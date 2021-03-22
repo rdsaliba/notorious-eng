@@ -10,7 +10,6 @@ package rul.models;
 import app.item.parameter.BoolParameter;
 import app.item.parameter.IntParameter;
 import app.item.parameter.Parameter;
-import app.item.parameter.StringParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import weka.classifiers.Classifier;
@@ -34,7 +33,7 @@ public class RandomForestModelImpl extends ModelStrategy
     private static final int NUM_FEATURES_PARAM_DEFAULT = 0;
     private static final int NUM_ITERATIONS_PARAM_DEFAULT = 100;
 
-    private static final String BATCH_SIZE_PARAM_DEFAULT = "100";
+    private static final int BATCH_SIZE_PARAM_DEFAULT = 100;
 
     //Parameters
     private final BoolParameter storeOutOfBagPredictionsPara;
@@ -48,7 +47,7 @@ public class RandomForestModelImpl extends ModelStrategy
     private final IntParameter numFeaturesPara;
     private final IntParameter numIterationsPara;
 
-    private final StringParameter batchSizePara;
+    private final IntParameter batchSizePara;
 
     private RandomForest randomForest;
 
@@ -64,7 +63,7 @@ public class RandomForestModelImpl extends ModelStrategy
         numFeaturesPara = new IntParameter("Number of Features", NUM_FEATURES_PARAM_DEFAULT);
         numIterationsPara = new IntParameter("Number of Iterations", NUM_ITERATIONS_PARAM_DEFAULT);
 
-        batchSizePara = new StringParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
+        batchSizePara = new IntParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
 
         addParameter(storeOutOfBagPredictionsPara);
         addParameter(breakTiesRandomlyPara);
@@ -105,7 +104,7 @@ public class RandomForestModelImpl extends ModelStrategy
         randomForest.setNumFeatures(((IntParameter) getParameters().get(numFeaturesPara.getParamName())).getIntValue());
         randomForest.setNumIterations(((IntParameter) getParameters().get(numIterationsPara.getParamName())).getIntValue());
 
-        randomForest.setBatchSize(((StringParameter) getParameters().get(batchSizePara.getParamName())).getStringValue());
+        randomForest.setBatchSize(String.valueOf(((IntParameter) getParameters().get(batchSizePara.getParamName())).getIntValue()));
 
         try
         {
@@ -134,7 +133,7 @@ public class RandomForestModelImpl extends ModelStrategy
         IntParameter numFeaturesParaDefault        = new IntParameter("Number of Features", NUM_FEATURES_PARAM_DEFAULT);
         IntParameter numIterationsParaDefault      = new IntParameter("Number of Iterations", NUM_ITERATIONS_PARAM_DEFAULT);
 
-        StringParameter batchSizeParaDefault = new StringParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
+        IntParameter batchSizeParaDefault = new IntParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
 
         Map<String, Parameter> parameters = new HashMap<>();
         parameters.put(storeOutOfBagPredictionsParaDefault.getParamName(), storeOutOfBagPredictionsParaDefault);

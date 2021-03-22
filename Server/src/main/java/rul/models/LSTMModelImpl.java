@@ -28,8 +28,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LSTMModelImpl extends ModelStrategy
-{
+public class LSTMModelImpl extends ModelStrategy {
     //Default Parameters
     private static final boolean RESUME_PARAM_DEFAULT = false;
     private static final boolean FILTER_MODE_PARAM_DEFAULT = false;
@@ -41,7 +40,7 @@ public class LSTMModelImpl extends ModelStrategy
     private static final int NUMBER_OF_GPU_PARAM_DEFAULT = 1;
     private static final int AVG_FREQUENCY_PARAM_DEFAULT = 10;
 
-    private static final String BATCH_SIZE_PARAM_DEFAULT = "100";
+    private static final int BATCH_SIZE_PARAM_DEFAULT = 100;
     private static final String CACHE_MODE_PARAM_DEFAULT = "MEMORY";
     private static final String OPTIMIZATION_ALGO_PARAM_DEFAULT = "STOCHASTIC_GRADIENT_DESCENT";
     private static final String WEIGHT_INIT_PARAM_DEFAULT = "XAVIER";
@@ -62,7 +61,7 @@ public class LSTMModelImpl extends ModelStrategy
     private final ListParameter cacheModePara; //options: NONE, MEMORY, FILESYSTEM
     private final ListParameter optimizationAlgoPara; //options: STOCHASTIC_GRADIENT_DESCENT, LINE_GRADIENT_DESCENT,
     private final ListParameter weightInitPara;     //options: XAVIER, RELU, IDENTITY, NORMAL, UNIFORM, ZERO, DISTRIBUTION
-    private final StringParameter batchSizePara;
+    private final IntParameter batchSizePara;
 
     private final FloatParameter learningRatePara;
 
@@ -83,7 +82,7 @@ public class LSTMModelImpl extends ModelStrategy
         optimizationAlgoPara = new ListParameter("Optimization Algorithm", new ArrayList<>(Arrays.asList(OPTIMIZATION_ALGO_PARAM_DEFAULT, "LINE_GRADIENT_DESCENT")), OPTIMIZATION_ALGO_PARAM_DEFAULT);
         weightInitPara = new ListParameter("Weight Initializer", new ArrayList<>(Arrays.asList(WEIGHT_INIT_PARAM_DEFAULT, "RELU", "IDENTITY", "NORMAL", "UNIFORM", "ZERO", "DISTRIBUTION")), WEIGHT_INIT_PARAM_DEFAULT);
         cacheModePara = new ListParameter("Cache Mode", new ArrayList<>(Arrays.asList("NONE", CACHE_MODE_PARAM_DEFAULT, "FILESYSTEM")), CACHE_MODE_PARAM_DEFAULT);
-        batchSizePara = new StringParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
+        batchSizePara = new IntParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
 
         learningRatePara = new FloatParameter("Learning Rate", LEARNING_RATE_PARAM_DEFAULT);
 
@@ -114,8 +113,7 @@ public class LSTMModelImpl extends ModelStrategy
      * @author Khaled
      */
     @Override
-    public Classifier trainModel(Instances firstTrain)
-    {
+    public Classifier trainModel(Instances firstTrain) {
         firstTrain.setClassIndex(firstTrain.numAttributes() - 1);
 
         Instances trainDataset = LinearRegressionModelImpl.removeInstances(firstTrain);
@@ -125,8 +123,7 @@ public class LSTMModelImpl extends ModelStrategy
         dl4jMlpClassifier = new Dl4jMlpClassifier();
         neuralNetConfiguration = new NeuralNetConfiguration();
 
-        try
-        {
+        try {
             //Setting Parameters for the model
             dl4jMlpClassifier.setResume(((BoolParameter) getParameters().get(resumePara.getParamName())).getBoolValue());
             dl4jMlpClassifier.setFilterMode(((BoolParameter) getParameters().get(filterModePara.getParamName())).getBoolValue());
@@ -141,7 +138,7 @@ public class LSTMModelImpl extends ModelStrategy
             neuralNetConfiguration.setOptimizationAlgo(OptimizationAlgorithm.valueOf(((ListParameter) getParameters().get(optimizationAlgoPara.getParamName())).getSelectedValue()));
             dl4jMlpClassifier.setCacheMode(CacheMode.valueOf(((ListParameter) getParameters().get(cacheModePara.getParamName())).getSelectedValue()));
             neuralNetConfiguration.setWeightInit(WeightInit.valueOf((((ListParameter) getParameters().get(weightInitPara.getParamName())).getSelectedValue())));
-            dl4jMlpClassifier.setBatchSize(((StringParameter) getParameters().get(batchSizePara.getParamName())).getStringValue());
+            dl4jMlpClassifier.setBatchSize(String.valueOf(((IntParameter) getParameters().get(batchSizePara.getParamName())).getIntValue()));
 
             Adam adam = new Adam();
             neuralNetConfiguration.setUpdater(adam);
@@ -165,10 +162,7 @@ public class LSTMModelImpl extends ModelStrategy
 
             //train with the DL4J classifier
             dl4jMlpClassifier.buildClassifier(trainDataset);
-        }
-
-        catch(Exception e)
-        {
+        } catch (Exception e) {
             logger.error("Exception: ", e);
         }
 
@@ -177,22 +171,21 @@ public class LSTMModelImpl extends ModelStrategy
     }
 
     @Override
-    public Map<String, Parameter> getDefaultParameters()
-    {
-        BoolParameter resumeParaDefault                    = new BoolParameter("Resume", RESUME_PARAM_DEFAULT);
-        BoolParameter filterModeParaDefault                = new BoolParameter("Filter Mode", FILTER_MODE_PARAM_DEFAULT);
+    public Map<String, Parameter> getDefaultParameters() {
+        BoolParameter resumeParaDefault = new BoolParameter("Resume", RESUME_PARAM_DEFAULT);
+        BoolParameter filterModeParaDefault = new BoolParameter("Filter Mode", FILTER_MODE_PARAM_DEFAULT);
         BoolParameter doNotClearFileSystemCacheParaDefault = new BoolParameter("Do not Clear File System Cache", DO_NOT_CLEAR_FILE_SYSTEM_CACHE_PARAM_DEFAULT);
-        BoolParameter minimizeObjectiveParaDefault         = new BoolParameter("Minimize Objective", MINIMIZE_OBJECTIVE_PARA_DEFAULT);
+        BoolParameter minimizeObjectiveParaDefault = new BoolParameter("Minimize Objective", MINIMIZE_OBJECTIVE_PARA_DEFAULT);
 
-        IntParameter numberOfGPUParaDefault   = new IntParameter("Number of GPU", NUMBER_OF_GPU_PARAM_DEFAULT);
-        IntParameter avgFrequencyParaDefault  = new IntParameter("Average Frequency", AVG_FREQUENCY_PARAM_DEFAULT);
+        IntParameter numberOfGPUParaDefault = new IntParameter("Number of GPU", NUMBER_OF_GPU_PARAM_DEFAULT);
+        IntParameter avgFrequencyParaDefault = new IntParameter("Average Frequency", AVG_FREQUENCY_PARAM_DEFAULT);
         IntParameter numberOfEpochParaDefault = new IntParameter("Number of Epoch", NUMBER_OF_EPOCH_PARAM_DEFAULT);
-        IntParameter queueSizeParaDefault     = new IntParameter("Queue Size", QUEUE_SIZE_PARAM_DEFAULT);
+        IntParameter queueSizeParaDefault = new IntParameter("Queue Size", QUEUE_SIZE_PARAM_DEFAULT);
 
-        ListParameter   cacheModeParaDefault        = new ListParameter("Cache Mode", new ArrayList<>(Arrays.asList("NONE", CACHE_MODE_PARAM_DEFAULT, "FILESYSTEM")), CACHE_MODE_PARAM_DEFAULT);
-        ListParameter   optimizationAlgoParaDefault = new ListParameter("Optimization Algorithm", new ArrayList<>(Arrays.asList(OPTIMIZATION_ALGO_PARAM_DEFAULT, "LINE_GRADIENT_DESCENT")), OPTIMIZATION_ALGO_PARAM_DEFAULT);
-        ListParameter   weightInitParaDefault       = new ListParameter("Weight Initializer", new ArrayList<>(Arrays.asList(WEIGHT_INIT_PARAM_DEFAULT, "RELU", "IDENTITY", "NORMAL", "UNIFORM", "ZERO", "DISTRIBUTION")), WEIGHT_INIT_PARAM_DEFAULT);
-        StringParameter batchSizeParaDefault        = new StringParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
+        ListParameter cacheModeParaDefault = new ListParameter("Cache Mode", new ArrayList<>(Arrays.asList("NONE", CACHE_MODE_PARAM_DEFAULT, "FILESYSTEM")), CACHE_MODE_PARAM_DEFAULT);
+        ListParameter optimizationAlgoParaDefault = new ListParameter("Optimization Algorithm", new ArrayList<>(Arrays.asList(OPTIMIZATION_ALGO_PARAM_DEFAULT, "LINE_GRADIENT_DESCENT")), OPTIMIZATION_ALGO_PARAM_DEFAULT);
+        ListParameter weightInitParaDefault = new ListParameter("Weight Initializer", new ArrayList<>(Arrays.asList(WEIGHT_INIT_PARAM_DEFAULT, "RELU", "IDENTITY", "NORMAL", "UNIFORM", "ZERO", "DISTRIBUTION")), WEIGHT_INIT_PARAM_DEFAULT);
+        IntParameter batchSizeParaDefault = new IntParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
 
         FloatParameter learningRateParaDefault = new FloatParameter("Learning Rate", LEARNING_RATE_PARAM_DEFAULT);
 
@@ -217,13 +210,11 @@ public class LSTMModelImpl extends ModelStrategy
         return parameters;
     }
 
-    public Dl4jMlpClassifier getLSTMObject()
-    {
+    public Dl4jMlpClassifier getLSTMObject() {
         return this.dl4jMlpClassifier;
     }
 
-    public NeuralNetConfiguration getLSTMNeuralObject()
-    {
+    public NeuralNetConfiguration getLSTMNeuralObject() {
         return this.neuralNetConfiguration;
     }
 }

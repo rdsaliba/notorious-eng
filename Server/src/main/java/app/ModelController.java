@@ -148,7 +148,7 @@ public class ModelController {
 
     /**
      * Given a trained model this function will retrain it with the current data and settings of the model
-     *
+     *SET GLOBAL max_allowed_packet=1073741824;
      * @author Paul
      */
     private void trainModel(TrainedModel trainedModel) throws Exception {

@@ -27,7 +27,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     private static final String GET_LATEST_RMSE = "SELECT rmse FROM trained_model tm, model m WHERE tm.model_id=? AND tm.asset_type_id=? AND tm.status_id=? AND tm.model_id = m.model_id AND m.archived=0";
     private static final String GET_MODEL_STRATEGY = "SELECT serialized_model FROM trained_model tm, model m WHERE tm.model_id=? AND tm.asset_type_id=? AND tm.status_id=? AND tm.model_id=m.model_id AND m.archived = 0";
     private static final String UPDATE_MODEL_STRATEGY = "UPDATE trained_model tm, model m SET tm.serialized_model=?, tm.retrain=true WHERE tm.model_id = ? AND tm.asset_type_id = ? AND tm.status_id = ? AND tm.model_id=m.model_id AND m.archived = 0";
-    private static final String UPDATE_MODEL_FOR_ASSET_TYPE = "UPDATE trained_model tm, model m SET tm.model_id = ? and tm.serialized_model =?  WHERE tm.asset_type_id = ? AND status_id = ? AND tm.model_id=m.model_id AND m.archived = 0";
+    private static final String UPDATE_MODEL_FOR_ASSET_TYPE = "UPDATE trained_model tm, model m SET tm.model_id = ?, tm.serialized_model =?  WHERE tm.asset_type_id = ? AND status_id = ? AND tm.model_id=m.model_id AND m.archived = 0";
     private static final String UPDATE_RETRAIN = "UPDATE trained_model tm, model m SET retrain = true WHERE tm.asset_type_id = ? AND tm.status_id = ? AND tm.model_id=m.model_id AND m.archived = 0";
     private static final String GET_MODEL_FROM_ASSET_TYPE = "SELECT * FROM trained_model, model WHERE trained_model.model_id = model.model_id AND trained_model.asset_type_id = ? and trained_model.status_id = ? AND model.archived = 0";
 

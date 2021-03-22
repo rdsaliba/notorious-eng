@@ -38,7 +38,7 @@ public class MultilayerPerceptronModelImpl extends ModelStrategy
     private static final int VALIDATION_SIZE_PARAM_DEFAULT = 0;
     private static final int VALIDATION_THRESHOLD_PARAM_DEFAULT = 20;
 
-    private static final String BATCH_SIZE_PARAM_DEFAULT = "100";
+    private static final int BATCH_SIZE_PARAM_DEFAULT = 100;
 
     //Parameters
     private final BoolParameter showGUIPara;
@@ -57,7 +57,7 @@ public class MultilayerPerceptronModelImpl extends ModelStrategy
     private final IntParameter validationSizePara;
     private final IntParameter validationThresholdPara;
 
-    private final StringParameter batchSizePara;
+    private final IntParameter batchSizePara;
 
     private MultilayerPerceptron multilayerPerceptron;
 
@@ -78,7 +78,7 @@ public class MultilayerPerceptronModelImpl extends ModelStrategy
         validationSizePara = new IntParameter("Validation Size", VALIDATION_SIZE_PARAM_DEFAULT);
         validationThresholdPara = new IntParameter("Validation Threshold", VALIDATION_THRESHOLD_PARAM_DEFAULT);
 
-        batchSizePara = new StringParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
+        batchSizePara = new IntParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
 
         addParameter(showGUIPara);
         addParameter(autoBuildPara);
@@ -130,7 +130,7 @@ public class MultilayerPerceptronModelImpl extends ModelStrategy
         multilayerPerceptron.setValidationSetSize(((IntParameter) getParameters().get(validationSizePara.getParamName())).getIntValue());
         multilayerPerceptron.setValidationThreshold(((IntParameter) getParameters().get(validationThresholdPara.getParamName())).getIntValue());
 
-        multilayerPerceptron.setBatchSize(((StringParameter) getParameters().get(batchSizePara.getParamName())).getStringValue());
+        multilayerPerceptron.setBatchSize(String.valueOf(((IntParameter) getParameters().get(batchSizePara.getParamName())).getIntValue()));
 
         try
         {
@@ -164,7 +164,7 @@ public class MultilayerPerceptronModelImpl extends ModelStrategy
         IntParameter validationSizeParaDefault      = new IntParameter("Validation Size", VALIDATION_SIZE_PARAM_DEFAULT);
         IntParameter validationThresholdParaDefault = new IntParameter("Validation Threshold", VALIDATION_THRESHOLD_PARAM_DEFAULT);
 
-        StringParameter batchSizeParaDefault = new StringParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
+        IntParameter batchSizeParaDefault = new IntParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
 
         Map<String, Parameter> parameters = new HashMap<>();
         parameters.put(showGUIParaDefault.getParamName(), showGUIParaDefault);
