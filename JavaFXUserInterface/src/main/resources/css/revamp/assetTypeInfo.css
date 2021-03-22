@@ -14,7 +14,7 @@
 }
 
 #evaluateAllModelsBtn {
-    -fx-background-color: #EE6352;
+    -fx-background-color: #226B9E;
     -fx-text-fill: #FFFFFF;
 }
 
@@ -122,7 +122,7 @@
 }
 
 .modelPane:hover {
-    -fx-border-color: #EE6352;
+    -fx-border-color: #226B9E;
 }
 
 .modelName {
@@ -159,8 +159,10 @@
 .selectBtn {
     -fx-font-family: "Segoe UI Semibold";
     -fx-font-size: 14px;
-    -fx-background-color: #EE6352;
-    -fx-text-fill: #FFFFFF;
+    -fx-background-color: #DAEBF7;
+    -fx-border-width: 1px;
+    -fx-border-color: #226B9E;
+    -fx-text-fill: #226B9E;
     -fx-pref-width: 99px;
     -fx-pref-height: 33px;
 }
@@ -172,7 +174,7 @@
 }
 
 .modelFlowPane {
-    -fx-padding: 10 0 26 26;
+    -fx-padding: 10 10 0 10;
 }
 
 .selectModelHeaderPane {
@@ -193,7 +195,6 @@
 }
 
 #modelsThumbPane {
-    -fx-padding: 10px;
 }
 
 .paramLabel {
@@ -225,9 +226,7 @@
     -fx-pref-width: 142px;
     -fx-pref-height: 40px;
     -fx-border-radius: 2px;
-    -fx-border-color: #3A3A3A;
-    -fx-border-width: 1px;
-    -fx-background-color: #FFFFFF;
+    -fx-background-color: #d5d7dd;
     -fx-font-family: "Segoe UI Semibold";
     -fx-font-size: 20px;
     -fx-fill: #3A3A3A;
@@ -237,9 +236,7 @@
     -fx-pref-width: 142px;
     -fx-pref-height: 40px;
     -fx-border-radius: 2px;
-    -fx-border-color: #3A3A3A;
-    -fx-border-width: 1px;
-    -fx-background-color: #FFFFFF;
+    -fx-background-color: #d5d7dd;
     -fx-font-family: "Segoe UI Semibold";
     -fx-font-size: 20px;
     -fx-fill: #3A3A3A;

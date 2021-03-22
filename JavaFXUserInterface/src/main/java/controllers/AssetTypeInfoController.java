@@ -27,6 +27,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,8 +94,11 @@ public class AssetTypeInfoController extends Controller implements Initializable
     private Label associatedModelLabel;
     @FXML
     private VBox modelParameters;
+    @FXML
+    private AnchorPane root;
 
     private ObservableList<TrainedModel> modelObservableList;
+    private ObservableList<Pane> modelPaneObservableList;
     private int associatedModelID;
     private UIUtilities uiUtilities;
     private AssetTypeList assetType;
@@ -103,6 +107,7 @@ public class AssetTypeInfoController extends Controller implements Initializable
     private AssetTypeDAOImpl assetTypeDAO;
     private ModelDAOImpl modelDAO;
     private AssetDAOImpl assetDAO;
+    private Stage stage;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -126,6 +131,7 @@ public class AssetTypeInfoController extends Controller implements Initializable
      * @author Najim, Paul
      */
     public void initData(AssetTypeList assetType) {
+        stage = (Stage) root.getScene().getWindow();
         this.assetType = assetType;
         this.originalAssetType = new AssetTypeList(assetType);
         assetTypeName.setText(assetType.getAssetType().getName());
@@ -222,7 +228,6 @@ public class AssetTypeInfoController extends Controller implements Initializable
      * @author Talal, Jeremie
      */
     private void initializeModelTab() {
-        modelSaveBtn.setDisable(true);
         evaluateAllModelsBtn.setDisable(true);
         evaluateButtons = new ArrayList<>();
         evaluateButtons.add(evaluateAllModelsBtn);
@@ -256,11 +261,13 @@ public class AssetTypeInfoController extends Controller implements Initializable
         testValue.setText(String.valueOf(testSlider.getValue()));
 
         trainSlider.valueProperty().addListener((observableValue, number, t1) -> {
+            trainSlider.setValue(t1.intValue());
             trainValue.setText(Integer.toString((int) trainSlider.getValue()));
             testSlider.setMax(nbOfAssets - trainSlider.getValue());
             trainSize = (int) trainSlider.getValue();
         });
         testSlider.valueProperty().addListener((observableValue, number, t1) -> {
+            testSlider.setValue(t1.intValue());
             testValue.setText(Integer.toString((int) testSlider.getValue()));
             trainSlider.setMax(nbOfAssets - testSlider.getValue());
             testSize = (int) testSlider.getValue();
@@ -274,6 +281,12 @@ public class AssetTypeInfoController extends Controller implements Initializable
      */
     private void attachEventsModelTab() {
         modelSaveBtn.setOnMouseClicked(mouseEvent -> {
+            modelObservableList.stream()
+                    .filter(trainedModel -> trainedModel.getModelID() == modelPanes.getSelectedModel().getModelID())
+                    .findFirst().ifPresent(selected -> {
+                selected.getModelStrategy().setParameters(selected.getModelStrategy().getParameters());
+                modelDAO.updateModelStrategy(selected.getModelStrategy(), selected.getModelID(), selected.getAssetTypeID());
+            });
             saveSelectedModelAssociation();
             uiUtilities.changeScene(TextConstants.ASSET_TYPE_LIST_SCENE, modelSaveBtn.getScene());
         });
@@ -300,6 +313,15 @@ public class AssetTypeInfoController extends Controller implements Initializable
 
         trainSlider.setOnMouseClicked(mouseEvent -> enableEvaluation(evaluateButtons));
         testSlider.setOnMouseClicked(mouseEvent -> enableEvaluation(evaluateButtons));
+
+        modelsThumbPane.widthProperty().addListener((obs, oldVal, newVal) -> {
+            double modelFlowWidth = (double)newVal-22;
+            int nbOfPanes = (int)(modelFlowWidth/247);
+            modelFlowWidth = (modelFlowWidth%247);
+            modelFlowWidth = modelFlowWidth/(nbOfPanes-1);
+            modelsThumbPane.setHgap(modelFlowWidth);
+        });
+
     }
 
     /**
@@ -489,7 +511,7 @@ public class AssetTypeInfoController extends Controller implements Initializable
      * @author Jeremie
      */
     public void generateThumbnails() {
-        ObservableList<Pane> modelPaneObservableList = FXCollections.observableArrayList();
+        modelPaneObservableList = FXCollections.observableArrayList();
 
         for (TrainedModel model : modelObservableList) {
             // Creating a Thumbnail element
@@ -498,7 +520,6 @@ public class AssetTypeInfoController extends Controller implements Initializable
             modelPane.setOnMouseClicked(mouseEvent -> {
                 modelPanes.handleModelSelection(model, modelPane);
                 generateParameters(model, false);
-                modelSaveBtn.setDisable(false);
             });
 
             // Generating items to display for the Thumbnail
@@ -551,6 +572,8 @@ public class AssetTypeInfoController extends Controller implements Initializable
         }
         modelPanes.setModelThumbnailsContainerPane(modelPaneObservableList, modelsThumbPane);
         modelPanes.highlightAssociatedModel(modelPaneObservableList, associatedModelID);
+        modelPanes.setSelectedModel(modelObservableList.stream().filter(model -> model.getModelID() == associatedModelID).findFirst().orElse(null));
+        generateParameters(modelObservableList.stream().filter(model -> model.getModelID() == associatedModelID).findFirst().orElse(null), false);
     }
 
     /**

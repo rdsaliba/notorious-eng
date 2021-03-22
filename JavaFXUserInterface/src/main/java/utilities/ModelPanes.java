@@ -41,7 +41,7 @@ public class ModelPanes {
     public void highlightAssociatedModel(ObservableList<Pane> modelPanes, int modelID) {
         for (int i = 0; i < modelPanes.size(); i++) {
             if ((i + 1) == modelID) {
-                modelPanes.get(i).setStyle("-fx-border-color: red");
+                modelPanes.get(i).setStyle("-fx-border-color: #226B9E");
             }
         }
     }
@@ -54,7 +54,7 @@ public class ModelPanes {
      * @author Jeremie
      */
     public void handleModelSelection(TrainedModel model, Pane pane) {
-        pane.setStyle("-fx-border-color: red");
+        pane.setStyle("-fx-border-color: #226B9E");
         setSelectedModel(model);
     }
 

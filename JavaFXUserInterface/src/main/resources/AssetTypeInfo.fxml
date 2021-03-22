@@ -18,7 +18,8 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="834.0"
+<AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            prefHeight="834.0"
             prefWidth="1194.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="controllers.AssetTypeInfoController">
     <children>
@@ -227,7 +228,7 @@
                                                         AnchorPane.rightAnchor="569.0" AnchorPane.topAnchor="167.0">
                                                 <content>
                                                     <FlowPane fx:id="modelsThumbPane" styleClass="modelFlowPane"
-                                                              hgap="10.0" prefHeight="541.0" prefWidth="561.0"
+                                                              prefHeight="541.0" prefWidth="561.0"
                                                               vgap="10.0"/>
                                                 </content>
                                             </ScrollPane>
@@ -251,7 +252,7 @@
                                             </AnchorPane>
                                             <Button fx:id="evaluateAllModelsBtn" layoutX="861.0" layoutY="37.0"
                                                     mnemonicParsing="false" prefHeight="45.0" prefWidth="247.0"
-                                                    text="Evaluate" textFill="WHITE" AnchorPane.rightAnchor="26.0"
+                                                    text="Evaluate All" textFill="WHITE" AnchorPane.rightAnchor="26.0"
                                                     AnchorPane.topAnchor="37.0">
                                                 <font>
                                                     <Font name="Segoe UI Semibold" size="20.0"/>
