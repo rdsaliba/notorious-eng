@@ -10,7 +10,6 @@ package utilities;
 import app.item.Asset;
 import controllers.AssetInfoController;
 import controllers.AssetTypeInfoController;
-import controllers.AssetsController;
 import controllers.Controller;
 import javafx.animation.Timeline;
 import javafx.fxml.FXMLLoader;
@@ -25,7 +24,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.ParsePosition;
-import java.util.ArrayList;
 
 public class UIUtilities {
 
@@ -73,6 +71,19 @@ public class UIUtilities {
         if (format.parse(c.getControlNewText(), parsePosition) == null || parsePosition.getIndex() < c.getControlNewText().length())
             return null;
         return c;
+    }
+
+    /**
+     * This function validates an input of a change on a text field to only allow the change if it fits the DecimalFormat
+     *
+     * @param regex is the decimal format to be applied to the field
+     * @param c     is the text formatter change
+     * @author Paul
+     */
+    public static TextFormatter.Change checkFormat(String regex, TextFormatter.Change c) {
+        if (c.getControlNewText().matches(regex))
+            return c;
+        return null;
     }
 
     /**

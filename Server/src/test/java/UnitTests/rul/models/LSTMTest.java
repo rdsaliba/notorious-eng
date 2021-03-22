@@ -35,7 +35,7 @@ public class LSTMTest
     private ListParameter cacheModePara; //options: NONE, MEMORY, FILESYSTEM
     private ListParameter optimizationAlgoPara; //options: STOCHASTIC_GRADIENT_DESCENT, LINE_GRADIENT_DESCENT,
     private ListParameter weightInitPara;     //options: XAVIER, RELU, IDENTITY, NORMAL, UNIFORM, ZERO, DISTRIBUTION
-    private StringParameter batchSizePara;
+    private IntParameter batchSizePara;
     //FloatParameter
     private FloatParameter learningRatePara;
 
@@ -60,7 +60,7 @@ public class LSTMTest
         optimizationAlgoPara = new ListParameter("Optimization Algorithm", new ArrayList<>(Arrays.asList("STOCHASTIC_GRADIENT_DESCENT", "LINE_GRADIENT_DESCENT")), "LINE_GRADIENT_DESCENT");
         weightInitPara = new ListParameter("Weight Initializer", new ArrayList<>(Arrays.asList("XAVIER", "RELU", "IDENTITY", "NORMAL", "UNIFORM", "ZERO", "DISTRIBUTION")), "NORMAL");
         cacheModePara = new ListParameter("Cache Mode", new ArrayList<>(Arrays.asList("NONE", "MEMORY", "FILESYSTEM")), "NONE");
-        batchSizePara = new StringParameter("Batch Size", "5");
+        batchSizePara = new IntParameter("Batch Size", 5);
 
         learningRatePara = new FloatParameter("Learning Rate", 0.002F);
 
@@ -97,19 +97,18 @@ public class LSTMTest
     }
 
     @Test
-    public void updateParam() throws Exception
-    {
+    public void updateParam() throws Exception {
         FileReader trainFile = new FileReader("src/test/resources/FD01_Train_RUL.arff");
-        Instances  trainData = new Instances(trainFile);
+        Instances trainData = new Instances(trainFile);
         trainData.setClassIndex(trainData.numAttributes() - 1);
 
         modelsController.setParameters(parameters);
         modelsController.trainModel(trainData);
 
-        assertEquals("Asserting the BatchSize parameter was changed", ((LSTMModelImpl) modelsController.getModelStrategy()).getLSTMObject().getBatchSize(), batchSizePara.getStringValue());
-        assertEquals("Asserting the CacheMode parameter was changed",((LSTMModelImpl) modelsController.getModelStrategy()).getLSTMObject().getCacheMode().toString(), cacheModePara.getSelectedValue());
-        assertEquals("Asserting the WeightInit parameter was changed",((LSTMModelImpl) modelsController.getModelStrategy()).getLSTMNeuralObject().getWeightInit().toString(), weightInitPara.getSelectedValue());
-        assertEquals("Asserting the OptimizationAlgo parameter was changed",((LSTMModelImpl) modelsController.getModelStrategy()).getLSTMNeuralObject().getOptimizationAlgo().toString(), optimizationAlgoPara.getSelectedValue());
-        assertEquals("Asserting the QueueSize parameter was changed",((LSTMModelImpl) modelsController.getModelStrategy()).getLSTMObject().getQueueSize(), queueSizePara.getIntValue());
+        assertEquals("Asserting the BatchSize parameter was changed", ((LSTMModelImpl) modelsController.getModelStrategy()).getLSTMObject().getBatchSize(), batchSizePara.getIntValue());
+        assertEquals("Asserting the CacheMode parameter was changed", ((LSTMModelImpl) modelsController.getModelStrategy()).getLSTMObject().getCacheMode().toString(), cacheModePara.getSelectedValue());
+        assertEquals("Asserting the WeightInit parameter was changed", ((LSTMModelImpl) modelsController.getModelStrategy()).getLSTMNeuralObject().getWeightInit().toString(), weightInitPara.getSelectedValue());
+        assertEquals("Asserting the OptimizationAlgo parameter was changed", ((LSTMModelImpl) modelsController.getModelStrategy()).getLSTMNeuralObject().getOptimizationAlgo().toString(), optimizationAlgoPara.getSelectedValue());
+        assertEquals("Asserting the QueueSize parameter was changed", ((LSTMModelImpl) modelsController.getModelStrategy()).getLSTMObject().getQueueSize(), queueSizePara.getIntValue());
     }
 }

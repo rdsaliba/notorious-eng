@@ -40,6 +40,9 @@ public class TextConstants {
     public static final DecimalFormat RMSEValueFormat = new DecimalFormat("#.##");
     public static final DecimalFormat ThresholdValueFormat = new DecimalFormat("#.00");
 
+    public static final String floatRegex = "[-]?([0-9]*[.])?[0-9]*";
+    public static final String intRegex = "[-]?\\d+";
+
     //Input Validation Constants
     public static final String EMPTY_FIELD_ERROR = "Please enter a value";
     public static final String MAX_20_CHARACTERS_ERROR = "Number of characters has to not exceed 20";

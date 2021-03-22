@@ -596,20 +596,13 @@ public class AssetTypeInfoController extends Controller implements Initializable
                 checkBox.setLayoutY(0.0);
                 checkBox.selectedProperty().addListener((ov, old_val, new_val) -> ((BoolParameter) params.get(paramName)).setBoolValue(new_val));
                 pane.getChildren().addAll(checkBox);
-            } else if (parameter instanceof StringParameter) {
-                TextField tf = new TextField();
-                tf.setText(((StringParameter) parameter).getStringValue());
-                tf.getStyleClass().add("paramTextField");
-                tf.setLayoutX(tfLayoutX);
-                tf.setLayoutY(0.0);
-                tf.textProperty().addListener((ov, old_val, new_val) -> ((StringParameter) params.get(paramName)).setStringValue(new_val));
-                pane.getChildren().add(tf);
             } else if (parameter instanceof IntParameter) {
                 TextField tf = new TextField();
                 tf.setText(String.valueOf(((IntParameter) parameter).getIntValue()));
                 tf.getStyleClass().add("paramTextField");
                 tf.setLayoutX(tfLayoutX);
                 tf.setLayoutY(0.0);
+                tf.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.intRegex, c)));
                 tf.textProperty().addListener((ov, old_val, new_val) -> ((IntParameter) params.get(paramName)).setIntValue(Integer.parseInt(new_val)));
                 pane.getChildren().add(tf);
             } else if (parameter instanceof ListParameter) {
@@ -627,6 +620,7 @@ public class AssetTypeInfoController extends Controller implements Initializable
                 tf.getStyleClass().add("paramTextField");
                 tf.setLayoutX(tfLayoutX);
                 tf.setLayoutY(0.0);
+                tf.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.floatRegex, c)));
                 tf.textProperty().addListener((ov, old_val, new_val) -> ((FloatParameter) params.get(paramName)).setFloatValue(Float.parseFloat(new_val)));
                 pane.getChildren().add(tf);
             }
@@ -643,7 +637,7 @@ public class AssetTypeInfoController extends Controller implements Initializable
      * @author Jeremie
      */
     private void saveSelectedModelAssociation() {
-        modelDAO.updateModelAssociatedWithAssetType(modelPanes.getSelectedModel().getModelID(), assetType.getId());
+        modelDAO.updateModelAssociatedWithAssetType(modelPanes.getSelectedModel(), assetType.getId());
         modelDAO.setModelToTrain(assetType.getId());
         updateAssetsForSelectedModelAssociation(Integer.parseInt(assetType.getId()));
     }

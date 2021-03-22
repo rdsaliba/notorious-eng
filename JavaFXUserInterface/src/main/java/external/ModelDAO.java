@@ -23,7 +23,7 @@ public interface ModelDAO {
 
     ArrayList<TrainedModel> getModelsByAssetTypeID(String assetTypeID, int statusID);
 
-    void updateModelAssociatedWithAssetType(int modelID, String assetTypeID);
+    void updateModelAssociatedWithAssetType(Model model, String assetTypeID);
 
     void setModelToTrain(String assetTypeID);
 

@@ -1,6 +1,9 @@
 package UnitTests.rul.models;
 
-import app.item.parameter.*;
+import app.item.parameter.BoolParameter;
+import app.item.parameter.FloatParameter;
+import app.item.parameter.IntParameter;
+import app.item.parameter.Parameter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,7 +22,7 @@ import static org.junit.Assert.assertEquals;
 public class AdditiveRegressionTest
 {
     private ModelsController modelsController;
-    private StringParameter batchSizePara;
+    private IntParameter batchSizePara;
     private BoolParameter minimizeAbsoluteErrorPara;
     private IntParameter numIterationsPara;
     private BoolParameter resumePara;
@@ -30,7 +33,7 @@ public class AdditiveRegressionTest
     public void setUp()
     {
         modelsController = new ModelsController(new AdditiveRegressionModelImpl());
-        batchSizePara = new StringParameter("Batch Size", "456");
+        batchSizePara = new IntParameter("Batch Size", 456);
         minimizeAbsoluteErrorPara = new BoolParameter("Minimize Absolute Error", true);
         numIterationsPara = new IntParameter("Number of Iterations", 22);
         resumePara = new BoolParameter("Resume", false);
@@ -63,19 +66,18 @@ public class AdditiveRegressionTest
     }
 
     @Test
-    public void updateParam() throws Exception
-    {
+    public void updateParam() throws Exception {
         FileReader trainFile = new FileReader("src/test/resources/FD01_Train_RUL.arff");
-        Instances  trainData = new Instances(trainFile);
+        Instances trainData = new Instances(trainFile);
         trainData.setClassIndex(trainData.numAttributes() - 1);
 
         modelsController.setParameters(parameters);
         modelsController.trainModel(trainData);
 
-        assertEquals("Asserting the BatchSize parameter was changed",((AdditiveRegressionModelImpl) modelsController.getModelStrategy()).getAdditiveRegressionObject().getBatchSize(), batchSizePara.getStringValue());
-        assertEquals("Asserting the MinimizeAbsoluteError parameter was changed",((AdditiveRegressionModelImpl) modelsController.getModelStrategy()).getAdditiveRegressionObject().getMinimizeAbsoluteError(), minimizeAbsoluteErrorPara.getBoolValue());
-        assertEquals("Asserting the NumIterations parameter was changed",((AdditiveRegressionModelImpl) modelsController.getModelStrategy()).getAdditiveRegressionObject().getNumIterations(), numIterationsPara.getIntValue());
-        assertEquals("Asserting the Resume parameter was changed",((AdditiveRegressionModelImpl) modelsController.getModelStrategy()).getAdditiveRegressionObject().getResume(), resumePara.getBoolValue());
-        assertEquals("Asserting the Shrinkage parameter was changed",((AdditiveRegressionModelImpl) modelsController.getModelStrategy()).getAdditiveRegressionObject().getShrinkage(), shrinkagePara.getFloatValue(), 0.001f);
+        assertEquals("Asserting the BatchSize parameter was changed", ((AdditiveRegressionModelImpl) modelsController.getModelStrategy()).getAdditiveRegressionObject().getBatchSize(), batchSizePara.getIntValue());
+        assertEquals("Asserting the MinimizeAbsoluteError parameter was changed", ((AdditiveRegressionModelImpl) modelsController.getModelStrategy()).getAdditiveRegressionObject().getMinimizeAbsoluteError(), minimizeAbsoluteErrorPara.getBoolValue());
+        assertEquals("Asserting the NumIterations parameter was changed", ((AdditiveRegressionModelImpl) modelsController.getModelStrategy()).getAdditiveRegressionObject().getNumIterations(), numIterationsPara.getIntValue());
+        assertEquals("Asserting the Resume parameter was changed", ((AdditiveRegressionModelImpl) modelsController.getModelStrategy()).getAdditiveRegressionObject().getResume(), resumePara.getBoolValue());
+        assertEquals("Asserting the Shrinkage parameter was changed", ((AdditiveRegressionModelImpl) modelsController.getModelStrategy()).getAdditiveRegressionObject().getShrinkage(), shrinkagePara.getFloatValue(), 0.001f);
     }
 }

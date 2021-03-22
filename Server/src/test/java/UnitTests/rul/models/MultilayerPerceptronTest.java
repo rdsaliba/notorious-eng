@@ -1,6 +1,9 @@
 package UnitTests.rul.models;
 
-import app.item.parameter.*;
+import app.item.parameter.BoolParameter;
+import app.item.parameter.FloatParameter;
+import app.item.parameter.IntParameter;
+import app.item.parameter.Parameter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +37,7 @@ public class MultilayerPerceptronTest {
     private IntParameter validationSizePara;
     private IntParameter validationThresholdPara;
 
-    private StringParameter batchSizePara;
+    private IntParameter batchSizePara;
 
     private Map<String, Parameter> parameters;
 
@@ -58,7 +61,7 @@ public class MultilayerPerceptronTest {
         validationSizePara = new IntParameter("Validation Size", 1);
         validationThresholdPara = new IntParameter("Validation Threshold", 10);
 
-        batchSizePara = new StringParameter("Batch Size", "150");
+        batchSizePara = new IntParameter("Batch Size", 150);
 
         parameters = new HashMap();
         parameters.put(showGUIPara.getParamName(), showGUIPara);
@@ -94,19 +97,18 @@ public class MultilayerPerceptronTest {
     }
 
     @Test
-    public void updateParam() throws Exception
-    {
+    public void updateParam() throws Exception {
         FileReader trainFile = new FileReader("src/test/resources/FD01_Train_RUL.arff");
-        Instances  trainData = new Instances(trainFile);
+        Instances trainData = new Instances(trainFile);
         trainData.setClassIndex(trainData.numAttributes() - 1);
 
         modelsController.setParameters(parameters);
         modelsController.trainModel(trainData);
 
-        assertEquals("Asserting the BatchSize parameter was changed",((MultilayerPerceptronModelImpl) modelsController.getModelStrategy()).getMultilayerPerceptronObject().getBatchSize(), batchSizePara.getStringValue());
-        assertEquals("Asserting the ValidationThreshold parameter was changed",((MultilayerPerceptronModelImpl) modelsController.getModelStrategy()).getMultilayerPerceptronObject().getValidationThreshold(), validationThresholdPara.getIntValue());
-        assertEquals("Asserting the LearningRate parameter was changed",((MultilayerPerceptronModelImpl) modelsController.getModelStrategy()).getMultilayerPerceptronObject().getLearningRate(), learningRatePara.getFloatValue(), 0.1F);
-        assertEquals("Asserting the Resume parameter was changed",((MultilayerPerceptronModelImpl) modelsController.getModelStrategy()).getMultilayerPerceptronObject().getResume(), resumePara.getBoolValue());
-        assertEquals("Asserting the ShowGUI parameter was changed",((MultilayerPerceptronModelImpl) modelsController.getModelStrategy()).getMultilayerPerceptronObject().getGUI(), showGUIPara.getBoolValue());
+        assertEquals("Asserting the BatchSize parameter was changed", ((MultilayerPerceptronModelImpl) modelsController.getModelStrategy()).getMultilayerPerceptronObject().getBatchSize(), batchSizePara.getIntValue());
+        assertEquals("Asserting the ValidationThreshold parameter was changed", ((MultilayerPerceptronModelImpl) modelsController.getModelStrategy()).getMultilayerPerceptronObject().getValidationThreshold(), validationThresholdPara.getIntValue());
+        assertEquals("Asserting the LearningRate parameter was changed", ((MultilayerPerceptronModelImpl) modelsController.getModelStrategy()).getMultilayerPerceptronObject().getLearningRate(), learningRatePara.getFloatValue(), 0.1F);
+        assertEquals("Asserting the Resume parameter was changed", ((MultilayerPerceptronModelImpl) modelsController.getModelStrategy()).getMultilayerPerceptronObject().getResume(), resumePara.getBoolValue());
+        assertEquals("Asserting the ShowGUI parameter was changed", ((MultilayerPerceptronModelImpl) modelsController.getModelStrategy()).getMultilayerPerceptronObject().getGUI(), showGUIPara.getBoolValue());
     }
 }

@@ -3,7 +3,6 @@ package UnitTests.rul.models;
 import app.item.parameter.BoolParameter;
 import app.item.parameter.IntParameter;
 import app.item.parameter.Parameter;
-import app.item.parameter.StringParameter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,7 +31,7 @@ public class RandomForestTest {
     private IntParameter numFeaturesPara;
     private IntParameter numIterationsPara;
 
-    private StringParameter batchSizePara;
+    private IntParameter batchSizePara;
 
     private Map<String, Parameter> parameters;
 
@@ -51,7 +50,7 @@ public class RandomForestTest {
         numFeaturesPara = new IntParameter("Number of Features", 1);
         numIterationsPara = new IntParameter("Number of Iterations", 50);
 
-        batchSizePara = new StringParameter("Batch Size", "125");
+        batchSizePara = new IntParameter("Batch Size", 125);
 
         parameters = new HashMap();
         parameters.put(storeOutOfBagPredictionsPara.getParamName(), storeOutOfBagPredictionsPara);
@@ -84,19 +83,18 @@ public class RandomForestTest {
 
 
     @Test
-    public void updateParam() throws Exception
-    {
+    public void updateParam() throws Exception {
         FileReader trainFile = new FileReader("src/test/resources/FD01_Train_RUL.arff");
-        Instances  trainData = new Instances(trainFile);
+        Instances trainData = new Instances(trainFile);
         trainData.setClassIndex(trainData.numAttributes() - 1);
 
         modelsController.setParameters(parameters);
         modelsController.trainModel(trainData);
 
-        assertEquals("Asserting the BatchSize parameter was changed", ((RandomForestModelImpl) modelsController.getModelStrategy()).getRandomForestObject().getBatchSize(), batchSizePara.getStringValue());
-        assertEquals("Asserting the NumIterations parameter was changed",((RandomForestModelImpl) modelsController.getModelStrategy()).getRandomForestObject().getNumIterations(), numIterationsPara.getIntValue());
-        assertEquals("Asserting the MaxDepth parameter was changed",((RandomForestModelImpl) modelsController.getModelStrategy()).getRandomForestObject().getMaxDepth(), maxDepthPara.getIntValue());
-        assertEquals("Asserting the BreakTiesRandomly parameter was changed",((RandomForestModelImpl) modelsController.getModelStrategy()).getRandomForestObject().getBreakTiesRandomly(), breakTiesRandomlyPara.getBoolValue());
-        assertEquals("Asserting the NumberOfFeatures parameter was changed",((RandomForestModelImpl) modelsController.getModelStrategy()).getRandomForestObject().getNumFeatures(), numFeaturesPara.getIntValue());
+        assertEquals("Asserting the BatchSize parameter was changed", ((RandomForestModelImpl) modelsController.getModelStrategy()).getRandomForestObject().getBatchSize(), batchSizePara.getIntValue());
+        assertEquals("Asserting the NumIterations parameter was changed", ((RandomForestModelImpl) modelsController.getModelStrategy()).getRandomForestObject().getNumIterations(), numIterationsPara.getIntValue());
+        assertEquals("Asserting the MaxDepth parameter was changed", ((RandomForestModelImpl) modelsController.getModelStrategy()).getRandomForestObject().getMaxDepth(), maxDepthPara.getIntValue());
+        assertEquals("Asserting the BreakTiesRandomly parameter was changed", ((RandomForestModelImpl) modelsController.getModelStrategy()).getRandomForestObject().getBreakTiesRandomly(), breakTiesRandomlyPara.getBoolValue());
+        assertEquals("Asserting the NumberOfFeatures parameter was changed", ((RandomForestModelImpl) modelsController.getModelStrategy()).getRandomForestObject().getNumFeatures(), numFeaturesPara.getIntValue());
     }
 }
