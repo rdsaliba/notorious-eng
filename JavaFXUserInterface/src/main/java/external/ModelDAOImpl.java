@@ -23,8 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ModelDAOImpl extends DAO implements ModelDAO {
-    private static final String GET_MODEL_FROM_ASSET_TYPE_ID = "SELECT * from trained_model, model WHERE trained_model.model_id = model.model_id AND trained_model.asset_type_id = ? AND model.archived = 0";
-    private static final String GET_ALL_MODELS_FOR_EVALUATION = "SELECT trained_model.*, model.name, model.description from trained_model, model where trained_model.model_id=model.model_id AND asset_type_id=? AND status_id=? AND model.archived = 0";
+    private static final String GET_MODELS_FOR_ASSET_TYPE = "SELECT tm.*, m.name, m.description FROM trained_model tm, model m WHERE tm.model_id = m.model_id AND tm.asset_type_id = ? AND tm.status_id = ? AND m.archived = 0";
     private static final String GET_LATEST_RMSE = "SELECT rmse FROM trained_model tm, model m WHERE tm.model_id=? AND tm.asset_type_id=? AND tm.status_id=? AND tm.model_id = m.model_id AND m.archived=0";
     private static final String GET_MODEL_STRATEGY = "SELECT serialized_model FROM trained_model tm, model m WHERE tm.model_id=? AND tm.asset_type_id=? AND tm.status_id=? AND tm.model_id=m.model_id AND m.archived = 0";
     private static final String UPDATE_MODEL_STRATEGY = "UPDATE trained_model tm, model m SET tm.serialized_model=?, tm.retrain=true WHERE tm.model_id = ? AND tm.asset_type_id = ? AND tm.status_id = ? AND tm.model_id=m.model_id AND m.archived = 0";
@@ -33,45 +32,47 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     private static final String GET_MODEL_FROM_ASSET_TYPE = "SELECT * FROM trained_model, model WHERE trained_model.model_id = model.model_id AND trained_model.asset_type_id = ? and trained_model.status_id = ? AND model.archived = 0";
 
     /**
-     * Given a asset type id, this function will return the string corresponding
+     * Given an asset type id, this function will return the string corresponding
      * to the name of the model in the database associated with the asset type
      *
-     * @param assetTypeID represents a asset type id
+     * @param assetTypeID represents an asset type id
      * @author Paul
      */
     @Override
-    public String getModelNameFromAssetTypeID(String assetTypeID) {
+    public String getModelNameAssociatedWithAssetType(String assetTypeID) {
         String name = null;
-        try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_FROM_ASSET_TYPE_ID)) {
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_MODELS_FOR_ASSET_TYPE)) {
             ps.setString(1, assetTypeID);
+            ps.setInt(2, Constants.STATUS_LIVE);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next())
                     name = rs.getString("name");
             }
         } catch (SQLException e) {
-            logger.error("Exception getModelNameFromAssetTypeID(): ", e);
+            logger.error("SQL Exception in getModelNameAssociatedWithAssetType(): ", e);
         }
         return name;
     }
 
     /**
-     * Given a asset type id, this function will return the int corresponding
+     * Given an asset type id, this function will return the int corresponding
      * to the ID of the model in the database associated with the asset type
      *
      * @param assetTypeID is the Asset type Id of the asset
      * @author Talal, Jeremie
      **/
     @Override
-    public int getModelIDFromAssetTypeID(String assetTypeID) {
+    public int getModelIDAssociatedWithAssetType(String assetTypeID) {
         int modelID = 0;
-        try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_FROM_ASSET_TYPE_ID)) {
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_MODELS_FOR_ASSET_TYPE)) {
             ps.setString(1, assetTypeID);
+            ps.setInt(2, Constants.STATUS_LIVE);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next())
                     modelID = rs.getInt("model_id");
             }
         } catch (SQLException e) {
-            logger.error("Exception getModelsByAssetTypeID(): ", e);
+            logger.error("SQL Exception in getModelIDAssociatedWithAssetType(): ", e);
         }
         return modelID;
     }
@@ -85,13 +86,13 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     @Override
     public List<Model> getAllModelsForEvaluation(int assetTypeID) {
         ArrayList<Model> modelList = new ArrayList<>();
-        try (PreparedStatement ps = getConnection().prepareStatement(GET_ALL_MODELS_FOR_EVALUATION)) {
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_MODELS_FOR_ASSET_TYPE)) {
             ps.setInt(1, assetTypeID);
             ps.setInt(2, Constants.STATUS_EVALUATION);
             try (ResultSet rs = ps.executeQuery()) {
             }
         } catch (SQLException e) {
-            logger.error("Exception getAllModels(): ", e);
+            logger.error("SQL Exception in getAllModelsForEvaluation(): ", e);
         }
         return modelList;
     }
@@ -138,7 +139,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
             ps.setInt(4, Constants.STATUS_LIVE);
             ps.executeQuery();
         } catch (SQLException e) {
-            logger.error("Exception updateRMSE(): ", e);
+            logger.error("SQL Exception in updateModelAssociatedWithAssetType(): ", e);
         }
     }
 
@@ -156,34 +157,8 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
             ps.setInt(2, Constants.STATUS_LIVE);
             ps.executeUpdate();
         } catch (SQLException e) {
-            logger.error("Exception in setModelToTrain()");
+            logger.error("SQL Exception in setModelToTrain()");
         }
-    }
-
-    /**
-     * This function sets the model associated with the specified asset type to be retrained. It changes
-     * the retrain attribute to true.
-     *
-     * @param assetTypeID is the asset type ID of the specified asset type
-     * @return The value of the RMSE under a String format
-     * @author Jeremie
-     */
-    @Override
-    public String getGetModelEvaluation(int modelID, String assetTypeID) {
-        String rmseValue = null;
-        try (PreparedStatement ps = getConnection().prepareStatement(GET_LATEST_RMSE)) {
-            ps.setInt(1, modelID);
-            ps.setString(2, assetTypeID);
-            ps.setInt(3, Constants.STATUS_EVALUATION);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next())
-                    rmseValue = rs.getString("rmse");
-            }
-        } catch (SQLException e) {
-            logger.error("Exception in getGetModelEvaluation()");
-        }
-        if (rmseValue == null) return "n/a";
-        else return rmseValue;
     }
 
     /**
@@ -250,8 +225,9 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
      * @param assetTypeID is the asset type's ID
      * @author talal
      */
+    @Override
     public double getLatestRMSE(int modelID, int assetTypeID) {
-        double estimate = -100000;
+        double estimate = -1000000;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_LATEST_RMSE)) {
             ps.setInt(1, modelID);
             ps.setInt(2, assetTypeID);
