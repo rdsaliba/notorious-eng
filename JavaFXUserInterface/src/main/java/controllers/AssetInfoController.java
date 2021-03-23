@@ -225,11 +225,12 @@ public class AssetInfoController implements Initializable {
         backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(TextConstants.ASSETS_SCENE, backBtn.getScene()));
         deleteBtn.setOnMouseClicked(mouseEvent -> {
             timelines.forEach(Timeline::stop);
-            CustomDialog.systemInfoController(asset.getId());
+            CustomDialog.deleteAssetConfirmationDialogShowAndWait(asset.getId(), backBtn.getScene());
+            backBtn.fire();
         });
         archiveBtn.setOnMouseClicked(mouseEvent -> {
             timelines.forEach(Timeline::stop);
-            CustomDialog.archiveAssetDialogShow(asset, archiveBtn);
+            CustomDialog.archiveAssetConfirmationDialogShowAndWait(asset, archiveBtn.getScene());
         });
 
         rawDataTab.setOnSelectionChanged(event -> {
