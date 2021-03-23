@@ -56,8 +56,6 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
         } catch (SQLException e) {
             logger.error("Exception getAssetTypeThreshold(): ", e);
         }
-        if (threshold == null || threshold.equals("null"))
-            threshold = "-";
         return threshold;
     }
 
