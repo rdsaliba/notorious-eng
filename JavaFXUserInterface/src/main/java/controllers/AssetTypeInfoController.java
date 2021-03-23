@@ -100,6 +100,7 @@ public class AssetTypeInfoController extends Controller implements Initializable
     private ObservableList<TrainedModel> modelObservableList;
     private ObservableList<Pane> modelPaneObservableList;
     private int associatedModelID;
+
     private UIUtilities uiUtilities;
     private AssetTypeList assetType;
     private AssetTypeList originalAssetType;
@@ -136,18 +137,30 @@ public class AssetTypeInfoController extends Controller implements Initializable
         this.originalAssetType = new AssetTypeList(assetType);
         assetTypeName.setText(assetType.getAssetType().getName());
         assetTypeDesc.setText(assetType.getAssetType().getDescription());
-        associatedModelID = modelDAO.getModelIDAssociatedWithAssetType(assetType.getId());
         associatedModelLabel.setText(modelDAO.getModelNameAssociatedWithAssetType(assetType.getId()));
+
+        // Initializing Data for the threshold text fields
+        ObservableList<TextField> thresholdTextFieldList = FXCollections.observableArrayList();
+        thresholdTextFieldList.addAll(thresholdOK, thresholdAdvisory, thresholdCaution, thresholdWarning, thresholdFailed);
         try {
-            thresholdOK.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueOk())));
-            thresholdAdvisory.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueAdvisory())));
-            thresholdCaution.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueCaution())));
-            thresholdWarning.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueWarning())));
-            thresholdFailed.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueFailed())));
+            if (assetType.getValueOk() != null && !assetType.getValueOk().equalsIgnoreCase("null"))
+                thresholdOK.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueOk())));
+            if (assetType.getValueAdvisory() != null && !assetType.getValueAdvisory().equalsIgnoreCase("null"))
+                thresholdAdvisory.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueAdvisory())));
+            if (assetType.getValueCaution() != null && !assetType.getValueCaution().equalsIgnoreCase("null"))
+                thresholdCaution.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueCaution())));
+            if (assetType.getValueWarning() != null && !assetType.getValueWarning().equalsIgnoreCase("null"))
+                thresholdWarning.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueWarning())));
+            if (assetType.getValueFailed() != null && !assetType.getValueFailed().equalsIgnoreCase("null"))
+                thresholdFailed.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueFailed())));
         } catch (NumberFormatException e) {
             logger.error("NumberFormatException error inside initData");
             logger.error("Exception initData(): ", e);
         }
+        for (TextField thresholdTextField : thresholdTextFieldList) {
+            thresholdTextField.setPromptText("No current value for " + thresholdTextField.getId() + ". Please enter a value.");
+        }
+
         updateRMSE();
     }
 
@@ -371,7 +384,15 @@ public class AssetTypeInfoController extends Controller implements Initializable
      * @author Paul
      */
     private boolean handleTextChange(String newText, String field) {
-        if ((field).equals(originalAssetType.getName()) || field.equals(originalAssetType.getDescription())) {
+        if (field == null) {
+            if (!newText.isEmpty()) {
+                infoSaveBtn.setDisable(false);
+                return true;
+            } else {
+                infoSaveBtn.setDisable(true);
+                return false;
+            }
+        } else if ((field).equals(originalAssetType.getName()) || field.equals(originalAssetType.getDescription())) {
             if (!newText.isEmpty() && !newText.equals(field)) {
                 infoSaveBtn.setDisable(false);
                 return true;
@@ -379,7 +400,7 @@ public class AssetTypeInfoController extends Controller implements Initializable
                 infoSaveBtn.setDisable(true);
                 return false;
             }
-        } else if (!newText.isEmpty() && !field.equals("-") && Double.parseDouble(newText) == Double.parseDouble(field)) {
+        } else if (!newText.isEmpty() && Double.parseDouble(newText) == Double.parseDouble(field)) {
             infoSaveBtn.setDisable(true);
             return false;
         } else {

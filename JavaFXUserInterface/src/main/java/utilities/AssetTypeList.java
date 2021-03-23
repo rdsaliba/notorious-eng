@@ -154,7 +154,8 @@ public class AssetTypeList {
     }
 
 
-    /** This methode generates an AssetType object given the values of the current object
+    /**
+     * This methode generates an AssetType object given the values of the current object
      *
      * @return AssetType Object
      * @author Paul
@@ -168,27 +169,27 @@ public class AssetTypeList {
 
         if (this.valueOk.isEmpty())
             newAssetTypeParameter.add(new AssetTypeParameter(TextConstants.OK_THRESHOLD, null));
-        else if (!this.valueOk.equals("-"))
+        else
             newAssetTypeParameter.add(new AssetTypeParameter(TextConstants.OK_THRESHOLD, Double.parseDouble(this.valueOk)));
 
         if (this.valueAdvisory.isEmpty())
             newAssetTypeParameter.add(new AssetTypeParameter(TextConstants.ADVISORY_THRESHOLD, null));
-        else if (!this.valueAdvisory.equals("-"))
+        else
             newAssetTypeParameter.add(new AssetTypeParameter(TextConstants.ADVISORY_THRESHOLD, Double.parseDouble(this.valueAdvisory)));
 
         if (this.valueCaution.isEmpty())
             newAssetTypeParameter.add(new AssetTypeParameter(TextConstants.CAUTION_THRESHOLD, null));
-        else if (!this.valueCaution.equals("-"))
+        else
             newAssetTypeParameter.add(new AssetTypeParameter(TextConstants.CAUTION_THRESHOLD, Double.parseDouble(this.valueCaution)));
 
         if (this.valueWarning.isEmpty())
             newAssetTypeParameter.add(new AssetTypeParameter(TextConstants.WARNING_THRESHOLD, null));
-        else if (!this.valueWarning.equals("-"))
+        else
             newAssetTypeParameter.add(new AssetTypeParameter(TextConstants.WARNING_THRESHOLD, Double.parseDouble(this.valueWarning)));
 
         if (this.valueFailed.isEmpty())
             newAssetTypeParameter.add(new AssetTypeParameter(TextConstants.FAILED_THRESHOLD, null));
-        else if (!this.valueFailed.equals("-"))
+        else
             newAssetTypeParameter.add(new AssetTypeParameter(TextConstants.FAILED_THRESHOLD, Double.parseDouble(this.valueFailed)));
 
         newAssetType.setThresholdList(newAssetTypeParameter);
