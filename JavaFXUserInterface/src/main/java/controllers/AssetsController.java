@@ -198,6 +198,13 @@ public class AssetsController implements Initializable {
         });
     }
 
+    /**
+     * Live search for assets in the assets list based on the input from the search bar.
+     * When a search has a match, all systems panes are cleared and generated again with the appropriate assets.
+     * When a search has no match, all system panes are cleared effectively showing no assets.
+     *
+     * @author Najim
+     */
     private void searchAssets() {
         searchedAssets = FXCollections.observableArrayList();
         search.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -207,8 +214,8 @@ public class AssetsController implements Initializable {
                         || StringUtils.containsIgnoreCase(o.getDescription(), newValue) || StringUtils.containsIgnoreCase(o.getSerialNo(), newValue)
                         || StringUtils.containsIgnoreCase(o.getManufacturer(), newValue) || StringUtils.containsIgnoreCase(o.getCategory(), newValue)
                         || StringUtils.containsIgnoreCase(o.getSite(), newValue) || StringUtils.containsIgnoreCase(o.getLocation(), newValue)
-                        || StringUtils.containsIgnoreCase(o.getRecommendation(), newValue)).forEach(
-                        searchedAssets::add
+                        || StringUtils.containsIgnoreCase(o.getRecommendation(), newValue) || StringUtils.containsIgnoreCase(assetTypeDAO.getNameFromID(o.getAssetTypeID()), newValue)).forEach(
+                        searchedAssets::add //Assets matched with search are added to the searchAssets list
                 );
                 if (searchedAssets.isEmpty()) {
                     searchMatch = "No Match";
@@ -218,8 +225,7 @@ public class AssetsController implements Initializable {
             } else {
                 searchMatch = "No Search";
             }
-//            logger.info("Start - searchAssets() -> TexField value is : {}", newValue);
-//            logger.info("End - searchAssets() -> SearchedAsset List is empty : {}", searchedAssets.isEmpty());
+
             if (assetsTabPane.getSelectionModel().getSelectedItem().getId().equals("thumbnailTab")) {
                 assetsThumbPane.getChildren().clear();
                 generateThumbnails();
@@ -230,18 +236,23 @@ public class AssetsController implements Initializable {
         });
     }
 
+    /**
+     * Determines which list of assets to be displayed between the searchAssets list
+     * and the original assets list.
+     *
+     * @return assetsToDisplay
+     * @author Najim
+     */
     private ObservableList<Asset> setAssetListToDisplay() {
         ObservableList<Asset> assetsToDisplay;
         if (!searchedAssets.isEmpty()) {
             assetsToDisplay = FXCollections.observableArrayList(searchedAssets);
-//            logger.info("Start - generateThumbnails() -> asset generated is searchAssets : {}", true);
         } else {
             if (searchMatch.equals("No Match")) {
                 assetsThumbPane.getChildren().clear();
                 assetsToDisplay = null;
             } else {
                 assetsToDisplay = FXCollections.observableArrayList(assets);
-//                logger.info("Start - generateThumbnails() -> asset generated is assets : {}", true);
             }
         }
         return assetsToDisplay;
