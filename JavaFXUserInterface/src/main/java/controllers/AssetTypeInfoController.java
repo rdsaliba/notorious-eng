@@ -131,7 +131,7 @@ public class AssetTypeInfoController implements Initializable {
 
         // Initializing Data for the threshold text fields
         ObservableList<TextField> thresholdTextFieldList = FXCollections.observableArrayList();
-        thresholdTextFieldList.addAll(thresholdOK, thresholdAdvisory, thresholdCaution, thresholdWarning, thresholdFailed);
+        thresholdTextFieldList.addAll(thresholdAdvisory, thresholdCaution, thresholdWarning, thresholdFailed);
         try {
             if (assetType.getValueAdvisory() != null && !assetType.getValueAdvisory().equalsIgnoreCase("null"))
                 thresholdAdvisory.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueAdvisory())));
