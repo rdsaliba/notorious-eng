@@ -50,6 +50,8 @@ public class AssetTypeInfoController implements Initializable {
     int trainSize = 0;
     int testSize = 0;
     @FXML
+    private Text title;
+    @FXML
     private Tab modelTab;
     @FXML
     private FlowPane modelsThumbPane;
@@ -63,8 +65,6 @@ public class AssetTypeInfoController implements Initializable {
     private TextField assetTypeName;
     @FXML
     private TextArea assetTypeDesc;
-    @FXML
-    private TextField thresholdOK;
     @FXML
     private TextField thresholdAdvisory;
     @FXML
@@ -123,6 +123,7 @@ public class AssetTypeInfoController implements Initializable {
      * @author Najim, Paul
      */
     public void initData(AssetTypeList assetType) {
+        title.setText("Edit " + assetType.getName());
         this.assetType = assetType;
         this.originalAssetType = new AssetTypeList(assetType);
         assetTypeName.setText(assetType.getAssetType().getName());
@@ -130,7 +131,6 @@ public class AssetTypeInfoController implements Initializable {
         associatedModelID = modelDAO.getModelIDAssociatedWithAssetType(assetType.getId());
         associatedModelLabel.setText(modelDAO.getModelNameAssociatedWithAssetType(assetType.getId()));
         try {
-            thresholdOK.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueOk())));
             thresholdAdvisory.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueAdvisory())));
             thresholdCaution.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueCaution())));
             thresholdWarning.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueWarning())));
@@ -181,12 +181,6 @@ public class AssetTypeInfoController implements Initializable {
             if (handleTextChange(newText, originalAssetType.getDescription()))
                 assetType.getAssetType().setDescription(newText);
         });
-
-        thresholdOK.textProperty().addListener((obs, oldText, newText) -> {
-            if (handleTextChange(newText, originalAssetType.getValueOk()))
-                assetType.setValueOk(newText);
-        });
-        thresholdOK.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
 
         thresholdAdvisory.textProperty().addListener((obs, oldText, newText) -> {
             if (handleTextChange(newText, originalAssetType.getValueAdvisory()))
