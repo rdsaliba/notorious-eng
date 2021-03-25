@@ -176,18 +176,33 @@ public class AssetsController implements Initializable {
                 switch (newValue) {
                     case SORT_DEFAULT:
                         FXCollections.sort(assets, Comparator.comparingInt(Item::getId));
+                        if (!search.getText().trim().isEmpty()) {
+                            FXCollections.sort(searchedAssets, Comparator.comparingInt(Item::getId));
+                        }
                         break;
                     case SORT_RUL_ASC:
                         FXCollections.sort(assets, Comparator.comparing(asset -> Double.valueOf(asset.getRul().getValue())));
+                        if (!search.getText().trim().isEmpty()) {
+                            FXCollections.sort(searchedAssets, Comparator.comparing(asset -> Double.valueOf(asset.getRul().getValue())));
+                        }
                         break;
                     case SORT_RUL_DESC:
                         FXCollections.sort(assets, (asset, t1) -> Double.valueOf(t1.getRul().getValue()).compareTo(Double.valueOf(asset.getRul().getValue())));
+                        if (!search.getText().trim().isEmpty()) {
+                            FXCollections.sort(searchedAssets, (asset, t1) -> Double.valueOf(t1.getRul().getValue()).compareTo(Double.valueOf(asset.getRul().getValue())));
+                        }
                         break;
                     case SORT_CRITICAL_ASC:
                         FXCollections.sort(assets, Comparator.comparingInt(Asset::mapCriticality));
+                        if (!search.getText().trim().isEmpty()) {
+                            FXCollections.sort(searchedAssets, Comparator.comparingInt(Asset::mapCriticality));
+                        }
                         break;
                     case SORT_CRITICAL_DESC:
                         FXCollections.sort(assets, (asset, t1) -> Integer.compare(t1.mapCriticality(), asset.mapCriticality()));
+                        if (!search.getText().trim().isEmpty()) {
+                            FXCollections.sort(searchedAssets, (asset, t1) -> Integer.compare(t1.mapCriticality(), asset.mapCriticality()));
+                        }
                         break;
                     default:
                         break;
