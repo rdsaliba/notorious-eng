@@ -1,17 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.net.URL?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="834.0"
-            prefWidth="1194.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import java.net.URL?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            prefHeight="834.0" prefWidth="1194.0" xmlns="http://javafx.com/javafx/11.0.1"
             fx:controller="controllers.AddAssetTypeController">
     <fx:include source="Navigation.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0"/>
     <AnchorPane layoutX="75.0" prefHeight="712.0" prefWidth="951.0" style="-fx-background-color: #F8F8F8;"
@@ -38,7 +34,8 @@
                 </Text>
             </children>
         </AnchorPane>
-        <AnchorPane layoutX="26.0" layoutY="111.0" prefHeight="615.0" prefWidth="1083.0" styleClass="panel"
+        <AnchorPane fx:id="addAssetTypeInformationAnchorPane" layoutX="26.0" layoutY="111.0" prefHeight="615.0"
+                    prefWidth="1083.0" styleClass="panel"
                     AnchorPane.bottomAnchor="108.0" AnchorPane.leftAnchor="26.0" AnchorPane.rightAnchor="26.0"
                     AnchorPane.topAnchor="111.0">
             <AnchorPane prefHeight="49.0" prefWidth="1083.0" styleClass="panelTitleBar" AnchorPane.leftAnchor="0.0"
@@ -67,23 +64,20 @@
             </Text>
             <TextArea fx:id="assetTypeDescription" layoutX="233.0" layoutY="119.0" prefHeight="105.0"
                       prefWidth="350.0"/>
-            <AnchorPane fx:id="inputError" layoutX="654.0" layoutY="317.0" prefHeight="318.0" prefWidth="295.0"
-                        stylesheets="@css/style.css" AnchorPane.leftAnchor="654.0">
-            </AnchorPane>
             <Text layoutX="102.0" layoutY="261.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="formLabel"
                   text="Threshold: OK">
                 <font>
                     <Font name="Segoe UI Bold" size="14.0"/>
                 </font>
             </Text>
-            <TextField fx:id="thresholdOKValue" layoutX="232.0" layoutY="236.0" prefHeight="40.0" prefWidth="350.0"/>
+            <TextField fx:id="thresholdOK" layoutX="232.0" layoutY="236.0" prefHeight="40.0" prefWidth="350.0"/>
             <Text layoutX="62.0" layoutY="313.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="formLabel"
                   text="Threshold: Advisory">
                 <font>
                     <Font name="Segoe UI Bold" size="14.0"/>
                 </font>
             </Text>
-            <TextField fx:id="thresholdAdvisoryValue" layoutX="232.0" layoutY="288.0" prefHeight="40.0"
+            <TextField fx:id="thresholdAdvisory" layoutX="232.0" layoutY="288.0" prefHeight="40.0"
                        prefWidth="350.0"/>
             <Text layoutX="71.0" layoutY="365.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="formLabel"
                   text="Threshold: Caution">
@@ -91,7 +85,7 @@
                     <Font name="Segoe UI Bold" size="14.0"/>
                 </font>
             </Text>
-            <TextField fx:id="thresholdCautionValue" layoutX="233.0" layoutY="340.0" prefHeight="40.0" prefWidth="350.0"
+            <TextField fx:id="thresholdCaution" layoutX="233.0" layoutY="340.0" prefHeight="40.0" prefWidth="350.0"
                        AnchorPane.leftAnchor="233.0"/>
             <Text layoutX="63.0" layoutY="420.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="formLabel"
                   text="Threshold: Warning">
@@ -99,7 +93,7 @@
                     <Font name="Segoe UI Bold" size="14.0"/>
                 </font>
             </Text>
-            <TextField fx:id="thresholdWarningValue" layoutX="232.0" layoutY="395.0" prefHeight="40.0"
+            <TextField fx:id="thresholdWarning" layoutX="232.0" layoutY="395.0" prefHeight="40.0"
                        prefWidth="350.0"/>
             <Text layoutX="81.0" layoutY="479.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="formLabel"
                   text="Threshold: Failed">
@@ -107,7 +101,7 @@
                     <Font name="Segoe UI Bold" size="14.0"/>
                 </font>
             </Text>
-            <TextField fx:id="thresholdFailedValue" layoutX="232.0" layoutY="454.0" prefHeight="40.0"
+            <TextField fx:id="thresholdFailed" layoutX="232.0" layoutY="454.0" prefHeight="40.0"
                        prefWidth="350.0"/>
         </AnchorPane>
         <AnchorPane layoutY="753.0" prefHeight="80.0" prefWidth="1135.0" styleClass="footerBar"

@@ -43,10 +43,7 @@ import java.util.ResourceBundle;
 public class AssetTypeInfoController implements Initializable {
     private static final String RMSE = "RMSE";
     static Logger logger = LoggerFactory.getLogger(AssetTypeInfoController.class);
-    private final Text[] errorMessages = new Text[7];
-    private final boolean[] validInput = new boolean[7];
     private final ModelPanes modelPanes = new ModelPanes();
-    boolean validForm = true;
     int trainSize = 0;
     int testSize = 0;
     @FXML
@@ -62,7 +59,7 @@ public class AssetTypeInfoController implements Initializable {
     @FXML
     private TextField assetTypeName;
     @FXML
-    private TextArea assetTypeDesc;
+    private TextArea assetTypeDescription;
     @FXML
     private TextField thresholdOK;
     @FXML
@@ -74,7 +71,7 @@ public class AssetTypeInfoController implements Initializable {
     @FXML
     private TextField thresholdFailed;
     @FXML
-    private AnchorPane inputError;
+    private AnchorPane assetTypeInformationAnchorPane;
     @FXML
     private Slider trainSlider;
     @FXML
@@ -125,7 +122,7 @@ public class AssetTypeInfoController implements Initializable {
         this.assetType = assetType;
         this.originalAssetType = new AssetTypeList(assetType);
         assetTypeName.setText(assetType.getAssetType().getName());
-        assetTypeDesc.setText(assetType.getAssetType().getDescription());
+        assetTypeDescription.setText(assetType.getAssetType().getDescription());
         associatedModelLabel.setText(modelDAO.getModelNameAssociatedWithAssetType(assetType.getId()));
 
         // Initializing Data for the threshold text fields
@@ -167,7 +164,7 @@ public class AssetTypeInfoController implements Initializable {
 
         infoSaveBtn.setDisable(true);
         infoSaveBtn.setOnMouseClicked(mouseEvent -> {
-            if (formInputValidation()) {
+            if (FormInputValidation.assetTypeFormInputValidation(assetTypeInformationAnchorPane, assetTypeName, assetTypeDescription, thresholdAdvisory, thresholdCaution, thresholdWarning, thresholdFailed)) {
                 assetTypeDAO.updateAssetType(assetType.toAssetType());
                 uiUtilities.changeScene(TextConstants.ASSET_TYPE_LIST_SCENE, infoSaveBtn.getScene());
             }
@@ -188,7 +185,7 @@ public class AssetTypeInfoController implements Initializable {
             if (handleTextChange(newText, originalAssetType.getName()))
                 assetType.getAssetType().setName(newText);
         });
-        assetTypeDesc.textProperty().addListener((obs, oldText, newText) -> {
+        assetTypeDescription.textProperty().addListener((obs, oldText, newText) -> {
             if (handleTextChange(newText, originalAssetType.getDescription()))
                 assetType.getAssetType().setDescription(newText);
         });
@@ -197,31 +194,31 @@ public class AssetTypeInfoController implements Initializable {
             if (handleTextChange(newText, originalAssetType.getValueOk()))
                 assetType.setValueOk(newText);
         });
-        thresholdOK.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
+        thresholdOK.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(TextConstants.ThresholdValueFormat, c)));
 
         thresholdAdvisory.textProperty().addListener((obs, oldText, newText) -> {
             if (handleTextChange(newText, originalAssetType.getValueAdvisory()))
                 assetType.setValueAdvisory(newText);
         });
-        thresholdAdvisory.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
+        thresholdAdvisory.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(TextConstants.ThresholdValueFormat, c)));
 
         thresholdCaution.textProperty().addListener((obs, oldText, newText) -> {
             if (handleTextChange(newText, originalAssetType.getValueCaution()))
                 assetType.setValueCaution(newText);
         });
-        thresholdCaution.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
+        thresholdCaution.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(TextConstants.ThresholdValueFormat, c)));
 
         thresholdWarning.textProperty().addListener((obs, oldText, newText) -> {
             if (handleTextChange(newText, originalAssetType.getValueWarning()))
                 assetType.setValueWarning(newText);
         });
-        thresholdWarning.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
+        thresholdWarning.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(TextConstants.ThresholdValueFormat, c)));
 
         thresholdFailed.textProperty().addListener((obs, oldText, newText) -> {
             if (handleTextChange(newText, originalAssetType.getValueFailed()))
                 assetType.setValueFailed(newText);
         });
-        thresholdFailed.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
+        thresholdFailed.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(TextConstants.ThresholdValueFormat, c)));
     }
 
     /**
@@ -368,121 +365,6 @@ public class AssetTypeInfoController implements Initializable {
         } else {
             infoSaveBtn.setDisable(false);
             return true;
-        }
-    }
-
-    /**
-     * Displays an error for a field when the validation criteria are not respected.
-     *
-     * @author Najim
-     */
-    public boolean formInputValidation() {
-        String assetTypeNameValue = assetTypeName.getText();
-        String assetTypeDescValue = assetTypeDesc.getText();
-        double horizontalPosition = 0;
-
-        assetTypeNameValidation(assetTypeNameValue, horizontalPosition);
-
-        if (assetTypeDescValue.length() > 300) {
-            validForm = false;
-            validInput[1] = false;
-            UIUtilities.createInputError(inputError, errorMessages, assetTypeDesc, TextConstants.MAX_300_CHARACTERS_ERROR, 85.0, horizontalPosition, 1);
-        } else {
-            validInput[1] = true;
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, assetTypeDesc, 1);
-        }
-
-        if (UIUtilities.compareThresholds(thresholdAdvisory, thresholdCaution)) {
-            validInput[3] = true;
-            validInput[4] = true;
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdAdvisory, 3);
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdCaution, 4);
-        } else {
-            validForm = false;
-            validInput[3] = false;
-            validInput[4] = false;
-            UIUtilities.createInputError(inputError, errorMessages, thresholdAdvisory, TextConstants.ADVISORY_CAUTION, 178.0, horizontalPosition, 3);
-            UIUtilities.createInputError(inputError, errorMessages, thresholdCaution, "", 0, 0, 4);
-        }
-
-        if (UIUtilities.compareThresholds(thresholdAdvisory, thresholdWarning)) {
-            validInput[3] = true;
-            validInput[5] = true;
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdAdvisory, 3);
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdWarning, 5);
-        } else {
-            validForm = false;
-            validInput[3] = false;
-            validInput[5] = false;
-            UIUtilities.createInputError(inputError, errorMessages, thresholdAdvisory, TextConstants.ADVISORY_WARNING, 178.0, 0, 3);
-            UIUtilities.createInputError(inputError, errorMessages, thresholdWarning, "", 0, 0, 5);
-        }
-
-        if (UIUtilities.compareThresholds(thresholdCaution, thresholdWarning)) {
-            validInput[4] = true;
-            validInput[5] = true;
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdCaution, 4);
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdWarning, 5);
-        } else {
-            validForm = false;
-            validInput[4] = false;
-            validInput[5] = false;
-            UIUtilities.createInputError(inputError, errorMessages, thresholdCaution, TextConstants.CAUTION_WARNING, 218.0, horizontalPosition, 4);
-            UIUtilities.createInputError(inputError, errorMessages, thresholdWarning, "", 0, 0, 5);
-        }
-
-        if (UIUtilities.compareThresholds(thresholdAdvisory, thresholdFailed)) {
-            validInput[3] = true;
-            validInput[6] = true;
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdAdvisory, 3);
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdFailed, 6);
-        } else {
-            validForm = false;
-            validInput[3] = false;
-            validInput[6] = false;
-            UIUtilities.createInputError(inputError, errorMessages, thresholdAdvisory, TextConstants.ADVISORY_FAILED, 178.0, horizontalPosition, 3);
-            UIUtilities.createInputError(inputError, errorMessages, thresholdFailed, "", 0, 0, 6);
-        }
-        if (UIUtilities.compareThresholds(thresholdCaution, thresholdFailed)) {
-            validInput[4] = true;
-            validInput[6] = true;
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdCaution, 4);
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdFailed, 6);
-        } else {
-            validForm = false;
-            validInput[4] = false;
-            validInput[6] = false;
-            UIUtilities.createInputError(inputError, errorMessages, thresholdCaution, TextConstants.CAUTION_FAILED, 218.0, horizontalPosition, 4);
-            UIUtilities.createInputError(inputError, errorMessages, thresholdFailed, "", 0, 0, 6);
-        }
-        if (UIUtilities.compareThresholds(thresholdWarning, thresholdFailed)) {
-            validInput[5] = true;
-            validInput[6] = true;
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdWarning, 5);
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdFailed, 6);
-        } else {
-            validForm = false;
-            validInput[5] = false;
-            validInput[6] = false;
-            UIUtilities.createInputError(inputError, errorMessages, thresholdWarning, TextConstants.WARNING_FAILED, 258.0, horizontalPosition, 5);
-            UIUtilities.createInputError(inputError, errorMessages, thresholdFailed, "", 0, 0, 6);
-        }
-        return validForm;
-    }
-
-    private void assetTypeNameValidation(String assetTypeNameValue, double horizontalPosition) {
-        validForm = true;
-        if (assetTypeNameValue.trim().isEmpty()) {
-            validForm = false;
-            validInput[0] = false;
-            UIUtilities.createInputError(inputError, errorMessages, assetTypeName, TextConstants.EMPTY_FIELD_ERROR, 28.0, horizontalPosition, 0);
-        } else if (assetTypeNameValue.length() > 50) {
-            validForm = false;
-            validInput[0] = false;
-            UIUtilities.createInputError(inputError, errorMessages, assetTypeName, TextConstants.MAX_50_CHARACTERS_ERROR, 28.0, horizontalPosition, 0);
-        } else {
-            validInput[0] = true;
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, assetTypeName, 0);
         }
     }
 

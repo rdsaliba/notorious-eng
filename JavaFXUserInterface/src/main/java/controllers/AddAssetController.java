@@ -23,6 +23,7 @@ import javafx.util.StringConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utilities.CustomDialog;
+import utilities.FormInputValidation;
 import utilities.TextConstants;
 import utilities.UIUtilities;
 
@@ -32,7 +33,7 @@ import java.util.ResourceBundle;
 public class AddAssetController implements Initializable {
 
     private static final String AND_OR = " and/or \n";
-    private final Text[] errorMessages = new Text[7];
+    private final Text[] inputValidationMessages = new Text[7];
     private final boolean[] validInput = new boolean[7];
     Logger logger = LoggerFactory.getLogger(AddAssetController.class);
     boolean validForm = true;
@@ -198,10 +199,10 @@ public class AddAssetController implements Initializable {
         if (locationValue.length() > 20 || !locationValue.trim().matches(regexWordAndHyphen)) {
             validForm = false;
             validInput[6] = false;
-            UIUtilities.createInputError(inputError, errorMessages, locationInput, TextConstants.MAX_20_CHARACTERS_ERROR + AND_OR + TextConstants.WORD_HYPHEN_ERROR, 533.0, horizontalPosition, 6);
+            FormInputValidation.createInputError(inputError, inputValidationMessages, locationInput, TextConstants.MAX_20_CHARACTERS_ERROR + AND_OR + TextConstants.WORD_HYPHEN_ERROR, 533.0, horizontalPosition, 6);
         } else {
             validInput[6] = true;
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, locationInput, 6);
+            FormInputValidation.removeInputError(inputError, inputValidationMessages, locationInput, 6);
         }
     }
 
@@ -209,10 +210,10 @@ public class AddAssetController implements Initializable {
         if (siteValue.length() > 20 || !siteValue.trim().matches(regexWordAndHyphen)) {
             validForm = false;
             validInput[5] = false;
-            UIUtilities.createInputError(inputError, errorMessages, siteInput, TextConstants.MAX_20_CHARACTERS_ERROR + AND_OR + TextConstants.WORD_HYPHEN_ERROR, 482.0, horizontalPosition, 5);
+            FormInputValidation.createInputError(inputError, inputValidationMessages, siteInput, TextConstants.MAX_20_CHARACTERS_ERROR + AND_OR + TextConstants.WORD_HYPHEN_ERROR, 482.0, horizontalPosition, 5);
         } else {
             validInput[5] = true;
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, siteInput, 5);
+            FormInputValidation.removeInputError(inputError, inputValidationMessages, siteInput, 5);
         }
     }
 
@@ -220,10 +221,10 @@ public class AddAssetController implements Initializable {
         if (categoryValue.length() > 20 || !categoryValue.trim().matches(regexLettersAndHyphen)) {
             validForm = false;
             validInput[4] = false;
-            UIUtilities.createInputError(inputError, errorMessages, categoryInput, TextConstants.MAX_20_CHARACTERS_ERROR + AND_OR + TextConstants.LETTER_NUMBER_ERROR, 384.0, horizontalPosition, 4);
+            FormInputValidation.createInputError(inputError, inputValidationMessages, categoryInput, TextConstants.MAX_20_CHARACTERS_ERROR + AND_OR + TextConstants.LETTER_NUMBER_ERROR, 384.0, horizontalPosition, 4);
         } else {
             validInput[4] = true;
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, categoryInput, 4);
+            FormInputValidation.removeInputError(inputError, inputValidationMessages, categoryInput, 4);
         }
     }
 
@@ -231,10 +232,10 @@ public class AddAssetController implements Initializable {
         if (manufacturerValue.length() > 20 || !manufacturerValue.trim().matches(regexWordAndHyphen)) {
             validForm = false;
             validInput[3] = false;
-            UIUtilities.createInputError(inputError, errorMessages, manufacturerInput, TextConstants.MAX_20_CHARACTERS_ERROR + AND_OR + TextConstants.WORD_HYPHEN_ERROR, 331.0, horizontalPosition, 3);
+            FormInputValidation.createInputError(inputError, inputValidationMessages, manufacturerInput, TextConstants.MAX_20_CHARACTERS_ERROR + AND_OR + TextConstants.WORD_HYPHEN_ERROR, 331.0, horizontalPosition, 3);
         } else {
             validInput[3] = true;
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, manufacturerInput, 3);
+            FormInputValidation.removeInputError(inputError, inputValidationMessages, manufacturerInput, 3);
         }
     }
 
@@ -242,10 +243,10 @@ public class AddAssetController implements Initializable {
         if (serialNumberValue.trim().isEmpty() || serialNumberValue.length() > 20 || !serialNumberValue.trim().matches(regexWordAndHyphen)) {
             validForm = false;
             validInput[2] = false;
-            UIUtilities.createInputError(inputError, errorMessages, serialNumberInput, TextConstants.EMPTY_FIELD_ERROR + AND_OR + TextConstants.MAX_20_CHARACTERS_ERROR + AND_OR + TextConstants.WORD_HYPHEN_ERROR, 276.5, horizontalPosition, 2);
+            FormInputValidation.createInputError(inputError, inputValidationMessages, serialNumberInput, TextConstants.EMPTY_FIELD_ERROR + AND_OR + TextConstants.MAX_20_CHARACTERS_ERROR + AND_OR + TextConstants.WORD_HYPHEN_ERROR, 276.5, horizontalPosition, 2);
         } else {
             validInput[2] = true;
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, serialNumberInput, 2);
+            FormInputValidation.removeInputError(inputError, inputValidationMessages, serialNumberInput, 2);
         }
     }
 
@@ -253,10 +254,10 @@ public class AddAssetController implements Initializable {
         if (assetDescriptionValue.length() > 300) {
             validForm = false;
             validInput[1] = false;
-            UIUtilities.createInputError(inputError, errorMessages, assetDescriptionTextArea, TextConstants.MAX_300_CHARACTERS_ERROR, 210.0, horizontalPosition, 1);
+            FormInputValidation.createInputError(inputError, inputValidationMessages, assetDescriptionTextArea, TextConstants.MAX_300_CHARACTERS_ERROR, 210.0, horizontalPosition, 1);
         } else {
             validInput[1] = true;
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, assetDescriptionTextArea, 1);
+            FormInputValidation.removeInputError(inputError, inputValidationMessages, assetDescriptionTextArea, 1);
         }
     }
 
@@ -264,15 +265,15 @@ public class AddAssetController implements Initializable {
         if (assetNameValue.trim().isEmpty()) {
             validForm = false;
             validInput[0] = false;
-            UIUtilities.createInputError(inputError, errorMessages, assetNameInput, TextConstants.EMPTY_FIELD_ERROR, 66.0, horizontalPosition, 0);
+            FormInputValidation.createInputError(inputError, inputValidationMessages, assetNameInput, TextConstants.EMPTY_FIELD_ERROR, 66.0, horizontalPosition, 0);
         } else if (assetNameValue.length() > 50) {
             validForm = false;
             validInput[0] = false;
-            UIUtilities.createInputError(inputError, errorMessages, assetNameInput, TextConstants.MAX_50_CHARACTERS_ERROR, 66.0, horizontalPosition, 0);
+            FormInputValidation.createInputError(inputError, inputValidationMessages, assetNameInput, TextConstants.MAX_50_CHARACTERS_ERROR, 66.0, horizontalPosition, 0);
         } else {
             validForm = true;
             validInput[0] = true;
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, assetNameInput, 0);
+            FormInputValidation.removeInputError(inputError, inputValidationMessages, assetNameInput, 0);
         }
     }
 
