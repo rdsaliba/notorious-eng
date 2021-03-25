@@ -39,8 +39,6 @@ public class AddAssetTypeController implements Initializable {
     @FXML
     private TextArea assetTypeDescription;
     @FXML
-    private TextField thresholdOKValue;
-    @FXML
     private TextField thresholdAdvisoryValue;
     @FXML
     private TextField thresholdCautionValue;
@@ -86,8 +84,6 @@ public class AddAssetTypeController implements Initializable {
             }
         });
 
-
-        thresholdOKValue.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
         thresholdAdvisoryValue.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
         thresholdCautionValue.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
         thresholdWarningValue.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
@@ -108,8 +104,6 @@ public class AddAssetTypeController implements Initializable {
             } else {
                 assetType.setDescription(null);
             }
-            Double okValue = thresholdOKValue.getText().isEmpty() ? null : Double.parseDouble(thresholdOKValue.getText());
-            assetTypeParameters.add(new AssetTypeParameter(TextConstants.OK_THRESHOLD, okValue));
 
             Double advisoryValue = thresholdAdvisoryValue.getText().isEmpty() ? null : Double.parseDouble(thresholdAdvisoryValue.getText());
             assetTypeParameters.add(new AssetTypeParameter(TextConstants.ADVISORY_THRESHOLD, advisoryValue));
