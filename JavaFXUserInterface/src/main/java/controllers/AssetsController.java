@@ -258,7 +258,7 @@ public class AssetsController implements Initializable {
      * @return assetsToDisplay
      * @author Najim
      */
-    private ObservableList<Asset> setAssetListToDisplay() {
+    public ObservableList<Asset> setAssetListToDisplay() {
         ObservableList<Asset> assetsToDisplay;
         if (!searchedAssets.isEmpty()) {
             assetsToDisplay = FXCollections.observableArrayList(searchedAssets);
