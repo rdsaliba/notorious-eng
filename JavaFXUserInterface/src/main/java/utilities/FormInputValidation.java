@@ -12,12 +12,16 @@ import java.text.DecimalFormat;
 import java.text.ParsePosition;
 import java.util.ArrayList;
 
+import static local.DAO.logger;
 import static utilities.TextConstants.*;
 
 public class FormInputValidation {
     private final static int inputValidationVGap = 10;
+    private final static int inputValidationHGap = 10;
+    private final static Text[] inputValidationMessages = new Text[7];
     private static final String ERROR_MESSAGE = "error-message";
     private static final String INPUT_ERROR = "input-error";
+    private static boolean assetValidForm = true;
 
     /**
      * This function validates an input of a change on a text field to only allow the change if it fits the DecimalFormat
@@ -43,24 +47,19 @@ public class FormInputValidation {
      * @param errorMessages             An array keeping track of error messages
      * @param field                     The field being validated
      * @param msg                       The error message
-     * @param verticalPosition          The vertical position of the error message
-     * @param horizontalPosition        The horizontal position of the message
      * @param i                         The field number/position (starting from 0)
      * @author Najim
      */
-    public static void createInputError(AnchorPane inputValidationAnchorPane, Text[] errorMessages, TextInputControl field, String msg, double verticalPosition, double horizontalPosition, int i) {
-        if (errorMessages[i] != null && errorMessages[i].getText().equals("")) {
-            errorMessages[i].getStyleClass().remove(ERROR_MESSAGE);
-            field.getStyleClass().remove(INPUT_ERROR);
+    public static void createInputError(AnchorPane inputValidationAnchorPane, Text[] errorMessages, TextInputControl field, String msg, int i) {
+        if (errorMessages[i] == null) {
+            errorMessages[i] = new Text(msg);
+            errorMessages[i].setLayoutY(field.getLayoutY() + inputValidationVGap);
+            errorMessages[i].setLayoutX(field.getLayoutX() + field.getWidth() + inputValidationHGap);
+            errorMessages[i].getStyleClass().add(ERROR_MESSAGE);
+
+            inputValidationAnchorPane.getChildren().add(errorMessages[i]);
+            field.getStyleClass().add(INPUT_ERROR);
         }
-
-        errorMessages[i] = new Text(msg);
-        errorMessages[i].setLayoutY(verticalPosition);
-        errorMessages[i].setLayoutX(horizontalPosition);
-        errorMessages[i].getStyleClass().add(ERROR_MESSAGE);
-
-        inputValidationAnchorPane.getChildren().add(errorMessages[i]);
-        field.getStyleClass().add(INPUT_ERROR);
     }
 
     /**
@@ -75,101 +74,194 @@ public class FormInputValidation {
     public static void removeInputError(AnchorPane inputValidationAnchorPane, Text[] errorMessages, TextInputControl field, int i) {
         if (errorMessages[i] != null) {
             field.getStyleClass().remove(INPUT_ERROR);
+            errorMessages[i].getStyleClass().remove(ERROR_MESSAGE);
             inputValidationAnchorPane.getChildren().remove(errorMessages[i]);
             errorMessages[i] = null;
         }
     }
 
     /**
-     * Displays an error for a field when the validation criteria are not respected.
+     * This function validates the user input for asset Type input forms. Whenever an input is invalid,
+     * it creates and displays an error message for the specific invalid input field.
      *
+     * @param textInputControlAnchorPane The Anchor pane of the input form
+     * @param assetTypeName              TextInputControl for the asset Type name
+     * @param assetTypeDescription       TextInputControl for the asset Type description
+     * @param thresholdAdvisory          TextInputControl for the advisory threshold
+     * @param thresholdCaution           TextInputControl for the caution threshold
+     * @param thresholdWarning           TextInputControl for the warning threshold
+     * @param thresholdFailed            TextInputControl for the failed threshold
      * @author Najim, Jeremie
      */
-    public static boolean assetTypeFormInputValidation(AnchorPane assetTypeInformationAnchorPane, TextField assetTypeName, TextArea assetTypeDesc, TextField thresholdAdvisory, TextField thresholdCaution, TextField thresholdWarning, TextField thresholdFailed) {
+    public static boolean assetTypeFormInputValidation(AnchorPane textInputControlAnchorPane, TextField assetTypeName, TextArea assetTypeDescription, TextField thresholdAdvisory, TextField thresholdCaution, TextField thresholdWarning, TextField thresholdFailed) {
         boolean validForm = true;
-        Text[] inputValidationMessages = new Text[7];
         String assetTypeNameValue = assetTypeName.getText();
-        String assetTypeDescValue = assetTypeDesc.getText();
+        String assetTypeDescValue = assetTypeDescription.getText();
         ArrayList<TextInputControl> textInputControls = new ArrayList<>();
 
-        // Creating an ArrayList of the TextInputControl components included in the form
-        for (Node node : assetTypeInformationAnchorPane.getChildren()) {
-            if (node instanceof TextInputControl) {
-                textInputControls.add((TextInputControl) node);
-            }
-        }
-        double inputValidationXLayout = textInputControls.get(0).getWidth() + textInputControls.get(0).getLayoutX();
-
-        // Clearing all previous existing errors if any
-        removeInputError(assetTypeInformationAnchorPane, inputValidationMessages, assetTypeDesc, textInputControls.indexOf(assetTypeName));
-        removeInputError(assetTypeInformationAnchorPane, inputValidationMessages, assetTypeDesc, textInputControls.indexOf(assetTypeDesc));
-        removeInputError(assetTypeInformationAnchorPane, inputValidationMessages, thresholdAdvisory, textInputControls.indexOf(thresholdAdvisory));
-        removeInputError(assetTypeInformationAnchorPane, inputValidationMessages, thresholdCaution, textInputControls.indexOf(thresholdCaution));
-        removeInputError(assetTypeInformationAnchorPane, inputValidationMessages, thresholdWarning, textInputControls.indexOf(thresholdWarning));
-        removeInputError(assetTypeInformationAnchorPane, inputValidationMessages, thresholdFailed, textInputControls.indexOf(thresholdFailed));
+        // Initializing the form input validation
+        initializeFormInputValidation(textInputControlAnchorPane, textInputControls);
 
         // Asset type name input validation
         if (assetTypeNameValue.trim().isEmpty()) {
             validForm = false;
-            createInputError(assetTypeInformationAnchorPane, inputValidationMessages, assetTypeName, EMPTY_FIELD_ERROR, assetTypeName.getLayoutY() + inputValidationVGap, inputValidationXLayout, textInputControls.indexOf(assetTypeName));
+            createInputError(textInputControlAnchorPane, inputValidationMessages, assetTypeName, EMPTY_FIELD_ERROR, textInputControls.indexOf(assetTypeName));
         } else if (assetTypeNameValue.length() > 50) {
             validForm = false;
-            createInputError(assetTypeInformationAnchorPane, inputValidationMessages, assetTypeName, MAX_50_CHARACTERS_ERROR, assetTypeName.getLayoutY() + inputValidationVGap, inputValidationXLayout, textInputControls.indexOf(assetTypeName));
-        } else {
-            removeInputError(assetTypeInformationAnchorPane, inputValidationMessages, assetTypeName, textInputControls.indexOf(assetTypeName));
+            createInputError(textInputControlAnchorPane, inputValidationMessages, assetTypeName, MAX_50_CHARACTERS_ERROR, textInputControls.indexOf(assetTypeName));
         }
 
         // Asset type description input validation
         if (assetTypeDescValue.length() > 300) {
             validForm = false;
-            createInputError(assetTypeInformationAnchorPane, inputValidationMessages, assetTypeDesc, MAX_300_CHARACTERS_ERROR, assetTypeDesc.getLayoutY() + inputValidationVGap, inputValidationXLayout, textInputControls.indexOf(assetTypeDesc));
-        } else {
-            removeInputError(assetTypeInformationAnchorPane, inputValidationMessages, assetTypeDesc, textInputControls.indexOf(assetTypeDesc));
+            createInputError(textInputControlAnchorPane, inputValidationMessages, assetTypeDescription, MAX_300_CHARACTERS_ERROR, textInputControls.indexOf(assetTypeDescription));
         }
 
         // Advisory threshold input validation
         if (!compareThresholds(thresholdAdvisory, thresholdCaution)) {
             validForm = false;
-            createInputError(assetTypeInformationAnchorPane, inputValidationMessages, thresholdAdvisory, ADVISORY_CAUTION, thresholdAdvisory.getLayoutY() + inputValidationVGap, inputValidationXLayout, textInputControls.indexOf(thresholdAdvisory));
+            createInputError(textInputControlAnchorPane, inputValidationMessages, thresholdAdvisory, ADVISORY_CAUTION, textInputControls.indexOf(thresholdAdvisory));
         } else if (!compareThresholds(thresholdAdvisory, thresholdWarning)) {
             validForm = false;
-            createInputError(assetTypeInformationAnchorPane, inputValidationMessages, thresholdAdvisory, ADVISORY_WARNING, thresholdAdvisory.getLayoutY() + inputValidationVGap, inputValidationXLayout, textInputControls.indexOf(thresholdAdvisory));
+            createInputError(textInputControlAnchorPane, inputValidationMessages, thresholdAdvisory, ADVISORY_WARNING, textInputControls.indexOf(thresholdAdvisory));
         } else if (!compareThresholds(thresholdAdvisory, thresholdFailed)) {
             validForm = false;
-            createInputError(assetTypeInformationAnchorPane, inputValidationMessages, thresholdAdvisory, ADVISORY_FAILED, thresholdAdvisory.getLayoutY() + inputValidationVGap, inputValidationXLayout, textInputControls.indexOf(thresholdAdvisory));
-        } else {
-            removeInputError(assetTypeInformationAnchorPane, inputValidationMessages, thresholdAdvisory, textInputControls.indexOf(thresholdAdvisory));
-            removeInputError(assetTypeInformationAnchorPane, inputValidationMessages, thresholdCaution, textInputControls.indexOf(thresholdCaution));
-            removeInputError(assetTypeInformationAnchorPane, inputValidationMessages, thresholdWarning, textInputControls.indexOf(thresholdWarning));
-            removeInputError(assetTypeInformationAnchorPane, inputValidationMessages, thresholdFailed, textInputControls.indexOf(thresholdFailed));
+            createInputError(textInputControlAnchorPane, inputValidationMessages, thresholdAdvisory, ADVISORY_FAILED, textInputControls.indexOf(thresholdAdvisory));
         }
 
         // Caution Threshold input validation
         if (!compareThresholds(thresholdCaution, thresholdWarning)) {
             validForm = false;
-            createInputError(assetTypeInformationAnchorPane, inputValidationMessages, thresholdCaution, CAUTION_WARNING, thresholdCaution.getLayoutY() + inputValidationVGap, inputValidationXLayout, textInputControls.indexOf(thresholdCaution));
+            createInputError(textInputControlAnchorPane, inputValidationMessages, thresholdCaution, CAUTION_WARNING, textInputControls.indexOf(thresholdCaution));
         } else if (!compareThresholds(thresholdCaution, thresholdFailed)) {
             validForm = false;
-            createInputError(assetTypeInformationAnchorPane, inputValidationMessages, thresholdCaution, CAUTION_FAILED, thresholdCaution.getLayoutY() + inputValidationVGap, inputValidationXLayout, textInputControls.indexOf(thresholdCaution));
-        } else {
-            removeInputError(assetTypeInformationAnchorPane, inputValidationMessages, thresholdCaution, textInputControls.indexOf(thresholdCaution));
-            removeInputError(assetTypeInformationAnchorPane, inputValidationMessages, thresholdWarning, textInputControls.indexOf(thresholdWarning));
-            removeInputError(assetTypeInformationAnchorPane, inputValidationMessages, thresholdFailed, textInputControls.indexOf(thresholdFailed));
+            createInputError(textInputControlAnchorPane, inputValidationMessages, thresholdCaution, CAUTION_FAILED, textInputControls.indexOf(thresholdCaution));
         }
 
         // Warning Threshold input validation
         if (!compareThresholds(thresholdWarning, thresholdFailed)) {
             validForm = false;
-            createInputError(assetTypeInformationAnchorPane, inputValidationMessages, thresholdWarning, WARNING_FAILED, thresholdWarning.getLayoutY() + inputValidationVGap, inputValidationXLayout, textInputControls.indexOf(thresholdWarning));
-        } else {
-            removeInputError(assetTypeInformationAnchorPane, inputValidationMessages, thresholdWarning, textInputControls.indexOf(thresholdWarning));
-            removeInputError(assetTypeInformationAnchorPane, inputValidationMessages, thresholdFailed, textInputControls.indexOf(thresholdFailed));
+            createInputError(textInputControlAnchorPane, inputValidationMessages, thresholdWarning, WARNING_FAILED, textInputControls.indexOf(thresholdWarning));
         }
         return validForm;
     }
 
     /**
-     * Compares two thresholds and determines if the previous threshold is larger than the next.
+     * This function validates the user input for asset input forms. Whenever an input is invalid,
+     * it creates and displays an error message for the specific invalid input field.
+     *
+     * @param textInputControlAnchorPane The Anchor pane of the input form
+     * @param assetNameInput             TextInputControl for the asset name
+     * @param assetDescriptionInput      TextInputControl for the asset description
+     * @param serialNumberInput          TextInputControl for the asset serial number
+     * @param manufacturerInput          TextInputControl for the asset manufacturer
+     * @param categoryInput              TextInputControl for the asset category
+     * @param siteInput                  TextInputControl for the asset site
+     * @param locationInput              TextInputControl for the asset location
+     * @author Najim, Jeremie
+     */
+    public static boolean assetFormInputValidation(AnchorPane textInputControlAnchorPane, TextField assetNameInput, TextArea assetDescriptionInput, TextField serialNumberInput, TextField manufacturerInput, TextField categoryInput, TextField siteInput, TextField locationInput) {
+        String regexWordAndHyphen = "(?=\\S*[-])([a-zA-Z0-9-]*)|([a-zA-Z0-9]*)"; //Any word containing letters, numbers and hyphens
+        String regexLettersAndHyphen = "(?=\\S*[-])([a-zA-Z-]*)|([a-zA-Z]*)"; //Any word containing letters and hyphens
+        assetValidForm = true;
+        ArrayList<TextInputControl> textInputControls = new ArrayList<>();
+
+        // Initializing the form input validation
+        initializeFormInputValidation(textInputControlAnchorPane, textInputControls);
+
+        logger.info("Start - formInputValidation() -> The form is : {}", assetValidForm);
+
+        // Input validation on the different asset input fields
+        assetNameValidation(textInputControlAnchorPane, assetNameInput, textInputControls.indexOf(assetNameInput));
+        assetDescriptionValidation(textInputControlAnchorPane, assetDescriptionInput, textInputControls.indexOf(assetDescriptionInput));
+        serialNumberValidation(textInputControlAnchorPane, serialNumberInput, regexWordAndHyphen, textInputControls.indexOf(serialNumberInput));
+        manufacturerValidation(textInputControlAnchorPane, manufacturerInput, regexWordAndHyphen, textInputControls.indexOf(manufacturerInput));
+        categoryValidation(textInputControlAnchorPane, categoryInput, regexLettersAndHyphen, textInputControls.indexOf(categoryInput));
+        siteValidation(textInputControlAnchorPane, siteInput, regexWordAndHyphen, textInputControls.indexOf(siteInput));
+        locationValidation(textInputControlAnchorPane, locationInput, regexWordAndHyphen, textInputControls.indexOf(locationInput));
+
+        logger.info("End - formInputValidation() -> The form is : {}", assetValidForm);
+
+        return assetValidForm;
+    }
+
+    /**
+     * Initializes the form for input validation by setting up the list of TextInputControl components to validate input on as well as removing
+     * any previous states of input validation errors.
+     *
+     * @param textInputControlAnchorPane The Anchor pane of the input form
+     * @param textInputControls          The list of textInputControls (text fields, text areas, etc) that are contained in the input form
+     * @author Najim, Jeremie
+     */
+    private static void initializeFormInputValidation(AnchorPane textInputControlAnchorPane, ArrayList<TextInputControl> textInputControls) {
+        // Creating an ArrayList of the TextInputControl components included in the form
+        for (Node node : textInputControlAnchorPane.getChildren()) {
+            if (node instanceof TextInputControl) {
+                textInputControls.add((TextInputControl) node);
+            }
+        }
+
+        // Clearing all previous existing errors if any
+        for (int i = 0; i < inputValidationMessages.length; i++) {
+            removeInputError(textInputControlAnchorPane, inputValidationMessages, textInputControls.get(i), i);
+        }
+    }
+
+    private static void locationValidation(AnchorPane textInputControlAnchorPane, TextInputControl locationInput, String regexWordAndHyphen, int index) {
+        if (locationInput.getText().length() > 20 || !locationInput.getText().trim().matches(regexWordAndHyphen)) {
+            assetValidForm = false;
+            createInputError(textInputControlAnchorPane, FormInputValidation.inputValidationMessages, locationInput, MAX_20_CHARACTERS_ERROR + AND_OR + WORD_HYPHEN_ERROR, index);
+        }
+    }
+
+    private static void siteValidation(AnchorPane textInputControlAnchorPane, TextInputControl siteInput, String regexWordAndHyphen, int index) {
+        if (siteInput.getText().length() > 20 || !siteInput.getText().trim().matches(regexWordAndHyphen)) {
+            assetValidForm = false;
+            createInputError(textInputControlAnchorPane, FormInputValidation.inputValidationMessages, siteInput, MAX_20_CHARACTERS_ERROR + AND_OR + WORD_HYPHEN_ERROR, index);
+        }
+    }
+
+    private static void categoryValidation(AnchorPane textInputControlAnchorPane, TextInputControl categoryInput, String regexLettersAndHyphen, int index) {
+        if (categoryInput.getText().length() > 20 || !categoryInput.getText().trim().matches(regexLettersAndHyphen)) {
+            assetValidForm = false;
+            createInputError(textInputControlAnchorPane, FormInputValidation.inputValidationMessages, categoryInput, MAX_20_CHARACTERS_ERROR + AND_OR + LETTER_NUMBER_ERROR, index);
+        }
+    }
+
+    private static void manufacturerValidation(AnchorPane textInputControlAnchorPane, TextInputControl manufacturerInput, String regexWordAndHyphen, int index) {
+        if (manufacturerInput.getText().length() > 20 || !manufacturerInput.getText().trim().matches(regexWordAndHyphen)) {
+            assetValidForm = false;
+            createInputError(textInputControlAnchorPane, FormInputValidation.inputValidationMessages, manufacturerInput, MAX_20_CHARACTERS_ERROR + AND_OR + WORD_HYPHEN_ERROR, index);
+        }
+    }
+
+    private static void serialNumberValidation(AnchorPane textInputControlAnchorPane, TextInputControl serialNumberInput, String regexWordAndHyphen, int index) {
+        if (serialNumberInput.getText().trim().isEmpty() || serialNumberInput.getText().length() > 20 || !serialNumberInput.getText().trim().matches(regexWordAndHyphen)) {
+            assetValidForm = false;
+            createInputError(textInputControlAnchorPane, FormInputValidation.inputValidationMessages, serialNumberInput, EMPTY_FIELD_ERROR + AND_OR + MAX_20_CHARACTERS_ERROR + AND_OR + WORD_HYPHEN_ERROR, index);
+        }
+    }
+
+    private static void assetDescriptionValidation(AnchorPane textInputControlAnchorPane, TextInputControl assetDescriptionInput, int index) {
+        if (assetDescriptionInput.getText().length() > 300) {
+            assetValidForm = false;
+            createInputError(textInputControlAnchorPane, FormInputValidation.inputValidationMessages, assetDescriptionInput, MAX_300_CHARACTERS_ERROR, index);
+        }
+    }
+
+    private static void assetNameValidation(AnchorPane textInputControlAnchorPane, TextInputControl assetNameInput, int index) {
+        if (assetNameInput.getText().trim().isEmpty()) {
+            assetValidForm = false;
+            createInputError(textInputControlAnchorPane, FormInputValidation.inputValidationMessages, assetNameInput, EMPTY_FIELD_ERROR, index);
+        } else if (assetNameInput.getText().length() > 50) {
+            assetValidForm = false;
+            createInputError(textInputControlAnchorPane, FormInputValidation.inputValidationMessages, assetNameInput, MAX_50_CHARACTERS_ERROR, index);
+        }
+    }
+
+    /**
+     * Compares two thresholds and determines if the previous threshold is larger than the next. If the the previous threshold is larger than
+     * the next, the threshold difference is considered invalid and returns false.
      *
      * @param previousThreshold The Threshold preceding
      * @param nextThreshold     The Threshold succeeding

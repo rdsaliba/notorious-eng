@@ -15,20 +15,17 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.text.Text;
 import utilities.FormInputValidation;
-import utilities.TextConstants;
 import utilities.UIUtilities;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import static utilities.TextConstants.*;
+
 public class AddAssetTypeController implements Initializable {
 
-    private final Text[] inputValidationMessages = new Text[7];
-    private final boolean[] validInput = new boolean[7];
-    boolean validForm = true;
     @FXML
     private Button cancelBtn;
     @FXML
@@ -78,23 +75,21 @@ public class AddAssetTypeController implements Initializable {
      */
     public void attachEvents() {
         // Change scenes to Assets.fxml
-        backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(TextConstants.ASSET_TYPE_LIST_SCENE, backBtn.getScene()));
+        backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(ASSET_TYPE_LIST_SCENE, backBtn.getScene()));
         // Change scenes to Assets.fxml
-        cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(TextConstants.ASSET_TYPE_LIST_SCENE, cancelBtn.getScene()));
+        cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(ASSET_TYPE_LIST_SCENE, cancelBtn.getScene()));
         saveBtn.setOnMouseClicked(mouseEvent -> {
             if (FormInputValidation.assetTypeFormInputValidation(addAssetTypeInformationAnchorPane, assetTypeName, assetTypeDescription, thresholdAdvisory, thresholdCaution, thresholdWarning, thresholdFailed) && saveAssetType(assembleAssetType())) {
-                uiUtilities.changeScene(TextConstants.ASSET_TYPE_LIST_SCENE, saveBtn.getScene());
+                uiUtilities.changeScene(ASSET_TYPE_LIST_SCENE, saveBtn.getScene());
             }
         });
 
-
-        thresholdOK.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(TextConstants.ThresholdValueFormat, c)));
-        thresholdAdvisory.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(TextConstants.ThresholdValueFormat, c)));
-        thresholdCaution.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(TextConstants.ThresholdValueFormat, c)));
-        thresholdWarning.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(TextConstants.ThresholdValueFormat, c)));
-        thresholdFailed.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(TextConstants.ThresholdValueFormat, c)));
+        thresholdOK.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(ThresholdValueFormat, c)));
+        thresholdAdvisory.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(ThresholdValueFormat, c)));
+        thresholdCaution.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(ThresholdValueFormat, c)));
+        thresholdWarning.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(ThresholdValueFormat, c)));
+        thresholdFailed.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(ThresholdValueFormat, c)));
     }
-
 
     /**
      * Create an asset type object from the user's input
@@ -110,19 +105,19 @@ public class AddAssetTypeController implements Initializable {
                 assetType.setDescription(null);
             }
             Double okValue = thresholdOK.getText().isEmpty() ? null : Double.parseDouble(thresholdOK.getText());
-            assetTypeParameters.add(new AssetTypeParameter(TextConstants.OK_THRESHOLD, okValue));
+            assetTypeParameters.add(new AssetTypeParameter(OK_THRESHOLD, okValue));
 
             Double advisoryValue = thresholdAdvisory.getText().isEmpty() ? null : Double.parseDouble(thresholdAdvisory.getText());
-            assetTypeParameters.add(new AssetTypeParameter(TextConstants.ADVISORY_THRESHOLD, advisoryValue));
+            assetTypeParameters.add(new AssetTypeParameter(ADVISORY_THRESHOLD, advisoryValue));
 
             Double cautionValue = thresholdCaution.getText().isEmpty() ? null : Double.parseDouble(thresholdCaution.getText());
-            assetTypeParameters.add(new AssetTypeParameter(TextConstants.CAUTION_THRESHOLD, cautionValue));
+            assetTypeParameters.add(new AssetTypeParameter(CAUTION_THRESHOLD, cautionValue));
 
             Double warningValue = thresholdWarning.getText().isEmpty() ? null : Double.parseDouble(thresholdWarning.getText());
-            assetTypeParameters.add(new AssetTypeParameter(TextConstants.WARNING_THRESHOLD, warningValue));
+            assetTypeParameters.add(new AssetTypeParameter(WARNING_THRESHOLD, warningValue));
 
             Double failedValue = thresholdFailed.getText().isEmpty() ? null : Double.parseDouble(thresholdFailed.getText());
-            assetTypeParameters.add(new AssetTypeParameter(TextConstants.FAILED_THRESHOLD, failedValue));
+            assetTypeParameters.add(new AssetTypeParameter(FAILED_THRESHOLD, failedValue));
 
             assetType.setThresholdList(assetTypeParameters);
             return assetType;
