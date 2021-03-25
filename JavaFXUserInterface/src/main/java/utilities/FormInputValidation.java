@@ -16,9 +16,10 @@ import static local.DAO.logger;
 import static utilities.TextConstants.*;
 
 public class FormInputValidation {
-    private final static int inputValidationVGap = 10;
-    private final static int inputValidationHGap = 10;
-    private final static Text[] inputValidationMessages = new Text[7];
+    private final static int INPUT_VALIDATION_V_GAP = 10;
+    private final static int INPUT_VALIDATION_H_GAP = 10;
+    private final static int MAX_NB_TEXT_INPUT_CONTROL = 7;
+    private final static Text[] INPUT_VALIDATION_MESSAGES = new Text[MAX_NB_TEXT_INPUT_CONTROL];
     private static final String ERROR_MESSAGE = "error-message";
     private static final String INPUT_ERROR = "input-error";
     private static boolean assetValidForm = true;
@@ -53,8 +54,8 @@ public class FormInputValidation {
     public static void createInputError(AnchorPane inputValidationAnchorPane, Text[] errorMessages, TextInputControl field, String msg, int i) {
         if (errorMessages[i] == null) {
             errorMessages[i] = new Text(msg);
-            errorMessages[i].setLayoutY(field.getLayoutY() + inputValidationVGap);
-            errorMessages[i].setLayoutX(field.getLayoutX() + field.getWidth() + inputValidationHGap);
+            errorMessages[i].setLayoutY(field.getLayoutY() + INPUT_VALIDATION_V_GAP);
+            errorMessages[i].setLayoutX(field.getLayoutX() + field.getWidth() + INPUT_VALIDATION_H_GAP);
             errorMessages[i].getStyleClass().add(ERROR_MESSAGE);
 
             inputValidationAnchorPane.getChildren().add(errorMessages[i]);
@@ -105,43 +106,43 @@ public class FormInputValidation {
         // Asset type name input validation
         if (assetTypeNameValue.trim().isEmpty()) {
             validForm = false;
-            createInputError(textInputControlAnchorPane, inputValidationMessages, assetTypeName, EMPTY_FIELD_ERROR, textInputControls.indexOf(assetTypeName));
+            createInputError(textInputControlAnchorPane, INPUT_VALIDATION_MESSAGES, assetTypeName, EMPTY_FIELD_ERROR, textInputControls.indexOf(assetTypeName));
         } else if (assetTypeNameValue.length() > 50) {
             validForm = false;
-            createInputError(textInputControlAnchorPane, inputValidationMessages, assetTypeName, MAX_50_CHARACTERS_ERROR, textInputControls.indexOf(assetTypeName));
+            createInputError(textInputControlAnchorPane, INPUT_VALIDATION_MESSAGES, assetTypeName, MAX_50_CHARACTERS_ERROR, textInputControls.indexOf(assetTypeName));
         }
 
         // Asset type description input validation
         if (assetTypeDescValue.length() > 300) {
             validForm = false;
-            createInputError(textInputControlAnchorPane, inputValidationMessages, assetTypeDescription, MAX_300_CHARACTERS_ERROR, textInputControls.indexOf(assetTypeDescription));
+            createInputError(textInputControlAnchorPane, INPUT_VALIDATION_MESSAGES, assetTypeDescription, MAX_300_CHARACTERS_ERROR, textInputControls.indexOf(assetTypeDescription));
         }
 
         // Advisory threshold input validation
         if (!compareThresholds(thresholdAdvisory, thresholdCaution)) {
             validForm = false;
-            createInputError(textInputControlAnchorPane, inputValidationMessages, thresholdAdvisory, ADVISORY_CAUTION, textInputControls.indexOf(thresholdAdvisory));
+            createInputError(textInputControlAnchorPane, INPUT_VALIDATION_MESSAGES, thresholdAdvisory, ADVISORY_CAUTION, textInputControls.indexOf(thresholdAdvisory));
         } else if (!compareThresholds(thresholdAdvisory, thresholdWarning)) {
             validForm = false;
-            createInputError(textInputControlAnchorPane, inputValidationMessages, thresholdAdvisory, ADVISORY_WARNING, textInputControls.indexOf(thresholdAdvisory));
+            createInputError(textInputControlAnchorPane, INPUT_VALIDATION_MESSAGES, thresholdAdvisory, ADVISORY_WARNING, textInputControls.indexOf(thresholdAdvisory));
         } else if (!compareThresholds(thresholdAdvisory, thresholdFailed)) {
             validForm = false;
-            createInputError(textInputControlAnchorPane, inputValidationMessages, thresholdAdvisory, ADVISORY_FAILED, textInputControls.indexOf(thresholdAdvisory));
+            createInputError(textInputControlAnchorPane, INPUT_VALIDATION_MESSAGES, thresholdAdvisory, ADVISORY_FAILED, textInputControls.indexOf(thresholdAdvisory));
         }
 
         // Caution Threshold input validation
         if (!compareThresholds(thresholdCaution, thresholdWarning)) {
             validForm = false;
-            createInputError(textInputControlAnchorPane, inputValidationMessages, thresholdCaution, CAUTION_WARNING, textInputControls.indexOf(thresholdCaution));
+            createInputError(textInputControlAnchorPane, INPUT_VALIDATION_MESSAGES, thresholdCaution, CAUTION_WARNING, textInputControls.indexOf(thresholdCaution));
         } else if (!compareThresholds(thresholdCaution, thresholdFailed)) {
             validForm = false;
-            createInputError(textInputControlAnchorPane, inputValidationMessages, thresholdCaution, CAUTION_FAILED, textInputControls.indexOf(thresholdCaution));
+            createInputError(textInputControlAnchorPane, INPUT_VALIDATION_MESSAGES, thresholdCaution, CAUTION_FAILED, textInputControls.indexOf(thresholdCaution));
         }
 
         // Warning Threshold input validation
         if (!compareThresholds(thresholdWarning, thresholdFailed)) {
             validForm = false;
-            createInputError(textInputControlAnchorPane, inputValidationMessages, thresholdWarning, WARNING_FAILED, textInputControls.indexOf(thresholdWarning));
+            createInputError(textInputControlAnchorPane, INPUT_VALIDATION_MESSAGES, thresholdWarning, WARNING_FAILED, textInputControls.indexOf(thresholdWarning));
         }
         return validForm;
     }
@@ -202,60 +203,60 @@ public class FormInputValidation {
         }
 
         // Clearing all previous existing errors if any
-        for (int i = 0; i < inputValidationMessages.length; i++) {
-            removeInputError(textInputControlAnchorPane, inputValidationMessages, textInputControls.get(i), i);
+        for (int i = 0; i < textInputControls.size(); i++) {
+            removeInputError(textInputControlAnchorPane, INPUT_VALIDATION_MESSAGES, textInputControls.get(i), i);
         }
     }
 
     private static void locationValidation(AnchorPane textInputControlAnchorPane, TextInputControl locationInput, String regexWordAndHyphen, int index) {
         if (locationInput.getText().length() > 20 || !locationInput.getText().trim().matches(regexWordAndHyphen)) {
             assetValidForm = false;
-            createInputError(textInputControlAnchorPane, FormInputValidation.inputValidationMessages, locationInput, MAX_20_CHARACTERS_ERROR + AND_OR + WORD_HYPHEN_ERROR, index);
+            createInputError(textInputControlAnchorPane, FormInputValidation.INPUT_VALIDATION_MESSAGES, locationInput, MAX_20_CHARACTERS_ERROR + AND_OR + WORD_HYPHEN_ERROR, index);
         }
     }
 
     private static void siteValidation(AnchorPane textInputControlAnchorPane, TextInputControl siteInput, String regexWordAndHyphen, int index) {
         if (siteInput.getText().length() > 20 || !siteInput.getText().trim().matches(regexWordAndHyphen)) {
             assetValidForm = false;
-            createInputError(textInputControlAnchorPane, FormInputValidation.inputValidationMessages, siteInput, MAX_20_CHARACTERS_ERROR + AND_OR + WORD_HYPHEN_ERROR, index);
+            createInputError(textInputControlAnchorPane, FormInputValidation.INPUT_VALIDATION_MESSAGES, siteInput, MAX_20_CHARACTERS_ERROR + AND_OR + WORD_HYPHEN_ERROR, index);
         }
     }
 
     private static void categoryValidation(AnchorPane textInputControlAnchorPane, TextInputControl categoryInput, String regexLettersAndHyphen, int index) {
         if (categoryInput.getText().length() > 20 || !categoryInput.getText().trim().matches(regexLettersAndHyphen)) {
             assetValidForm = false;
-            createInputError(textInputControlAnchorPane, FormInputValidation.inputValidationMessages, categoryInput, MAX_20_CHARACTERS_ERROR + AND_OR + LETTER_NUMBER_ERROR, index);
+            createInputError(textInputControlAnchorPane, FormInputValidation.INPUT_VALIDATION_MESSAGES, categoryInput, MAX_20_CHARACTERS_ERROR + AND_OR + LETTER_NUMBER_ERROR, index);
         }
     }
 
     private static void manufacturerValidation(AnchorPane textInputControlAnchorPane, TextInputControl manufacturerInput, String regexWordAndHyphen, int index) {
         if (manufacturerInput.getText().length() > 20 || !manufacturerInput.getText().trim().matches(regexWordAndHyphen)) {
             assetValidForm = false;
-            createInputError(textInputControlAnchorPane, FormInputValidation.inputValidationMessages, manufacturerInput, MAX_20_CHARACTERS_ERROR + AND_OR + WORD_HYPHEN_ERROR, index);
+            createInputError(textInputControlAnchorPane, FormInputValidation.INPUT_VALIDATION_MESSAGES, manufacturerInput, MAX_20_CHARACTERS_ERROR + AND_OR + WORD_HYPHEN_ERROR, index);
         }
     }
 
     private static void serialNumberValidation(AnchorPane textInputControlAnchorPane, TextInputControl serialNumberInput, String regexWordAndHyphen, int index) {
         if (serialNumberInput.getText().trim().isEmpty() || serialNumberInput.getText().length() > 20 || !serialNumberInput.getText().trim().matches(regexWordAndHyphen)) {
             assetValidForm = false;
-            createInputError(textInputControlAnchorPane, FormInputValidation.inputValidationMessages, serialNumberInput, EMPTY_FIELD_ERROR + AND_OR + MAX_20_CHARACTERS_ERROR + AND_OR + WORD_HYPHEN_ERROR, index);
+            createInputError(textInputControlAnchorPane, FormInputValidation.INPUT_VALIDATION_MESSAGES, serialNumberInput, EMPTY_FIELD_ERROR + AND_OR + MAX_20_CHARACTERS_ERROR + AND_OR + WORD_HYPHEN_ERROR, index);
         }
     }
 
     private static void assetDescriptionValidation(AnchorPane textInputControlAnchorPane, TextInputControl assetDescriptionInput, int index) {
         if (assetDescriptionInput.getText().length() > 300) {
             assetValidForm = false;
-            createInputError(textInputControlAnchorPane, FormInputValidation.inputValidationMessages, assetDescriptionInput, MAX_300_CHARACTERS_ERROR, index);
+            createInputError(textInputControlAnchorPane, FormInputValidation.INPUT_VALIDATION_MESSAGES, assetDescriptionInput, MAX_300_CHARACTERS_ERROR, index);
         }
     }
 
     private static void assetNameValidation(AnchorPane textInputControlAnchorPane, TextInputControl assetNameInput, int index) {
         if (assetNameInput.getText().trim().isEmpty()) {
             assetValidForm = false;
-            createInputError(textInputControlAnchorPane, FormInputValidation.inputValidationMessages, assetNameInput, EMPTY_FIELD_ERROR, index);
+            createInputError(textInputControlAnchorPane, FormInputValidation.INPUT_VALIDATION_MESSAGES, assetNameInput, EMPTY_FIELD_ERROR, index);
         } else if (assetNameInput.getText().length() > 50) {
             assetValidForm = false;
-            createInputError(textInputControlAnchorPane, FormInputValidation.inputValidationMessages, assetNameInput, MAX_50_CHARACTERS_ERROR, index);
+            createInputError(textInputControlAnchorPane, FormInputValidation.INPUT_VALIDATION_MESSAGES, assetNameInput, MAX_50_CHARACTERS_ERROR, index);
         }
     }
 
