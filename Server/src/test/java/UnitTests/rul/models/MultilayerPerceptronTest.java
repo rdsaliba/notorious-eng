@@ -88,12 +88,12 @@ public class MultilayerPerceptronTest {
     @Test
     public void trainModel() throws Exception {
         FileReader trainFile = new FileReader("src/test/resources/FD01_Train_RUL.arff");
-        Instances  trainData = new Instances(trainFile);
+        Instances trainData = new Instances(trainFile);
         trainData.setClassIndex(trainData.numAttributes() - 1);
 
         Classifier mlp = new MultilayerPerceptron();
         assertEquals("Should Return Multilayer Perceptron Model", mlp.getClass(),
-                     modelsController.trainModel(trainData).getClass());
+                modelsController.trainModel(trainData).getClass());
     }
 
     @Test
@@ -105,7 +105,7 @@ public class MultilayerPerceptronTest {
         modelsController.setParameters(parameters);
         modelsController.trainModel(trainData);
 
-        assertEquals("Asserting the BatchSize parameter was changed", ((MultilayerPerceptronModelImpl) modelsController.getModelStrategy()).getMultilayerPerceptronObject().getBatchSize(), batchSizePara.getIntValue());
+        assertEquals("Asserting the BatchSize parameter was changed", ((MultilayerPerceptronModelImpl) modelsController.getModelStrategy()).getMultilayerPerceptronObject().getBatchSize(), String.valueOf(batchSizePara.getIntValue()));
         assertEquals("Asserting the ValidationThreshold parameter was changed", ((MultilayerPerceptronModelImpl) modelsController.getModelStrategy()).getMultilayerPerceptronObject().getValidationThreshold(), validationThresholdPara.getIntValue());
         assertEquals("Asserting the LearningRate parameter was changed", ((MultilayerPerceptronModelImpl) modelsController.getModelStrategy()).getMultilayerPerceptronObject().getLearningRate(), learningRatePara.getFloatValue(), 0.1F);
         assertEquals("Asserting the Resume parameter was changed", ((MultilayerPerceptronModelImpl) modelsController.getModelStrategy()).getMultilayerPerceptronObject().getResume(), resumePara.getBoolValue());

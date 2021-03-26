@@ -20,18 +20,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RandomSubSpaceModelImpl extends ModelStrategy {
+    private static final long serialVersionUID = 4434991255752524309L;
+
     //Default Parameters
     private static final float SUBSPACE_SIZE_PARAM_DEFAULT = 0.5F;
     private static final int NUM_EXECUTION_SLOTS_PARAM_DEFAULT = 1;
     private static final int NUM_ITERATIONS_PARAM_DEFAULT = 10;
     private static final int BATCH_SIZE_PARAM_DEFAULT = 100;
-
+    static Logger logger = LoggerFactory.getLogger(RandomSubSpaceModelImpl.class);
     //Parameters
     private final FloatParameter subSpaceSizePara;
     private final IntParameter numExecutionSlotsPara;
     private final IntParameter numIterationsPara;
     private final IntParameter batchSizePara;
-
     private RandomSubSpace randomSubSpace;
 
     public RandomSubSpaceModelImpl() {
@@ -45,8 +46,6 @@ public class RandomSubSpaceModelImpl extends ModelStrategy {
         addParameter(numIterationsPara);
         addParameter(batchSizePara);
     }
-
-    static Logger logger = LoggerFactory.getLogger(RandomSubSpaceModelImpl.class);
 
     /**
      * This function takes the assets as the training dataset, and returns the trained

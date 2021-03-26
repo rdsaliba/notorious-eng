@@ -19,8 +19,9 @@ import weka.core.Instances;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RandomForestModelImpl extends ModelStrategy
-{
+public class RandomForestModelImpl extends ModelStrategy {
+    private static final long serialVersionUID = -4142301725621985749L;
+
     //Default Parameters
     private static final boolean STORE_OUT_OF_BAG_PREDICTIONS_PARAM_DEFAULT = false;
     private static final boolean BREAK_TIES_RANDOMLY_PARAM_DEFAULT = false;
@@ -34,21 +35,18 @@ public class RandomForestModelImpl extends ModelStrategy
     private static final int NUM_ITERATIONS_PARAM_DEFAULT = 100;
 
     private static final int BATCH_SIZE_PARAM_DEFAULT = 100;
-
+    static Logger logger = LoggerFactory.getLogger(RandomForestModelImpl.class);
     //Parameters
     private final BoolParameter storeOutOfBagPredictionsPara;
     private final BoolParameter breakTiesRandomlyPara;
     private final BoolParameter calcOutBagPara;
     private final BoolParameter computeAttributeImportancePara;
-
     private final IntParameter bagSizePercentPara;
     private final IntParameter maxDepthPara;
     private final IntParameter numExecutionSlotsPara;
     private final IntParameter numFeaturesPara;
     private final IntParameter numIterationsPara;
-
     private final IntParameter batchSizePara;
-
     private RandomForest randomForest;
 
     public RandomForestModelImpl() {
@@ -79,8 +77,6 @@ public class RandomForestModelImpl extends ModelStrategy
         addParameter(batchSizePara);
     }
 
-    static Logger logger = LoggerFactory.getLogger(RandomForestModelImpl.class);
-
     /**
      * This function takes the assets as the training dataset, and returns the trained
      * Random Forest classifier.
@@ -88,8 +84,7 @@ public class RandomForestModelImpl extends ModelStrategy
      * @author Khaled
      */
     @Override
-    public Classifier trainModel(Instances dataToTrain)
-    {
+    public Classifier trainModel(Instances dataToTrain) {
         randomForest = new RandomForest();
         dataToTrain.setClassIndex(dataToTrain.numAttributes() - 1);
 
@@ -106,12 +101,9 @@ public class RandomForestModelImpl extends ModelStrategy
 
         randomForest.setBatchSize(String.valueOf(((IntParameter) getParameters().get(batchSizePara.getParamName())).getIntValue()));
 
-        try
-        {
+        try {
             randomForest.buildClassifier(dataToTrain);
-        }
-        catch(Exception e)
-        {
+        } catch (Exception e) {
             logger.error("Exception: ", e);
         }
 
@@ -120,18 +112,17 @@ public class RandomForestModelImpl extends ModelStrategy
     }
 
     @Override
-    public Map<String, Parameter> getDefaultParameters()
-    {
-        BoolParameter storeOutOfBagPredictionsParaDefault   = new BoolParameter("Store out of Bag Predictions", STORE_OUT_OF_BAG_PREDICTIONS_PARAM_DEFAULT);
-        BoolParameter breakTiesRandomlyParaDefault          = new BoolParameter("Break Ties Randomly", BREAK_TIES_RANDOMLY_PARAM_DEFAULT);
-        BoolParameter calcOutBagParaDefault                 = new BoolParameter("Calc out of Bag", CALC_OUT_BAGS_PARAM_DEFAULT);
+    public Map<String, Parameter> getDefaultParameters() {
+        BoolParameter storeOutOfBagPredictionsParaDefault = new BoolParameter("Store out of Bag Predictions", STORE_OUT_OF_BAG_PREDICTIONS_PARAM_DEFAULT);
+        BoolParameter breakTiesRandomlyParaDefault = new BoolParameter("Break Ties Randomly", BREAK_TIES_RANDOMLY_PARAM_DEFAULT);
+        BoolParameter calcOutBagParaDefault = new BoolParameter("Calc out of Bag", CALC_OUT_BAGS_PARAM_DEFAULT);
         BoolParameter computeAttributeImportanceParaDefault = new BoolParameter("Compute Attribute Importance", COMPUTE_ATTRIBUTE_IMPORTANCE_PARAM_DEFAULT);
 
-        IntParameter bagSizePercentParaDefault     = new IntParameter("Bag Size Percent", BAG_SIZE_PERCENT_PARAM_DEFAULT);
-        IntParameter maxDepthParaDefault           = new IntParameter("Max Depth", MAX_DEPTH_PARAM_DEFAULT);
+        IntParameter bagSizePercentParaDefault = new IntParameter("Bag Size Percent", BAG_SIZE_PERCENT_PARAM_DEFAULT);
+        IntParameter maxDepthParaDefault = new IntParameter("Max Depth", MAX_DEPTH_PARAM_DEFAULT);
         IntParameter numExecutionSlotsParaDefault = new IntParameter("Number of Execution Slots", NUM_EXECUTION_SLOTS_PARAM_DEFAULT);
-        IntParameter numFeaturesParaDefault        = new IntParameter("Number of Features", NUM_FEATURES_PARAM_DEFAULT);
-        IntParameter numIterationsParaDefault      = new IntParameter("Number of Iterations", NUM_ITERATIONS_PARAM_DEFAULT);
+        IntParameter numFeaturesParaDefault = new IntParameter("Number of Features", NUM_FEATURES_PARAM_DEFAULT);
+        IntParameter numIterationsParaDefault = new IntParameter("Number of Iterations", NUM_ITERATIONS_PARAM_DEFAULT);
 
         IntParameter batchSizeParaDefault = new IntParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
 
@@ -152,8 +143,7 @@ public class RandomForestModelImpl extends ModelStrategy
         return parameters;
     }
 
-    public RandomForest getRandomForestObject()
-    {
+    public RandomForest getRandomForestObject() {
         return this.randomForest;
     }
 

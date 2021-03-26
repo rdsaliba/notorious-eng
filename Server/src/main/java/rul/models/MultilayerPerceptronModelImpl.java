@@ -8,7 +8,10 @@
 
 package rul.models;
 
-import app.item.parameter.*;
+import app.item.parameter.BoolParameter;
+import app.item.parameter.FloatParameter;
+import app.item.parameter.IntParameter;
+import app.item.parameter.Parameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import weka.classifiers.Classifier;
@@ -18,8 +21,8 @@ import weka.core.Instances;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MultilayerPerceptronModelImpl extends ModelStrategy
-{
+public class MultilayerPerceptronModelImpl extends ModelStrategy {
+    private static final long serialVersionUID = 1560797225011305931L;
 
     //Default Parameters:
     private static final boolean SHOW_GUI_PARAM_DEFAULT = false;
@@ -39,7 +42,7 @@ public class MultilayerPerceptronModelImpl extends ModelStrategy
     private static final int VALIDATION_THRESHOLD_PARAM_DEFAULT = 20;
 
     private static final int BATCH_SIZE_PARAM_DEFAULT = 100;
-
+    static Logger logger = LoggerFactory.getLogger(MultilayerPerceptronModelImpl.class);
     //Parameters
     private final BoolParameter showGUIPara;
     private final BoolParameter autoBuildPara;
@@ -49,16 +52,12 @@ public class MultilayerPerceptronModelImpl extends ModelStrategy
     private final BoolParameter normalizeNumericClassPara;
     private final BoolParameter resetPara;
     private final BoolParameter resumePara;
-
     private final FloatParameter learningRatePara;
     private final FloatParameter momentumPara;
-
     private final IntParameter trainingTimePara;
     private final IntParameter validationSizePara;
     private final IntParameter validationThresholdPara;
-
     private final IntParameter batchSizePara;
-
     private MultilayerPerceptron multilayerPerceptron;
 
     public MultilayerPerceptronModelImpl() {
@@ -99,8 +98,6 @@ public class MultilayerPerceptronModelImpl extends ModelStrategy
         addParameter(batchSizePara);
     }
 
-    static Logger logger = LoggerFactory.getLogger(MultilayerPerceptronModelImpl.class);
-
     /**
      * This function takes the assets as the training dataset, and returns the trained
      * Multilayer Perceptron classifier.
@@ -108,8 +105,7 @@ public class MultilayerPerceptronModelImpl extends ModelStrategy
      * @author Khaled
      */
     @Override
-    public Classifier trainModel(Instances dataToTrain)
-    {
+    public Classifier trainModel(Instances dataToTrain) {
         multilayerPerceptron = new MultilayerPerceptron();
         dataToTrain.setClassIndex(dataToTrain.numAttributes() - 1);
 
@@ -132,12 +128,9 @@ public class MultilayerPerceptronModelImpl extends ModelStrategy
 
         multilayerPerceptron.setBatchSize(String.valueOf(((IntParameter) getParameters().get(batchSizePara.getParamName())).getIntValue()));
 
-        try
-        {
+        try {
             multilayerPerceptron.buildClassifier(dataToTrain);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             logger.error("Exception: ", e);
         }
 
@@ -146,22 +139,21 @@ public class MultilayerPerceptronModelImpl extends ModelStrategy
     }
 
     @Override
-    public Map<String, Parameter> getDefaultParameters()
-    {
-        BoolParameter showGUIParaDefault               = new BoolParameter("Show GUI", SHOW_GUI_PARAM_DEFAULT);
-        BoolParameter autoBuildParaDefault             = new BoolParameter("Auto Build", AUTO_BUILD_PARAM_DEFAULT);
-        BoolParameter decayParaDefault                  = new BoolParameter("Decay", DECAY_PARAM_DEFAULT);
+    public Map<String, Parameter> getDefaultParameters() {
+        BoolParameter showGUIParaDefault = new BoolParameter("Show GUI", SHOW_GUI_PARAM_DEFAULT);
+        BoolParameter autoBuildParaDefault = new BoolParameter("Auto Build", AUTO_BUILD_PARAM_DEFAULT);
+        BoolParameter decayParaDefault = new BoolParameter("Decay", DECAY_PARAM_DEFAULT);
         BoolParameter nominalToBinaryFilterParaDefault = new BoolParameter("Nominal to Binary Filter", NOMINAL_TO_BINARY_FILTER_PARAM_DEFAULT);
-        BoolParameter normalizeAttributesParaDefault   = new BoolParameter("Normalize Attributes", NORMALIZE_ATTRIBUTE_PARAM_DEFAULT);
+        BoolParameter normalizeAttributesParaDefault = new BoolParameter("Normalize Attributes", NORMALIZE_ATTRIBUTE_PARAM_DEFAULT);
         BoolParameter normalizeNumericClassParaDefault = new BoolParameter("Normalize Numeric Class", NORMALIZE_NUMERIC_CLASS_PARAM_DEFAULT);
-        BoolParameter resetParaDefault                 = new BoolParameter("Reset", RESET_PARAM_DEFAULT);
-        BoolParameter resumeParaDefault                = new BoolParameter("Resume", RESUME_PARAM_DEFAULT);
+        BoolParameter resetParaDefault = new BoolParameter("Reset", RESET_PARAM_DEFAULT);
+        BoolParameter resumeParaDefault = new BoolParameter("Resume", RESUME_PARAM_DEFAULT);
 
         FloatParameter learningRateParaDefault = new FloatParameter("Learning Rate", LEARNING_RATE_PARAM_DEFAULT);
-        FloatParameter momentumParaDefault     = new FloatParameter("Momentum", MOMENTUM_PARAM_DEFAULT);
+        FloatParameter momentumParaDefault = new FloatParameter("Momentum", MOMENTUM_PARAM_DEFAULT);
 
-        IntParameter trainingTimeParaDefault        = new IntParameter("Training Time", TRAINING_TIME_PARAM_DEFAULT);
-        IntParameter validationSizeParaDefault      = new IntParameter("Validation Size", VALIDATION_SIZE_PARAM_DEFAULT);
+        IntParameter trainingTimeParaDefault = new IntParameter("Training Time", TRAINING_TIME_PARAM_DEFAULT);
+        IntParameter validationSizeParaDefault = new IntParameter("Validation Size", VALIDATION_SIZE_PARAM_DEFAULT);
         IntParameter validationThresholdParaDefault = new IntParameter("Validation Threshold", VALIDATION_THRESHOLD_PARAM_DEFAULT);
 
         IntParameter batchSizeParaDefault = new IntParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
@@ -188,8 +180,7 @@ public class MultilayerPerceptronModelImpl extends ModelStrategy
         return parameters;
     }
 
-    public MultilayerPerceptron getMultilayerPerceptronObject()
-    {
+    public MultilayerPerceptron getMultilayerPerceptronObject() {
         return this.multilayerPerceptron;
     }
 

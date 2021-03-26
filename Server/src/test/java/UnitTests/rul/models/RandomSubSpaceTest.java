@@ -49,27 +49,26 @@ public class RandomSubSpaceTest {
     @Test
     public void trainModel() throws Exception {
         FileReader trainFile = new FileReader("src/test/resources/FD01_Train_RUL.arff");
-        Instances  trainData = new Instances(trainFile);
+        Instances trainData = new Instances(trainFile);
         trainData.setClassIndex(trainData.numAttributes() - 1);
 
         Classifier randomSubSpace = new RandomSubSpace();
         assertEquals("Should Return Random SubSpace Model", randomSubSpace.getClass(),
-                     modelsController.trainModel(trainData).getClass());
+                modelsController.trainModel(trainData).getClass());
     }
 
     @Test
-    public void updateParam() throws Exception
-    {
+    public void updateParam() throws Exception {
         FileReader trainFile = new FileReader("src/test/resources/FD01_Train_RUL.arff");
-        Instances  trainData = new Instances(trainFile);
+        Instances trainData = new Instances(trainFile);
         trainData.setClassIndex(trainData.numAttributes() - 1);
 
         modelsController.setParameters(parameters);
         modelsController.trainModel(trainData);
 
-        assertEquals("Asserting the BatchSize parameter was changed", ((RandomSubSpaceModelImpl) modelsController.getModelStrategy()).getRandomSubSpaceObject().getBatchSize(), batchSizePara.getIntValue());
+        assertEquals("Asserting the BatchSize parameter was changed", ((RandomSubSpaceModelImpl) modelsController.getModelStrategy()).getRandomSubSpaceObject().getBatchSize(), String.valueOf(batchSizePara.getIntValue()));
         assertEquals("Asserting the NumExecutionSlots parameter was changed", ((RandomSubSpaceModelImpl) modelsController.getModelStrategy()).getRandomSubSpaceObject().getNumExecutionSlots(), numExecutionSlotsPara.getIntValue());
-        assertEquals("Asserting the NumIterations parameter was changed",((RandomSubSpaceModelImpl) modelsController.getModelStrategy()).getRandomSubSpaceObject().getNumIterations(), numIterationsPara.getIntValue());
-        assertEquals("Asserting the SubSpaceSize parameter was changed",((RandomSubSpaceModelImpl) modelsController.getModelStrategy()).getRandomSubSpaceObject().getSubSpaceSize(), subSpaceSizePara.getFloatValue(), 0.1);
+        assertEquals("Asserting the NumIterations parameter was changed", ((RandomSubSpaceModelImpl) modelsController.getModelStrategy()).getRandomSubSpaceObject().getNumIterations(), numIterationsPara.getIntValue());
+        assertEquals("Asserting the SubSpaceSize parameter was changed", ((RandomSubSpaceModelImpl) modelsController.getModelStrategy()).getRandomSubSpaceObject().getSubSpaceSize(), subSpaceSizePara.getFloatValue(), 0.1);
     }
 }

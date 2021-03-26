@@ -45,7 +45,7 @@ public class RandomCommitteeTest {
     @Test
     public void trainModel() throws Exception {
         FileReader trainFile = new FileReader("src/test/resources/FD01_Train_RUL.arff");
-        Instances  trainData = new Instances(trainFile);
+        Instances trainData = new Instances(trainFile);
         trainData.setClassIndex(trainData.numAttributes() - 1);
 
         Classifier randomCommittee = new RandomCommittee();
@@ -61,7 +61,7 @@ public class RandomCommitteeTest {
         modelsController.setParameters(parameters);
         modelsController.trainModel(trainData);
 
-        assertEquals("Asserting the BatchSize parameter was changed", ((RandomCommitteeModelImpl) modelsController.getModelStrategy()).getRandomCommitteeObject().getBatchSize(), batchSizePara.getIntValue());
+        assertEquals("Asserting the BatchSize parameter was changed", ((RandomCommitteeModelImpl) modelsController.getModelStrategy()).getRandomCommitteeObject().getBatchSize(), String.valueOf(batchSizePara.getIntValue()));
         assertEquals("Asserting the NumExecutionSlots parameter was changed", ((RandomCommitteeModelImpl) modelsController.getModelStrategy()).getRandomCommitteeObject().getNumExecutionSlots(), numExecutionSlotsPara.getIntValue());
         assertEquals("Asserting the NumIterations parameter was changed", ((RandomCommitteeModelImpl) modelsController.getModelStrategy()).getRandomCommitteeObject().getNumIterations(), numIterationsPara.getIntValue());
     }

@@ -18,8 +18,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
-public class LSTMTest
-{
+public class LSTMTest {
     private ModelsController modelsController;
     //BoolParameters
     private BoolParameter resumePara;
@@ -45,7 +44,7 @@ public class LSTMTest
     private NeuralNetConfiguration neuralNetConfiguration;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         modelsController = new ModelsController(new LSTMModelImpl());
         resumePara = new BoolParameter("Resume", true);
         filterModePara = new BoolParameter("Filter Mode", true);
@@ -88,9 +87,9 @@ public class LSTMTest
 
     @Test
     public void trainModel() throws Exception {
-        FileReader file= new FileReader("src/test/resources/FD01_Train_RUL.arff");
+        FileReader file = new FileReader("src/test/resources/FD01_Train_RUL.arff");
         Instances set = new Instances(file);
-        set.setClassIndex(set.numAttributes()-1);
+        set.setClassIndex(set.numAttributes() - 1);
         Dl4jMlpClassifier LSTM = new Dl4jMlpClassifier();
         assertEquals("Should Return Linear Regression Model", LSTM.getClass(), modelsController.trainModel(set).getClass());
 
@@ -105,7 +104,7 @@ public class LSTMTest
         modelsController.setParameters(parameters);
         modelsController.trainModel(trainData);
 
-        assertEquals("Asserting the BatchSize parameter was changed", ((LSTMModelImpl) modelsController.getModelStrategy()).getLSTMObject().getBatchSize(), batchSizePara.getIntValue());
+        assertEquals("Asserting the BatchSize parameter was changed", ((LSTMModelImpl) modelsController.getModelStrategy()).getLSTMObject().getBatchSize(), String.valueOf(batchSizePara.getIntValue()));
         assertEquals("Asserting the CacheMode parameter was changed", ((LSTMModelImpl) modelsController.getModelStrategy()).getLSTMObject().getCacheMode().toString(), cacheModePara.getSelectedValue());
         assertEquals("Asserting the WeightInit parameter was changed", ((LSTMModelImpl) modelsController.getModelStrategy()).getLSTMNeuralObject().getWeightInit().toString(), weightInitPara.getSelectedValue());
         assertEquals("Asserting the OptimizationAlgo parameter was changed", ((LSTMModelImpl) modelsController.getModelStrategy()).getLSTMNeuralObject().getOptimizationAlgo().toString(), optimizationAlgoPara.getSelectedValue());

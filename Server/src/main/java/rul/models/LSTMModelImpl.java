@@ -29,6 +29,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class LSTMModelImpl extends ModelStrategy {
+    private static final long serialVersionUID = 6314527810259072775L;
+
     //Default Parameters
     private static final boolean RESUME_PARAM_DEFAULT = false;
     private static final boolean FILTER_MODE_PARAM_DEFAULT = false;
@@ -46,25 +48,21 @@ public class LSTMModelImpl extends ModelStrategy {
     private static final String WEIGHT_INIT_PARAM_DEFAULT = "XAVIER";
 
     private static final float LEARNING_RATE_PARAM_DEFAULT = 0.001F;
-
+    static Logger logger = LoggerFactory.getLogger(LSTMModelImpl.class);
     //Parameter objects
     private final BoolParameter resumePara;
     private final BoolParameter filterModePara;
     private final BoolParameter doNotClearFileSystemCachePara;
     private final BoolParameter minimizeObjectivePara;
-
     private final IntParameter numberOfEpochPara;
     private final IntParameter numberOfGPUPara;
     private final IntParameter avgFrequencyPara;
     private final IntParameter queueSizePara;
-
     private final ListParameter cacheModePara; //options: NONE, MEMORY, FILESYSTEM
     private final ListParameter optimizationAlgoPara; //options: STOCHASTIC_GRADIENT_DESCENT, LINE_GRADIENT_DESCENT,
     private final ListParameter weightInitPara;     //options: XAVIER, RELU, IDENTITY, NORMAL, UNIFORM, ZERO, DISTRIBUTION
     private final IntParameter batchSizePara;
-
     private final FloatParameter learningRatePara;
-
     private Dl4jMlpClassifier dl4jMlpClassifier;
     private NeuralNetConfiguration neuralNetConfiguration;
 
@@ -103,8 +101,6 @@ public class LSTMModelImpl extends ModelStrategy {
 
         addParameter(learningRatePara);
     }
-
-    static Logger logger = LoggerFactory.getLogger(LSTMModelImpl.class);
 
     /**
      * This function takes the filtered training dataset, builds a Neural Network using Weka's Deep Learning 4 Java plugin

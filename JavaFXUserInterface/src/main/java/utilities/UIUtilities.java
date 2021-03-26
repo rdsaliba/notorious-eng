@@ -1,5 +1,4 @@
 /*
-/*
   This class contains methods which are often reused withing the UI.
 
   @author
@@ -25,9 +24,10 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.ParsePosition;
 
+import static utilities.TextConstants.FXML;
+
 public class UIUtilities {
 
-    private static final String FXML = ".fxml";
     private static final String ERROR_MESSAGE = "error-message";
     private static final String INPUT_ERROR = "input-error";
     Logger logger = LoggerFactory.getLogger(UIUtilities.class);
@@ -74,7 +74,7 @@ public class UIUtilities {
     }
 
     /**
-     * This function validates an input of a change on a text field to only allow the change if it fits the DecimalFormat
+     * This function validates an input of a change on a text field to only allow the change if it satisfies the regex rule
      *
      * @param regex is the decimal format to be applied to the field
      * @param c     is the text formatter change

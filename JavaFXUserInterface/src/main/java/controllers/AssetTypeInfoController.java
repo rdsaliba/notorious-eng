@@ -27,7 +27,6 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,11 +93,8 @@ public class AssetTypeInfoController extends Controller implements Initializable
     private Label associatedModelLabel;
     @FXML
     private VBox modelParameters;
-    @FXML
-    private AnchorPane root;
 
     private ObservableList<TrainedModel> modelObservableList;
-    private ObservableList<Pane> modelPaneObservableList;
     private int associatedModelID;
 
     private UIUtilities uiUtilities;
@@ -108,7 +104,6 @@ public class AssetTypeInfoController extends Controller implements Initializable
     private AssetTypeDAOImpl assetTypeDAO;
     private ModelDAOImpl modelDAO;
     private AssetDAOImpl assetDAO;
-    private Stage stage;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -132,7 +127,6 @@ public class AssetTypeInfoController extends Controller implements Initializable
      * @author Najim, Paul
      */
     public void initData(AssetTypeList assetType) {
-        stage = (Stage) root.getScene().getWindow();
         this.assetType = assetType;
         this.originalAssetType = new AssetTypeList(assetType);
         assetTypeName.setText(assetType.getAssetType().getName());
@@ -160,8 +154,6 @@ public class AssetTypeInfoController extends Controller implements Initializable
         for (TextField thresholdTextField : thresholdTextFieldList) {
             thresholdTextField.setPromptText("No current value for " + thresholdTextField.getId() + ". Please enter a value.");
         }
-
-        updateRMSE();
     }
 
     /**
@@ -249,12 +241,15 @@ public class AssetTypeInfoController extends Controller implements Initializable
 
         try {
             modelObservableList = FXCollections.observableArrayList(modelDAO.getModelsByAssetTypeID(assetType.getId(), Constants.STATUS_EVALUATION));
+            associatedModelID = modelDAO.getModelIDAssociatedWithAssetType(assetType.getId());
         } catch (Exception e) {
             logger.error("Exception in getting all the models list", e);
         }
         modelsThumbPane.getChildren().clear();
         generateThumbnails();
         attachEventsModelTab();
+
+        updateRMSE();
     }
 
     /**
@@ -328,10 +323,10 @@ public class AssetTypeInfoController extends Controller implements Initializable
         testSlider.setOnMouseClicked(mouseEvent -> enableEvaluation(evaluateButtons));
 
         modelsThumbPane.widthProperty().addListener((obs, oldVal, newVal) -> {
-            double modelFlowWidth = (double)newVal-22;
-            int nbOfPanes = (int)(modelFlowWidth/247);
-            modelFlowWidth = (modelFlowWidth%247);
-            modelFlowWidth = modelFlowWidth/(nbOfPanes-1);
+            double modelFlowWidth = (double) newVal - 22;
+            int nbOfPanes = (int) (modelFlowWidth / 247);
+            modelFlowWidth = (modelFlowWidth % 247);
+            modelFlowWidth = modelFlowWidth / (nbOfPanes - 1);
             modelsThumbPane.setHgap(modelFlowWidth);
         });
 
@@ -532,8 +527,7 @@ public class AssetTypeInfoController extends Controller implements Initializable
      * @author Jeremie
      */
     public void generateThumbnails() {
-        modelPaneObservableList = FXCollections.observableArrayList();
-
+        ObservableList<Pane> modelPaneObservableList = FXCollections.observableArrayList();
         for (TrainedModel model : modelObservableList) {
             // Creating a Thumbnail element
             Pane modelPane = new Pane();
@@ -701,7 +695,6 @@ public class AssetTypeInfoController extends Controller implements Initializable
      * @author Talal
      */
     public void updateRMSE() {
-        modelObservableList = FXCollections.observableArrayList(modelDAO.getModelsByAssetTypeID(assetType.getId(), Constants.STATUS_EVALUATION));
         for (Model model : modelObservableList) {
             model.setRMSE(String.valueOf(TextConstants.RMSEValueFormat.format(modelDAO.getLatestRMSE(model.getModelID(), Integer.parseInt(assetType.getId())))));
         }
@@ -717,5 +710,3 @@ public class AssetTypeInfoController extends Controller implements Initializable
         addTimeline(rmseTimeline);
     }
 }
-
-

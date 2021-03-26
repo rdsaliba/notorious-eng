@@ -20,14 +20,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SMORegModelImpl extends ModelStrategy {
+    private static final long serialVersionUID = -3594005723691164482L;
 
     //Default Parameters
     private static final float C_COMPLEXITY_PARAM_DEFAULT = 1.0F;
     private static final int BATCH_SIZE_PARAM_DEFAULT = 100;
-
+    static Logger logger = LoggerFactory.getLogger(SMORegModelImpl.class);
     private final FloatParameter cComplexityPara;
     private final IntParameter batchSizePara;
-
     private SMOreg smOreg;
 
     public SMORegModelImpl() {
@@ -37,8 +37,6 @@ public class SMORegModelImpl extends ModelStrategy {
         addParameter(cComplexityPara);
         addParameter(batchSizePara);
     }
-
-    static Logger logger = LoggerFactory.getLogger(SMORegModelImpl.class);
 
     /**
      * This function takes the assets as the training dataset, and returns the trained

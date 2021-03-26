@@ -74,7 +74,7 @@ public class AdditiveRegressionTest
         modelsController.setParameters(parameters);
         modelsController.trainModel(trainData);
 
-        assertEquals("Asserting the BatchSize parameter was changed", ((AdditiveRegressionModelImpl) modelsController.getModelStrategy()).getAdditiveRegressionObject().getBatchSize(), batchSizePara.getIntValue());
+        assertEquals("Asserting the BatchSize parameter was changed", ((AdditiveRegressionModelImpl) modelsController.getModelStrategy()).getAdditiveRegressionObject().getBatchSize(), String.valueOf(batchSizePara.getIntValue()));
         assertEquals("Asserting the MinimizeAbsoluteError parameter was changed", ((AdditiveRegressionModelImpl) modelsController.getModelStrategy()).getAdditiveRegressionObject().getMinimizeAbsoluteError(), minimizeAbsoluteErrorPara.getBoolValue());
         assertEquals("Asserting the NumIterations parameter was changed", ((AdditiveRegressionModelImpl) modelsController.getModelStrategy()).getAdditiveRegressionObject().getNumIterations(), numIterationsPara.getIntValue());
         assertEquals("Asserting the Resume parameter was changed", ((AdditiveRegressionModelImpl) modelsController.getModelStrategy()).getAdditiveRegressionObject().getResume(), resumePara.getBoolValue());

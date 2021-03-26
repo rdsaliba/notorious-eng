@@ -15,6 +15,7 @@ public class TextConstants {
     public static final String ADD_ASSETS_SCENE = "/AddAsset";
     public static final String ASSET_TYPE_LIST_SCENE = "/AssetTypeList";
     public static final String ASSET_TYPE_INFO_SCENE = "/AssetTypeInfo";
+    public static final String FXML = ".fxml";
 
     // Asset Type Thresholds Text Constants
     public static final String OK_THRESHOLD = "Ok";

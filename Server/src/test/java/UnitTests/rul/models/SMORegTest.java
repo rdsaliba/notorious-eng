@@ -18,8 +18,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
-public class SMORegTest
-{
+public class SMORegTest {
     private ModelsController modelsController;
     private FloatParameter cComplexityPara;
     private IntParameter batchSizePara;
@@ -44,7 +43,7 @@ public class SMORegTest
     @Test
     public void trainModel() throws Exception {
         FileReader trainFile = new FileReader("src/test/resources/FD01_Train_RUL.arff");
-        Instances trainData  = new Instances(trainFile);
+        Instances trainData = new Instances(trainFile);
         trainData.setClassIndex(trainData.numAttributes() - 1);
 
         Classifier smoReg = new SMOreg();
@@ -61,6 +60,6 @@ public class SMORegTest
         modelsController.trainModel(trainData);
 
         assertEquals("Asserting the CComplexity parameter was changed", ((SMORegModelImpl) modelsController.getModelStrategy()).getSmOregObject().getC(), cComplexityPara.getFloatValue(), 0.1f);
-        assertEquals("Asserting the BatchSize parameter was changed", ((SMORegModelImpl) modelsController.getModelStrategy()).getSmOregObject().getBatchSize(), batchSizePara.getIntValue());
+        assertEquals("Asserting the BatchSize parameter was changed", ((SMORegModelImpl) modelsController.getModelStrategy()).getSmOregObject().getBatchSize(), String.valueOf(batchSizePara.getIntValue()));
     }
 }

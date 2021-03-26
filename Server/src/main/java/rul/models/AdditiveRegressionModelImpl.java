@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AdditiveRegressionModelImpl extends ModelStrategy {
+    private static final long serialVersionUID = -8209380806602425484L;
+
     //Default Parameters
     private static final boolean MINIMIZE_ABSOLUTE_ERROR_PARAM_DEFAULT = false;
     private static final boolean RESUME_PARAM_DEFAULT = false;

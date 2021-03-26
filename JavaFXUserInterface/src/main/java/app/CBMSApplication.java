@@ -13,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import utilities.TextConstants;
 
 public class CBMSApplication extends Application {
 
@@ -32,7 +33,7 @@ public class CBMSApplication extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("/Assets.fxml"));
+        loader.setLocation(getClass().getResource(TextConstants.ASSETS_SCENE + TextConstants.FXML));
         Parent root = loader.load();
         Scene scene = new Scene(root);
         scene.setUserData(loader);

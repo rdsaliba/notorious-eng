@@ -74,7 +74,7 @@ public class RandomForestTest {
     @Test
     public void trainModel() throws Exception {
         FileReader trainFile = new FileReader("src/test/resources/FD01_Train_RUL.arff");
-        Instances trainData  = new Instances(trainFile);
+        Instances trainData = new Instances(trainFile);
         trainData.setClassIndex(trainData.numAttributes() - 1);
 
         Classifier randomForest = new RandomForest();
@@ -91,7 +91,7 @@ public class RandomForestTest {
         modelsController.setParameters(parameters);
         modelsController.trainModel(trainData);
 
-        assertEquals("Asserting the BatchSize parameter was changed", ((RandomForestModelImpl) modelsController.getModelStrategy()).getRandomForestObject().getBatchSize(), batchSizePara.getIntValue());
+        assertEquals("Asserting the BatchSize parameter was changed", ((RandomForestModelImpl) modelsController.getModelStrategy()).getRandomForestObject().getBatchSize(), String.valueOf(batchSizePara.getIntValue()));
         assertEquals("Asserting the NumIterations parameter was changed", ((RandomForestModelImpl) modelsController.getModelStrategy()).getRandomForestObject().getNumIterations(), numIterationsPara.getIntValue());
         assertEquals("Asserting the MaxDepth parameter was changed", ((RandomForestModelImpl) modelsController.getModelStrategy()).getRandomForestObject().getMaxDepth(), maxDepthPara.getIntValue());
         assertEquals("Asserting the BreakTiesRandomly parameter was changed", ((RandomForestModelImpl) modelsController.getModelStrategy()).getRandomForestObject().getBreakTiesRandomly(), breakTiesRandomlyPara.getBoolValue());
