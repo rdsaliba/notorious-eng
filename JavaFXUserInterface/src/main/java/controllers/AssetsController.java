@@ -86,7 +86,7 @@ public class AssetsController implements Initializable {
         table = new TableView<>();
 
         try {
-            assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets().subList(0,50));
+            assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
         } catch (Exception e) {
             logger.error("Exception: ", e);
         }

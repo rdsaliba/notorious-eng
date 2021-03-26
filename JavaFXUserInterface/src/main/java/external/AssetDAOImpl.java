@@ -33,7 +33,6 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
     private static final String GET_ATTRIBUTE_DETAILS_FROM_ASSET_ID = "SELECT att.* FROM attribute_measurements am, attribute att WHERE att.attribute_id=am.attribute_id AND am.asset_id = ? GROUP by attribute_id";
     private static final String UPDATE_ASSET_TO_ARCHIVED = "UPDATE asset set archived = true where asset_ID = ?";
     private static final String STORE_IMAGE = "INSERT INTO picture (image, name) VALUES(?, ?)";
-    private static final String GET_IMAGE = "SELECT image FROM picture WHERE name = ?";
     private static final String GET_IMAGE_BY_ID = "SELECT image FROM picture WHERE imageId = ?";
     private static final String GET_IMAGE_BY_NAME = "SELECT imageId FROM picture WHERE name = ?";
 
@@ -89,22 +88,6 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         }
 
         return ps;
-    }
-
-    public Image findImage(String name) {
-        Image image = null;
-        try (PreparedStatement ps = getConnection().prepareStatement(GET_IMAGE)) {
-            ps.setString(1, name); //pass the image Id to retrieve from the method
-            ResultSet resultSet = ps.executeQuery();
-            if(resultSet.first()) {
-                Blob blob = resultSet.getBlob(1);
-                InputStream inputStream = blob.getBinaryStream();
-                image = new Image(inputStream);
-            }
-        } catch (SQLException e) {
-            logger.error("Exception in findImage(): ", e);
-        }
-        return image;
     }
 
     public Image findImageById(int imageId) {
