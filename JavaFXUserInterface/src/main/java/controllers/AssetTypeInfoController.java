@@ -46,6 +46,8 @@ public class AssetTypeInfoController extends Controller implements Initializable
     int trainSize = 0;
     int testSize = 0;
     @FXML
+    private Text title;
+    @FXML
     private Tab modelTab;
     @FXML
     private FlowPane modelsThumbPane;
@@ -59,8 +61,6 @@ public class AssetTypeInfoController extends Controller implements Initializable
     private TextField assetTypeName;
     @FXML
     private TextArea assetTypeDesc;
-    @FXML
-    private TextField thresholdOK;
     @FXML
     private TextField thresholdAdvisory;
     @FXML
@@ -127,6 +127,7 @@ public class AssetTypeInfoController extends Controller implements Initializable
      * @author Najim, Paul
      */
     public void initData(AssetTypeList assetType) {
+        title.setText("Edit " + assetType.getName());
         this.assetType = assetType;
         this.originalAssetType = new AssetTypeList(assetType);
         assetTypeName.setText(assetType.getAssetType().getName());
@@ -135,10 +136,8 @@ public class AssetTypeInfoController extends Controller implements Initializable
 
         // Initializing Data for the threshold text fields
         ObservableList<TextField> thresholdTextFieldList = FXCollections.observableArrayList();
-        thresholdTextFieldList.addAll(thresholdOK, thresholdAdvisory, thresholdCaution, thresholdWarning, thresholdFailed);
+        thresholdTextFieldList.addAll(thresholdAdvisory, thresholdCaution, thresholdWarning, thresholdFailed);
         try {
-            if (assetType.getValueOk() != null && !assetType.getValueOk().equalsIgnoreCase("null"))
-                thresholdOK.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueOk())));
             if (assetType.getValueAdvisory() != null && !assetType.getValueAdvisory().equalsIgnoreCase("null"))
                 thresholdAdvisory.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueAdvisory())));
             if (assetType.getValueCaution() != null && !assetType.getValueCaution().equalsIgnoreCase("null"))
@@ -195,12 +194,6 @@ public class AssetTypeInfoController extends Controller implements Initializable
             if (handleTextChange(newText, originalAssetType.getDescription()))
                 assetType.getAssetType().setDescription(newText);
         });
-
-        thresholdOK.textProperty().addListener((obs, oldText, newText) -> {
-            if (handleTextChange(newText, originalAssetType.getValueOk()))
-                assetType.setValueOk(newText);
-        });
-        thresholdOK.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
 
         thresholdAdvisory.textProperty().addListener((obs, oldText, newText) -> {
             if (handleTextChange(newText, originalAssetType.getValueAdvisory()))
