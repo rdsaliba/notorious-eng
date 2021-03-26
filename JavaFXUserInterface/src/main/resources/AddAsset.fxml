@@ -114,6 +114,8 @@
             <AnchorPane fx:id="inputError" layoutY="63.0" prefHeight="565.0" prefWidth="326.0"
                         stylesheets="@css/style.css" AnchorPane.leftAnchor="581.0">
             </AnchorPane>
+         <Button fx:id="uploadBtn" layoutX="600.0" layoutY="97.0" mnemonicParsing="false" text="Upload image" styleClass="uploadBtn"/>
+         <ImageView fx:id="imageView" fitHeight="150.0" fitWidth="200.0" layoutX="600.0" layoutY="150.0" pickOnBounds="true" preserveRatio="true" />
         </AnchorPane>
         <AnchorPane prefHeight="80.0" prefWidth="1135.0" styleClass="footerBar" AnchorPane.bottomAnchor="0.0"
                     AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">

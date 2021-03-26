@@ -11,10 +11,12 @@ package external;
 import app.item.Asset;
 import app.item.AssetAttribute;
 import app.item.AssetInfo;
+import javafx.scene.image.Image;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,10 +28,14 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
     private static final String GET_ASSET_INFO_FROM_ASSET_ID = "SELECT DISTINCT att.* FROM attribute_measurements am, attribute att WHERE att.attribute_id=am.attribute_id AND am.asset_id = ?";
     private static final String GET_LIVE_ASSETS_FROM_ASSET_TYPE_ID = "SELECT * FROM asset a WHERE a.archived = false AND a.asset_type_id = ?";
     private static final String GET_ARCHIVED_ASSETS_FROM_ASSET_TYPE_ID = "SELECT * FROM asset a WHERE a.archived = true AND a.asset_type_id = ?";
-    private static final String INSERT_ASSET = "INSERT INTO asset (name, asset_type_id, description, sn, manufacturer, category, site, location) values(?,?,?,?,?,?,?,?)";
+    private static final String INSERT_ASSET = "INSERT INTO asset (name, asset_type_id, description, sn, manufacturer, category, site, location, imageId) values(?,?,?,?,?,?,?,?,?)";
     private static final String SET_UPDATED_TRUE = "UPDATE asset set updated = 1 where asset_id = ?";
     private static final String GET_ATTRIBUTE_DETAILS_FROM_ASSET_ID = "SELECT att.* FROM attribute_measurements am, attribute att WHERE att.attribute_id=am.attribute_id AND am.asset_id = ? GROUP by attribute_id";
     private static final String UPDATE_ASSET_TO_ARCHIVED = "UPDATE asset set archived = true where asset_ID = ?";
+    private static final String STORE_IMAGE = "INSERT INTO picture (image, name) VALUES(?, ?)";
+    private static final String GET_IMAGE = "SELECT image FROM picture WHERE name = ?";
+    private static final String GET_IMAGE_BY_ID = "SELECT image FROM picture WHERE imageId = ?";
+    private static final String GET_IMAGE_BY_NAME = "SELECT imageId FROM picture WHERE name = ?";
 
     /**
      * When given an asset ID this will delete the the asset from the database as well as the corresponding
@@ -64,10 +70,71 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
             ps.setString(6, asset.getCategory());
             ps.setString(7, asset.getSite());
             ps.setString(8, asset.getLocation());
+            ps.setInt(9, asset.getImageId());
             ps.executeQuery();
         } catch (SQLException e) {
             logger.error("Exception in insertAsset(): ", e);
         }
+    }
+
+    public PreparedStatement storeImage(FileInputStream fileInputStream, String name) {
+        PreparedStatement ps = null;
+        try {
+            ps = getConnection().prepareStatement(STORE_IMAGE, Statement.RETURN_GENERATED_KEYS);
+            ps.setBinaryStream(1, fileInputStream, fileInputStream.available());
+            ps.setString(2, name);
+            ps.executeQuery();
+        } catch (SQLException | IOException e) {
+            logger.error("Exception in storeImage: ",  e);
+        }
+
+        return ps;
+    }
+
+    public Image findImage(String name) {
+        Image image = null;
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_IMAGE)) {
+            ps.setString(1, name); //pass the image Id to retrieve from the method
+            ResultSet resultSet = ps.executeQuery();
+            if(resultSet.first()) {
+                Blob blob = resultSet.getBlob(1);
+                InputStream inputStream = blob.getBinaryStream();
+                image = new Image(inputStream);
+            }
+        } catch (SQLException e) {
+            logger.error("Exception in findImage(): ", e);
+        }
+        return image;
+    }
+
+    public Image findImageById(int imageId) {
+        Image image = null;
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_IMAGE_BY_ID)) {
+            ps.setInt(1, imageId);
+            ResultSet resultSet = ps.executeQuery();
+            if(resultSet.first()) {
+                Blob blob = resultSet.getBlob(1);
+                InputStream inputStream = blob.getBinaryStream();
+                image = new Image(inputStream);
+            }
+        } catch (SQLException e) {
+            logger.error("Exception in findImageById(): ", e);
+        }
+        return image;
+    }
+
+    public int findImageIdByName(String name) {
+        int imageId = 0;
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_IMAGE_BY_NAME)) {
+            ps.setString(1, name);
+            ResultSet resultSet = ps.executeQuery();
+            if(resultSet.first()) {
+                imageId = resultSet.getInt("imageId");
+            }
+        } catch (SQLException e) {
+            logger.error("Exception in findImageIdByName(): ", e);
+        }
+        return imageId;
     }
 
     /**
@@ -201,6 +268,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         newAsset.setSite(assetsQuery.getString("site"));
         newAsset.setSerialNo(assetsQuery.getString("sn"));
         newAsset.setRecommendation(assetsQuery.getString("recommendation"));
+        newAsset.setImageId(assetsQuery.getInt("imageId"));
         newAsset.setAssetInfo(createAssetInfo(newAsset.getId()));
         return newAsset;
     }

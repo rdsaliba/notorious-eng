@@ -17,8 +17,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.util.StringConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +29,9 @@ import utilities.CustomDialog;
 import utilities.TextConstants;
 import utilities.UIUtilities;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -37,6 +43,8 @@ public class AddAssetController implements Initializable {
     Logger logger = LoggerFactory.getLogger(AddAssetController.class);
     boolean validForm = true;
 
+    @FXML
+    private Button uploadBtn;
     @FXML
     private Button cancelBtn;
     @FXML
@@ -61,10 +69,16 @@ public class AddAssetController implements Initializable {
     private TextField locationInput;
     @FXML
     private AnchorPane inputError;
+    @FXML
+    private ImageView imageView;
     private AssetDAOImpl assetDAOImpl;
     private AssetTypeDAOImpl assetTypeDAOImpl;
     private UIUtilities uiUtilities;
     private AssetType selectedAssetType;
+    private String imageName = "";
+    private boolean overrideImage = false;
+    FileInputStream fileInputStream = null;
+    private int imageId = 0;
 
     /**
      * Initialize runs before the scene is displayed.
@@ -96,12 +110,16 @@ public class AddAssetController implements Initializable {
         });
 
         saveBtn.setOnMouseClicked(mouseEvent -> {
+            imageValidation();
             Asset newAsset = assembleAsset();
             if (formInputValidation() && !isAssetEmpty(newAsset)) {
                 saveAsset(newAsset);
                 CustomDialog.addSystemControllerSaveDialog();
             }
         });
+
+        uploadBtn.setOnAction(e-> openImageFile());
+
         // Change scenes to Assets.fxml
         backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(TextConstants.ASSETS_SCENE, backBtn.getScene()));
         cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(TextConstants.ASSETS_SCENE, cancelBtn.getScene()));
@@ -146,7 +164,21 @@ public class AddAssetController implements Initializable {
         newAsset.setCategory(categoryInput.getText());
         newAsset.setSite(siteInput.getText());
         newAsset.setLocation(locationInput.getText());
+        setImage(newAsset);
+
         return newAsset;
+    }
+
+    private void setImage(Asset newAsset) {
+        //Case 1: User want to override the default image
+        if (overrideImage) {
+            newAsset.setImageId(assetDAOImpl.findImageIdByName(imageName));
+        }
+
+        //Case 2: User selected an image that already exists
+        if(imageId != 0) {
+            newAsset.setImageId(imageId);
+        }
     }
 
     /**
@@ -274,6 +306,45 @@ public class AddAssetController implements Initializable {
             validInput[0] = true;
             UIUtilities.removeInputError(inputError, errorMessages, validInput, assetNameInput, 0);
         }
+    }
+
+    private void imageValidation() {
+        imageId = assetDAOImpl.findImageIdByName(imageName);
+
+        if (imageId == 0 && !imageName.isEmpty()) {
+            uploadImage(fileInputStream);
+        }
+    }
+
+    private void openImageFile() {
+        FileChooser fileChooser = new FileChooser();
+        configureFileChooser(fileChooser);
+        File file = fileChooser.showOpenDialog(uploadBtn.getScene().getWindow());
+
+        if (file!=null) {
+            try {
+                fileInputStream = new FileInputStream(file);
+                imageName = file.getName();
+                Image image = new Image(fileInputStream);
+                imageView.setImage(image);
+            } catch (IOException e) {
+                logger.error("openImageFile() : " , e);
+            }
+        }
+    }
+
+    private void uploadImage(FileInputStream fileInputStream) {
+        assetDAOImpl.storeImage(fileInputStream, imageName);
+        overrideImage = true;
+    }
+
+    private void configureFileChooser(FileChooser fileChooser){
+        fileChooser.setTitle("View Images");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("All Images", "*.*"),
+                new FileChooser.ExtensionFilter("JPG", "*.jpg"),
+                new FileChooser.ExtensionFilter("PNG", "*.png")
+        );
     }
 
 }
