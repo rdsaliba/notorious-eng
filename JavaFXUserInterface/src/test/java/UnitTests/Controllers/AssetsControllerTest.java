@@ -27,7 +27,7 @@ public class AssetsControllerTest extends ApplicationTest {
         FXMLLoader fxmlLoader = new FXMLLoader(AssetsController.class.getResource("/Assets.fxml"));
         Parent root = fxmlLoader.load();
         scene = new Scene(root);
-        assetController = (AssetsController) fxmlLoader.getController();
+        assetController = fxmlLoader.getController();
         stage.setTitle("Minerva");
         stage.setScene(scene);
         stage.show();
@@ -54,9 +54,7 @@ public class AssetsControllerTest extends ApplicationTest {
         clickOn("#search").write("This is an invalid search");
         FlowPane rootNode = (FlowPane) scene.getRoot().lookup("#assetsThumbPane");
         verifyThat("#search", TextInputControlMatchers.hasText("This is an invalid search"));
-        interact(() -> {
-            assertNull(assetController.setAssetListToDisplay());
-        });
+        interact(() -> assertNull(assetController.setAssetListToDisplay()));
         assertFalse(rootNode.getChildren().size() > 0);
     }
 

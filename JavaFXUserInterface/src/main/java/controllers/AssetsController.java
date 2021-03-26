@@ -225,6 +225,8 @@ public class AssetsController implements Initializable {
         search.textProperty().addListener((observable, oldValue, newValue) -> {
             searchedAssets.clear();
             if (!newValue.equals("")) {
+                //For each asset, we determine if the value from the search is found in the asset's member variables.
+                //Member variables: Rul, name, description, serial number, manufacturer, category, site, location, recommendation and asset type name
                 assets.stream().filter(o -> StringUtils.containsIgnoreCase(o.getRul().get(), newValue) || StringUtils.containsIgnoreCase(o.getName(), newValue)
                         || StringUtils.containsIgnoreCase(o.getDescription(), newValue) || StringUtils.containsIgnoreCase(o.getSerialNo(), newValue)
                         || StringUtils.containsIgnoreCase(o.getManufacturer(), newValue) || StringUtils.containsIgnoreCase(o.getCategory(), newValue)
@@ -244,7 +246,7 @@ public class AssetsController implements Initializable {
             if (assetsTabPane.getSelectionModel().getSelectedItem().getId().equals("thumbnailTab")) {
                 assetsThumbPane.getChildren().clear();
                 generateThumbnails();
-            } else {
+            } else if (assetsTabPane.getSelectionModel().getSelectedItem().getId().equals("listTab")) {
                 assetsListPane.getChildren().clear();
                 generateList();
             }
