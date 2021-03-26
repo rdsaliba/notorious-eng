@@ -48,6 +48,7 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -259,6 +260,7 @@ public class AssetInfoController implements Initializable {
                 final int j = i;
                 TableColumn<ObservableList<String>, String> col = new TableColumn<>(resultSet.getMetaData().getColumnName(i + 1));
                 col.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(j)));
+                col.setComparator(Comparator.comparingDouble(Double::parseDouble));
                 tableview.getColumns().addAll(col);
             }
 
