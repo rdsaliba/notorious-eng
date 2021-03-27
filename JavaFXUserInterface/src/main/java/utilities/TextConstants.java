@@ -53,7 +53,6 @@ public class TextConstants {
     public static final String ADVISORY_FAILED = "The Advisory Threshold needs to be larger \nthan the Failed Threshold";
     public static final String CAUTION_FAILED = "The Caution Threshold needs to be larger \nthan the Failed Threshold";
     public static final String WARNING_FAILED = "The Warning Threshold needs to be larger \nthan the Failed Threshold";
-    public static final String AND_OR = " and/or \n";
 
     private TextConstants() {
         throw new IllegalStateException("Utility class");
