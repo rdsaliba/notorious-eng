@@ -16,7 +16,6 @@ import static local.DAO.logger;
 import static utilities.TextConstants.*;
 
 public class FormInputValidation {
-    private final static int INPUT_VALIDATION_V_GAP = 10;
     private final static int INPUT_VALIDATION_H_GAP = 10;
     private final static int MAX_NB_TEXT_INPUT_CONTROL = 7;
     private final static Text[] INPUT_VALIDATION_MESSAGES = new Text[MAX_NB_TEXT_INPUT_CONTROL];
@@ -52,9 +51,10 @@ public class FormInputValidation {
      * @author Najim
      */
     public static void createInputError(AnchorPane inputValidationAnchorPane, Text[] errorMessages, TextInputControl field, String msg, int i) {
+        double inputValidationVGap = field.getHeight() / 2;
         if (errorMessages[i] == null) {
             errorMessages[i] = new Text(msg);
-            errorMessages[i].setLayoutY(field.getLayoutY() + INPUT_VALIDATION_V_GAP);
+            errorMessages[i].setLayoutY(field.getLayoutY() + inputValidationVGap);
             errorMessages[i].setLayoutX(field.getLayoutX() + field.getWidth() + INPUT_VALIDATION_H_GAP);
             errorMessages[i].getStyleClass().add(ERROR_MESSAGE);
 
@@ -209,37 +209,55 @@ public class FormInputValidation {
     }
 
     private static void locationValidation(AnchorPane textInputControlAnchorPane, TextInputControl locationInput, String regexWordAndHyphen, int index) {
-        if (locationInput.getText().length() > 20 || !locationInput.getText().trim().matches(regexWordAndHyphen)) {
+        if (locationInput.getText().length() > 20) {
             assetValidForm = false;
-            createInputError(textInputControlAnchorPane, FormInputValidation.INPUT_VALIDATION_MESSAGES, locationInput, MAX_20_CHARACTERS_ERROR + AND_OR + WORD_HYPHEN_ERROR, index);
+            createInputError(textInputControlAnchorPane, FormInputValidation.INPUT_VALIDATION_MESSAGES, locationInput, MAX_20_CHARACTERS_ERROR, index);
+        } else if (!locationInput.getText().trim().matches(regexWordAndHyphen)) {
+            assetValidForm = false;
+            createInputError(textInputControlAnchorPane, FormInputValidation.INPUT_VALIDATION_MESSAGES, locationInput, WORD_HYPHEN_ERROR, index);
         }
     }
 
     private static void siteValidation(AnchorPane textInputControlAnchorPane, TextInputControl siteInput, String regexWordAndHyphen, int index) {
         if (siteInput.getText().length() > 20 || !siteInput.getText().trim().matches(regexWordAndHyphen)) {
             assetValidForm = false;
-            createInputError(textInputControlAnchorPane, FormInputValidation.INPUT_VALIDATION_MESSAGES, siteInput, MAX_20_CHARACTERS_ERROR + AND_OR + WORD_HYPHEN_ERROR, index);
+            createInputError(textInputControlAnchorPane, FormInputValidation.INPUT_VALIDATION_MESSAGES, siteInput, MAX_20_CHARACTERS_ERROR, index);
+        } else if (!siteInput.getText().trim().matches(regexWordAndHyphen)) {
+            assetValidForm = false;
+            createInputError(textInputControlAnchorPane, FormInputValidation.INPUT_VALIDATION_MESSAGES, siteInput, WORD_HYPHEN_ERROR, index);
         }
     }
 
     private static void categoryValidation(AnchorPane textInputControlAnchorPane, TextInputControl categoryInput, String regexLettersAndHyphen, int index) {
-        if (categoryInput.getText().length() > 20 || !categoryInput.getText().trim().matches(regexLettersAndHyphen)) {
+        if (categoryInput.getText().length() > 20) {
             assetValidForm = false;
-            createInputError(textInputControlAnchorPane, FormInputValidation.INPUT_VALIDATION_MESSAGES, categoryInput, MAX_20_CHARACTERS_ERROR + AND_OR + LETTER_NUMBER_ERROR, index);
+            createInputError(textInputControlAnchorPane, FormInputValidation.INPUT_VALIDATION_MESSAGES, categoryInput, MAX_20_CHARACTERS_ERROR, index);
+        } else if (!categoryInput.getText().trim().matches(regexLettersAndHyphen)) {
+            assetValidForm = false;
+            createInputError(textInputControlAnchorPane, FormInputValidation.INPUT_VALIDATION_MESSAGES, categoryInput, LETTER_NUMBER_ERROR, index);
         }
     }
 
     private static void manufacturerValidation(AnchorPane textInputControlAnchorPane, TextInputControl manufacturerInput, String regexWordAndHyphen, int index) {
-        if (manufacturerInput.getText().length() > 20 || !manufacturerInput.getText().trim().matches(regexWordAndHyphen)) {
+        if (manufacturerInput.getText().length() > 20) {
             assetValidForm = false;
-            createInputError(textInputControlAnchorPane, FormInputValidation.INPUT_VALIDATION_MESSAGES, manufacturerInput, MAX_20_CHARACTERS_ERROR + AND_OR + WORD_HYPHEN_ERROR, index);
+            createInputError(textInputControlAnchorPane, FormInputValidation.INPUT_VALIDATION_MESSAGES, manufacturerInput, MAX_20_CHARACTERS_ERROR, index);
+        } else if (!manufacturerInput.getText().trim().matches(regexWordAndHyphen)) {
+            assetValidForm = false;
+            createInputError(textInputControlAnchorPane, FormInputValidation.INPUT_VALIDATION_MESSAGES, manufacturerInput, WORD_HYPHEN_ERROR, index);
         }
     }
 
     private static void serialNumberValidation(AnchorPane textInputControlAnchorPane, TextInputControl serialNumberInput, String regexWordAndHyphen, int index) {
-        if (serialNumberInput.getText().trim().isEmpty() || serialNumberInput.getText().length() > 20 || !serialNumberInput.getText().trim().matches(regexWordAndHyphen)) {
+        if (serialNumberInput.getText().trim().isEmpty()) {
             assetValidForm = false;
-            createInputError(textInputControlAnchorPane, FormInputValidation.INPUT_VALIDATION_MESSAGES, serialNumberInput, EMPTY_FIELD_ERROR + AND_OR + MAX_20_CHARACTERS_ERROR + AND_OR + WORD_HYPHEN_ERROR, index);
+            createInputError(textInputControlAnchorPane, FormInputValidation.INPUT_VALIDATION_MESSAGES, serialNumberInput, EMPTY_FIELD_ERROR, index);
+        } else if (serialNumberInput.getText().length() > 20) {
+            assetValidForm = false;
+            createInputError(textInputControlAnchorPane, FormInputValidation.INPUT_VALIDATION_MESSAGES, serialNumberInput, MAX_20_CHARACTERS_ERROR, index);
+        } else if (!serialNumberInput.getText().trim().matches(regexWordAndHyphen)) {
+            assetValidForm = false;
+            createInputError(textInputControlAnchorPane, FormInputValidation.INPUT_VALIDATION_MESSAGES, serialNumberInput, WORD_HYPHEN_ERROR, index);
         }
     }
 
