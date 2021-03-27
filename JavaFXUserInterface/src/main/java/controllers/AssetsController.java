@@ -15,6 +15,7 @@ import external.AssetTypeDAOImpl;
 import external.ModelDAOImpl;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
+import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -83,6 +84,7 @@ public class AssetsController implements Initializable {
     private UIUtilities uiUtilities;
     private ObservableList<Asset> assets;
     private ObservableList<Asset> searchedAssets;
+    private PauseTransition delaySearch;
     private Timeline rulTimeline;
 
     public AssetsController() {
@@ -142,14 +144,19 @@ public class AssetsController implements Initializable {
      * @author Jeff
      */
     public void attachEvents() {
+
         thumbnailTab.setOnSelectionChanged(event -> {
-            assetsThumbPane.getChildren().clear();
-            generateThumbnails();
+            if (thumbnailTab.isSelected()) {
+                assetsThumbPane.getChildren().clear();
+                generateThumbnails();
+            }
         });
 
         listTab.setOnSelectionChanged(event -> {
-            assetsListPane.getChildren().clear();
-            generateList();
+            if (listTab.isSelected()) {
+                assetsListPane.getChildren().clear();
+                generateList();
+            }
         });
 
         //Attach link to addAssetButton to go to AddAsset.fxml
@@ -176,31 +183,31 @@ public class AssetsController implements Initializable {
                 switch (newValue) {
                     case SORT_DEFAULT:
                         FXCollections.sort(assets, Comparator.comparingInt(Item::getId));
-                        if (!search.getText().trim().isEmpty()) {
+                        if (!search.getText().trim().isEmpty() && !searchedAssets.isEmpty()) {
                             FXCollections.sort(searchedAssets, Comparator.comparingInt(Item::getId));
                         }
                         break;
                     case SORT_RUL_ASC:
                         FXCollections.sort(assets, Comparator.comparing(asset -> Double.valueOf(asset.getRul().getValue())));
-                        if (!search.getText().trim().isEmpty()) {
+                        if (!search.getText().trim().isEmpty() && !searchedAssets.isEmpty()) {
                             FXCollections.sort(searchedAssets, Comparator.comparing(asset -> Double.valueOf(asset.getRul().getValue())));
                         }
                         break;
                     case SORT_RUL_DESC:
                         FXCollections.sort(assets, (asset, t1) -> Double.valueOf(t1.getRul().getValue()).compareTo(Double.valueOf(asset.getRul().getValue())));
-                        if (!search.getText().trim().isEmpty()) {
+                        if (!search.getText().trim().isEmpty() && !searchedAssets.isEmpty()) {
                             FXCollections.sort(searchedAssets, (asset, t1) -> Double.valueOf(t1.getRul().getValue()).compareTo(Double.valueOf(asset.getRul().getValue())));
                         }
                         break;
                     case SORT_CRITICAL_ASC:
                         FXCollections.sort(assets, Comparator.comparingInt(Asset::mapCriticality));
-                        if (!search.getText().trim().isEmpty()) {
+                        if (!search.getText().trim().isEmpty() && !searchedAssets.isEmpty()) {
                             FXCollections.sort(searchedAssets, Comparator.comparingInt(Asset::mapCriticality));
                         }
                         break;
                     case SORT_CRITICAL_DESC:
                         FXCollections.sort(assets, (asset, t1) -> Integer.compare(t1.mapCriticality(), asset.mapCriticality()));
-                        if (!search.getText().trim().isEmpty()) {
+                        if (!search.getText().trim().isEmpty() && !searchedAssets.isEmpty()) {
                             FXCollections.sort(searchedAssets, (asset, t1) -> Integer.compare(t1.mapCriticality(), asset.mapCriticality()));
                         }
                         break;
@@ -222,34 +229,37 @@ public class AssetsController implements Initializable {
      */
     private void searchAssets() {
         searchedAssets = FXCollections.observableArrayList();
+        delaySearch = new PauseTransition(Duration.seconds(0.25));
         search.textProperty().addListener((observable, oldValue, newValue) -> {
-            searchedAssets.clear();
-            if (!newValue.equals("")) {
-                //For each asset, we determine if the value from the search is found in the asset's member variables.
-                //Member variables: Rul, name, description, serial number, manufacturer, category, site, location, recommendation and asset type name
-                assets.stream().filter(o -> StringUtils.containsIgnoreCase(o.getRul().get(), newValue) || StringUtils.containsIgnoreCase(o.getName(), newValue)
-                        || StringUtils.containsIgnoreCase(o.getDescription(), newValue) || StringUtils.containsIgnoreCase(o.getSerialNo(), newValue)
-                        || StringUtils.containsIgnoreCase(o.getManufacturer(), newValue) || StringUtils.containsIgnoreCase(o.getCategory(), newValue)
-                        || StringUtils.containsIgnoreCase(o.getSite(), newValue) || StringUtils.containsIgnoreCase(o.getLocation(), newValue)
-                        || StringUtils.containsIgnoreCase(o.getRecommendation(), newValue) || StringUtils.containsIgnoreCase(assetTypeDAO.getNameFromID(o.getAssetTypeID()), newValue)).forEach(
-                        searchedAssets::add //Assets matched with search are added to the searchAssets list
-                );
-                if (searchedAssets.isEmpty()) {
-                    searchMatch = "No Match";
+            delaySearch.setOnFinished(event -> {
+                searchedAssets.clear();
+                if (!newValue.equals("")) {
+                    //For each asset, we determine if the value from the search is found in the asset's member variables.
+                    //Member variables: Rul, name, description, serial number, manufacturer, category, site, location, recommendation and asset type name
+                    assets.stream().filter(o -> StringUtils.containsIgnoreCase(o.getRul().get(), newValue) || StringUtils.containsIgnoreCase(o.getName(), newValue)
+                            || StringUtils.containsIgnoreCase(o.getDescription(), newValue) || StringUtils.containsIgnoreCase(o.getSerialNo(), newValue)
+                            || StringUtils.containsIgnoreCase(o.getManufacturer(), newValue) || StringUtils.containsIgnoreCase(o.getCategory(), newValue)
+                            || StringUtils.containsIgnoreCase(o.getSite(), newValue) || StringUtils.containsIgnoreCase(o.getLocation(), newValue)
+                            || StringUtils.containsIgnoreCase(o.getRecommendation(), newValue) || StringUtils.containsIgnoreCase(assetTypeDAO.getNameFromID(o.getAssetTypeID()), newValue)).forEach(
+                            searchedAssets::add //Assets matched with search are added to the searchAssets list
+                    );
+                    if (searchedAssets.isEmpty()) {
+                        searchMatch = "No Match";
+                    } else {
+                        searchMatch = "Match";
+                    }
                 } else {
-                    searchMatch = "Match";
+                    searchMatch = "No Search";
                 }
-            } else {
-                searchMatch = "No Search";
-            }
-
-            if (assetsTabPane.getSelectionModel().getSelectedItem().getId().equals("thumbnailTab")) {
-                assetsThumbPane.getChildren().clear();
-                generateThumbnails();
-            } else if (assetsTabPane.getSelectionModel().getSelectedItem().getId().equals("listTab")) {
-                assetsListPane.getChildren().clear();
-                generateList();
-            }
+                if (assetsTabPane.getSelectionModel().getSelectedItem().getId().equals("thumbnailTab")) {
+                    assetsThumbPane.getChildren().clear();
+                    generateThumbnails();
+                } else if (assetsTabPane.getSelectionModel().getSelectedItem().getId().equals("listTab")) {
+                    assetsListPane.getChildren().clear();
+                    generateList();
+                }
+            });
+            delaySearch.playFromStart();
         });
     }
 
@@ -371,9 +381,18 @@ public class AssetsController implements Initializable {
 
                 boxes.add(pane);
             }
-        }
+            assetsThumbPane.getChildren().addAll(boxes);
+        } else {
+            Text noResult = new Text("No results found");
+            noResult.getStyleClass().add("noResult");
 
-        assetsThumbPane.getChildren().addAll(boxes);
+            HBox noResultPane = new HBox();
+            noResultPane.getStyleClass().add("noResultPane");
+            noResultPane.setAlignment(Pos.CENTER);
+            noResultPane.getChildren().add(noResult);
+
+            assetsThumbPane.getChildren().add(noResultPane);
+        }
     }
 
     /**
@@ -431,16 +450,15 @@ public class AssetsController implements Initializable {
         descriptionCol.setCellValueFactory(
                 new PropertyValueFactory<>("description"));
 
-        if (assetsDisplayed != null) {
-            table.setItems(assetsDisplayed);
-            table.setId("listTable");
-            table.getColumns().addAll(assetTypeCol, serialNoCol, modelCol, modelRULCol, recommendationCol, locationCol, siteCol, categoryCol, manufacturerCol, descriptionCol);
-            AnchorPane.setBottomAnchor(table, 0.0);
-            AnchorPane.setTopAnchor(table, 5.0);
-            AnchorPane.setRightAnchor(table, 0.0);
-            AnchorPane.setLeftAnchor(table, 0.0);
-            assetsListPane.getChildren().addAll(table);
-        }
+        table.setPlaceholder(new Label("No results found"));
+        table.setItems(assetsDisplayed);
+        table.setId("listTable");
+        table.getColumns().addAll(assetTypeCol, serialNoCol, modelCol, modelRULCol, recommendationCol, locationCol, siteCol, categoryCol, manufacturerCol, descriptionCol);
+        AnchorPane.setBottomAnchor(table, 0.0);
+        AnchorPane.setTopAnchor(table, 5.0);
+        AnchorPane.setRightAnchor(table, 0.0);
+        AnchorPane.setLeftAnchor(table, 0.0);
+        assetsListPane.getChildren().addAll(table);
     }
 
 }
