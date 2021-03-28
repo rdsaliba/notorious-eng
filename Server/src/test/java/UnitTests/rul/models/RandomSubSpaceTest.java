@@ -3,7 +3,6 @@ package UnitTests.rul.models;
 import app.item.parameter.FloatParameter;
 import app.item.parameter.IntParameter;
 import app.item.parameter.Parameter;
-import app.item.parameter.StringParameter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +23,7 @@ public class RandomSubSpaceTest {
     private FloatParameter subSpaceSizePara;
     private IntParameter numExecutionSlotsPara;
     private IntParameter numIterationsPara;
-    private StringParameter batchSizePara;
+    private IntParameter batchSizePara;
     private Map<String, Parameter> parameters;
 
     @Before
@@ -33,7 +32,7 @@ public class RandomSubSpaceTest {
         subSpaceSizePara = new FloatParameter("SubSpace Size", 0.4F);
         numExecutionSlotsPara = new IntParameter("Number of Execution Slots", 2);
         numIterationsPara = new IntParameter("Number of Iterations", 15);
-        batchSizePara = new StringParameter("Batch Size", "333");
+        batchSizePara = new IntParameter("Batch Size", 333);
 
         parameters = new HashMap();
         parameters.put(subSpaceSizePara.getParamName(), subSpaceSizePara);
@@ -50,27 +49,26 @@ public class RandomSubSpaceTest {
     @Test
     public void trainModel() throws Exception {
         FileReader trainFile = new FileReader("src/test/resources/FD01_Train_RUL.arff");
-        Instances  trainData = new Instances(trainFile);
+        Instances trainData = new Instances(trainFile);
         trainData.setClassIndex(trainData.numAttributes() - 1);
 
         Classifier randomSubSpace = new RandomSubSpace();
         assertEquals("Should Return Random SubSpace Model", randomSubSpace.getClass(),
-                     modelsController.trainModel(trainData).getClass());
+                modelsController.trainModel(trainData).getClass());
     }
 
     @Test
-    public void updateParam() throws Exception
-    {
+    public void updateParam() throws Exception {
         FileReader trainFile = new FileReader("src/test/resources/FD01_Train_RUL.arff");
-        Instances  trainData = new Instances(trainFile);
+        Instances trainData = new Instances(trainFile);
         trainData.setClassIndex(trainData.numAttributes() - 1);
 
         modelsController.setParameters(parameters);
         modelsController.trainModel(trainData);
 
-        assertEquals("Asserting the BatchSize parameter was changed", ((RandomSubSpaceModelImpl) modelsController.getModelStrategy()).getRandomSubSpaceObject().getBatchSize(), batchSizePara.getStringValue());
+        assertEquals("Asserting the BatchSize parameter was changed", ((RandomSubSpaceModelImpl) modelsController.getModelStrategy()).getRandomSubSpaceObject().getBatchSize(), String.valueOf(batchSizePara.getIntValue()));
         assertEquals("Asserting the NumExecutionSlots parameter was changed", ((RandomSubSpaceModelImpl) modelsController.getModelStrategy()).getRandomSubSpaceObject().getNumExecutionSlots(), numExecutionSlotsPara.getIntValue());
-        assertEquals("Asserting the NumIterations parameter was changed",((RandomSubSpaceModelImpl) modelsController.getModelStrategy()).getRandomSubSpaceObject().getNumIterations(), numIterationsPara.getIntValue());
-        assertEquals("Asserting the SubSpaceSize parameter was changed",((RandomSubSpaceModelImpl) modelsController.getModelStrategy()).getRandomSubSpaceObject().getSubSpaceSize(), subSpaceSizePara.getFloatValue(), 0.1);
+        assertEquals("Asserting the NumIterations parameter was changed", ((RandomSubSpaceModelImpl) modelsController.getModelStrategy()).getRandomSubSpaceObject().getNumIterations(), numIterationsPara.getIntValue());
+        assertEquals("Asserting the SubSpaceSize parameter was changed", ((RandomSubSpaceModelImpl) modelsController.getModelStrategy()).getRandomSubSpaceObject().getSubSpaceSize(), subSpaceSizePara.getFloatValue(), 0.1);
     }
 }

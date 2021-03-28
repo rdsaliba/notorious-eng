@@ -72,7 +72,8 @@ public class CustomDialog extends Stage {
         });
         dialog.openDialog();
     }
-    public static void nullModelAlert(){
+
+    public static void nullModelAlert() {
         CustomDialog dialog = new CustomDialog(TextConstants.NO_MODEL_ALERT_HEADER, TextConstants.NO_MODEL_ALERT_CONTENT);
         dialog.getOkButton().setOnAction(e -> {
             uiUtilities.changeScene(TextConstants.ASSET_TYPE_INFO_SCENE, dialog.getScene());

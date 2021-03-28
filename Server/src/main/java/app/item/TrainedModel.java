@@ -9,19 +9,18 @@ package app.item;
 import rul.models.ModelStrategy;
 import weka.classifiers.Classifier;
 
-public class TrainedModel {
-    private int modelID;
+public class TrainedModel extends Model {
     private int assetTypeID;
     private boolean retrain;
     private int statusID;
     private ModelStrategy modelStrategy;
 
-    public int getModelID() {
-        return modelID;
+    public TrainedModel() {
+        super();
     }
 
-    public void setModelID(int modelID) {
-        this.modelID = modelID;
+    public TrainedModel(String modelName, int modelID, String description) {
+        super(modelName, modelID, description);
     }
 
     public int getAssetTypeID() {
@@ -67,7 +66,6 @@ public class TrainedModel {
     @Override
     public String toString() {
         return "TrainedModel{" +
-                "modelID=" + modelID +
                 ", assetTypeID=" + assetTypeID +
                 ", retrain=" + retrain +
                 ", modelClassifier=" + modelStrategy +

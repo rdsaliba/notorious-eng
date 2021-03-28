@@ -24,7 +24,7 @@ import java.util.ResourceBundle;
 
 import static utilities.TextConstants.*;
 
-public class AddAssetTypeController implements Initializable {
+public class AddAssetTypeController extends Controller implements Initializable {
 
     @FXML
     private Button cancelBtn;

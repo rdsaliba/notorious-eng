@@ -10,6 +10,8 @@ package controllers;
 
 import app.item.Asset;
 import app.item.Model;
+import app.item.TrainedModel;
+import app.item.parameter.*;
 import external.AssetDAOImpl;
 import external.AssetTypeDAOImpl;
 import external.ModelDAOImpl;
@@ -23,10 +25,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import org.slf4j.Logger;
@@ -35,12 +34,11 @@ import rul.models.ModelStrategy;
 import utilities.*;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 
-public class AssetTypeInfoController implements Initializable {
+import static utilities.TextConstants.*;
+
+public class AssetTypeInfoController extends Controller implements Initializable {
     private static final String RMSE = "RMSE";
     static Logger logger = LoggerFactory.getLogger(AssetTypeInfoController.class);
     private final ModelPanes modelPanes = new ModelPanes();
@@ -85,10 +83,19 @@ public class AssetTypeInfoController implements Initializable {
     @FXML
     private Button modelSaveBtn;
     @FXML
+    private Button resetBtn;
+    @FXML
+    private Button modelDefaultBtn;
+    @FXML
     private ArrayList<Button> evaluateButtons;
     @FXML
     private Label associatedModelLabel;
-    private ObservableList<Model> modelObservableList;
+    @FXML
+    private VBox modelParameters;
+
+    private ObservableList<TrainedModel> modelObservableList;
+    private int associatedModelID;
+
     private UIUtilities uiUtilities;
     private AssetTypeList assetType;
     private AssetTypeList originalAssetType;
@@ -131,13 +138,13 @@ public class AssetTypeInfoController implements Initializable {
         thresholdTextFieldList.addAll(thresholdAdvisory, thresholdCaution, thresholdWarning, thresholdFailed);
         try {
             if (assetType.getValueAdvisory() != null && !assetType.getValueAdvisory().equalsIgnoreCase("null"))
-                thresholdAdvisory.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueAdvisory())));
+                thresholdAdvisory.setText(ThresholdValueFormat.format(Double.parseDouble(assetType.getValueAdvisory())));
             if (assetType.getValueCaution() != null && !assetType.getValueCaution().equalsIgnoreCase("null"))
-                thresholdCaution.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueCaution())));
+                thresholdCaution.setText(ThresholdValueFormat.format(Double.parseDouble(assetType.getValueCaution())));
             if (assetType.getValueWarning() != null && !assetType.getValueWarning().equalsIgnoreCase("null"))
-                thresholdWarning.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueWarning())));
+                thresholdWarning.setText(ThresholdValueFormat.format(Double.parseDouble(assetType.getValueWarning())));
             if (assetType.getValueFailed() != null && !assetType.getValueFailed().equalsIgnoreCase("null"))
-                thresholdFailed.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueFailed())));
+                thresholdFailed.setText(ThresholdValueFormat.format(Double.parseDouble(assetType.getValueFailed())));
         } catch (NumberFormatException e) {
             logger.error("NumberFormatException error inside initData");
             logger.error("Exception initData(): ", e);
@@ -145,8 +152,6 @@ public class AssetTypeInfoController implements Initializable {
         for (TextField thresholdTextField : thresholdTextFieldList) {
             thresholdTextField.setPromptText("No current value for " + thresholdTextField.getId() + ". Please enter a value.");
         }
-
-        updateRMSE();
     }
 
     /**
@@ -157,7 +162,7 @@ public class AssetTypeInfoController implements Initializable {
      */
     public void attachEvents() {
         // Change scenes to Assets.fxml
-        backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(TextConstants.ASSET_TYPE_LIST_SCENE, backBtn.getScene()));
+        backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(ASSET_TYPE_LIST_SCENE, backBtn.getScene()));
 
         infoDeleteBtn.setOnMouseClicked(mouseEvent -> CustomDialog.systemTypeInfoControllerDialog(assetType.getId()));
 
@@ -165,7 +170,7 @@ public class AssetTypeInfoController implements Initializable {
         infoSaveBtn.setOnMouseClicked(mouseEvent -> {
             if (FormInputValidation.assetTypeFormInputValidation(assetTypeInformationAnchorPane, assetTypeName, assetTypeDescription, thresholdAdvisory, thresholdCaution, thresholdWarning, thresholdFailed)) {
                 assetTypeDAO.updateAssetType(assetType.toAssetType());
-                uiUtilities.changeScene(TextConstants.ASSET_TYPE_LIST_SCENE, infoSaveBtn.getScene());
+                uiUtilities.changeScene(ASSET_TYPE_LIST_SCENE, infoSaveBtn.getScene());
             }
         });
 
@@ -193,25 +198,25 @@ public class AssetTypeInfoController implements Initializable {
             if (handleTextChange(newText, originalAssetType.getValueAdvisory()))
                 assetType.setValueAdvisory(newText);
         });
-        thresholdAdvisory.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(TextConstants.ThresholdValueFormat, c)));
+        thresholdAdvisory.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(ThresholdValueFormat, c)));
 
         thresholdCaution.textProperty().addListener((obs, oldText, newText) -> {
             if (handleTextChange(newText, originalAssetType.getValueCaution()))
                 assetType.setValueCaution(newText);
         });
-        thresholdCaution.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(TextConstants.ThresholdValueFormat, c)));
+        thresholdCaution.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(ThresholdValueFormat, c)));
 
         thresholdWarning.textProperty().addListener((obs, oldText, newText) -> {
             if (handleTextChange(newText, originalAssetType.getValueWarning()))
                 assetType.setValueWarning(newText);
         });
-        thresholdWarning.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(TextConstants.ThresholdValueFormat, c)));
+        thresholdWarning.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(ThresholdValueFormat, c)));
 
         thresholdFailed.textProperty().addListener((obs, oldText, newText) -> {
             if (handleTextChange(newText, originalAssetType.getValueFailed()))
                 assetType.setValueFailed(newText);
         });
-        thresholdFailed.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(TextConstants.ThresholdValueFormat, c)));
+        thresholdFailed.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(ThresholdValueFormat, c)));
     }
 
     /**
@@ -220,7 +225,6 @@ public class AssetTypeInfoController implements Initializable {
      * @author Talal, Jeremie
      */
     private void initializeModelTab() {
-        modelSaveBtn.setDisable(true);
         evaluateAllModelsBtn.setDisable(true);
         evaluateButtons = new ArrayList<>();
         evaluateButtons.add(evaluateAllModelsBtn);
@@ -228,13 +232,16 @@ public class AssetTypeInfoController implements Initializable {
         setTestAndTrainSliders();
 
         try {
-            modelObservableList = FXCollections.observableArrayList(modelDAO.getAllModelsForEvaluation(Integer.parseInt(assetType.getId())));
+            modelObservableList = FXCollections.observableArrayList(modelDAO.getModelsByAssetTypeID(assetType.getId(), Constants.STATUS_EVALUATION));
+            associatedModelID = modelDAO.getModelIDAssociatedWithAssetType(assetType.getId());
         } catch (Exception e) {
             logger.error("Exception in getting all the models list", e);
         }
         modelsThumbPane.getChildren().clear();
         generateThumbnails();
         attachEventsModelTab();
+
+        updateRMSE();
     }
 
     /**
@@ -254,11 +261,13 @@ public class AssetTypeInfoController implements Initializable {
         testValue.setText(String.valueOf(testSlider.getValue()));
 
         trainSlider.valueProperty().addListener((observableValue, number, t1) -> {
+            trainSlider.setValue(t1.intValue());
             trainValue.setText(Integer.toString((int) trainSlider.getValue()));
             testSlider.setMax(nbOfAssets - trainSlider.getValue());
             trainSize = (int) trainSlider.getValue();
         });
         testSlider.valueProperty().addListener((observableValue, number, t1) -> {
+            testSlider.setValue(t1.intValue());
             testValue.setText(Integer.toString((int) testSlider.getValue()));
             trainSlider.setMax(nbOfAssets - testSlider.getValue());
             testSize = (int) testSlider.getValue();
@@ -272,13 +281,29 @@ public class AssetTypeInfoController implements Initializable {
      */
     private void attachEventsModelTab() {
         modelSaveBtn.setOnMouseClicked(mouseEvent -> {
+            modelObservableList.stream()
+                    .filter(trainedModel -> trainedModel.getModelID() == modelPanes.getSelectedModel().getModelID())
+                    .findFirst().ifPresent(selected -> {
+                selected.getModelStrategy().setParameters(selected.getModelStrategy().getParameters());
+                modelDAO.updateModelStrategy(selected.getModelStrategy(), selected.getModelID(), selected.getAssetTypeID());
+            });
             saveSelectedModelAssociation();
-            uiUtilities.changeScene(TextConstants.ASSET_TYPE_LIST_SCENE, modelSaveBtn.getScene());
+            uiUtilities.changeScene(ASSET_TYPE_LIST_SCENE, modelSaveBtn.getScene());
         });
+        resetBtn.setOnMouseClicked(mouseEvent -> modelObservableList.stream()
+                .filter(trainedModel -> trainedModel.getModelID() == modelPanes.getSelectedModel().getModelID())
+                .findFirst().ifPresent(selected -> {
+                    selected.setModelStrategy((modelDAO.getModelStrategy(selected.getModelID(), selected.getAssetTypeID())));
+                    generateParameters(selected, false);
+                }));
+        modelDefaultBtn.setOnMouseClicked(mouseEvent -> modelObservableList.stream()
+                .filter(trainedModel -> trainedModel.getModelID() == modelPanes.getSelectedModel().getModelID())
+                .findFirst()
+                .ifPresent(selected -> generateParameters(selected, true)));
 
         try {
             evaluateAllModelsBtn.setOnMouseClicked(mouseEvent -> {
-                for (Model model : modelObservableList) {
+                for (TrainedModel model : modelObservableList) {
                     saveModelToEvaluate(model);
                 }
             });
@@ -288,6 +313,15 @@ public class AssetTypeInfoController implements Initializable {
 
         trainSlider.setOnMouseClicked(mouseEvent -> enableEvaluation(evaluateButtons));
         testSlider.setOnMouseClicked(mouseEvent -> enableEvaluation(evaluateButtons));
+
+        modelsThumbPane.widthProperty().addListener((obs, oldVal, newVal) -> {
+            double modelFlowWidth = (double) newVal - 22;
+            int nbOfPanes = (int) (modelFlowWidth / 247);
+            modelFlowWidth = (modelFlowWidth % 247);
+            modelFlowWidth = modelFlowWidth / (nbOfPanes - 1);
+            modelsThumbPane.setHgap(modelFlowWidth);
+        });
+
     }
 
     /**
@@ -298,14 +332,15 @@ public class AssetTypeInfoController implements Initializable {
      * @param model is the model to be evaluated
      * @author Talal, Jeremie
      */
-    public void saveModelToEvaluate(Model model) {
+    public void saveModelToEvaluate(TrainedModel model) {
         int assetTypeID = Integer.parseInt(assetType.getId());
         int trainAssets = (int) trainSlider.getValue() + 1;
         int testAssets = (int) trainSlider.getValue() + 1 + (int) testSlider.getValue();
-        ModelStrategy modelStrategy = modelDAO.getModelStrategy(model.getModelID(), assetTypeID);
+        ModelStrategy modelStrategy = model.getModelStrategy();
         if (!Objects.isNull(modelStrategy)) {
             modelStrategy.setTrainAssets(trainAssets);
             modelStrategy.setTestAssets(testAssets);
+            modelStrategy.setParameters(model.getModelStrategy().getParameters());
             modelDAO.updateModelStrategy(modelStrategy, model.getModelID(), assetTypeID);
         } else {
             CustomDialog.nullModelAlert();
@@ -370,14 +405,13 @@ public class AssetTypeInfoController implements Initializable {
      */
     public void generateThumbnails() {
         ObservableList<Pane> modelPaneObservableList = FXCollections.observableArrayList();
-
-        for (Model model : modelObservableList) {
+        for (TrainedModel model : modelObservableList) {
             // Creating a Thumbnail element
             Pane modelPane = new Pane();
             modelPane.getStyleClass().add("modelPane");
             modelPane.setOnMouseClicked(mouseEvent -> {
                 modelPanes.handleModelSelection(model, modelPane);
-                modelSaveBtn.setDisable(false);
+                generateParameters(model, false);
             });
 
             // Generating items to display for the Thumbnail
@@ -411,13 +445,13 @@ public class AssetTypeInfoController implements Initializable {
             modelDescriptionText.setLayoutX(15.0);
             modelDescriptionText.setLayoutY(80.0);
             rmseLabel.setLayoutX(47.0);
-            rmseLabel.setLayoutY(239.0);
+            rmseLabel.setLayoutY(151.0);
             rmsePane.setLayoutX(15.0);
-            rmsePane.setLayoutY(243.0);
+            rmsePane.setLayoutY(155.0);
             rmseValue.setLayoutX(30.0);
-            rmseValue.setLayoutY(265.0);
+            rmseValue.setLayoutY(177.0);
             evaluateModelBtn.setLayoutX(133.0);
-            evaluateModelBtn.setLayoutY(243.0);
+            evaluateModelBtn.setLayoutY(155.0);
 
             modelPane.getChildren().add(modelNameLabel);
             modelPane.getChildren().add(modelDescriptionText);
@@ -429,7 +463,80 @@ public class AssetTypeInfoController implements Initializable {
             modelPaneObservableList.add(modelPane);
         }
         modelPanes.setModelThumbnailsContainerPane(modelPaneObservableList, modelsThumbPane);
-        modelPanes.highlightAssociatedModel(modelPaneObservableList, modelDAO.getModelIDAssociatedWithAssetType(assetType.getId()));
+        modelPanes.highlightAssociatedModel(modelPaneObservableList, associatedModelID);
+        modelPanes.setSelectedModel(modelObservableList.stream().filter(model -> model.getModelID() == associatedModelID).findFirst().orElse(null));
+        generateParameters(modelObservableList.stream().filter(model -> model.getModelID() == associatedModelID).findFirst().orElse(null), false);
+    }
+
+    /**
+     * @param model         the model currently selected
+     * @param defaultParams true if we want the default parameters, false otherwise
+     * @author Jeff, Paul
+     */
+    public void generateParameters(TrainedModel model, boolean defaultParams) {
+        modelParameters.getChildren().clear();
+        Map<String, Parameter> params = (defaultParams) ? model.getModelStrategy().getDefaultParameters() : model.getModelStrategy().getParameters();
+        model.getModelStrategy().setParameters(params);
+        Iterator<String> iterator = params.keySet().iterator();
+        double layoutX = 50.0;
+        double layoutY = 20.0;
+        double tfLayoutX = 300.0;
+
+        while (iterator.hasNext()) {
+            String paramName = iterator.next();
+            Parameter parameter = params.get(paramName);
+
+            //make the pane
+            Pane pane = new Pane();
+            pane.getStyleClass().add("paramPane");
+            pane.setLayoutX(layoutX);
+            pane.setLayoutY(layoutY);
+
+            // Make the label itself
+            Label paramNameLabel = new Label();
+            paramNameLabel.getStyleClass().add("paramLabel");
+            paramNameLabel.setText(paramName);
+            pane.getChildren().add(paramNameLabel);
+
+            // Depending on the parameter type, generate corresponding input field
+            if (parameter instanceof BoolParameter) {
+                CheckBox checkBox = new CheckBox();
+                checkBox.setSelected(((BoolParameter) parameter).getBoolValue());
+                checkBox.setLayoutX(tfLayoutX);
+                checkBox.setLayoutY(0.0);
+                checkBox.selectedProperty().addListener((ov, old_val, new_val) -> ((BoolParameter) params.get(paramName)).setBoolValue(new_val));
+                pane.getChildren().addAll(checkBox);
+            } else if (parameter instanceof IntParameter) {
+                TextField tf = new TextField();
+                tf.setText(String.valueOf(((IntParameter) parameter).getIntValue()));
+                tf.getStyleClass().add("paramTextField");
+                tf.setLayoutX(tfLayoutX);
+                tf.setLayoutY(0.0);
+                tf.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(intRegex, c)));
+                tf.textProperty().addListener((ov, old_val, new_val) -> ((IntParameter) params.get(paramName)).setIntValue(Integer.parseInt(new_val)));
+                pane.getChildren().add(tf);
+            } else if (parameter instanceof ListParameter) {
+                ChoiceBox<String> listBox = new ChoiceBox<>();
+                listBox.setItems(FXCollections.observableArrayList(((ListParameter) parameter).getListValues()));
+                listBox.setValue(((ListParameter) parameter).getSelectedValue());
+                listBox.getStyleClass().add("paramTextField");
+                listBox.setLayoutX(tfLayoutX);
+                listBox.setLayoutY(0.0);
+                listBox.getSelectionModel().selectedItemProperty().addListener((ov, old_val, new_val) -> ((ListParameter) params.get(paramName)).setSelectedValue(new_val));
+                pane.getChildren().add(listBox);
+            } else if (parameter instanceof FloatParameter) {
+                TextField tf = new TextField();
+                tf.setText(String.valueOf(((FloatParameter) parameter).getFloatValue()));
+                tf.getStyleClass().add("paramTextField");
+                tf.setLayoutX(tfLayoutX);
+                tf.setLayoutY(0.0);
+                tf.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(floatRegex, c)));
+                tf.textProperty().addListener((ov, old_val, new_val) -> ((FloatParameter) params.get(paramName)).setFloatValue(Float.parseFloat(new_val)));
+                pane.getChildren().add(tf);
+            }
+            modelParameters.getChildren().add(pane);
+            layoutY += 40.0;
+        }
     }
 
     /**
@@ -440,7 +547,7 @@ public class AssetTypeInfoController implements Initializable {
      * @author Jeremie
      */
     private void saveSelectedModelAssociation() {
-        modelDAO.updateModelAssociatedWithAssetType(modelPanes.getSelectedModel().getModelID(), assetType.getId());
+        modelDAO.updateModelAssociatedWithAssetType(modelPanes.getSelectedModel(), assetType.getId());
         modelDAO.setModelToTrain(assetType.getId());
         updateAssetsForSelectedModelAssociation(Integer.parseInt(assetType.getId()));
     }
@@ -465,18 +572,18 @@ public class AssetTypeInfoController implements Initializable {
      * @author Talal
      */
     public void updateRMSE() {
-        modelObservableList = FXCollections.observableArrayList(modelDAO.getAllModelsForEvaluation(Integer.parseInt(assetType.getId())));
         for (Model model : modelObservableList) {
-            model.setRMSE(String.valueOf(TextConstants.RMSEValueFormat.format(modelDAO.getLatestRMSE(model.getModelID(), Integer.parseInt(assetType.getId())))));
+            model.setRMSE(String.valueOf(RMSEValueFormat.format(modelDAO.getLatestRMSE(model.getModelID(), Integer.parseInt(assetType.getId())))));
         }
         Timeline rmseTimeline = new Timeline(new KeyFrame(Duration.millis(3000), e ->
         {
             for (Model model : modelObservableList) {
-                model.setRMSE(String.valueOf(TextConstants.RMSEValueFormat.format(modelDAO.getLatestRMSE(model.getModelID(), Integer.parseInt(assetType.getId())))));
+                model.setRMSE(String.valueOf(RMSEValueFormat.format(modelDAO.getLatestRMSE(model.getModelID(), Integer.parseInt(assetType.getId())))));
             }
         }));
 
         rmseTimeline.setCycleCount(Animation.INDEFINITE); // loop forever
         rmseTimeline.play();
+        addTimeline(rmseTimeline);
     }
 }

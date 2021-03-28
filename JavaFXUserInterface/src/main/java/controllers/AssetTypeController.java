@@ -24,7 +24,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class AssetTypeController implements Initializable {
+public class AssetTypeController extends Controller implements Initializable {
 
     //Configure the table and columns
     @FXML

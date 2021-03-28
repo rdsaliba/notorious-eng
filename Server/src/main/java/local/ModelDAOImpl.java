@@ -11,13 +11,12 @@ import app.item.TrainedModel;
 import rul.models.ModelStrategy;
 import utilities.Constants;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Base64;
 
 public class ModelDAOImpl extends DAO implements ModelDAO {
     private static final String UPDATE_SERIALIZE_OBJECT = "UPDATE trained_model tm, model m SET tm.retrain = false, tm.serialized_model = ? WHERE tm.model_id = ? AND tm.asset_type_id = ? AND tm.status_id = ? AND tm.model_id = m.model_id AND m.archived = 0";
@@ -25,6 +24,21 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     private static final String GET_MODEL_NAME_FROM_ID = "SELECT name from model where model.model_id = ? AND model.archived = 0";
     private static final String GET_MODEL_FROM_ASSET_TYPE = "SELECT * FROM trained_model, model WHERE trained_model.model_id = model.model_id AND trained_model.asset_type_id = ? and trained_model.status_id = ? AND model.archived = 0";
     private static final String INSERT_RMSE = "UPDATE trained_model SET rmse = ?, retrain = 0 WHERE model_id = ? AND asset_type_id = ? AND status_id=? ";
+
+    public static String convertToByteString(Object object) throws IOException {
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream(); ObjectOutput out = new ObjectOutputStream(bos)) {
+            out.writeObject(object);
+            final byte[] byteArray = bos.toByteArray();
+            return Base64.getEncoder().encodeToString(byteArray);
+        }
+    }
+
+    public static Object convertFromByteString(String byteString) throws IOException, ClassNotFoundException {
+        final byte[] bytes = Base64.getDecoder().decode(byteString);
+        try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes); ObjectInput in = new ObjectInputStream(bis)) {
+            return in.readObject();
+        }
+    }
 
     /**
      * Given a model id, this function will return the string corresponding
@@ -80,12 +94,12 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     @Override
     public void setModelToTrain(TrainedModel tm) {
         try (PreparedStatement ps = getConnection().prepareStatement(UPDATE_SERIALIZE_OBJECT)) {
-            ps.setObject(1, tm.getModelStrategy());
+            ps.setString(1, convertToByteString(tm.getModelStrategy()));
             ps.setInt(2, tm.getModelID());
             ps.setInt(3, tm.getAssetTypeID());
             ps.setInt(4, tm.getStatusID());
             ps.executeUpdate();
-        } catch (SQLException e) {
+        } catch (SQLException | IOException e) {
             logger.error("Exception setModelsToTrain(): ", e);
         }
     }
@@ -129,9 +143,8 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
         tm.setRetrain(rs.getBoolean("retrain"));
         tm.setStatusID(rs.getInt("status_id"));
         try {
-            byte[] buf = rs.getBytes("serialized_model");
-            if (buf != null)
-                tm.setModelStrategy((ModelStrategy) new ObjectInputStream(new ByteArrayInputStream(buf)).readObject());
+            if (rs.getString("serialized_model") != null)
+                tm.setModelStrategy((ModelStrategy) convertFromByteString(rs.getString("serialized_model")));
 
         } catch (IOException | ClassNotFoundException e) {
             logger.error("Exception createTrainedModelFromResultSet(): ", e);

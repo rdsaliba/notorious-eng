@@ -40,6 +40,19 @@ public class FormInputValidation {
     }
 
     /**
+     * This function validates an input of a change on a text field to only allow the change if it satisfies the regex rule
+     *
+     * @param regex is the decimal format to be applied to the field
+     * @param c     is the text formatter change
+     * @author Paul
+     */
+    public static TextFormatter.Change checkFormat(String regex, TextFormatter.Change c) {
+        if (c.getControlNewText().matches(regex))
+            return c;
+        return null;
+    }
+
+    /**
      * Creates an error message to be displayed next to the TextField or TextArea
      * and makes the border of the TextField red
      *
