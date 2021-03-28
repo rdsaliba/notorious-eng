@@ -12,7 +12,7 @@ import weka.core.Instances;
 
 import java.util.Objects;
 
-public class Evaluation implements Runnable {
+public class Evaluation {
     static Logger logger = LoggerFactory.getLogger(Evaluation.class);
     private final ModelDAOImpl modelDAOImpl;
     private TrainedModel model;
@@ -34,7 +34,6 @@ public class Evaluation implements Runnable {
         return model;
     }
 
-    @Override
     public void run() {
         try {
             evaluateModel();

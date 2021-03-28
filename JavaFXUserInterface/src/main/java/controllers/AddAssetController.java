@@ -29,7 +29,7 @@ import utilities.UIUtilities;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class AddAssetController implements Initializable {
+public class AddAssetController extends Controller implements Initializable {
 
     private static final String AND_OR = " and/or \n";
     private final Text[] errorMessages = new Text[7];

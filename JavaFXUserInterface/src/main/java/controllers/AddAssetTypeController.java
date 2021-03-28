@@ -23,7 +23,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class AddAssetTypeController implements Initializable {
+public class AddAssetTypeController extends Controller implements Initializable {
 
     private final Text[] errorMessages = new Text[7];
     private final boolean[] validInput = new boolean[7];

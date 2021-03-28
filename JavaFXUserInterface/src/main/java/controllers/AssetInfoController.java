@@ -52,7 +52,7 @@ import java.util.Comparator;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class AssetInfoController implements Initializable {
+public class AssetInfoController extends Controller implements Initializable {
     private static final String CYCLE = "Cycle";
 
     private static final int ATTRIBUTE_GRAPH_SIZE = 5;
@@ -99,7 +99,6 @@ public class AssetInfoController implements Initializable {
     private AttributeDAOImpl attributeDAOImpl;
     private ModelDAOImpl modelDAO;
     private UIUtilities uiUtilities;
-    private ArrayList<Timeline> timelines;
 
     /**
      * Initialize runs before the scene is displayed.
@@ -116,7 +115,6 @@ public class AssetInfoController implements Initializable {
         modelDAO = new ModelDAOImpl();
         attributeDAOImpl = new AttributeDAOImpl();
         uiUtilities = new UIUtilities();
-        timelines = new ArrayList<>();
         setupArchiveBtn();
         attachEvents();
     }
@@ -149,6 +147,7 @@ public class AssetInfoController implements Initializable {
 
         timeline.setCycleCount(Animation.INDEFINITE); // loop forever
         timeline.play();
+        addTimeline(timeline);
 
 
         descriptionOutput.setText(asset.getDescription());
@@ -197,7 +196,7 @@ public class AssetInfoController implements Initializable {
             }));
             timeline.setCycleCount(Animation.INDEFINITE);
             timeline.play();
-            timelines.add(timeline);
+            addTimeline(timeline);
 
             series.setData(data);
             attributeChart.getData().add(series);
@@ -224,14 +223,8 @@ public class AssetInfoController implements Initializable {
     public void attachEvents() {
         // Change scenes to Assets.fxml
         backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(TextConstants.ASSETS_SCENE, backBtn.getScene()));
-        deleteBtn.setOnMouseClicked(mouseEvent -> {
-            timelines.forEach(Timeline::stop);
-            CustomDialog.systemInfoController(asset.getId());
-        });
-        archiveBtn.setOnMouseClicked(mouseEvent -> {
-            timelines.forEach(Timeline::stop);
-            CustomDialog.archiveAssetDialogShow(asset, archiveBtn);
-        });
+        deleteBtn.setOnMouseClicked(mouseEvent -> CustomDialog.systemInfoController(asset.getId()));
+        archiveBtn.setOnMouseClicked(mouseEvent -> CustomDialog.archiveAssetDialogShow(asset, archiveBtn));
 
         rawDataTab.setOnSelectionChanged(event -> {
             rawDataListPane.getChildren().clear();
@@ -271,7 +264,7 @@ public class AssetInfoController implements Initializable {
             timeline.setCycleCount(Animation.INDEFINITE); // loop forever
             timeline.play();
 
-            timelines.add(timeline);
+            addTimeline(timeline);
 
             tableview.setItems(data);
         } catch (SQLException e) {
