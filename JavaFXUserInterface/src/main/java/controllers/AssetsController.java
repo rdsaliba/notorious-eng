@@ -15,6 +15,7 @@ import external.AssetTypeDAOImpl;
 import external.ModelDAOImpl;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
+import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -31,6 +32,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rul.assessment.AssessmentController;
@@ -41,7 +43,7 @@ import java.net.URL;
 import java.util.Comparator;
 import java.util.ResourceBundle;
 
-public class AssetsController implements Initializable {
+public class AssetsController extends Controller implements Initializable {
 
     private static final String SORT_DEFAULT = "Order";
     private static final String SORT_RUL_ASC = "Ascending RUL";
@@ -74,15 +76,21 @@ public class AssetsController implements Initializable {
     private Tab listTab;
     @FXML
     private ChoiceBox<String> sortAsset;
+    @FXML
+    private TextField search;
+    @FXML
+    private TabPane assetsTabPane;
+    private String searchMatch = "No Search"; // search states to help display the right asset list: No Search / Match / No Match
     private UIUtilities uiUtilities;
     private ObservableList<Asset> assets;
+    private ObservableList<Asset> searchedAssets;
+    private PauseTransition delaySearch;
     private Timeline rulTimeline;
 
     public AssetsController() {
         assetTypeDAO = new AssetTypeDAOImpl();
         modelDAO = new ModelDAOImpl();
         table = new TableView<>();
-
         try {
             assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
         } catch (Exception e) {
@@ -116,7 +124,7 @@ public class AssetsController implements Initializable {
         for (Asset asset : assets) {
             asset.setRul(String.valueOf(TextConstants.RULValueFormat.format(AssessmentController.getLatestEstimate(asset.getId()))));
         }
-        rulTimeline =
+        Timeline rulTimeline =
                 new Timeline(new KeyFrame(Duration.millis(3000), e ->
                 {
                     for (Asset asset : assets) {
@@ -127,6 +135,7 @@ public class AssetsController implements Initializable {
 
         rulTimeline.setCycleCount(Animation.INDEFINITE); // loop forever
         rulTimeline.play();
+        addTimeline(rulTimeline);
     }
 
     /**
@@ -135,20 +144,26 @@ public class AssetsController implements Initializable {
      * @author Jeff
      */
     public void attachEvents() {
+
         thumbnailTab.setOnSelectionChanged(event -> {
-            assetsThumbPane.getChildren().clear();
-            generateThumbnails();
+            if (thumbnailTab.isSelected()) {
+                assetsThumbPane.getChildren().clear();
+                generateThumbnails();
+            }
         });
 
         listTab.setOnSelectionChanged(event -> {
-            assetsListPane.getChildren().clear();
-            generateList();
+            if (listTab.isSelected()) {
+                assetsListPane.getChildren().clear();
+                generateList();
+            }
         });
 
         //Attach link to addAssetButton to go to AddAsset.fxml
-        addAssetBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(rulTimeline, TextConstants.ADD_ASSETS_SCENE, addAssetBtn.getScene()));
+        addAssetBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(TextConstants.ADD_ASSETS_SCENE, addAssetBtn.getScene()));
 
         sortingSetUp();
+        searchAssets();
     }
 
     private void sortingSetUp() {
@@ -168,18 +183,33 @@ public class AssetsController implements Initializable {
                 switch (newValue) {
                     case SORT_DEFAULT:
                         FXCollections.sort(assets, Comparator.comparingInt(Item::getId));
+                        if (!search.getText().trim().isEmpty() && !searchedAssets.isEmpty()) {
+                            FXCollections.sort(searchedAssets, Comparator.comparingInt(Item::getId));
+                        }
                         break;
                     case SORT_RUL_ASC:
                         FXCollections.sort(assets, Comparator.comparing(asset -> Double.valueOf(asset.getRul().getValue())));
+                        if (!search.getText().trim().isEmpty() && !searchedAssets.isEmpty()) {
+                            FXCollections.sort(searchedAssets, Comparator.comparing(asset -> Double.valueOf(asset.getRul().getValue())));
+                        }
                         break;
                     case SORT_RUL_DESC:
                         FXCollections.sort(assets, (asset, t1) -> Double.valueOf(t1.getRul().getValue()).compareTo(Double.valueOf(asset.getRul().getValue())));
+                        if (!search.getText().trim().isEmpty() && !searchedAssets.isEmpty()) {
+                            FXCollections.sort(searchedAssets, (asset, t1) -> Double.valueOf(t1.getRul().getValue()).compareTo(Double.valueOf(asset.getRul().getValue())));
+                        }
                         break;
                     case SORT_CRITICAL_ASC:
                         FXCollections.sort(assets, Comparator.comparingInt(Asset::mapCriticality));
+                        if (!search.getText().trim().isEmpty() && !searchedAssets.isEmpty()) {
+                            FXCollections.sort(searchedAssets, Comparator.comparingInt(Asset::mapCriticality));
+                        }
                         break;
                     case SORT_CRITICAL_DESC:
                         FXCollections.sort(assets, (asset, t1) -> Integer.compare(t1.mapCriticality(), asset.mapCriticality()));
+                        if (!search.getText().trim().isEmpty() && !searchedAssets.isEmpty()) {
+                            FXCollections.sort(searchedAssets, (asset, t1) -> Integer.compare(t1.mapCriticality(), asset.mapCriticality()));
+                        }
                         break;
                     default:
                         break;
@@ -191,103 +221,179 @@ public class AssetsController implements Initializable {
     }
 
     /**
+     * Live search for assets in the assets list based on the input from the search bar.
+     * When a search has a match, all systems panes are cleared and generated again with the appropriate assets.
+     * When a search has no match, all system panes are cleared effectively showing no assets.
+     *
+     * @author Najim
+     */
+    private void searchAssets() {
+        searchedAssets = FXCollections.observableArrayList();
+        delaySearch = new PauseTransition(Duration.seconds(0.25));
+        search.textProperty().addListener((observable, oldValue, newValue) -> {
+            delaySearch.setOnFinished(event -> {
+                searchedAssets.clear();
+                if (!newValue.equals("")) {
+                    //For each asset, we determine if the value from the search is found in the asset's member variables.
+                    //Member variables: Rul, name, description, serial number, manufacturer, category, site, location, recommendation and asset type name
+                    assets.stream().filter(o -> StringUtils.containsIgnoreCase(o.getRul().get(), newValue) || StringUtils.containsIgnoreCase(o.getName(), newValue)
+                            || StringUtils.containsIgnoreCase(o.getDescription(), newValue) || StringUtils.containsIgnoreCase(o.getSerialNo(), newValue)
+                            || StringUtils.containsIgnoreCase(o.getManufacturer(), newValue) || StringUtils.containsIgnoreCase(o.getCategory(), newValue)
+                            || StringUtils.containsIgnoreCase(o.getSite(), newValue) || StringUtils.containsIgnoreCase(o.getLocation(), newValue)
+                            || StringUtils.containsIgnoreCase(o.getRecommendation(), newValue) || StringUtils.containsIgnoreCase(assetTypeDAO.getNameFromID(o.getAssetTypeID()), newValue)).forEach(
+                            searchedAssets::add //Assets matched with search are added to the searchAssets list
+                    );
+                    if (searchedAssets.isEmpty()) {
+                        searchMatch = "No Match";
+                    } else {
+                        searchMatch = "Match";
+                    }
+                } else {
+                    searchMatch = "No Search";
+                }
+                if (assetsTabPane.getSelectionModel().getSelectedItem().getId().equals("thumbnailTab")) {
+                    assetsThumbPane.getChildren().clear();
+                    generateThumbnails();
+                } else if (assetsTabPane.getSelectionModel().getSelectedItem().getId().equals("listTab")) {
+                    assetsListPane.getChildren().clear();
+                    generateList();
+                }
+            });
+            delaySearch.playFromStart();
+        });
+    }
+
+    /**
+     * Determines which list of assets to be displayed between the searchAssets list
+     * and the original assets list.
+     *
+     * @return assetsToDisplay
+     * @author Najim
+     */
+    public ObservableList<Asset> setAssetListToDisplay() {
+        ObservableList<Asset> assetsToDisplay;
+        if (!searchedAssets.isEmpty()) {
+            assetsToDisplay = FXCollections.observableArrayList(searchedAssets);
+        } else {
+            if (searchMatch.equals("No Match")) {
+                assetsThumbPane.getChildren().clear();
+                assetsToDisplay = null;
+            } else {
+                assetsToDisplay = FXCollections.observableArrayList(assets);
+            }
+        }
+        return assetsToDisplay;
+    }
+
+    /**
      * Creates elements that are in the scene so the data can be displayed.
      *
      * @author Jeff
      */
     public void generateThumbnails() {
         ObservableList<Pane> boxes = FXCollections.observableArrayList();
+        ObservableList<Asset> assetsDisplayed = setAssetListToDisplay();
 
-        for (Asset asset : assets) {
+        if (assetsDisplayed != null) {
+            for (Asset asset : assetsDisplayed) {
 
-            Pane pane = new Pane();
-            pane.setOnMouseClicked(event -> uiUtilities.changeScene("/AssetInfo", asset, pane.getScene()));
-            pane.getStyleClass().add("assetPane");
+                Pane pane = new Pane();
+                pane.setOnMouseClicked(event -> uiUtilities.changeScene("/AssetInfo", asset, pane.getScene()));
+                pane.getStyleClass().add("assetPane");
 
-            Pane imagePlaceholder = new Pane();
-            imagePlaceholder.getStyleClass().add("imagePlaceholder");
+                Pane imagePlaceholder = new Pane();
+                imagePlaceholder.getStyleClass().add("imagePlaceholder");
 
-            HBox rulPane = new HBox();
-            rulPane.getStyleClass().add("rulPane");
+                HBox rulPane = new HBox();
+                rulPane.getStyleClass().add("rulPane");
 
-            HBox statusPane = new HBox();
-            statusPane.getStyleClass().add("statusPane");
+                HBox statusPane = new HBox();
+                statusPane.getStyleClass().add("statusPane");
 
-            Text assetName = new Text(asset.getSerialNo());
-            Text assetType = new Text(assetTypeDAO.getNameFromID(asset.getAssetTypeID()));
+                Text assetName = new Text(asset.getSerialNo());
+                Text assetType = new Text(assetTypeDAO.getNameFromID(asset.getAssetTypeID()));
 
-            Text rulLabel = new Text("RUL");
-            Text recommendationLabel = new Text("Status");
-            Text recommendation = new Text(asset.getRecommendation());
+                Text rulLabel = new Text("RUL");
+                Text recommendationLabel = new Text("Status");
+                Text recommendation = new Text(asset.getRecommendation());
 
-            Text rulValue = new Text();
-            SimpleStringProperty s = asset.getRul();
-            rulValue.textProperty().bind(s);
+                Text rulValue = new Text();
+                SimpleStringProperty s = asset.getRul();
+                rulValue.textProperty().bind(s);
 
-            assetName.getStyleClass().add("assetName");
-            assetType.getStyleClass().add("assetType");
-            rulLabel.getStyleClass().add("rulLabel");
-            rulValue.getStyleClass().add("rulValue");
-            recommendationLabel.getStyleClass().add("statusLabel");
-            recommendation.getStyleClass().add("statusValue");
-            statusPane.getStyleClass().add("statusPane");
-            switch (asset.getRecommendation()) {
-                case TextConstants.OK_THRESHOLD:
-                    statusPane.getStyleClass().add("ok");
-                    break;
-                case TextConstants.ADVISORY_THRESHOLD:
-                    statusPane.getStyleClass().add("advisory");
-                    break;
-                case TextConstants.CAUTION_THRESHOLD:
-                    statusPane.getStyleClass().add("caution");
-                    break;
-                case TextConstants.WARNING_THRESHOLD:
-                    statusPane.getStyleClass().add("warning");
-                    break;
-                case TextConstants.FAILED_THRESHOLD:
-                    statusPane.getStyleClass().add("failed");
-                    break;
-                default:
-                    statusPane.getStyleClass().add("none");
-                    break;
+                assetName.getStyleClass().add("assetName");
+                assetType.getStyleClass().add("assetType");
+                rulLabel.getStyleClass().add("rulLabel");
+                rulValue.getStyleClass().add("rulValue");
+                recommendationLabel.getStyleClass().add("statusLabel");
+                recommendation.getStyleClass().add("statusValue");
+                statusPane.getStyleClass().add("statusPane");
+                switch (asset.getRecommendation()) {
+                    case TextConstants.OK_THRESHOLD:
+                        statusPane.getStyleClass().add("ok");
+                        break;
+                    case TextConstants.ADVISORY_THRESHOLD:
+                        statusPane.getStyleClass().add("advisory");
+                        break;
+                    case TextConstants.CAUTION_THRESHOLD:
+                        statusPane.getStyleClass().add("caution");
+                        break;
+                    case TextConstants.WARNING_THRESHOLD:
+                        statusPane.getStyleClass().add("warning");
+                        break;
+                    case TextConstants.FAILED_THRESHOLD:
+                        statusPane.getStyleClass().add("failed");
+                        break;
+                    default:
+                        statusPane.getStyleClass().add("none");
+                        break;
+                }
+
+                statusPane.setAlignment(Pos.CENTER);
+                rulPane.setAlignment(Pos.CENTER);
+
+                assetName.setLayoutX(15.0);
+                assetName.setLayoutY(35.0);
+                assetType.setLayoutX(15.0);
+                assetType.setLayoutY(63.0);
+                imagePlaceholder.setLayoutX(15.0);
+                imagePlaceholder.setLayoutY(80.0);
+                rulLabel.setLayoutX(52.0);
+                rulLabel.setLayoutY(239.0);
+                rulPane.setLayoutX(15.0);
+                rulPane.setLayoutY(243.0);
+                rulValue.setLayoutY(21.0);
+                recommendationLabel.setLayoutX(164.0);
+                recommendationLabel.setLayoutY(238.0);
+                statusPane.setLayoutX(133.0);
+                statusPane.setLayoutY(243.0);
+                recommendation.setLayoutY(21.0);
+
+                pane.getChildren().add(assetName);
+                pane.getChildren().add(assetType);
+                pane.getChildren().add(rulLabel);
+                rulPane.getChildren().add(rulValue);
+                pane.getChildren().add(rulPane);
+                pane.getChildren().add(recommendationLabel);
+                statusPane.getChildren().add(recommendation);
+                pane.getChildren().add(statusPane);
+                pane.getChildren().add(imagePlaceholder);
+
+                boxes.add(pane);
             }
+            assetsThumbPane.getChildren().addAll(boxes);
+        } else {
+            Text noResult = new Text("No results found");
+            noResult.getStyleClass().add("noResult");
 
-            statusPane.setAlignment(Pos.CENTER);
-            rulPane.setAlignment(Pos.CENTER);
+            HBox noResultPane = new HBox();
+            noResultPane.getStyleClass().add("noResultPane");
+            noResultPane.setAlignment(Pos.CENTER);
+            noResultPane.getChildren().add(noResult);
 
-            assetName.setLayoutX(15.0);
-            assetName.setLayoutY(35.0);
-            assetType.setLayoutX(15.0);
-            assetType.setLayoutY(63.0);
-            imagePlaceholder.setLayoutX(15.0);
-            imagePlaceholder.setLayoutY(80.0);
-            rulLabel.setLayoutX(52.0);
-            rulLabel.setLayoutY(239.0);
-            rulPane.setLayoutX(15.0);
-            rulPane.setLayoutY(243.0);
-            rulValue.setLayoutY(21.0);
-            recommendationLabel.setLayoutX(164.0);
-            recommendationLabel.setLayoutY(238.0);
-            statusPane.setLayoutX(133.0);
-            statusPane.setLayoutY(243.0);
-            recommendation.setLayoutY(21.0);
-
-            pane.getChildren().add(assetName);
-            pane.getChildren().add(assetType);
-            pane.getChildren().add(rulLabel);
-            rulPane.getChildren().add(rulValue);
-            pane.getChildren().add(rulPane);
-            pane.getChildren().add(recommendationLabel);
-            statusPane.getChildren().add(recommendation);
-            pane.getChildren().add(statusPane);
-            pane.getChildren().add(imagePlaceholder);
-
-            boxes.add(pane);
+            assetsThumbPane.getChildren().add(noResultPane);
         }
-
-        assetsThumbPane.getChildren().addAll(boxes);
     }
-
 
     /**
      * Creates a table element to list all the assets.
@@ -295,6 +401,7 @@ public class AssetsController implements Initializable {
      * @author Jeff
      */
     public void generateList() {
+        ObservableList<Asset> assetsDisplayed = setAssetListToDisplay();
 
         // When TableRow is clicked, send data to AssetInfo scene.
         table.setRowFactory(tv -> {
@@ -313,7 +420,7 @@ public class AssetsController implements Initializable {
 
         TableColumn<Asset, String> modelCol = new TableColumn<>(MODEL_COL);
         modelCol.setCellValueFactory(cellData -> new SimpleStringProperty(
-                modelDAO.getModelNameFromAssetTypeID(cellData.getValue().getAssetTypeID())));
+                modelDAO.getModelNameAssociatedWithAssetType(cellData.getValue().getAssetTypeID())));
 
         TableColumn<Asset, Number> modelRULCol = new TableColumn<>(RUL_COL);
         modelRULCol.setCellValueFactory(cellData -> new SimpleDoubleProperty(
@@ -343,7 +450,8 @@ public class AssetsController implements Initializable {
         descriptionCol.setCellValueFactory(
                 new PropertyValueFactory<>("description"));
 
-        table.setItems(assets);
+        table.setPlaceholder(new Label("No results found"));
+        table.setItems(assetsDisplayed);
         table.setId("listTable");
         table.getColumns().addAll(assetTypeCol, serialNoCol, modelCol, modelRULCol, recommendationCol, locationCol, siteCol, categoryCol, manufacturerCol, descriptionCol);
         AnchorPane.setBottomAnchor(table, 0.0);
@@ -352,5 +460,4 @@ public class AssetsController implements Initializable {
         AnchorPane.setLeftAnchor(table, 0.0);
         assetsListPane.getChildren().addAll(table);
     }
-
 }

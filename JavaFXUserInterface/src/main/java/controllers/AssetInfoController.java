@@ -48,10 +48,11 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class AssetInfoController implements Initializable {
+public class AssetInfoController extends Controller implements Initializable {
     private static final String CYCLE = "Cycle";
 
     private static final int ATTRIBUTE_GRAPH_SIZE = 5;
@@ -98,7 +99,6 @@ public class AssetInfoController implements Initializable {
     private AttributeDAOImpl attributeDAOImpl;
     private ModelDAOImpl modelDAO;
     private UIUtilities uiUtilities;
-    private ArrayList<Timeline> timelines;
 
     /**
      * Initialize runs before the scene is displayed.
@@ -115,7 +115,6 @@ public class AssetInfoController implements Initializable {
         modelDAO = new ModelDAOImpl();
         attributeDAOImpl = new AttributeDAOImpl();
         uiUtilities = new UIUtilities();
-        timelines = new ArrayList<>();
         setupArchiveBtn();
         attachEvents();
     }
@@ -138,7 +137,7 @@ public class AssetInfoController implements Initializable {
         manufacturerOutput.setText(asset.getManufacturer());
         locationOutput.setText(asset.getLocation());
         siteOutput.setText(asset.getSite());
-        modelOutput.setText(modelDAO.getModelNameFromAssetTypeID(asset.getAssetTypeID()));
+        modelOutput.setText(modelDAO.getModelNameAssociatedWithAssetType(asset.getAssetTypeID()));
         categoryOutput.setText(asset.getCategory());
 
         rulOutput.setText(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(asset.getId())));
@@ -148,6 +147,7 @@ public class AssetInfoController implements Initializable {
 
         timeline.setCycleCount(Animation.INDEFINITE); // loop forever
         timeline.play();
+        addTimeline(timeline);
 
 
         descriptionOutput.setText(asset.getDescription());
@@ -196,7 +196,7 @@ public class AssetInfoController implements Initializable {
             }));
             timeline.setCycleCount(Animation.INDEFINITE);
             timeline.play();
-            timelines.add(timeline);
+            addTimeline(timeline);
 
             series.setData(data);
             attributeChart.getData().add(series);
@@ -223,14 +223,8 @@ public class AssetInfoController implements Initializable {
     public void attachEvents() {
         // Change scenes to Assets.fxml
         backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(TextConstants.ASSETS_SCENE, backBtn.getScene()));
-        deleteBtn.setOnMouseClicked(mouseEvent -> {
-            timelines.forEach(Timeline::stop);
-            CustomDialog.systemInfoController(asset.getId());
-        });
-        archiveBtn.setOnMouseClicked(mouseEvent -> {
-            timelines.forEach(Timeline::stop);
-            CustomDialog.archiveAssetDialogShow(asset, archiveBtn);
-        });
+        deleteBtn.setOnMouseClicked(mouseEvent -> CustomDialog.systemInfoController(asset.getId()));
+        archiveBtn.setOnMouseClicked(mouseEvent -> CustomDialog.archiveAssetDialogShow(asset, archiveBtn));
 
         rawDataTab.setOnSelectionChanged(event -> {
             rawDataListPane.getChildren().clear();
@@ -259,6 +253,7 @@ public class AssetInfoController implements Initializable {
                 final int j = i;
                 TableColumn<ObservableList<String>, String> col = new TableColumn<>(resultSet.getMetaData().getColumnName(i + 1));
                 col.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(j)));
+                col.setComparator(Comparator.comparingDouble(Double::parseDouble));
                 tableview.getColumns().addAll(col);
             }
 
@@ -269,7 +264,7 @@ public class AssetInfoController implements Initializable {
             timeline.setCycleCount(Animation.INDEFINITE); // loop forever
             timeline.play();
 
-            timelines.add(timeline);
+            addTimeline(timeline);
 
             tableview.setItems(data);
         } catch (SQLException e) {
@@ -285,7 +280,6 @@ public class AssetInfoController implements Initializable {
         AnchorPane.setLeftAnchor(tableview, 0.0);
         rawDataListPane.getChildren().addAll(tableview);
     }
-
 
     /**
      * this function fills the row of the raw table view given the table object and

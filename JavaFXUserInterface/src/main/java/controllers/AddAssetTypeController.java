@@ -23,7 +23,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class AddAssetTypeController implements Initializable {
+public class AddAssetTypeController extends Controller implements Initializable {
 
     private final Text[] errorMessages = new Text[7];
     private final boolean[] validInput = new boolean[7];
@@ -38,8 +38,6 @@ public class AddAssetTypeController implements Initializable {
     private TextField assetTypeName;
     @FXML
     private TextArea assetTypeDescription;
-    @FXML
-    private TextField thresholdOKValue;
     @FXML
     private TextField thresholdAdvisoryValue;
     @FXML
@@ -86,8 +84,6 @@ public class AddAssetTypeController implements Initializable {
             }
         });
 
-
-        thresholdOKValue.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
         thresholdAdvisoryValue.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
         thresholdCautionValue.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
         thresholdWarningValue.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
@@ -108,8 +104,6 @@ public class AddAssetTypeController implements Initializable {
             } else {
                 assetType.setDescription(null);
             }
-            Double okValue = thresholdOKValue.getText().isEmpty() ? null : Double.parseDouble(thresholdOKValue.getText());
-            assetTypeParameters.add(new AssetTypeParameter(TextConstants.OK_THRESHOLD, okValue));
 
             Double advisoryValue = thresholdAdvisoryValue.getText().isEmpty() ? null : Double.parseDouble(thresholdAdvisoryValue.getText());
             assetTypeParameters.add(new AssetTypeParameter(TextConstants.ADVISORY_THRESHOLD, advisoryValue));

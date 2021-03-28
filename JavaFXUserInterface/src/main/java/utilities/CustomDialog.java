@@ -67,7 +67,7 @@ public class CustomDialog extends Stage {
         CustomDialog dialog = new CustomDialog(TextConstants.ALERT_HEADER, TextConstants.ALERT_CONTENT);
         dialog.getOkButton().setOnAction(e -> {
             assetTypeDAO.deleteAssetTypeByID(systemID);
-            uiUtilities.changeScene(TextConstants.ASSETS_SCENE, dialog.getScene());
+            uiUtilities.changeScene( TextConstants.ASSETS_SCENE, dialog.getScene());
             dialog.closeDialog();
         });
         dialog.openDialog();
@@ -75,7 +75,7 @@ public class CustomDialog extends Stage {
     public static void nullModelAlert(){
         CustomDialog dialog = new CustomDialog(TextConstants.NO_MODEL_ALERT_HEADER, TextConstants.NO_MODEL_ALERT_CONTENT);
         dialog.getOkButton().setOnAction(e -> {
-            uiUtilities.changeScene(TextConstants.ASSET_TYPE_INFO_SCENE, dialog.getScene());
+            uiUtilities.changeScene( TextConstants.ASSET_TYPE_INFO_SCENE, dialog.getScene());
             dialog.closeDialog();
         });
         dialog.getRoot().getChildren().remove(3);
@@ -88,7 +88,7 @@ public class CustomDialog extends Stage {
         //Set the functionality of the btn
         dialog.getOkButton().setOnAction(e -> {
             assetDAOImpl.deleteAssetByID(systemID);
-            uiUtilities.changeScene(TextConstants.ASSETS_SCENE, dialog.getScene());
+            uiUtilities.changeScene( TextConstants.ASSETS_SCENE, dialog.getScene());
             dialog.closeDialog();
         });
         dialog.openDialog();
@@ -98,7 +98,7 @@ public class CustomDialog extends Stage {
         CustomDialog dialog = new CustomDialog(TextConstants.SAVE_DIALOG, TextConstants.SAVE_HEADER);
         dialog.getRoot().getChildren().remove(dialog.getCancelBtn());
         dialog.getOkButton().setOnAction(e -> {
-            uiUtilities.changeScene(TextConstants.ASSETS_SCENE, dialog.getScene());
+            uiUtilities.changeScene( TextConstants.ASSETS_SCENE, dialog.getScene());
             dialog.closeDialog();
         });
         dialog.openDialog();
