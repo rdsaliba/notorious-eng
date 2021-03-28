@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static utilities.TextConstants.ASSETS_SCENE;
+import static utilities.TextConstants.FXML;
 
 public class CBMSApplication extends Application {
 
@@ -33,8 +34,11 @@ public class CBMSApplication extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource(ASSETS_SCENE + ".fxml"));
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource(ASSETS_SCENE + FXML));
+        Parent root = loader.load();
         Scene scene = new Scene(root);
+        scene.setUserData(loader);
         primaryStage.setTitle("Minerva");
         primaryStage.setScene(scene);
         primaryStage.show();

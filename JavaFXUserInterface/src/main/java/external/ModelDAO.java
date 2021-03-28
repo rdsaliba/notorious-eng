@@ -8,10 +8,11 @@
 package external;
 
 import app.item.Model;
+import app.item.TrainedModel;
 import rul.models.ModelStrategy;
 
 import java.sql.SQLException;
-import java.util.List;
+import java.util.ArrayList;
 
 public interface ModelDAO {
 
@@ -19,9 +20,9 @@ public interface ModelDAO {
 
     int getModelIDAssociatedWithAssetType(String assetTypeID);
 
-    List<Model> getAllModelsForEvaluation(int assetTypeID);
+    ArrayList<TrainedModel> getModelsByAssetTypeID(String assetTypeID, int statusID);
 
-    void updateModelAssociatedWithAssetType(int modelID, String assetTypeID);
+    void updateModelAssociatedWithAssetType(Model model, String assetTypeID);
 
     void setModelToTrain(String assetTypeID);
 

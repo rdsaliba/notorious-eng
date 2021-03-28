@@ -15,6 +15,7 @@ public class TextConstants {
     public static final String ADD_ASSETS_SCENE = "/AddAsset";
     public static final String ASSET_TYPE_LIST_SCENE = "/AssetTypeList";
     public static final String ASSET_TYPE_INFO_SCENE = "/AssetTypeInfo";
+    public static final String FXML = ".fxml";
 
     // Asset Type Thresholds Text Constants
     public static final String OK_THRESHOLD = "Ok";
@@ -43,6 +44,9 @@ public class TextConstants {
     public static final DecimalFormat RULValueFormat = new DecimalFormat("#.##");
     public static final DecimalFormat RMSEValueFormat = new DecimalFormat("#.##");
     public static final DecimalFormat ThresholdValueFormat = new DecimalFormat("#.00");
+
+    public static final String floatRegex = "[-]?([0-9]*[.])?[0-9]*";
+    public static final String intRegex = "[-]?\\d+";
 
     //Input Validation Constants
     public static final String EMPTY_FIELD_ERROR = "Please enter a value";

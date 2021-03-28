@@ -1,20 +1,18 @@
 package UnitTests.external;
 
-import app.item.Model;
+import app.item.TrainedModel;
 import external.ModelDAOImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 public class ModelDAOTest {
     private ModelDAOImpl modelDAO;
-    private List<Model> modelArrayList;
+    private ArrayList<TrainedModel> modelArrayList;
 
     @Before
     public void setUp() {
@@ -30,7 +28,7 @@ public class ModelDAOTest {
 
     @Test
     public void getAllModelsTest() {
-        modelArrayList = modelDAO.getAllModelsForEvaluation(1);
+        modelArrayList = modelDAO.getModelsByAssetTypeID("1", 2);
         assertEquals(8, modelArrayList.size());
         assertEquals(1, modelArrayList.get(0).getModelID());
         assertEquals("Linear", modelArrayList.get(0).getModelName());
