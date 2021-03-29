@@ -20,9 +20,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.util.StringConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import utilities.CustomDialog;
 import utilities.FormInputValidation;
 import utilities.UIUtilities;
@@ -74,6 +75,8 @@ public class AddAssetController extends Controller implements Initializable {
     private boolean overrideImage = false;
     FileInputStream fileInputStream = null;
     private int imageId = 0;
+
+    Logger logger = LoggerFactory.getLogger(AddAssetController.class);
 
     /**
      * Initialize runs before the scene is displayed.

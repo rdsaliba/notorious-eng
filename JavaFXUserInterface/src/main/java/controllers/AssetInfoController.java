@@ -105,7 +105,6 @@ public class AssetInfoController extends Controller implements Initializable {
     private AttributeDAOImpl attributeDAOImpl;
     private ModelDAOImpl modelDAO;
     private UIUtilities uiUtilities;
-    private ArrayList<Timeline> timelines;
     Image image;
 
     /**
