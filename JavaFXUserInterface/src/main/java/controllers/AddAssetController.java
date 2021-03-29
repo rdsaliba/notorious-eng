@@ -99,7 +99,7 @@ public class AddAssetController extends Controller implements Initializable {
             Asset newAsset = assembleAsset();
             if (formInputValidation() && !isAssetEmpty(newAsset)) {
                 saveAsset(newAsset);
-                CustomDialog.addSystemControllerSaveDialog();
+                CustomDialog.saveNewAssetInformationDialogShowAndWait();
             }
         });
         // Change scenes to Assets.fxml

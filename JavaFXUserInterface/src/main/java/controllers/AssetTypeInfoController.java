@@ -165,13 +165,14 @@ public class AssetTypeInfoController extends Controller implements Initializable
         // Change scenes to Assets.fxml
         backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(TextConstants.ASSET_TYPE_LIST_SCENE, backBtn.getScene()));
 
-        infoDeleteBtn.setOnMouseClicked(mouseEvent -> CustomDialog.systemTypeInfoControllerDialog(assetType.getId()));
+        infoDeleteBtn.setOnMouseClicked(mouseEvent -> CustomDialog.DeleteAssetTypeConfirmationDialogShowAndWait(assetType.getId(), infoSaveBtn.getScene()));
 
         infoSaveBtn.setDisable(true);
         infoSaveBtn.setOnMouseClicked(mouseEvent -> {
             if (formInputValidation()) {
                 assetTypeDAO.updateAssetType(assetType.toAssetType());
-                uiUtilities.changeScene(TextConstants.ASSET_TYPE_LIST_SCENE, infoSaveBtn.getScene());
+                uiUtilities.changeScene(TextConstants.ASSET_TYPE_LIST_SCENE, backBtn.getScene());
+                backBtn.fire();
             }
         });
 
@@ -344,7 +345,7 @@ public class AssetTypeInfoController extends Controller implements Initializable
             modelStrategy.setParameters(model.getModelStrategy().getParameters());
             modelDAO.updateModelStrategy(modelStrategy, model.getModelID(), assetTypeID);
         } else {
-            CustomDialog.nullModelAlert();
+            CustomDialog.nullModelAlertDialogShowAndWait();
         }
     }
 

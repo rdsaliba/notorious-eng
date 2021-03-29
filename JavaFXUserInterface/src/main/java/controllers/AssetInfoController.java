@@ -39,7 +39,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rul.assessment.AssessmentController;
 import utilities.CustomDialog;
-import utilities.TextConstants;
 import utilities.UIUtilities;
 
 import java.net.URL;
@@ -51,6 +50,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static utilities.TextConstants.ASSETS_SCENE;
 
 public class AssetInfoController extends Controller implements Initializable {
     private static final String CYCLE = "Cycle";
@@ -222,9 +223,9 @@ public class AssetInfoController extends Controller implements Initializable {
      */
     public void attachEvents() {
         // Change scenes to Assets.fxml
-        backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(TextConstants.ASSETS_SCENE, backBtn.getScene()));
-        deleteBtn.setOnMouseClicked(mouseEvent -> CustomDialog.systemInfoController(asset.getId()));
-        archiveBtn.setOnMouseClicked(mouseEvent -> CustomDialog.archiveAssetDialogShow(asset, archiveBtn));
+        backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(ASSETS_SCENE, backBtn.getScene()));
+        deleteBtn.setOnMouseClicked(mouseEvent -> CustomDialog.deleteAssetConfirmationDialogShowAndWait(asset.getId(), backBtn.getScene()));
+        archiveBtn.setOnMouseClicked(mouseEvent -> CustomDialog.archiveAssetConfirmationDialogShowAndWait(asset, archiveBtn.getScene()));
 
         rawDataTab.setOnSelectionChanged(event -> {
             rawDataListPane.getChildren().clear();
