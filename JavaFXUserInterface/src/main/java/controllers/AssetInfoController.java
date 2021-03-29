@@ -41,7 +41,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rul.assessment.AssessmentController;
 import utilities.CustomDialog;
-import utilities.TextConstants;
 import utilities.UIUtilities;
 
 import java.net.URL;
@@ -50,10 +49,13 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class AssetInfoController implements Initializable {
+import static utilities.TextConstants.ASSETS_SCENE;
+
+public class AssetInfoController extends Controller implements Initializable {
     private static final String CYCLE = "Cycle";
 
     private static final int ATTRIBUTE_GRAPH_SIZE = 5;
@@ -121,7 +123,6 @@ public class AssetInfoController implements Initializable {
         modelDAO = new ModelDAOImpl();
         attributeDAOImpl = new AttributeDAOImpl();
         uiUtilities = new UIUtilities();
-        timelines = new ArrayList<>();
         setupArchiveBtn();
         attachEvents();
     }
@@ -164,6 +165,7 @@ public class AssetInfoController implements Initializable {
 
         timeline.setCycleCount(Animation.INDEFINITE); // loop forever
         timeline.play();
+        addTimeline(timeline);
 
 
         descriptionOutput.setText(asset.getDescription());
@@ -212,7 +214,7 @@ public class AssetInfoController implements Initializable {
             }));
             timeline.setCycleCount(Animation.INDEFINITE);
             timeline.play();
-            timelines.add(timeline);
+            addTimeline(timeline);
 
             series.setData(data);
             attributeChart.getData().add(series);
@@ -238,15 +240,9 @@ public class AssetInfoController implements Initializable {
      */
     public void attachEvents() {
         // Change scenes to Assets.fxml
-        backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(TextConstants.ASSETS_SCENE, backBtn.getScene()));
-        deleteBtn.setOnMouseClicked(mouseEvent -> {
-            timelines.forEach(Timeline::stop);
-            CustomDialog.systemInfoController(asset.getId());
-        });
-        archiveBtn.setOnMouseClicked(mouseEvent -> {
-            timelines.forEach(Timeline::stop);
-            CustomDialog.archiveAssetDialogShow(asset, archiveBtn);
-        });
+        backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(ASSETS_SCENE, backBtn.getScene()));
+        deleteBtn.setOnMouseClicked(mouseEvent -> CustomDialog.deleteAssetConfirmationDialogShowAndWait(asset.getId(), backBtn.getScene()));
+        archiveBtn.setOnMouseClicked(mouseEvent -> CustomDialog.archiveAssetConfirmationDialogShowAndWait(asset, archiveBtn.getScene()));
 
         rawDataTab.setOnSelectionChanged(event -> {
             rawDataListPane.getChildren().clear();
@@ -275,6 +271,7 @@ public class AssetInfoController implements Initializable {
                 final int j = i;
                 TableColumn<ObservableList<String>, String> col = new TableColumn<>(resultSet.getMetaData().getColumnName(i + 1));
                 col.setCellValueFactory(param -> new SimpleStringProperty(param.getValue().get(j)));
+                col.setComparator(Comparator.comparingDouble(Double::parseDouble));
                 tableview.getColumns().addAll(col);
             }
 
@@ -285,7 +282,7 @@ public class AssetInfoController implements Initializable {
             timeline.setCycleCount(Animation.INDEFINITE); // loop forever
             timeline.play();
 
-            timelines.add(timeline);
+            addTimeline(timeline);
 
             tableview.setItems(data);
         } catch (SQLException e) {

@@ -14,7 +14,7 @@
 }
 
 #evaluateAllModelsBtn {
-    -fx-background-color: #EE6352;
+    -fx-background-color: #226B9E;
     -fx-text-fill: #FFFFFF;
 }
 
@@ -40,7 +40,6 @@
 }
 
 .tab-label {
-    /*-fx-text-fill: -fx-secondary;*/
     -fx-font-size: 18px;
     -fx-font-family: "Segoe UI";
     -fx-font-weight: bold;
@@ -84,8 +83,6 @@
 
 .footerBar {
     -fx-background-color: #FFFFFF;
-    -fx-border-width: 1px 0 0 0;
-    -fx-border-color: #D3D3D3;
 }
 
 .saveBtn {
@@ -119,13 +116,13 @@
 .modelPane {
     -fx-background-color: #FFFFFF;
     -fx-pref-width: 247px;
-    -fx-pref-height: 288px;
+    -fx-pref-height: 200px;
     -fx-border-radius: 5px;
     -fx-background-radius: 5px;
 }
 
 .modelPane:hover {
-    -fx-border-color: #EE6352;
+    -fx-border-color: #226B9E;
 }
 
 .modelName {
@@ -162,8 +159,10 @@
 .selectBtn {
     -fx-font-family: "Segoe UI Semibold";
     -fx-font-size: 14px;
-    -fx-background-color: #EE6352;
-    -fx-text-fill: #FFFFFF;
+    -fx-background-color: #DAEBF7;
+    -fx-border-width: 1px;
+    -fx-border-color: #226B9E;
+    -fx-text-fill: #226B9E;
     -fx-pref-width: 99px;
     -fx-pref-height: 33px;
 }
@@ -174,9 +173,72 @@
     -fx-background-color: transparent;
 }
 
+.modelFlowPane {
+    -fx-padding: 10 10 0 10;
+}
+
 .selectModelHeaderPane {
     -fx-background-color: transparent;
     -fx-border-width: 1px 0 1px 0;
     -fx-border-color: #D3D3D3;
+}
+
+.paramPane {
+    -fx-background-color: transparent;
+    -fx-min-height: 45px;
+    -fx-pref-width: 450px;
+    -fx-padding: 10px;
+}
+
+.paramTextField {
+    -fx-pref-width: 150px;
+}
+
+#modelsThumbPane {
+}
+
+.paramLabel {
+    -fx-font-family: "Segoe UI Semibold";
+    -fx-font-size: 14px;
+    -fx-text-fill: #3A3A3A;
+}
+
+.parametersScrollPane {
+    -fx-background-color: #FFFFFF;
+    -fx-border-width: 0px;
+    -fx-border-color: #FFFFFF;
+}
+
+.parametersContainer {
+    -fx-background-color: #FFFFFF;
+    -fx-border-width: 0px;
+    -fx-border-color: #FFFFFF;
+}
+
+.modelParameters {
+    -fx-background-color: #FFFFFF;
+    -fx-border-width: 0px;
+    -fx-border-color: #FFFFFF;
+    -fx-padding: 10 0 0 26;
+}
+
+.resetBtn {
+    -fx-pref-width: 142px;
+    -fx-pref-height: 40px;
+    -fx-border-radius: 2px;
+    -fx-background-color: #d5d7dd;
+    -fx-font-family: "Segoe UI Semibold";
+    -fx-font-size: 20px;
+    -fx-fill: #3A3A3A;
+}
+
+.defaultBtn {
+    -fx-pref-width: 142px;
+    -fx-pref-height: 40px;
+    -fx-border-radius: 2px;
+    -fx-background-color: #d5d7dd;
+    -fx-font-family: "Segoe UI Semibold";
+    -fx-font-size: 20px;
+    -fx-fill: #3A3A3A;
 }
 
