@@ -325,13 +325,10 @@ public class AllFeaturesTest extends ApplicationTest
         //Delete the new asset type
         clickOn("#assetTypeName").sleep(1000);
         clickOn("#deleteBtn").sleep(500);
-
-
         type(KeyCode.SPACE).sleep(500);
-        clickOn("#backBtn").sleep(1000);
 
         assetTypes = (TableView) scene.getRoot().lookup("#tableView");
-        moveBy(40, 200);
+        moveBy(0, 200);
         assetTypes.scrollTo(assetTypesDefaultSize);         //back to original table
         sleep(3000);
 
@@ -402,7 +399,7 @@ public class AllFeaturesTest extends ApplicationTest
         }
 
         sleep(1000).scroll(50, VerticalDirection.DOWN).sleep(1000);
-        assertTrue(isOrdered);
+        assertTrue("All RULs after sorting by ascending are ordered from smallest to largest.", isOrdered);
     }
 
     //get double[] RUL values after it's been sorted in ascending order.
@@ -447,7 +444,7 @@ public class AllFeaturesTest extends ApplicationTest
 
         } while(++i < 4);
 
-        assertTrue(assets.getChildren().size() > 0);
+        assertTrue("There are selectable assets on the main page.", assets.getChildren().size() > 0);
     }
 
     /*
@@ -469,7 +466,7 @@ public class AllFeaturesTest extends ApplicationTest
         table.scrollToColumnIndex(15);          //scroll to show the end columns
         sleep(3000).clickOn("#backBtn").sleep(1000);
 
-        assertTrue(table.getItems().size() > 0);
+        assertTrue("There is a raw data table for the selected asset.", table.getItems().size() > 0);
     }
 
     /*
@@ -506,7 +503,7 @@ public class AllFeaturesTest extends ApplicationTest
             i++;
         }
 
-        assertTrue(isValidAttributesAmount);
+        assertTrue("Assets have 26 attributes.", isValidAttributesAmount);
     }
 
     /*
@@ -531,6 +528,7 @@ public class AllFeaturesTest extends ApplicationTest
         clickOn("#siteInput").write("Regularly checked").sleep(1000);
         clickOn("#locationInput").write("Montreal Qc").sleep(1000);
 
+        // TODO: Complete the test (save button) once Add Asset bug is fixed.
         clickOn(scene.getRoot().lookup("#cancelBtn")).sleep(3000);
     }
 
