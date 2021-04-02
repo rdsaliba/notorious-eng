@@ -315,6 +315,7 @@ public class AssetTypeInfoController extends Controller implements Initializable
         trainSlider.setOnMouseClicked(mouseEvent -> enableEvaluation(evaluateButtons));
         testSlider.setOnMouseClicked(mouseEvent -> enableEvaluation(evaluateButtons));
 
+        // As the window expands or shrinks, asset panes will adjust to the window size accordingly
         modelsThumbPane.widthProperty().addListener((obs, oldVal, newVal) -> {
             double modelFlowWidth = (double) newVal - 22;
             int nbOfPanes = (int) (modelFlowWidth / 247);
@@ -322,7 +323,6 @@ public class AssetTypeInfoController extends Controller implements Initializable
             modelFlowWidth = modelFlowWidth / (nbOfPanes - 1);
             modelsThumbPane.setHgap(modelFlowWidth);
         });
-
     }
 
     /**
