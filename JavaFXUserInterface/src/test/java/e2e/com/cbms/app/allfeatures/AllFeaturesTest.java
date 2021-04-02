@@ -216,7 +216,7 @@ public class AllFeaturesTest extends ApplicationTest
 
 //        //Change parameters
         Pane execPara = (Pane) paraBox.getChildren().get(1);
-        TextField execVal = (TextField) execPara.getChildren().get(2);
+        TextField execVal = (TextField) execPara.getChildren().get(1);
         clickOn(execVal).sleep(1500);
 //
         Pane calcBagPara = (Pane) paraBox.getChildren().get(3);
@@ -521,7 +521,7 @@ public class AllFeaturesTest extends ApplicationTest
         //Enter info for new asset
         clickOn("#assetNameInput").write("My New Asset").sleep(1000);
         clickOn("#assetTypeChoiceBox").type(KeyCode.DOWN).sleep(1000).type(KeyCode.ENTER).sleep(1000);
-        clickOn("#assetDescriptionTextArea").write("Adding a new asset for system testing").sleep(1000);
+        clickOn("#assetDescriptionInput").write("Adding a new asset for system testing").sleep(1000);
         clickOn("#serialNumberInput").write("192837465").sleep(1000);
         clickOn("#manufacturerInput").write("Asset in good condition").sleep(1000);
         clickOn("#categoryInput").write("Category 2").sleep(1000);
