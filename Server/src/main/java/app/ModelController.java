@@ -135,7 +135,7 @@ public class ModelController {
      */
     private void trainAndSave(TrainedModel tm) {
         try {
-            if (!Objects.isNull(tm.getModelStrategy()))
+            if (!Objects.isNull(tm.getModelStrategy()) && tm.getStatusID() == Constants.STATUS_EVALUATION)
                 modelToEvaluate(tm);
             else {
                 trainModel(tm);
@@ -148,7 +148,7 @@ public class ModelController {
 
     /**
      * Given a trained model this function will retrain it with the current data and settings of the model
-     *
+     *SET GLOBAL max_allowed_packet=1073741824;
      * @author Paul
      */
     private void trainModel(TrainedModel trainedModel) throws Exception {
@@ -254,14 +254,12 @@ public class ModelController {
      * @author talal
      */
     public void modelToEvaluate(TrainedModel trainedModel) throws Exception {
-        trainedModel.setAssetTypeID(1);
         int trainAssets = trainedModel.getModelStrategy().getTrainsAssets();
         int testAssets = trainedModel.getModelStrategy().getTestAssets();
         Instances trainDataset = DataPrePreprocessorController.getInstance().addRULCol(createInstancesFromAssets(assetDaoImpl.getAssetsFromAssetTypeID(trainedModel.getAssetTypeID()).subList(0, trainAssets - 1)));
         Instances testDataset = DataPrePreprocessorController.getInstance().addRULCol(createInstancesFromAssets(assetDaoImpl.getAssetsFromAssetTypeID(trainedModel.getAssetTypeID()).subList(trainAssets, trainAssets + testAssets - 1)));
         Evaluation evaluation = new Evaluation(trainedModel, trainDataset, testDataset);
-        Thread t = new Thread(evaluation);
-        t.start();
+        evaluation.run();
     }
 }
 

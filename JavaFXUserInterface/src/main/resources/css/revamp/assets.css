@@ -158,7 +158,7 @@
 
 .table-view .column-header {
     -fx-background-color: #FBFBFC;
-    -fx-size: 40;
+    -fx-size: 40px;
 }
 
 .table-view .column-header .label {
@@ -237,4 +237,19 @@
 .none {
     -fx-background-color: transparent;
     -fx-border-color: #D3D3D3;
+}
+
+.noResultPane {
+    -fx-background-color: #dbdbdb;
+    -fx-pref-height: 70.0;
+    -fx-pref-width: 210.0;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.noResult {
+    -fx-font-family: 'Segoe UI';
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-fill: '#0c072e';
 }

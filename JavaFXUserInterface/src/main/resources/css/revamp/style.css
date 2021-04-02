@@ -8,3 +8,14 @@
 .container {
     -fx-background-color: #FFFFFF;
 }
+
+.error-message {
+    -fx-font-weight: bold;
+    -fx-fill: red;
+    -fx-font-size: 11.0;
+}
+
+.input-error {
+    -fx-border-color: red;
+    -fx-border-width: 2px;
+}

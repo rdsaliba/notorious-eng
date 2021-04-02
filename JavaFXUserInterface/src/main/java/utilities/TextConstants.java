@@ -15,6 +15,7 @@ public class TextConstants {
     public static final String ADD_ASSETS_SCENE = "/AddAsset";
     public static final String ASSET_TYPE_LIST_SCENE = "/AssetTypeList";
     public static final String ASSET_TYPE_INFO_SCENE = "/AssetTypeInfo";
+    public static final String FXML = ".fxml";
 
     // Asset Type Thresholds Text Constants
     public static final String OK_THRESHOLD = "Ok";
@@ -24,21 +25,28 @@ public class TextConstants {
     public static final String FAILED_THRESHOLD = "Failed";
 
     // Custom Dialog Text Constants
-    public static final String ALERT_HEADER = "Confirmation of system deletion";
-    public static final String ALERT_CONTENT = "Are you sure you want to delete this system?";
+    public static final String DELETE_ASSET_DIALOG_HEADER = "Confirmation of asset deletion";
+    public static final String DELETE_ASSET_DIALOG_CONTENT = "Are you sure you want to delete this asset?";
 
-    public static final String SAVE_DIALOG = "Save Dialog";
-    public static final String SAVE_HEADER = "Asset has been saved to the database.";
+    public static final String DELETE_ASSET_TYPE_DIALOG_HEADER = "Confirmation of asset type deletion";
+    public static final String DELETE_ASSET_TYPE_DIALOG_CONTENT = "Are you sure you want to delete this asset type?\n" +
+            "(This includes deleting all assets belonging to that asset type)";
+
+    public static final String NEW_ASSET_SAVED_DIALOG_HEADER = "Save Dialog";
+    public static final String NEW_ASSET_SAVED_DIALOG_CONTENT = "Asset has been saved to the database.";
 
     public static final String ARCHIVE_DIALOG_HEADER = "Archive asset confirmation";
     public static final String ARCHIVE_DIALOG_CONTENT = "Please select the last time cycle of the asset's useful life";
 
-    public static final String NO_MODEL_ALERT_HEADER = "Error No Model Available";
-    public static final String NO_MODEL_ALERT_CONTENT = "You should run server before you evaluate";
+    public static final String NO_MODEL_ALERT_DIALOG_HEADER = "Error No Model Available";
+    public static final String NO_MODEL_ALERT_DIALOG_CONTENT = "You should run server before you evaluate";
 
     public static final DecimalFormat RULValueFormat = new DecimalFormat("#.##");
     public static final DecimalFormat RMSEValueFormat = new DecimalFormat("#.##");
     public static final DecimalFormat ThresholdValueFormat = new DecimalFormat("#.00");
+
+    public static final String floatRegex = "[-]?([0-9]*[.])?[0-9]*";
+    public static final String intRegex = "[-]?\\d+";
 
     //Input Validation Constants
     public static final String EMPTY_FIELD_ERROR = "Please enter a value";

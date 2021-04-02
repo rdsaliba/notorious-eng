@@ -21,17 +21,21 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import java.util.Comparator;
+
+import static utilities.TextConstants.*;
+
 public class CustomDialog extends Stage {
 
     private static final String SAVE_LABEL = "Save";
     private static final String TIME_CYCLE_LABEL = "Time cycle:";
     private static final UIUtilities uiUtilities = new UIUtilities();
-    private final Button btn;
-    private final Pane root;
+    private final Button okBtn;
+    private final Pane rootPane;
     private final Button cancelBtn;
 
     public CustomDialog(String header, String content) {
-        root = new Pane();
+        rootPane = new Pane();
 
         initStyle(StageStyle.TRANSPARENT);
         initModality(Modality.APPLICATION_MODAL);
@@ -49,60 +53,67 @@ public class CustomDialog extends Stage {
         VBox box = new VBox(10, headerText, contentText);
         box.setPadding(new Insets(15));
 
-        btn = new Button("Ok");
-        btn.setTranslateX(bg.getWidth() - 50);
-        btn.setTranslateY(bg.getHeight() - 50);
+        okBtn = new Button("Ok");
+        okBtn.setTranslateX(bg.getWidth() - 120);
+        okBtn.setTranslateY(bg.getHeight() - 50);
 
         cancelBtn = new Button("Cancel");
-        cancelBtn.setTranslateX(bg.getWidth() - 120);
+        cancelBtn.setTranslateX(bg.getWidth() - 70);
         cancelBtn.setTranslateY(bg.getHeight() - 50);
         cancelBtn.setOnAction(e -> closeDialog());
 
-        root.getChildren().addAll(bg, box, btn, cancelBtn);
-        setScene(new Scene(root, null));
+        rootPane.getChildren().addAll(bg, box, okBtn, cancelBtn);
+        setScene(new Scene(rootPane, null));
     }
 
-    public static void systemTypeInfoControllerDialog(String systemID) {
+    public static void DeleteAssetTypeConfirmationDialogShowAndWait(String assetTypeID, Scene scene) {
+        CustomDialog dialog = new CustomDialog(DELETE_ASSET_TYPE_DIALOG_HEADER, DELETE_ASSET_TYPE_DIALOG_CONTENT);
         AssetTypeDAOImpl assetTypeDAO = new AssetTypeDAOImpl();
-        CustomDialog dialog = new CustomDialog(TextConstants.ALERT_HEADER, TextConstants.ALERT_CONTENT);
+
         dialog.getOkButton().setOnAction(e -> {
-            assetTypeDAO.deleteAssetTypeByID(systemID);
-            uiUtilities.changeScene(TextConstants.ASSETS_SCENE, dialog.getScene());
+            assetTypeDAO.deleteAssetTypeByID(assetTypeID);
+            uiUtilities.changeScene(ASSET_TYPE_LIST_SCENE, scene);
             dialog.closeDialog();
         });
-        dialog.openDialog();
-    }
-    public static void nullModelAlert(){
-        CustomDialog dialog = new CustomDialog(TextConstants.NO_MODEL_ALERT_HEADER, TextConstants.NO_MODEL_ALERT_CONTENT);
-        dialog.getOkButton().setOnAction(e -> {
-            uiUtilities.changeScene(TextConstants.ASSET_TYPE_INFO_SCENE, dialog.getScene());
-            dialog.closeDialog();
-        });
-        dialog.getRoot().getChildren().remove(3);
+
         dialog.openDialog();
     }
 
-    public static void systemInfoController(int systemID) {
+    public static void nullModelAlertDialogShowAndWait() {
+        CustomDialog dialog = new CustomDialog(NO_MODEL_ALERT_DIALOG_HEADER, NO_MODEL_ALERT_DIALOG_CONTENT);
+
+        dialog.getRootPane().getChildren().remove(dialog.getCancelBtn());
+        dialog.getOkButton().setOnAction(e -> {
+            uiUtilities.changeScene(ASSET_TYPE_INFO_SCENE, dialog.getScene());
+            dialog.closeDialog();
+        });
+
+        dialog.openDialog();
+    }
+
+    public static void deleteAssetConfirmationDialogShowAndWait(int assetID, Scene scene) {
+        CustomDialog dialog = new CustomDialog(DELETE_ASSET_DIALOG_HEADER, DELETE_ASSET_DIALOG_CONTENT);
         AssetDAOImpl assetDAOImpl = new AssetDAOImpl();
-        CustomDialog dialog = new CustomDialog(TextConstants.ALERT_HEADER, TextConstants.ALERT_CONTENT);
-        //Set the functionality of the btn
+
         dialog.getOkButton().setOnAction(e -> {
-            assetDAOImpl.deleteAssetByID(systemID);
-            uiUtilities.changeScene(TextConstants.ASSETS_SCENE, dialog.getScene());
+            assetDAOImpl.deleteAssetByID(assetID);
+            uiUtilities.changeScene(ASSETS_SCENE, scene);
             dialog.closeDialog();
         });
+
         dialog.openDialog();
     }
 
-    public static void addSystemControllerSaveDialog() {
-        CustomDialog dialog = new CustomDialog(TextConstants.SAVE_DIALOG, TextConstants.SAVE_HEADER);
-        dialog.getRoot().getChildren().remove(dialog.getCancelBtn());
+    public static void saveNewAssetInformationDialogShowAndWait() {
+        CustomDialog dialog = new CustomDialog(NEW_ASSET_SAVED_DIALOG_HEADER, NEW_ASSET_SAVED_DIALOG_CONTENT);
+
+        dialog.getRootPane().getChildren().remove(dialog.getCancelBtn());
         dialog.getOkButton().setOnAction(e -> {
-            uiUtilities.changeScene(TextConstants.ASSETS_SCENE, dialog.getScene());
+            uiUtilities.changeScene(ASSETS_SCENE, dialog.getScene());
             dialog.closeDialog();
         });
-        dialog.openDialog();
 
+        dialog.openDialog();
     }
 
     /**
@@ -111,12 +122,12 @@ public class CustomDialog extends Stage {
      * specified. Saving the selection will delete all time cycles after the selected one and will archive the
      * asset.
      *
-     * @param asset          is the asset to be archived
-     * @param parentSceneBtn is a button from the parent scene of the custom dialog window
+     * @param asset is the asset to be archived
+     * @param scene is a button from the parent scene of the custom dialog window
      * @author Jeremie
      */
-    public static void archiveAssetDialogShow(Asset asset, Button parentSceneBtn) {
-        CustomDialog dialog = new CustomDialog(TextConstants.ARCHIVE_DIALOG_HEADER, TextConstants.ARCHIVE_DIALOG_CONTENT);
+    public static void archiveAssetConfirmationDialogShowAndWait(Asset asset, Scene scene) {
+        CustomDialog dialog = new CustomDialog(ARCHIVE_DIALOG_HEADER, ARCHIVE_DIALOG_CONTENT);
         final Integer[] selectedCycle = new Integer[1];
         AssetDAOImpl assetDAO = new AssetDAOImpl();
 
@@ -126,9 +137,10 @@ public class CustomDialog extends Stage {
         dialog.getOkButton().setOnAction(e -> {
             assetDAO.deleteAssetMeasurementsAfterTimeCycle(asset.getId(), selectedCycle[0]);
             assetDAO.setAssetToBeArchived(asset.getId());
-            uiUtilities.changeScene(TextConstants.ASSETS_SCENE, parentSceneBtn.getScene());
+            uiUtilities.changeScene(ASSETS_SCENE, scene);
             dialog.closeDialog();
         });
+
         dialog.openDialog();
     }
 
@@ -155,15 +167,15 @@ public class CustomDialog extends Stage {
         timeCycleComboBox.valueProperty().addListener((observableValue, integer, selectedInt) -> selectedCycle[0] = selectedInt);
         ObservableList<Integer> timeCycles;
         timeCycles = FXCollections.observableArrayList(asset.getAssetInfo().getAssetAttributes().get(0).getTimeCyclesList());
-        timeCycleComboBox.setItems(timeCycles);
+        timeCycleComboBox.setItems(timeCycles.sorted(Comparator.reverseOrder()));
         timeCycleComboBox.setValue(timeCycleComboBox.getItems().get(0));
 
         // Adding the ComboBox and Label to the dialog stage
-        dialog.getRoot().getChildren().addAll(timeCycleLabel, timeCycleComboBox);
+        dialog.getRootPane().getChildren().addAll(timeCycleLabel, timeCycleComboBox);
     }
 
-    public Pane getRoot() {
-        return root;
+    public Pane getRootPane() {
+        return rootPane;
     }
 
     public Button getCancelBtn() {
@@ -171,7 +183,7 @@ public class CustomDialog extends Stage {
     }
 
     public Button getOkButton() {
-        return btn;
+        return okBtn;
     }
 
     public void openDialog() {
