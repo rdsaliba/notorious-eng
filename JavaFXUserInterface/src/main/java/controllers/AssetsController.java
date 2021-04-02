@@ -85,7 +85,6 @@ public class AssetsController extends Controller implements Initializable {
     private ObservableList<Asset> assets;
     private ObservableList<Asset> searchedAssets;
     private PauseTransition delaySearch;
-    private Timeline rulTimeline;
 
     public AssetsController() {
         assetTypeDAO = new AssetTypeDAOImpl();
@@ -144,6 +143,15 @@ public class AssetsController extends Controller implements Initializable {
      * @author Jeff
      */
     public void attachEvents() {
+
+        // As the window expands or shrinks, asset panes will adjust to the window size accordingly
+        assetsThumbPane.widthProperty().addListener((obs, oldVal, newVal) -> {
+            double assetFlowWidth = (double) newVal - 54;
+            int nbOfPanes = (int) (assetFlowWidth / 247);
+            assetFlowWidth = (assetFlowWidth % 247);
+            assetFlowWidth = assetFlowWidth / (nbOfPanes - 1);
+            assetsThumbPane.setHgap(assetFlowWidth);
+        });
 
         thumbnailTab.setOnSelectionChanged(event -> {
             if (thumbnailTab.isSelected()) {
@@ -328,26 +336,7 @@ public class AssetsController extends Controller implements Initializable {
                 recommendationLabel.getStyleClass().add("statusLabel");
                 recommendation.getStyleClass().add("statusValue");
                 statusPane.getStyleClass().add("statusPane");
-                switch (asset.getRecommendation()) {
-                    case TextConstants.OK_THRESHOLD:
-                        statusPane.getStyleClass().add("ok");
-                        break;
-                    case TextConstants.ADVISORY_THRESHOLD:
-                        statusPane.getStyleClass().add("advisory");
-                        break;
-                    case TextConstants.CAUTION_THRESHOLD:
-                        statusPane.getStyleClass().add("caution");
-                        break;
-                    case TextConstants.WARNING_THRESHOLD:
-                        statusPane.getStyleClass().add("warning");
-                        break;
-                    case TextConstants.FAILED_THRESHOLD:
-                        statusPane.getStyleClass().add("failed");
-                        break;
-                    default:
-                        statusPane.getStyleClass().add("none");
-                        break;
-                }
+                statusPane.getStyleClass().add(asset.getRecommendation().toLowerCase());
 
                 statusPane.setAlignment(Pos.CENTER);
                 rulPane.setAlignment(Pos.CENTER);
@@ -429,6 +418,21 @@ public class AssetsController extends Controller implements Initializable {
         TableColumn<Asset, String> recommendationCol = new TableColumn<>(RECOMMENDATION);
         recommendationCol.setCellValueFactory(
                 new PropertyValueFactory<>("recommendation"));
+        recommendationCol.setCellFactory(column -> {
+            return new TableCell<Asset, String>() {
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+
+                    if (item == null || empty) {
+                        setText(null);
+                        setStyle("");
+                    } else {
+                        setText(item);
+                        getStyleClass().addAll(item.toLowerCase(), "cellStatus");
+                    }
+                }
+            };
+        });
 
         TableColumn<Asset, String> locationCol = new TableColumn<>(LOCATION_COL);
         locationCol.setCellValueFactory(
