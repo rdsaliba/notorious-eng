@@ -28,7 +28,7 @@
                   <Insets left="35.0" />
                </padding>
             </TextField>
-                <Text layoutX="26.0" layoutY="115.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="header" text="Systems" />
+                <Text layoutX="26.0" layoutY="115.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="header" text="Assets" />
                 <TabPane fx:id="assetsTabPane" layoutX="201.0" layoutY="172.0" prefHeight="667.0" prefWidth="1135.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="167.0">
                     <tabs>
                         <Tab id="thumbnailTab" fx:id="thumbnailTab" text="Thumbnails">
