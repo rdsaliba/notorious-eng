@@ -123,3 +123,10 @@
     -fx-font-size: 20px;
     -fx-padding: 5 15 5 15
 }
+#assetSaveBtn {
+    -fx-background-color: #48C774;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-family: "Segoe UI Semibold";
+    -fx-font-size: 20px;
+    -fx-padding: 5 15 5 15
+}

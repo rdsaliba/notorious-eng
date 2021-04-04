@@ -27,6 +27,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
     private static final String GET_LIVE_ASSETS_FROM_ASSET_TYPE_ID = "SELECT * FROM asset a WHERE a.archived = false AND a.asset_type_id = ?";
     private static final String GET_ARCHIVED_ASSETS_FROM_ASSET_TYPE_ID = "SELECT * FROM asset a WHERE a.archived = true AND a.asset_type_id = ?";
     private static final String INSERT_ASSET = "INSERT INTO asset (name, asset_type_id, description, sn, manufacturer, category, site, location) values(?,?,?,?,?,?,?,?)";
+    private static final String UPDATE_ASSET = "UPDATE asset set asset.name =?, asset.location=?, asset.site=?, asset.manufacturer=?, asset.category=?, asset.description=? WHERE asset.asset_id = ?";
     private static final String SET_UPDATED_TRUE = "UPDATE asset set updated = 1 where asset_id = ?";
     private static final String GET_ATTRIBUTE_DETAILS_FROM_ASSET_ID = "SELECT att.* FROM attribute_measurements am, attribute att WHERE att.attribute_id=am.attribute_id AND am.asset_id = ? GROUP by attribute_id";
     private static final String UPDATE_ASSET_TO_ARCHIVED = "UPDATE asset set archived = true where asset_ID = ?";
@@ -64,6 +65,26 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
             ps.setString(6, asset.getCategory());
             ps.setString(7, asset.getSite());
             ps.setString(8, asset.getLocation());
+            ps.executeQuery();
+        } catch (SQLException e) {
+            logger.error("Exception in insertAsset(): ", e);
+        }
+    }
+    /**
+     * Update an existing asset
+     *
+     * @param asset is an asset that is added by the user
+     */
+    @Override
+    public void updateAsset(Asset asset) {
+        try (PreparedStatement ps = getConnection().prepareStatement(UPDATE_ASSET)) {
+            ps.setString(1, asset.getName());
+            ps.setString(2, asset.getLocation());
+            ps.setString(3, asset.getSite());
+            ps.setString(4, asset.getManufacturer());
+            ps.setString(5, asset.getCategory());
+            ps.setString(6, asset.getDescription());
+            ps.setInt(7, asset.getId());
             ps.executeQuery();
         } catch (SQLException e) {
             logger.error("Exception in insertAsset(): ", e);

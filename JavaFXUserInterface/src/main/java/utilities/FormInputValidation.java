@@ -200,6 +200,41 @@ public class FormInputValidation {
     }
 
     /**
+     * This function validates the user input for asset input forms when editing an asset.
+     * Whenever an input is invalid, it creates and displays an error message for the specific invalid input field.
+     *
+     * @param textInputControlAnchorPane The Anchor pane of the input form
+     * @param assetDescriptionInput      TextInputControl for the asset description
+     * @param manufacturerInput          TextInputControl for the asset manufacturer
+     * @param categoryInput              TextInputControl for the asset category
+     * @param siteInput                  TextInputControl for the asset site
+     * @param locationInput              TextInputControl for the asset location
+     * @author Paul
+     */
+    public static boolean assetEditFormInputValidation(AnchorPane textInputControlAnchorPane, TextArea assetDescriptionInput, TextField manufacturerInput, TextField categoryInput, TextField siteInput, TextField locationInput) {
+        String regexWordAndHyphen = "(?=\\S*[-])([a-zA-Z0-9-]*)|([a-zA-Z0-9]*)"; //Any word containing letters, numbers and hyphens
+        String regexLettersAndHyphen = "(?=\\S*[-])([a-zA-Z-]*)|([a-zA-Z]*)"; //Any word containing letters and hyphens
+        assetValidForm = true;
+        ArrayList<TextInputControl> textInputControls = new ArrayList<>();
+
+        // Initializing the form input validation
+        initializeFormInputValidation(textInputControlAnchorPane, textInputControls);
+
+        logger.info("Start - formInputValidation() -> The form is : {}", assetValidForm);
+
+        // Input validation on the different asset input fields
+        assetDescriptionValidation(textInputControlAnchorPane, assetDescriptionInput, textInputControls.indexOf(assetDescriptionInput));
+        manufacturerValidation(textInputControlAnchorPane, manufacturerInput, regexWordAndHyphen, textInputControls.indexOf(manufacturerInput));
+        categoryValidation(textInputControlAnchorPane, categoryInput, regexLettersAndHyphen, textInputControls.indexOf(categoryInput));
+        siteValidation(textInputControlAnchorPane, siteInput, regexWordAndHyphen, textInputControls.indexOf(siteInput));
+        locationValidation(textInputControlAnchorPane, locationInput, regexWordAndHyphen, textInputControls.indexOf(locationInput));
+
+        logger.info("End - formInputValidation() -> The form is : {}", assetValidForm);
+
+        return assetValidForm;
+    }
+
+    /**
      * Initializes the form for input validation by setting up the list of TextInputControl components to validate input on as well as removing
      * any previous states of input validation errors.
      *
