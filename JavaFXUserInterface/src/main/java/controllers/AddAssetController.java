@@ -66,6 +66,7 @@ public class AddAssetController extends Controller implements Initializable {
     private AnchorPane inputError;
     @FXML
     private ImageView imageView;
+    @FXML
     private AnchorPane addAssetInformationAnchorPane;
     private AssetDAOImpl assetDAOImpl;
     private AssetTypeDAOImpl assetTypeDAOImpl;
