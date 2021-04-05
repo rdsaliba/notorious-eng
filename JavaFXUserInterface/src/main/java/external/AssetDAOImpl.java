@@ -76,6 +76,15 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         }
     }
 
+    /**
+     * Given an image file name and a fileInputStream, this function will store the image
+     * in the database as a mediumBlob
+     *
+     * @param fileInputStream represents the inputStream
+     * @param name represents the image name
+     * @author Roy
+     */
+    @Override
     public PreparedStatement storeImage(FileInputStream fileInputStream, String name) {
         PreparedStatement ps = null;
         try {
@@ -90,6 +99,13 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         return ps;
     }
 
+    /**
+     * Given an image id, this function will find the associated image
+     *
+     * @param imageId represents the image id
+     * @author Roy
+     */
+    @Override
     public Image findImageById(int imageId) {
         Image image = null;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_IMAGE_BY_ID)) {
@@ -106,6 +122,14 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         return image;
     }
 
+    /**
+     * Given an image file name, this function will find the image id
+     * associated with the name
+     *
+     * @param name represents the file name
+     * @author Roy
+     */
+    @Override
     public int findImageIdByName(String name) {
         int imageId = 0;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_IMAGE_BY_NAME)) {

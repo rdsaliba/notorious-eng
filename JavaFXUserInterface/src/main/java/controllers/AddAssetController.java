@@ -63,8 +63,6 @@ public class AddAssetController extends Controller implements Initializable {
     @FXML
     private TextField locationInput;
     @FXML
-    private AnchorPane inputError;
-    @FXML
     private ImageView imageView;
     @FXML
     private AnchorPane addAssetInformationAnchorPane;
