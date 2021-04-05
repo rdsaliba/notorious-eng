@@ -11,6 +11,7 @@ package controllers;
 import app.ModelController;
 import app.item.Asset;
 import app.item.Item;
+import external.AssetDAOImpl;
 import external.AssetTypeDAOImpl;
 import external.ModelDAOImpl;
 import javafx.animation.Animation;
@@ -26,10 +27,9 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import org.apache.commons.lang3.StringUtils;
@@ -62,6 +62,7 @@ public class AssetsController extends Controller implements Initializable {
     private static final String DESCRIPTION_COL = "Description";
     private final AssetTypeDAOImpl assetTypeDAO;
     private final ModelDAOImpl modelDAO;
+    private AssetDAOImpl assetDAOImpl;
     private final TableView<Asset> table;
     Logger logger = LoggerFactory.getLogger(AssetsController.class);
     @FXML
@@ -88,6 +89,7 @@ public class AssetsController extends Controller implements Initializable {
 
     public AssetsController() {
         assetTypeDAO = new AssetTypeDAOImpl();
+        assetDAOImpl = new AssetDAOImpl();
         modelDAO = new ModelDAOImpl();
         table = new TableView<>();
         try {
@@ -312,6 +314,11 @@ public class AssetsController extends Controller implements Initializable {
                 Pane imagePlaceholder = new Pane();
                 imagePlaceholder.getStyleClass().add("imagePlaceholder");
 
+                BorderPane borderPane = new BorderPane();
+                borderPane.getStyleClass().add("borderPane");
+
+                setImage(asset, borderPane);
+
                 HBox rulPane = new HBox();
                 rulPane.getStyleClass().add("rulPane");
 
@@ -345,8 +352,8 @@ public class AssetsController extends Controller implements Initializable {
                 assetName.setLayoutY(35.0);
                 assetType.setLayoutX(15.0);
                 assetType.setLayoutY(63.0);
-                imagePlaceholder.setLayoutX(15.0);
-                imagePlaceholder.setLayoutY(80.0);
+                borderPane.setLayoutX(15.0);
+                borderPane.setLayoutY(80.0);
                 rulLabel.setLayoutX(52.0);
                 rulLabel.setLayoutY(239.0);
                 rulPane.setLayoutX(15.0);
@@ -366,7 +373,7 @@ public class AssetsController extends Controller implements Initializable {
                 pane.getChildren().add(recommendationLabel);
                 statusPane.getChildren().add(recommendation);
                 pane.getChildren().add(statusPane);
-                pane.getChildren().add(imagePlaceholder);
+                pane.getChildren().add(borderPane);
 
                 boxes.add(pane);
             }
@@ -382,6 +389,25 @@ public class AssetsController extends Controller implements Initializable {
 
             assetsThumbPane.getChildren().add(noResultPane);
         }
+    }
+
+    private void setImage(Asset asset, BorderPane borderPane) {
+        ImageView imageView = null;
+        Image image;
+
+        if (asset.getImageId() != 0){
+            image = assetDAOImpl.findImageById(asset.getImageId());
+
+        } else {
+            //Set default image
+            image = new Image("file:JavaFXUserInterface/src/main/resources/imgs/default.png");
+        }
+
+        imageView = new ImageView(image);
+        imageView.setFitWidth(133);
+        imageView.setFitHeight(133);
+        imageView.setCache(true);
+        borderPane.setCenter(imageView);
     }
 
     /**

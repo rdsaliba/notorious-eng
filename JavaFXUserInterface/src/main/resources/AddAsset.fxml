@@ -107,6 +107,8 @@
                     <Font name="Segoe UI" size="14.0"/>
                 </font>
             </Text>
+         <Button fx:id="uploadBtn" layoutX="750.0" layoutY="97.0" mnemonicParsing="false" text="Upload image" styleClass="uploadBtn"/>
+         <ImageView fx:id="imageView" fitHeight="150.0" fitWidth="200.0" layoutX="750.0" layoutY="150.0" pickOnBounds="true" preserveRatio="true" />
         </AnchorPane>
         <AnchorPane prefHeight="80.0" prefWidth="1135.0" styleClass="footerBar" AnchorPane.bottomAnchor="0.0"
                     AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
