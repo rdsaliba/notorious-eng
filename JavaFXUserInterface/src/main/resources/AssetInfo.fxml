@@ -6,8 +6,9 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="834.0" prefWidth="1194.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AssetInfoController">
     <children>
         <fx:include source="Navigation.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0" />
         <AnchorPane prefHeight="200.0" prefWidth="200.0" styleClass="container" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="59.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -37,6 +38,7 @@
                             </padding>
                         </Button>
                         <Button fx:id="archiveBtn" layoutX="733.0" layoutY="19.0" mnemonicParsing="false" text="Archive" AnchorPane.rightAnchor="304.0" />
+
                     </children>
                 </AnchorPane>
                 <AnchorPane layoutX="14.0" layoutY="104.0" prefHeight="42.0" prefWidth="952.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="80.0">
@@ -71,6 +73,7 @@
                                                         <TextField fx:id="assetNameOutput" layoutX="159.0" layoutY="14.0" text="T" />
                                                         <Text fill="#0c072e" layoutX="13.0" layoutY="227.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Recommendation:" />
                                                         <Text fx:id="recommendationOutput" fill="#0c072e" layoutX="167.0" layoutY="227.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
+                                                        <ImageView fx:id="imageView" fitHeight="150.0" fitWidth="200.0" layoutX="867.0" layoutY="13.0" pickOnBounds="true" preserveRatio="true" />
                                           <Button id="assetSaveBtn" fx:id="assetSaveBtn" layoutX="925.0" layoutY="192.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="123.0" text="Save" AnchorPane.rightAnchor="33.0">
                                              <font>
                                                 <Font name="Segoe UI Semibold" size="20.0" />

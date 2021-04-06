@@ -23,6 +23,7 @@ public class Asset extends Item {
     private final SimpleStringProperty category;
     private final SimpleStringProperty site;
     private final SimpleStringProperty assetTypeName;
+    private int imageId;
     private AssetInfo assetInfo;
 
     public Asset() {
@@ -177,6 +178,14 @@ public class Asset extends Item {
 
     public void setAssetTypeName(String assetTypeName) {
         this.assetTypeName.setValue(assetTypeName);
+    }
+
+    public int getImageId() {
+        return imageId;
+    }
+
+    public void setImageId(int imageId) {
+        this.imageId = imageId;
     }
 
     public int mapCriticality() {

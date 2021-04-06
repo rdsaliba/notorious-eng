@@ -26,6 +26,8 @@ import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
@@ -96,12 +98,16 @@ public class AssetInfoController extends Controller implements Initializable {
     private AnchorPane rawDataListPane;
     @FXML
     private AnchorPane assetInfoPane;
+    @FXML
+    private ImageView imageView;
+  
     private Asset asset;
     private AssetDAOImpl assetDAOImpl;
     private AssetTypeDAOImpl assetTypeDAOImpl;
     private AttributeDAOImpl attributeDAOImpl;
     private ModelDAOImpl modelDAO;
     private UIUtilities uiUtilities;
+    Image image;
 
     /**
      * Initialize runs before the scene is displayed.
@@ -138,6 +144,18 @@ public class AssetInfoController extends Controller implements Initializable {
         assetTypeOutput.setText(assetTypeName);
         serialNumberOutput.setText(asset.getSerialNo());
         modelOutput.setText(modelDAO.getModelNameAssociatedWithAssetType(asset.getAssetTypeID()));
+        categoryOutput.setText(asset.getCategory());
+
+        if(asset.getImageId() != 0){
+            image = assetDAOImpl.findImageById(asset.getImageId());
+            imageView.setImage(image);
+        } else {
+            //Set default image
+            image = new Image("file:JavaFXUserInterface/src/main/resources/imgs/default.png");
+            imageView.setImage(image);
+            imageView.setCache(true);
+        }
+
         rulOutput.setText(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(asset.getId())));
         recommendationOutput.setText(String.valueOf(asset.getRecommendation()));
 
