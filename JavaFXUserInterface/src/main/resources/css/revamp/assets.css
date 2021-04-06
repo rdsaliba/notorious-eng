@@ -104,7 +104,7 @@
     -fx-fill: #3A3A3A;
 }
 
-.imagePlaceholder {
+.borderPane {
     -fx-pref-width: 217px;
     -fx-pref-height: 133px;
     -fx-background-color: #D3D3D3;
