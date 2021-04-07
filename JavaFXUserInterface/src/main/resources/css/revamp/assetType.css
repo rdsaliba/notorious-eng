@@ -1,5 +1,5 @@
 #addAssetTypeBtn {
-    -fx-background-color: #EE6352;
+    -fx-background-color: #57A773;
     -fx-text-fill: #FFFFFF;
 }
 
@@ -40,4 +40,68 @@
     -fx-background-color: #FBFBFC;
     -fx-border-width: 1px;
     -fx-border-color: #E8E9EA transparent #E8E9EA transparent;
+}
+
+.tab
+{
+    -fx-background-color: transparent;
+    -fx-font-family: 'Segoe UI';
+    -fx-font-size: 16px;
+    -fx-padding: 0 20px 7px 20px;
+    -fx-border-width: 3px;
+    -fx-border-color: transparent transparent transparent transparent;
+    -fx-fill: #3A3A3A;
+}
+
+.tab:selected
+{
+   -fx-border-color: transparent transparent #EE6352 transparent;
+   -fx-focus-color: transparent;
+}
+
+.tab-header-background {
+    -fx-background-color: transparent;
+}
+
+.tab-label {
+    /*-fx-text-fill: -fx-secondary;*/
+    -fx-font-size: 18px;
+    -fx-font-family: "Segoe UI";
+    -fx-font-weight: bold;
+    -fx-fill: #3A3A3A;
+}
+
+.tab-main {
+    -fx-pref-height : 60;
+    -fx-max-height : 60;
+}
+
+#thumbnailPane {
+    -fx-background-color: #F1F1F1;
+    -fx-border-width: 1px;
+    -fx-border-color: #D3D3D3 transparent transparent transparent;
+}
+
+.scrollPane {
+    -fx-border-width: 0px;
+    -fx-border-color: transparent;
+    -fx-background-color: transparent;
+}
+
+.flowPane {
+    -fx-pref-width: 1134px;
+    -fx-vgap: 10px;
+    -fx-padding: 26px;
+}
+
+#search {
+    -fx-pref-width: 805px;
+    -fx-pref-height: 45px;
+    -fx-border-color: #D3D3D3;
+    -fx-border-radius: 2px;
+    -fx-font-size: 20px;
+    -fx-font-family: "Segoe UI";
+    -fx-background-image:url('../../imgs/baseline_search_black_24dp.png');
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: 8 center;
 }
