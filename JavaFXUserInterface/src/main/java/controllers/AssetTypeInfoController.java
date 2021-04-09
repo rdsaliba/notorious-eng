@@ -9,7 +9,6 @@
 package controllers;
 
 import app.item.Asset;
-import app.item.Model;
 import app.item.TrainedModel;
 import app.item.parameter.*;
 import external.AssetDAOImpl;
@@ -94,6 +93,7 @@ public class AssetTypeInfoController extends Controller implements Initializable
     private VBox modelParameters;
 
     private ObservableList<TrainedModel> modelObservableList;
+    private ObservableList<Pane> modelPaneObservableList;
     private int associatedModelID;
 
     private UIUtilities uiUtilities;
@@ -305,7 +305,8 @@ public class AssetTypeInfoController extends Controller implements Initializable
         try {
             evaluateAllModelsBtn.setOnMouseClicked(mouseEvent -> {
                 for (TrainedModel model : modelObservableList) {
-                    saveModelToEvaluate(model);
+                    if (!modelDAO.isEvaluating(model))
+                        saveModelToEvaluate(model);
                 }
             });
         } catch (Exception e) {
@@ -405,15 +406,22 @@ public class AssetTypeInfoController extends Controller implements Initializable
      * @author Jeremie
      */
     public void generateThumbnails() {
-        ObservableList<Pane> modelPaneObservableList = FXCollections.observableArrayList();
+        modelPaneObservableList = FXCollections.observableArrayList();
         for (TrainedModel model : modelObservableList) {
             // Creating a Thumbnail element
             Pane modelPane = new Pane();
+            modelPane.setId(model.getModelName());
             modelPane.getStyleClass().add("modelPane");
             modelPane.setOnMouseClicked(mouseEvent -> {
                 modelPanes.handleModelSelection(model, modelPane);
                 generateParameters(model, false);
             });
+
+            ProgressIndicator progressIndicator = new ProgressIndicator();
+            progressIndicator.setVisible(false);
+            progressIndicator.setLayoutX(90);
+            progressIndicator.setLayoutY(90);
+            modelPane.getChildren().add(progressIndicator);
 
             // Generating items to display for the Thumbnail
             Text modelNameLabel = new Text(model.getModelName());
@@ -429,7 +437,11 @@ public class AssetTypeInfoController extends Controller implements Initializable
             evaluateModelBtn.setText("Evaluate");
             evaluateModelBtn.setDisable(true);
             evaluateButtons.add(evaluateModelBtn);
-            evaluateModelBtn.setOnMouseClicked(mouseEvent -> saveModelToEvaluate(model));
+            evaluateModelBtn.setOnMouseClicked(mouseEvent -> {
+                modelPaneObservableList.filtered(pane -> pane.getId().equals(model.getModelName())).get(0).getChildren().get(0).setVisible(false);
+                modelPaneObservableList.filtered(pane -> pane.getId().equals(model.getModelName())).get(0).setDisable(false);
+                saveModelToEvaluate(model);
+            });
 
             //Setting IDs for the elements
             modelNameLabel.getStyleClass().add("modelName");
@@ -462,6 +474,9 @@ public class AssetTypeInfoController extends Controller implements Initializable
             modelPane.getChildren().add(evaluateModelBtn);
 
             modelPaneObservableList.add(modelPane);
+
+            if (modelDAO.isEvaluating(model))
+                progressIndicator.setVisible(true);
         }
         modelPanes.setModelThumbnailsContainerPane(modelPaneObservableList, modelsThumbPane);
         modelPanes.highlightAssociatedModel(modelPaneObservableList, associatedModelID);
@@ -573,18 +588,31 @@ public class AssetTypeInfoController extends Controller implements Initializable
      * @author Talal
      */
     public void updateRMSE() {
-        for (Model model : modelObservableList) {
+        for (TrainedModel model : modelObservableList) {
             model.setRMSE(String.valueOf(RMSEValueFormat.format(modelDAO.getLatestRMSE(model.getModelID(), Integer.parseInt(assetType.getId())))));
+            handleProgressCircle(model);
+
         }
         Timeline rmseTimeline = new Timeline(new KeyFrame(Duration.millis(3000), e ->
         {
-            for (Model model : modelObservableList) {
+            for (TrainedModel model : modelObservableList) {
                 model.setRMSE(String.valueOf(RMSEValueFormat.format(modelDAO.getLatestRMSE(model.getModelID(), Integer.parseInt(assetType.getId())))));
+                handleProgressCircle(model);
             }
         }));
 
         rmseTimeline.setCycleCount(Animation.INDEFINITE); // loop forever
         rmseTimeline.play();
         addTimeline(rmseTimeline);
+    }
+
+    private void handleProgressCircle(TrainedModel model) {
+        if (modelDAO.isEvaluating(model)) {
+            modelPaneObservableList.filtered(pane -> pane.getId().equals(model.getModelName())).get(0).getChildren().get(0).setVisible(true);
+            modelPaneObservableList.filtered(pane -> pane.getId().equals(model.getModelName())).get(0).setDisable(true);
+        } else {
+            modelPaneObservableList.filtered(pane -> pane.getId().equals(model.getModelName())).get(0).getChildren().get(0).setVisible(false);
+            modelPaneObservableList.filtered(pane -> pane.getId().equals(model.getModelName())).get(0).setDisable(false);
+        }
     }
 }

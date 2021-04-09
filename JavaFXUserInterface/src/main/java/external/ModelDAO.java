@@ -31,4 +31,6 @@ public interface ModelDAO {
     void updateModelStrategy(ModelStrategy modelStrategy, int modelID, int assetTypeID);
 
     double getLatestRMSE(int modelID, int assetTypeID);
+
+    boolean isEvaluating(TrainedModel model);
 }
