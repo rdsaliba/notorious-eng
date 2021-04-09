@@ -213,8 +213,10 @@ public class AssetsController extends Controller implements Initializable {
             }
         });
 
-        int i = 0;
+        int i = 1;
         CheckBox option;
+        Label assetTypeTitle = new Label("Asset Type");
+        navList.add(assetTypeTitle,0,0);
         for (AssetType assetType : assetTypeDAO.getAssetTypeList()) {
             assetTypeFilterCondition.put(assetType.getName(), false);
             option = new CheckBox(assetType.getName());
@@ -225,7 +227,8 @@ public class AssetsController extends Controller implements Initializable {
             navList.add(option, 0, i);
             i++;
         }
-        i = 0;
+        Label thresholdTitle = new Label("Threshold");
+        navList.add(thresholdTitle,1,0);
         for (ThresholdEnum thresholdEnum : ThresholdEnum.values()) {
             thresholdFilterCondition.put(thresholdEnum.getValue(), false);
             option = new CheckBox(thresholdEnum.getValue());
@@ -233,7 +236,7 @@ public class AssetsController extends Controller implements Initializable {
                 thresholdFilterCondition.replace(thresholdEnum.getValue(), newValue);
                 generateContent();
             });
-            navList.add(option, 1, i);
+            navList.add(option, 1, ThresholdEnum.valueOf(thresholdEnum.name()).ordinal()+1);
             i++;
         }
 
