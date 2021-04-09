@@ -58,6 +58,7 @@ public class AssetInfoController extends Controller implements Initializable {
 
     private static final int ATTRIBUTE_GRAPH_SIZE = 5;
     static Logger logger = LoggerFactory.getLogger(AssetInfoController.class);
+    Image image;
     @FXML
     private Button deleteBtn;
     @FXML
@@ -100,7 +101,6 @@ public class AssetInfoController extends Controller implements Initializable {
     private AnchorPane assetInfoPane;
     @FXML
     private ImageView imageView;
-
     @FXML
     private AnchorPane root;
     private Asset asset;
@@ -109,7 +109,6 @@ public class AssetInfoController extends Controller implements Initializable {
     private AttributeDAOImpl attributeDAOImpl;
     private ModelDAOImpl modelDAO;
     private UIUtilities uiUtilities;
-    Image image;
 
     /**
      * Initialize runs before the scene is displayed.
@@ -150,7 +149,7 @@ public class AssetInfoController extends Controller implements Initializable {
         modelOutput.setText(modelDAO.getModelNameAssociatedWithAssetType(asset.getAssetTypeID()));
         categoryOutput.setText(asset.getCategory());
 
-        if(asset.getImageId() != 0){
+        if (asset.getImageId() != 0) {
             image = assetDAOImpl.findImageById(asset.getImageId());
             imageView.setImage(image);
         } else {
@@ -165,7 +164,7 @@ public class AssetInfoController extends Controller implements Initializable {
 
         assetSaveBtn.setDisable(true);
         assetNameOutput.setText(String.valueOf(asset.getName()));
-        assetNameOutput.textProperty().addListener((obs, oldText, newText) ->  assetSaveBtn.setDisable(false));
+        assetNameOutput.textProperty().addListener((obs, oldText, newText) -> assetSaveBtn.setDisable(false));
         asset.nameProperty().bind(assetNameOutput.textProperty());
 
         manufacturerOutput.setText(String.valueOf(asset.getManufacturer()));
@@ -181,7 +180,7 @@ public class AssetInfoController extends Controller implements Initializable {
         asset.siteProperty().bind(siteOutput.textProperty());
 
         categoryOutput.setText(String.valueOf(asset.getCategory()));
-        categoryOutput.textProperty().addListener((obs, oldText, newText) ->assetSaveBtn.setDisable(false));
+        categoryOutput.textProperty().addListener((obs, oldText, newText) -> assetSaveBtn.setDisable(false));
         asset.categoryProperty().bind(categoryOutput.textProperty());
 
         descriptionOutput.setText(String.valueOf(asset.getDescription()));
@@ -277,7 +276,7 @@ public class AssetInfoController extends Controller implements Initializable {
         });
 
         assetSaveBtn.setOnMouseClicked(mouseEvent -> {
-            if (FormInputValidation.assetEditFormInputValidation(assetInfoPane,assetNameOutput,descriptionOutput,manufacturerOutput,categoryOutput,siteOutput,locationOutput)) {
+            if (FormInputValidation.assetEditFormInputValidation(assetInfoPane, assetNameOutput, descriptionOutput, manufacturerOutput, categoryOutput, siteOutput, locationOutput)) {
                 updateAsset(asset);
                 uiUtilities.changeScene(ASSETS_SCENE, assetSaveBtn.getScene());
             }

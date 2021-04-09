@@ -47,8 +47,6 @@ public class AddAssetTypeController extends Controller implements Initializable 
     @FXML
     private AnchorPane addAssetTypeInformationAnchorPane;
     @FXML
-    private AnchorPane inputError;
-    @FXML
     private AnchorPane root;
 
     private UIUtilities uiUtilities;
