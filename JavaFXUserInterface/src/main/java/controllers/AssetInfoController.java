@@ -25,10 +25,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.Button;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -41,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rul.assessment.AssessmentController;
 import utilities.CustomDialog;
+import utilities.FormInputValidation;
 import utilities.UIUtilities;
 
 import java.net.URL;
@@ -65,11 +63,13 @@ public class AssetInfoController extends Controller implements Initializable {
     @FXML
     private Button archiveBtn;
     @FXML
+    private Button assetSaveBtn;
+    @FXML
     private Button backBtn;
     @FXML
     private Text assetName;
     @FXML
-    private Text assetNameOutput;
+    private TextField assetNameOutput;
     @FXML
     private FlowPane attributeFlowPane;
     @FXML
@@ -77,11 +77,11 @@ public class AssetInfoController extends Controller implements Initializable {
     @FXML
     private Text serialNumberOutput;
     @FXML
-    private Text manufacturerOutput;
+    private TextField manufacturerOutput;
     @FXML
-    private Text locationOutput;
+    private TextField locationOutput;
     @FXML
-    private Text siteOutput;
+    private TextField siteOutput;
     @FXML
     private Text modelOutput;
     @FXML
@@ -89,16 +89,18 @@ public class AssetInfoController extends Controller implements Initializable {
     @FXML
     private Text recommendationOutput;
     @FXML
-    private Text categoryOutput;
+    private TextField categoryOutput;
     @FXML
-    private Text descriptionOutput;
+    private TextArea descriptionOutput;
     @FXML
     private Tab rawDataTab;
     @FXML
     private AnchorPane rawDataListPane;
     @FXML
+    private AnchorPane assetInfoPane;
+    @FXML
     private ImageView imageView;
-
+  
     private Asset asset;
     private AssetDAOImpl assetDAOImpl;
     private AssetTypeDAOImpl assetTypeDAOImpl;
@@ -129,21 +131,18 @@ public class AssetInfoController extends Controller implements Initializable {
     /**
      * initData receives the Engine data that was selected from Asset.FXML
      * Then, uses that data to populate the text fields in the scene.
+     * It also binds the text fields to the asset proprieties to be able to save the information
      *
      * @param asset is an asset object that will get initialized
-     * @author Jeff
+     * @author Jeff, Paul
      */
     public void initData(Asset asset) {
         this.asset = asset;
         this.asset.setAssetInfo(assetDAOImpl.createAssetInfo(asset.getId()));
         String assetTypeName = assetTypeDAOImpl.getNameFromID(asset.getAssetTypeID());
         assetName.setText(assetTypeName + " - " + asset.getSerialNo());
-        assetNameOutput.setText(asset.getName());
         assetTypeOutput.setText(assetTypeName);
         serialNumberOutput.setText(asset.getSerialNo());
-        manufacturerOutput.setText(asset.getManufacturer());
-        locationOutput.setText(asset.getLocation());
-        siteOutput.setText(asset.getSite());
         modelOutput.setText(modelDAO.getModelNameAssociatedWithAssetType(asset.getAssetTypeID()));
         categoryOutput.setText(asset.getCategory());
 
@@ -158,7 +157,34 @@ public class AssetInfoController extends Controller implements Initializable {
         }
 
         rulOutput.setText(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(asset.getId())));
-        recommendationOutput.setText(asset.getRecommendation());
+        recommendationOutput.setText(String.valueOf(asset.getRecommendation()));
+
+        assetSaveBtn.setDisable(true);
+        assetNameOutput.setText(String.valueOf(asset.getName()));
+        assetNameOutput.textProperty().addListener((obs, oldText, newText) ->  assetSaveBtn.setDisable(false));
+        asset.nameProperty().bind(assetNameOutput.textProperty());
+
+        manufacturerOutput.setText(String.valueOf(asset.getManufacturer()));
+        manufacturerOutput.textProperty().addListener((obs, oldText, newText) -> assetSaveBtn.setDisable(false));
+        asset.manufacturerProperty().bind(manufacturerOutput.textProperty());
+
+        locationOutput.setText(String.valueOf(asset.getLocation()));
+        locationOutput.textProperty().addListener((obs, oldText, newText) -> assetSaveBtn.setDisable(false));
+        asset.locationProperty().bind(locationOutput.textProperty());
+
+        siteOutput.setText(String.valueOf(asset.getSite()));
+        siteOutput.textProperty().addListener((obs, oldText, newText) -> assetSaveBtn.setDisable(false));
+        asset.siteProperty().bind(siteOutput.textProperty());
+
+        categoryOutput.setText(String.valueOf(asset.getCategory()));
+        categoryOutput.textProperty().addListener((obs, oldText, newText) ->assetSaveBtn.setDisable(false));
+        asset.categoryProperty().bind(categoryOutput.textProperty());
+
+        descriptionOutput.setText(String.valueOf(asset.getDescription()));
+        descriptionOutput.textProperty().addListener((obs, oldText, newText) -> assetSaveBtn.setDisable(false));
+        descriptionOutput.setWrapText(true);
+        asset.descriptionProperty().bind(descriptionOutput.textProperty());
+
 
         Timeline timeline = new Timeline(new KeyFrame(Duration.millis(1000), e -> rulOutput.setText(String.valueOf(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(asset.getId()))))));
 
@@ -166,8 +192,6 @@ public class AssetInfoController extends Controller implements Initializable {
         timeline.play();
         addTimeline(timeline);
 
-
-        descriptionOutput.setText(asset.getDescription());
         constructAttributePanes();
     }
 
@@ -247,6 +271,17 @@ public class AssetInfoController extends Controller implements Initializable {
             rawDataListPane.getChildren().clear();
             generateRawDataTable();
         });
+
+        assetSaveBtn.setOnMouseClicked(mouseEvent -> {
+            if (FormInputValidation.assetEditFormInputValidation(assetInfoPane,assetNameOutput,descriptionOutput,manufacturerOutput,categoryOutput,siteOutput,locationOutput)) {
+                updateAsset(asset);
+                uiUtilities.changeScene(ASSETS_SCENE, assetSaveBtn.getScene());
+            }
+        });
+    }
+
+    private void updateAsset(Asset asset) {
+        assetDAOImpl.updateAsset(asset);
     }
 
     private void setupArchiveBtn() {

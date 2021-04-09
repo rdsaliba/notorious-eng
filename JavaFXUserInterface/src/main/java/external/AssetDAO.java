@@ -23,6 +23,8 @@ public interface AssetDAO {
 
     void insertAsset(Asset asset);
 
+    void updateAsset(Asset asset);
+
     AssetInfo createAssetInfo(int assetID);
 
     List<Asset> getLiveAssetsFromAssetTypeID(int assetTypeID);
