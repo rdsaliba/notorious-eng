@@ -50,29 +50,30 @@
                                             <children>
                                                 <AnchorPane id="assetInfoPane" fx:id="assetInfoPane" prefHeight="247.0" prefWidth="1127.0" AnchorPane.leftAnchor="26.0" AnchorPane.rightAnchor="26.0" AnchorPane.topAnchor="26.0">
                                                     <children>
-                                                        <Text fx:id="assetTypeLabel" fill="#0c072e" layoutX="15.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Asset Type:" />
-                                                        <Text fx:id="serialNumber" fill="#0c072e" layoutX="15.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Serial Number:" />
-                                                        <Text fx:id="manufacturer" fill="#0c072e" layoutX="396.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Manufacturer:" />
-                                                        <Text fx:id="assetLocation" fill="#0c072e" layoutX="15.0" layoutY="169.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Location:" />
-                                                        <Text fill="#0c072e" layoutX="15.0" layoutY="197.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Site:" />
-                                                        <Text fx:id="description" fill="#0c072e" layoutX="396.0" layoutY="112.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Description:" />
-                                                        <Text fx:id="assetTypeOutput" fill="#0c072e" layoutX="168.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
-                                                        <Text fx:id="serialNumberOutput" fill="#0c072e" layoutX="168.0" layoutY="26.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
-                                                        <TextField fx:id="manufacturerOutput" layoutX="536.0" layoutY="39.0" prefHeight="25.0" prefWidth="200.0" text="T" />
-                                                        <TextField fx:id="locationOutput" layoutX="159.0" layoutY="152.0" prefHeight="25.0" prefWidth="200.0" text="T" />
-                                                        <TextField fx:id="siteOutput" layoutX="159.0" layoutY="180.0" prefHeight="25.0" prefWidth="200.0" text="T" />
-                                                        <TextArea fx:id="descriptionOutput" accessibleRole="TEXT_AREA" layoutX="536.0" layoutY="97.0" prefHeight="45.0" prefWidth="200.0" text="T" />
-                                                        <Text fill="#0c072e" layoutX="15.0" layoutY="83.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Model:" />
-                                                        <Text fill="#0c072e" layoutX="15.0" layoutY="112.0" strokeType="OUTSIDE" strokeWidth="0.0" text="RUL:" />
-                                                        <Text fx:id="modelOutput" layoutX="168.0" layoutY="83.0" text="T" />
-                                                        <Text fx:id="rulOutput" fill="#0c072e" layoutX="168.0" layoutY="112.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
-                                                        <Text fill="#0c072e" layoutX="396.0" layoutY="83.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Category:" />
-                                                        <TextField fx:id="categoryOutput" layoutX="536.0" layoutY="68.0" prefHeight="25.0" prefWidth="200.0" text="T" />
-                                                        <Text fx:id="assetNameLabel" fill="#0c072e" layoutX="396.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Asset Name:" />
-                                                        <TextField fx:id="assetNameOutput" layoutX="536.0" layoutY="10.0" prefHeight="25.0" prefWidth="200.0" text="T" />
-                                                        <Text fill="#0c072e" layoutX="15.0" layoutY="140.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Recommendation:" />
-                                                        <Text fx:id="recommendationOutput" fill="#0c072e" layoutX="168.0" layoutY="140.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
+                                                        <Text fx:id="assetTypeLabel" fill="#828282" layoutX="15.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Asset Type:" textAlignment="RIGHT" wrappingWidth="90.0" />
+                                                        <Text fx:id="serialNumber" fill="#828282" layoutX="15.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Serial Number:" textAlignment="RIGHT" wrappingWidth="90.0" />
+                                                        <Text fx:id="manufacturer" fill="#828282" layoutX="312.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Manufacturer:" textAlignment="RIGHT" wrappingWidth="90.0" />
+                                                        <Text fx:id="assetLocation" fill="#828282" layoutX="15.0" layoutY="174.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Location:" textAlignment="RIGHT" wrappingWidth="90.0" />
+                                                        <Text fill="#828282" layoutX="15.0" layoutY="203.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Site:" textAlignment="RIGHT" wrappingWidth="90.0" />
+                                                        <Text fx:id="description" fill="#828282" layoutX="312.0" layoutY="116.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Description:" textAlignment="RIGHT" wrappingWidth="90.0" />
+                                                        <Text fx:id="assetTypeOutput" fill="#0c072e" layoutX="129.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
+                                                        <Text fx:id="serialNumberOutput" fill="#0c072e" layoutX="129.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
+                                                        <TextField fx:id="manufacturerOutput" layoutX="415.0" layoutY="41.0" prefWidth="200.0" text="T" />
+                                                        <TextField fx:id="locationOutput" layoutX="120.0" layoutY="157.0" prefHeight="25.0" prefWidth="200.0" text="T" />
+                                                        <TextField fx:id="siteOutput" layoutX="120.0" layoutY="186.0" prefWidth="200.0" text="T" />
+                                                        <TextArea fx:id="descriptionOutput" layoutX="415.0" layoutY="105.0" prefHeight="52.0" prefWidth="250.0" text="T" />
+                                                        <Text fill="#828282" layoutX="15.0" layoutY="87.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Model:" textAlignment="RIGHT" wrappingWidth="90.0" />
+                                                        <Text fill="#828282" layoutX="15.0" layoutY="116.0" strokeType="OUTSIDE" strokeWidth="0.0" text="RUL:" textAlignment="RIGHT" wrappingWidth="90.0" />
+                                                        <Text fx:id="modelOutput" fill="#0c072e" layoutX="129.0" layoutY="87.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
+                                                        <Text fx:id="rulOutput" fill="#0c072e" layoutX="129.0" layoutY="116.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
+                                                        <Text fill="#828282" layoutX="312.0" layoutY="87.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Category:" textAlignment="RIGHT" wrappingWidth="90.0" />
+                                                        <TextField fx:id="categoryOutput" layoutX="415.0" layoutY="70.0" prefHeight="25.0" prefWidth="200.0" text="T" />
+                                                        <Text fx:id="assetNameLabel" fill="#828282" layoutX="312.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Asset Name:" textAlignment="RIGHT" wrappingWidth="90.0" />
+                                                        <TextField fx:id="assetNameOutput" layoutX="415.0" layoutY="12.0" prefWidth="200.0" text="T" />
+                                                        <Text fill="#828282" layoutX="15.0" layoutY="145.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Status:" textAlignment="RIGHT" wrappingWidth="90.0" />
+                                                        <Text fx:id="recommendationOutput" fill="#0c072e" layoutX="129.0" layoutY="145.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
                                                         <ImageView fx:id="imageView" fitHeight="150.0" fitWidth="200.0" layoutX="867.0" layoutY="13.0" pickOnBounds="true" preserveRatio="true" />
+
                                           <Button id="assetSaveBtn" fx:id="assetSaveBtn" layoutX="925.0" layoutY="192.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="247.0" text="Save" AnchorPane.rightAnchor="33.0">
                                              <font>
                                                 <Font name="Segoe UI Semibold" size="20.0" />
