@@ -104,7 +104,7 @@
     -fx-fill: #3A3A3A;
 }
 
-.imagePlaceholder {
+.borderPane {
     -fx-pref-width: 217px;
     -fx-pref-height: 133px;
     -fx-background-color: #D3D3D3;
@@ -207,6 +207,21 @@
     -fx-border-color: #D3D3D3;
     -fx-border-width: 1px;
     -fx-border-radius: 2px;
+}
+
+.filter{
+    -fx-background-color: #FFFFFF;
+    -fx-padding: 10px;
+    -fx-border-color: #D3D3D3;
+    -fx-border-width: 1px;
+    -fx-border-radius: 2px;
+}
+
+.filter CheckBox{
+    -fx-background-color: #FFFFFF;
+    -fx-mark-color: #013E69;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 14px;
 }
 
 .dropdown .menu-item:focused {

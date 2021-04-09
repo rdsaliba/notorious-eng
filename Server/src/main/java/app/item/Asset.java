@@ -13,60 +13,115 @@ import static utilities.Constants.*;
 public class Asset extends Item {
 
     private final SimpleStringProperty rul;
-    private String serialNo;
-    private String name;
-    private String assetTypeID;
-    private String location;
-    private String description;
-    private String recommendation;
-    private String manufacturer;
-    private String category;
-    private String site;
-    private String assetTypeName;
+    private final SimpleStringProperty serialNo;
+    private final SimpleStringProperty name;
+    private final SimpleStringProperty assetTypeID;
+    private final SimpleStringProperty location;
+    private final SimpleStringProperty description;
+    private final SimpleStringProperty recommendation;
+    private final SimpleStringProperty manufacturer;
+    private final SimpleStringProperty category;
+    private final SimpleStringProperty site;
+    private final SimpleStringProperty assetTypeName;
+    private int imageId;
     private AssetInfo assetInfo;
 
     public Asset() {
         rul = new SimpleStringProperty();
+        serialNo = new SimpleStringProperty();
+        name = new SimpleStringProperty();
+        assetTypeID = new SimpleStringProperty();
+        location = new SimpleStringProperty();
+        description = new SimpleStringProperty();
+        recommendation = new SimpleStringProperty();
+        manufacturer = new SimpleStringProperty();
+        category = new SimpleStringProperty();
+        site = new SimpleStringProperty();
+        assetTypeName = new SimpleStringProperty();
     }
 
-    public String getSerialNo() {
+    public SimpleStringProperty rulProperty() {
+        return rul;
+    }
+
+    public SimpleStringProperty serialNoProperty() {
         return serialNo;
     }
 
-    public void setSerialNo(String serialNo) {
-        this.serialNo = serialNo;
-    }
-
-    public String getName() {
+    public SimpleStringProperty nameProperty() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getAssetTypeID() {
+    public SimpleStringProperty assetTypeIDProperty() {
         return assetTypeID;
     }
 
-    public void setAssetTypeID(String assetTypeID) {
-        this.assetTypeID = assetTypeID;
-    }
-
-    public String getLocation() {
+    public SimpleStringProperty locationProperty() {
         return location;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public String getDescription() {
+    public SimpleStringProperty descriptionProperty() {
         return description;
     }
 
+    public SimpleStringProperty recommendationProperty() {
+        return recommendation;
+    }
+
+    public SimpleStringProperty manufacturerProperty() {
+        return manufacturer;
+    }
+
+    public SimpleStringProperty categoryProperty() {
+        return category;
+    }
+
+    public SimpleStringProperty siteProperty() {
+        return site;
+    }
+
+    public SimpleStringProperty assetTypeNameProperty() {
+        return assetTypeName;
+    }
+
+    public String getSerialNo() {
+        return serialNo.getValue();
+    }
+
+    public void setSerialNo(String serialNo) {
+        this.serialNo.setValue(serialNo);
+    }
+
+    public String getName() {
+        return name.getValue();
+    }
+
+    public void setName(String name) {
+        this.name.setValue(name);
+    }
+
+    public String getAssetTypeID() {
+        return assetTypeID.getValue();
+    }
+
+    public void setAssetTypeID(String assetTypeID) {
+        this.assetTypeID.setValue(assetTypeID);
+    }
+
+    public String getLocation() {
+        return location.getValue();
+    }
+
+    public void setLocation(String location) {
+        this.location.setValue(location);
+    }
+
+    public String getDescription() {
+        return description.getValue();
+    }
+
     public void setDescription(String description) {
-        this.description = description;
+        this.description.setValue(description);
     }
 
     public AssetInfo getAssetInfo() {
@@ -78,35 +133,35 @@ public class Asset extends Item {
     }
 
     public String getRecommendation() {
-        return recommendation;
+        return recommendation.getValue();
     }
 
     public void setRecommendation(String recommendation) {
-        this.recommendation = recommendation;
+        this.recommendation.setValue(recommendation);
     }
 
     public String getManufacturer() {
-        return manufacturer;
+        return manufacturer.getValue();
     }
 
     public void setManufacturer(String manufacturer) {
-        this.manufacturer = manufacturer;
+        this.manufacturer.setValue(manufacturer);
     }
 
     public String getCategory() {
-        return category;
+        return category.getValue();
     }
 
     public void setCategory(String category) {
-        this.category = category;
+        this.category.setValue(category);
     }
 
     public String getSite() {
-        return site;
+        return site.getValue();
     }
 
     public void setSite(String site) {
-        this.site = site;
+        this.site.setValue(site);
     }
 
     public SimpleStringProperty getRul() {
@@ -118,11 +173,19 @@ public class Asset extends Item {
     }
 
     public String getAssetTypeName() {
-        return assetTypeName;
+        return assetTypeName.getValue();
     }
 
     public void setAssetTypeName(String assetTypeName) {
-        this.assetTypeName = assetTypeName;
+        this.assetTypeName.setValue(assetTypeName);
+    }
+
+    public int getImageId() {
+        return imageId;
+    }
+
+    public void setImageId(int imageId) {
+        this.imageId = imageId;
     }
 
     public int mapCriticality() {

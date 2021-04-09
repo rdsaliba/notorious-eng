@@ -10,26 +10,25 @@ package controllers;
 
 import app.ModelController;
 import app.item.Asset;
+import app.item.AssetType;
 import app.item.Item;
+import external.AssetDAOImpl;
 import external.AssetTypeDAOImpl;
 import external.ModelDAOImpl;
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.PauseTransition;
-import javafx.animation.Timeline;
+import javafx.animation.*;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import org.apache.commons.lang3.StringUtils;
@@ -37,11 +36,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rul.assessment.AssessmentController;
 import utilities.TextConstants;
+import utilities.ThresholdEnum;
 import utilities.UIUtilities;
 
 import java.net.URL;
-import java.util.Comparator;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class AssetsController extends Controller implements Initializable {
 
@@ -62,7 +63,10 @@ public class AssetsController extends Controller implements Initializable {
     private static final String DESCRIPTION_COL = "Description";
     private final AssetTypeDAOImpl assetTypeDAO;
     private final ModelDAOImpl modelDAO;
+    private AssetDAOImpl assetDAOImpl;
     private final TableView<Asset> table;
+    private final HashMap<String, Boolean> assetTypeFilterCondition;
+    private final HashMap<String, Boolean> thresholdFilterCondition;
     Logger logger = LoggerFactory.getLogger(AssetsController.class);
     @FXML
     private Button addAssetBtn;
@@ -77,6 +81,10 @@ public class AssetsController extends Controller implements Initializable {
     @FXML
     private ChoiceBox<String> sortAsset;
     @FXML
+    private Button filterAsset;
+    @FXML
+    private GridPane navList;
+    @FXML
     private TextField search;
     @FXML
     private TabPane assetsTabPane;
@@ -88,8 +96,11 @@ public class AssetsController extends Controller implements Initializable {
 
     public AssetsController() {
         assetTypeDAO = new AssetTypeDAOImpl();
+        assetDAOImpl = new AssetDAOImpl();
         modelDAO = new ModelDAOImpl();
         table = new TableView<>();
+        assetTypeFilterCondition = new HashMap<>();
+        thresholdFilterCondition = new HashMap<>();
         try {
             assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
         } catch (Exception e) {
@@ -171,7 +182,116 @@ public class AssetsController extends Controller implements Initializable {
         addAssetBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(TextConstants.ADD_ASSETS_SCENE, addAssetBtn.getScene()));
 
         sortingSetUp();
+        filterSetUp();
         searchAssets();
+    }
+
+    /**
+     * setup the transitions and the content for the filter options
+     *
+     * @author Paul
+     */
+    private void filterSetUp() {
+        TranslateTransition openNav = new TranslateTransition(new Duration(350), navList);
+        TranslateTransition closeNav = new TranslateTransition(new Duration(350), navList);
+        FadeTransition fadeTransition = new FadeTransition(new Duration(350), navList);
+        navList.setVisible(false);
+        filterAsset.setOnAction((ActionEvent evt) -> {
+            navList.setVisible(true);
+            if (navList.getTranslateX() != 0) {
+                fadeTransition.setToValue(1.0);
+                fadeTransition.setFromValue(0.0);
+                fadeTransition.play();
+                openNav.setToX(0);
+                openNav.play();
+            } else {
+                fadeTransition.setToValue(0.0);
+                fadeTransition.setFromValue(1.0);
+                fadeTransition.play();
+                closeNav.setToX((navList.getWidth()));
+                closeNav.play();
+            }
+        });
+
+        int i = 1;
+        CheckBox option;
+        Label assetTypeTitle = new Label("Asset Type");
+        navList.add(assetTypeTitle,0,0);
+        for (AssetType assetType : assetTypeDAO.getAssetTypeList()) {
+            assetTypeFilterCondition.put(assetType.getName(), false);
+            option = new CheckBox(assetType.getName());
+            option.selectedProperty().addListener((observable, oldValue, newValue) -> {
+                assetTypeFilterCondition.replace(assetType.getName(), newValue);
+                generateContent();
+            });
+            navList.add(option, 0, i);
+            i++;
+        }
+        Label thresholdTitle = new Label("Threshold");
+        navList.add(thresholdTitle,1,0);
+        for (ThresholdEnum thresholdEnum : ThresholdEnum.values()) {
+            thresholdFilterCondition.put(thresholdEnum.getValue(), false);
+            option = new CheckBox(thresholdEnum.getValue());
+            option.selectedProperty().addListener((observable, oldValue, newValue) -> {
+                thresholdFilterCondition.replace(thresholdEnum.getValue(), newValue);
+                generateContent();
+            });
+            navList.add(option, 1, ThresholdEnum.valueOf(thresholdEnum.name()).ordinal()+1);
+            i++;
+        }
+
+        navList.setHgap(20);
+        navList.setVgap(10);
+    }
+
+    /**
+     * this method generates 2 lists of predicates based on the filter checkbox selections
+     * it creates the predicate for the asset type filtering as an OR
+     * it creates the predicate for the threshold filtering as an OR
+     * it then apply the asset type filtering AND threshold filtering on the input list
+     *
+     * @param assetsToDisplay the searched list or the full list
+     * @return the filtered list
+     * @author Paul
+     */
+    private ObservableList<Asset> applyFilters(ObservableList<Asset> assetsToDisplay) {
+        List<Predicate<Asset>> assetTypePredicates = new ArrayList<>();
+        List<Predicate<Asset>> thresholdPredicates = new ArrayList<>();
+
+        if (!assetTypeFilterCondition.isEmpty())
+            assetTypeFilterCondition.entrySet().stream()
+                    .filter(Map.Entry::getValue)
+                    .forEach(entry -> assetTypePredicates.add(s -> s.getAssetTypeName().equals(entry.getKey())));
+        if (assetTypePredicates.isEmpty())
+            assetTypePredicates.add(s -> !s.getAssetTypeName().isEmpty());
+
+        if (!thresholdFilterCondition.isEmpty())
+            thresholdFilterCondition.entrySet().stream()
+                    .filter(Map.Entry::getValue)
+                    .forEach(entry -> thresholdPredicates.add(s -> s.getRecommendation().equals(entry.getKey())));
+        if (thresholdPredicates.isEmpty())
+            thresholdPredicates.add(s -> !s.getRecommendation().isEmpty());
+
+        if (assetsToDisplay != null)
+            assetsToDisplay = assetsToDisplay.stream()
+                    .filter((assetTypePredicates.stream().reduce(x -> false, Predicate::or)).and(thresholdPredicates.stream().reduce(x -> false, Predicate::or)))
+                    .collect(Collectors.toCollection(FXCollections::observableArrayList));
+
+        return assetsToDisplay;
+    }
+
+    /** regenerate the thumbnail or list view as selected
+     *
+     * @author Paul
+     */
+    private void generateContent() {
+        if (assetsTabPane.getSelectionModel().getSelectedItem().getId().equals("thumbnailTab")) {
+            assetsThumbPane.getChildren().clear();
+            generateThumbnails();
+        } else if (assetsTabPane.getSelectionModel().getSelectedItem().getId().equals("listTab")) {
+            assetsListPane.getChildren().clear();
+            generateList();
+        }
     }
 
     private void sortingSetUp() {
@@ -259,13 +379,7 @@ public class AssetsController extends Controller implements Initializable {
                 } else {
                     searchMatch = "No Search";
                 }
-                if (assetsTabPane.getSelectionModel().getSelectedItem().getId().equals("thumbnailTab")) {
-                    assetsThumbPane.getChildren().clear();
-                    generateThumbnails();
-                } else if (assetsTabPane.getSelectionModel().getSelectedItem().getId().equals("listTab")) {
-                    assetsListPane.getChildren().clear();
-                    generateList();
-                }
+                generateContent();
             });
             delaySearch.playFromStart();
         });
@@ -290,6 +404,7 @@ public class AssetsController extends Controller implements Initializable {
                 assetsToDisplay = FXCollections.observableArrayList(assets);
             }
         }
+        assetsToDisplay = applyFilters(assetsToDisplay);
         return assetsToDisplay;
     }
 
@@ -301,8 +416,7 @@ public class AssetsController extends Controller implements Initializable {
     public void generateThumbnails() {
         ObservableList<Pane> boxes = FXCollections.observableArrayList();
         ObservableList<Asset> assetsDisplayed = setAssetListToDisplay();
-
-        if (assetsDisplayed != null) {
+        if (assetsDisplayed != null && !assetsDisplayed.isEmpty()) {
             for (Asset asset : assetsDisplayed) {
 
                 Pane pane = new Pane();
@@ -311,6 +425,11 @@ public class AssetsController extends Controller implements Initializable {
 
                 Pane imagePlaceholder = new Pane();
                 imagePlaceholder.getStyleClass().add("imagePlaceholder");
+
+                BorderPane borderPane = new BorderPane();
+                borderPane.getStyleClass().add("borderPane");
+
+                setImage(asset, borderPane);
 
                 HBox rulPane = new HBox();
                 rulPane.getStyleClass().add("rulPane");
@@ -345,8 +464,8 @@ public class AssetsController extends Controller implements Initializable {
                 assetName.setLayoutY(35.0);
                 assetType.setLayoutX(15.0);
                 assetType.setLayoutY(63.0);
-                imagePlaceholder.setLayoutX(15.0);
-                imagePlaceholder.setLayoutY(80.0);
+                borderPane.setLayoutX(15.0);
+                borderPane.setLayoutY(80.0);
                 rulLabel.setLayoutX(52.0);
                 rulLabel.setLayoutY(239.0);
                 rulPane.setLayoutX(15.0);
@@ -366,7 +485,7 @@ public class AssetsController extends Controller implements Initializable {
                 pane.getChildren().add(recommendationLabel);
                 statusPane.getChildren().add(recommendation);
                 pane.getChildren().add(statusPane);
-                pane.getChildren().add(imagePlaceholder);
+                pane.getChildren().add(borderPane);
 
                 boxes.add(pane);
             }
@@ -382,6 +501,25 @@ public class AssetsController extends Controller implements Initializable {
 
             assetsThumbPane.getChildren().add(noResultPane);
         }
+    }
+
+    private void setImage(Asset asset, BorderPane borderPane) {
+        ImageView imageView = null;
+        Image image;
+
+        if (asset.getImageId() != 0){
+            image = assetDAOImpl.findImageById(asset.getImageId());
+
+        } else {
+            //Set default image
+            image = new Image("file:JavaFXUserInterface/src/main/resources/imgs/default.png");
+        }
+
+        imageView = new ImageView(image);
+        imageView.setFitWidth(133);
+        imageView.setFitHeight(133);
+        imageView.setCache(true);
+        borderPane.setCenter(imageView);
     }
 
     /**
@@ -418,20 +556,18 @@ public class AssetsController extends Controller implements Initializable {
         TableColumn<Asset, String> recommendationCol = new TableColumn<>(RECOMMENDATION);
         recommendationCol.setCellValueFactory(
                 new PropertyValueFactory<>("recommendation"));
-        recommendationCol.setCellFactory(column -> {
-            return new TableCell<Asset, String>() {
-                protected void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
+        recommendationCol.setCellFactory(column -> new TableCell<>() {
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
 
-                    if (item == null || empty) {
-                        setText(null);
-                        setStyle("");
-                    } else {
-                        setText(item);
-                        getStyleClass().addAll(item.toLowerCase(), "cellStatus");
-                    }
+                if (item == null || empty) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    setText(item);
+                    getStyleClass().addAll(item.toLowerCase(), "cellStatus");
                 }
-            };
+            }
         });
 
         TableColumn<Asset, String> locationCol = new TableColumn<>(LOCATION_COL);
