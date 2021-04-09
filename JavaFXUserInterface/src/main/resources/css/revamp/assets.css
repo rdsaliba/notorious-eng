@@ -209,6 +209,21 @@
     -fx-border-radius: 2px;
 }
 
+.filter{
+    -fx-background-color: #FFFFFF;
+    -fx-padding: 10px;
+    -fx-border-color: #D3D3D3;
+    -fx-border-width: 1px;
+    -fx-border-radius: 2px;
+}
+
+.filter CheckBox{
+    -fx-background-color: #FFFFFF;
+    -fx-mark-color: #013E69;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 14px;
+}
+
 .dropdown .menu-item:focused {
     -fx-background-color: #48C774;
 }
