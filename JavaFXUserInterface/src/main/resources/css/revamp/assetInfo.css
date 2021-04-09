@@ -128,5 +128,7 @@
     -fx-text-fill: #FFFFFF;
     -fx-font-family: "Segoe UI Semibold";
     -fx-font-size: 20px;
-    -fx-padding: 5 15 5 15
+    -fx-padding: 5 15 5 15;
+    -fx-border-radius: 2px;
+    -fx-background-color: #57A773;
 }

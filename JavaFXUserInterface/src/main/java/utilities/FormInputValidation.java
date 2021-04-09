@@ -204,6 +204,7 @@ public class FormInputValidation {
      * Whenever an input is invalid, it creates and displays an error message for the specific invalid input field.
      *
      * @param textInputControlAnchorPane The Anchor pane of the input form
+     * @param assetNameInput             TextInputControl for the asset name
      * @param assetDescriptionInput      TextInputControl for the asset description
      * @param manufacturerInput          TextInputControl for the asset manufacturer
      * @param categoryInput              TextInputControl for the asset category
@@ -211,7 +212,7 @@ public class FormInputValidation {
      * @param locationInput              TextInputControl for the asset location
      * @author Paul
      */
-    public static boolean assetEditFormInputValidation(AnchorPane textInputControlAnchorPane, TextArea assetDescriptionInput, TextField manufacturerInput, TextField categoryInput, TextField siteInput, TextField locationInput) {
+    public static boolean assetEditFormInputValidation(AnchorPane textInputControlAnchorPane, TextField assetNameInput, TextArea assetDescriptionInput, TextField manufacturerInput, TextField categoryInput, TextField siteInput, TextField locationInput) {
         String regexWordAndHyphen = "(?=\\S*[-])([a-zA-Z0-9-]*)|([a-zA-Z0-9]*)"; //Any word containing letters, numbers and hyphens
         String regexLettersAndHyphen = "(?=\\S*[-])([a-zA-Z-]*)|([a-zA-Z]*)"; //Any word containing letters and hyphens
         assetValidForm = true;
@@ -223,6 +224,7 @@ public class FormInputValidation {
         logger.info("Start - formInputValidation() -> The form is : {}", assetValidForm);
 
         // Input validation on the different asset input fields
+        assetNameValidation(textInputControlAnchorPane, assetNameInput, textInputControls.indexOf(assetNameInput));
         assetDescriptionValidation(textInputControlAnchorPane, assetDescriptionInput, textInputControls.indexOf(assetDescriptionInput));
         manufacturerValidation(textInputControlAnchorPane, manufacturerInput, regexWordAndHyphen, textInputControls.indexOf(manufacturerInput));
         categoryValidation(textInputControlAnchorPane, categoryInput, regexLettersAndHyphen, textInputControls.indexOf(categoryInput));

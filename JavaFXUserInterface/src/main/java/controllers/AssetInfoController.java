@@ -159,22 +159,29 @@ public class AssetInfoController extends Controller implements Initializable {
         rulOutput.setText(new DecimalFormat("#.##").format(AssessmentController.getLatestEstimate(asset.getId())));
         recommendationOutput.setText(String.valueOf(asset.getRecommendation()));
 
+        assetSaveBtn.setDisable(true);
         assetNameOutput.setText(String.valueOf(asset.getName()));
+        assetNameOutput.textProperty().addListener((obs, oldText, newText) ->  assetSaveBtn.setDisable(false));
         asset.nameProperty().bind(assetNameOutput.textProperty());
 
         manufacturerOutput.setText(String.valueOf(asset.getManufacturer()));
+        manufacturerOutput.textProperty().addListener((obs, oldText, newText) -> assetSaveBtn.setDisable(false));
         asset.manufacturerProperty().bind(manufacturerOutput.textProperty());
 
         locationOutput.setText(String.valueOf(asset.getLocation()));
+        locationOutput.textProperty().addListener((obs, oldText, newText) -> assetSaveBtn.setDisable(false));
         asset.locationProperty().bind(locationOutput.textProperty());
 
         siteOutput.setText(String.valueOf(asset.getSite()));
+        siteOutput.textProperty().addListener((obs, oldText, newText) -> assetSaveBtn.setDisable(false));
         asset.siteProperty().bind(siteOutput.textProperty());
 
         categoryOutput.setText(String.valueOf(asset.getCategory()));
+        categoryOutput.textProperty().addListener((obs, oldText, newText) ->assetSaveBtn.setDisable(false));
         asset.categoryProperty().bind(categoryOutput.textProperty());
 
         descriptionOutput.setText(String.valueOf(asset.getDescription()));
+        descriptionOutput.textProperty().addListener((obs, oldText, newText) -> assetSaveBtn.setDisable(false));
         descriptionOutput.setWrapText(true);
         asset.descriptionProperty().bind(descriptionOutput.textProperty());
 
@@ -266,7 +273,7 @@ public class AssetInfoController extends Controller implements Initializable {
         });
 
         assetSaveBtn.setOnMouseClicked(mouseEvent -> {
-            if (FormInputValidation.assetEditFormInputValidation(assetInfoPane,descriptionOutput,manufacturerOutput,categoryOutput,siteOutput,locationOutput)) {
+            if (FormInputValidation.assetEditFormInputValidation(assetInfoPane,assetNameOutput,descriptionOutput,manufacturerOutput,categoryOutput,siteOutput,locationOutput)) {
                 updateAsset(asset);
                 uiUtilities.changeScene(ASSETS_SCENE, assetSaveBtn.getScene());
             }
