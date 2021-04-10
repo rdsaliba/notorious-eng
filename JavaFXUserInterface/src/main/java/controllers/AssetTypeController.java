@@ -5,7 +5,6 @@
  */
 package controllers;
 
-import app.item.Asset;
 import app.item.AssetType;
 import external.AssetTypeDAOImpl;
 import javafx.collections.FXCollections;
@@ -22,7 +21,6 @@ import javafx.scene.text.Text;
 import utilities.AssetTypeList;
 import utilities.TextConstants;
 import utilities.UIUtilities;
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -59,6 +57,8 @@ public class AssetTypeController extends Controller implements Initializable {
     private UIUtilities uiUtilities;
     private ArrayList<AssetType> assetTypes;
     private AssetTypeDAOImpl assetTypeDOA;
+    private final int THUMBNAIL_WIDTH = 247;
+    private final int PADDING = 54;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -66,7 +66,7 @@ public class AssetTypeController extends Controller implements Initializable {
         assetTypeDOA = new AssetTypeDAOImpl();
         assetTypes = assetTypeDOA.getAssetTypeList();
         attachEvents();
-        ObservableList<AssetTypeList> assetTypeList = getAssetList();
+        ObservableList<AssetTypeList> assetTypeList = getAssetTypeList();
         generateThumbnails(assetTypeList);
         fillAssetTypeTable(assetTypeList);
     }
@@ -95,7 +95,7 @@ public class AssetTypeController extends Controller implements Initializable {
      * and it would crash the asset if there was an asset type with no assets associated to it
      * so this methode was rewrote
      */
-    private ObservableList<AssetTypeList> getAssetList() {
+    private ObservableList<AssetTypeList> getAssetTypeList() {
         ObservableList<AssetTypeList> assetTypeList = FXCollections.observableArrayList();
 
         for (AssetType assetType : assetTypes) {
@@ -120,7 +120,10 @@ public class AssetTypeController extends Controller implements Initializable {
     }
 
     /**
+     * Generates a thumbnail for each asset type
      *
+     * @param assetTypeList
+     * @author Jeff
      */
     public void generateThumbnails(ObservableList<AssetTypeList> assetTypeList) {
         if (assetTypes != null) {
@@ -131,11 +134,18 @@ public class AssetTypeController extends Controller implements Initializable {
 
                 Text assetTypeName = new Text(assetType.getName());
                 assetTypeName.getStyleClass().add("assetTypeName");
-                Label okLabel = new Label("OK");
-                Label advisoryLabel = new Label("Advisory");
-                Label cautionLabel = new Label("Caution");
-                Label warningLabel = new Label("Warning");
-                Label failedLabel = new Label("Failed");
+                Label okLabel = new Label(TextConstants.OK_THRESHOLD);
+                okLabel.getStyleClass().add("thumbLabel");
+                Label advisoryLabel = new Label(TextConstants.ADVISORY_THRESHOLD);
+                advisoryLabel.getStyleClass().add("thumbLabel");
+                Label cautionLabel = new Label(TextConstants.CAUTION_THRESHOLD);
+                cautionLabel.getStyleClass().add("thumbLabel");
+                Label warningLabel = new Label(TextConstants.WARNING_THRESHOLD);
+                warningLabel.getStyleClass().add("thumbLabel");
+                Label failedLabel = new Label(TextConstants.FAILED_THRESHOLD);
+                failedLabel.getStyleClass().add("thumbLabel");
+                Label nbOfAssets = new Label(TextConstants.NB_OF_ASSETS);
+                nbOfAssets.getStyleClass().add("thumbLabel");
 
                 HBox okBox = new HBox();
                 okBox.getStyleClass().add("okBox");
@@ -163,29 +173,32 @@ public class AssetTypeController extends Controller implements Initializable {
                 Text warningAssets = new Text(String.valueOf(assetType.getCountWarning()));
                 Text failedAssets = new Text(String.valueOf(assetType.getCountFailed()));
 
+
                 assetTypeName.setLayoutX(15.0);
                 assetTypeName.setLayoutY(35.0);
                 okLabel.setLayoutX(15.0);
-                okLabel.setLayoutY(76.0);
+                okLabel.setLayoutY(84.0);
                 advisoryLabel.setLayoutX(15.0);
-                advisoryLabel.setLayoutY(119.0);
+                advisoryLabel.setLayoutY(127.0);
                 cautionLabel.setLayoutX(15.0);
-                cautionLabel.setLayoutY(162.0);
+                cautionLabel.setLayoutY(170.0);
                 warningLabel.setLayoutX(15.0);
-                warningLabel.setLayoutY(205.0);
+                warningLabel.setLayoutY(213.0);
                 failedLabel.setLayoutX(15.0);
-                failedLabel.setLayoutY(248.0);
+                failedLabel.setLayoutY(256.0);
+                nbOfAssets.setLayoutX(143.0);
+                nbOfAssets.setLayoutY(55.0);
 
                 okBox.setLayoutX(131.0);
-                okBox.setLayoutY(68.0);
+                okBox.setLayoutY(76.0);
                 advisoryBox.setLayoutX(131.0);
-                advisoryBox.setLayoutY(111.0);
+                advisoryBox.setLayoutY(119.0);
                 cautionBox.setLayoutX(131.0);
-                cautionBox.setLayoutY(154.0);
+                cautionBox.setLayoutY(162.0);
                 warningBox.setLayoutX(131.0);
-                warningBox.setLayoutY(197.0);
+                warningBox.setLayoutY(205.0);
                 failedBox.setLayoutX(131.0);
-                failedBox.setLayoutY(240.0);
+                failedBox.setLayoutY(248.0);
 
                 okBox.getChildren().add(okAssets);
                 advisoryBox.getChildren().add(advisoryAssets);
@@ -193,7 +206,7 @@ public class AssetTypeController extends Controller implements Initializable {
                 warningBox.getChildren().add(warningAssets);
                 failedBox.getChildren().add(failedAssets);
 
-                pane.getChildren().addAll(assetTypeName, okLabel, advisoryLabel, warningLabel, cautionLabel, failedLabel, okBox, advisoryBox,
+                pane.getChildren().addAll(assetTypeName, okLabel, advisoryLabel, warningLabel, cautionLabel, failedLabel, nbOfAssets, okBox, advisoryBox,
                         warningBox, cautionBox, failedBox);
                 assetsTypeThumbPane.getChildren().add(pane);
             }
@@ -207,21 +220,8 @@ public class AssetTypeController extends Controller implements Initializable {
      * @author Shirwa
      */
     public void attachEvents() {
-        // As the window expands or shrinks, asset panes will adjust to the window size accordingly
-        assetsTypeThumbPane.widthProperty().addListener((obs, oldVal, newVal) -> {
-            double assetTypeFlowWidth = (double) newVal - 54;
-            if(assetsTypeThumbPane.getChildren().size() < 6) {
-                int nbOfPanes = assetsTypeThumbPane.getChildren().size();
-                assetTypeFlowWidth = assetTypeFlowWidth - (247 * nbOfPanes);
-                assetTypeFlowWidth = assetTypeFlowWidth / (nbOfPanes - 1);
-                assetsTypeThumbPane.setHgap(assetTypeFlowWidth);
-            } else {
-                int nbOfPanes = (int) (assetTypeFlowWidth / 247);
-                assetTypeFlowWidth = (assetTypeFlowWidth % 247);
-                assetTypeFlowWidth = assetTypeFlowWidth / (nbOfPanes - 1);
-                assetsTypeThumbPane.setHgap(assetTypeFlowWidth);
-            }
-        });
+        // As the window expands or shrinks, asset type panes will adjust to the window size accordingly -Jeff
+        assetsTypeThumbPane.widthProperty().addListener((obs, oldWidth, newWidth) -> thumbnailResponsiveness(newWidth));
 
         //set up the columns in the table
         attachColumnEvents();
@@ -244,5 +244,27 @@ public class AssetTypeController extends Controller implements Initializable {
         columnCaution.setCellValueFactory(new PropertyValueFactory<>("countCaution"));
         columnWarning.setCellValueFactory(new PropertyValueFactory<>("countWarning"));
         columnFailed.setCellValueFactory(new PropertyValueFactory<>("countFailed"));
+    }
+
+    /**
+     * Making thumbnails responsive.
+     * As the window expands or shrinks, asset type panes will adjust to the window size accordingly.
+     *
+     * @param width
+     * @author Jeff
+     */
+    public void thumbnailResponsiveness(Number width) {
+        double assetTypeFlowWidth = (double) width - PADDING;
+        if(assetsTypeThumbPane.getChildren().size() < 6) {
+            int nbOfPanes = assetsTypeThumbPane.getChildren().size();
+            assetTypeFlowWidth = assetTypeFlowWidth - (THUMBNAIL_WIDTH * nbOfPanes);
+            assetTypeFlowWidth = assetTypeFlowWidth / (nbOfPanes - 1);
+            assetsTypeThumbPane.setHgap(assetTypeFlowWidth);
+        } else {
+            int nbOfPanes = (int) (assetTypeFlowWidth / THUMBNAIL_WIDTH);
+            assetTypeFlowWidth = (assetTypeFlowWidth % THUMBNAIL_WIDTH);
+            assetTypeFlowWidth = assetTypeFlowWidth / (nbOfPanes - 1);
+            assetsTypeThumbPane.setHgap(assetTypeFlowWidth);
+        }
     }
 }
