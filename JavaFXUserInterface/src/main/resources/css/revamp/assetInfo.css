@@ -70,7 +70,7 @@
     -fx-font-family: 'Segoe UI';
     -fx-font-size: 20px;
     -fx-font-weight: bold;
-    -fx-fill: '#3A3A3A';
+    -fx-fill: #3A3A3A;
 }
 
 .table-view {
