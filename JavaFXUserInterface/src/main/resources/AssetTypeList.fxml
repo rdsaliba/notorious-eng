@@ -3,66 +3,102 @@
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="834.0"
-            prefWidth="1194.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="controllers.AssetTypeController">
+            prefWidth="1194.0" xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AssetTypeController">
     <children>
         <fx:include source="Navigation.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0"/>
-        <AnchorPane prefHeight="200.0" prefWidth="200.0" styleClass="container" AnchorPane.bottomAnchor="0.0"
-                    AnchorPane.leftAnchor="59.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <AnchorPane layoutX="315.0" layoutY="180.0" prefHeight="200.0" prefWidth="808.0" styleClass="container"
+                    AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="59.0" AnchorPane.rightAnchor="0.0"
+                    AnchorPane.topAnchor="0.0">
             <children>
-                <AnchorPane prefHeight="80.0" prefWidth="952.0" styleClass="titleBar" AnchorPane.leftAnchor="0.0"
-                            AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                    <children>
-                        <Text fx:id="assetName" fill="#0c072e" layoutX="26.0" layoutY="51.0" strokeType="OUTSIDE"
-                              strokeWidth="0.0" styleClass="header" text="Asset Types">
-                            <font>
-                                <Font name="Segoe UI Bold" size="18.0"/>
-                            </font>
-                        </Text>
-                        <Button id="addAssetTypeBtn" fx:id="addTypeBtn" layoutX="860.0" layoutY="18.0"
-                                mnemonicParsing="false" prefHeight="45.0" prefWidth="247.0" text="Add Type"
-                                textFill="WHITE" AnchorPane.rightAnchor="28.0">
-                            <font>
-                                <Font name="Segoe UI Semibold" size="20.0"/>
-                            </font>
-                            <padding>
-                                <Insets bottom="5.0" left="15.0" right="15.0" top="5.0"/>
-                            </padding>
-                        </Button>
-                    </children>
-                </AnchorPane>
-                <AnchorPane fx:id="assetTypesListPane" layoutX="77.0" layoutY="94.0" minHeight="0.0" minWidth="0.0"
-                            prefHeight="740.0" prefWidth="1135.0" AnchorPane.bottomAnchor="0.0"
-                            AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="81.0">
-                    <children>
-                        <TableView fx:id="tableView" layoutX="9.0" layoutY="5.0" prefHeight="665.6" prefWidth="906.4"
-                                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                                   AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                            <columns>
-                                <TableColumn fx:id="columnName" prefWidth="120.0" text="Name"/>
-                                <TableColumn fx:id="columnArchivedAssets" prefWidth="103.0" text="Archived Assets"/>
-                                <TableColumn fx:id="columnLiveAssets" prefWidth="89.0" text="Live Assets"/>
-                                <TableColumn fx:id="columnFailed" prefWidth="67.0" text="Failed"/>
-                                <TableColumn fx:id="columnWarning" prefWidth="81.0" text="Warning"/>
-                                <TableColumn fx:id="columnCaution" prefWidth="84.0" text="Caution"/>
-                                <TableColumn fx:id="columnAdvisory" prefWidth="90.0" text="Advisory"/>
-                                <TableColumn fx:id="columnOk" prefWidth="70.0" text="OK"/>
-                            </columns>
-                        </TableView>
-                    </children>
-                </AnchorPane>
+                <Button id="addAssetTypeBtn" fx:id="addTypeBtn" layoutX="860.0" layoutY="25.0" mnemonicParsing="false"
+                        prefHeight="45.0" prefWidth="247.0" text="+ Add Asset Type" AnchorPane.rightAnchor="28.0">
+                    <font>
+                        <Font name="Segoe UI Semibold" size="20.0"/>
+                    </font>
+                </Button>
+                <TextField id="search" fx:id="search" layoutX="26.0" layoutY="25.0" promptText="Search Here"
+                           AnchorPane.leftAnchor="26.0" AnchorPane.rightAnchor="304.0">
+                    <padding>
+                        <Insets left="35.0"/>
+                    </padding>
+                </TextField>
+                <Text layoutX="26.0" layoutY="115.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="header"
+                      text="Asset Types"/>
+                <TabPane fx:id="assetsTypeTabPane" layoutX="201.0" layoutY="172.0" prefHeight="667.0" prefWidth="1135.0"
+                         tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                         AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="167.0">
+                    <tabs>
+                        <Tab id="thumbnailTab" fx:id="thumbnailTab" text="Thumbnails">
+                            <content>
+                                <AnchorPane id="thumbnailPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0"
+                                            prefWidth="200.0">
+                                    <children>
+                                        <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER"
+                                                    layoutX="224.0" layoutY="85.0" prefHeight="200.0" prefWidth="200.0"
+                                                    styleClass="scrollPane" vbarPolicy="NEVER"
+                                                    AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                            <content>
+                                                <FlowPane fx:id="assetsTypeThumbPane" hgap="30.0" prefHeight="625.0"
+                                                          prefWidth="1134.0" styleClass="flowPane" vgap="24.0">
+                                                    <children>
+                                                    </children>
+                                                </FlowPane>
+                                            </content>
+                                        </ScrollPane>
+                                    </children>
+                                </AnchorPane>
+                            </content>
+                        </Tab>
+                        <Tab fx:id="listTab" text="List">
+                            <content>
+                                <AnchorPane fx:id="assetTypesListPane" layoutX="77.0" layoutY="94.0" minHeight="0.0"
+                                            minWidth="0.0"
+                                            prefHeight="740.0" prefWidth="1135.0" AnchorPane.bottomAnchor="0.0"
+                                            AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                                            AnchorPane.topAnchor="81.0">
+                                    <children>
+                                        <TableView fx:id="tableView" layoutX="9.0" layoutY="5.0" prefHeight="665.6"
+                                                   prefWidth="906.4"
+                                                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                                   AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                            <columns>
+                                                <TableColumn fx:id="columnName" prefWidth="120.0" text="Name"/>
+                                                <TableColumn fx:id="columnArchivedAssets" prefWidth="103.0"
+                                                             text="Archived Assets"/>
+                                                <TableColumn fx:id="columnLiveAssets" prefWidth="89.0"
+                                                             text="Live Assets"/>
+                                                <TableColumn fx:id="columnFailed" prefWidth="67.0" text="Failed"/>
+                                                <TableColumn fx:id="columnWarning" prefWidth="81.0" text="Warning"/>
+                                                <TableColumn fx:id="columnCaution" prefWidth="84.0" text="Caution"/>
+                                                <TableColumn fx:id="columnAdvisory" prefWidth="90.0" text="Advisory"/>
+                                                <TableColumn fx:id="columnOk" prefWidth="70.0" text="OK"/>
+                                            </columns>
+                                        </TableView>
+                                    </children>
+                                </AnchorPane>
+                            </content>
+                        </Tab>
+                    </tabs>
+                </TabPane>
             </children>
         </AnchorPane>
     </children>
     <stylesheets>
-        <URL value="@css/revamp/assetType.css"/>
         <URL value="@css/revamp/style.css"/>
+        <URL value="@css/revamp/assetType.css"/>
     </stylesheets>
 </AnchorPane>
