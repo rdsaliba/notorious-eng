@@ -5,7 +5,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class RulDAOImplTest {
     private RulDAOImpl rulDAO;
@@ -23,6 +23,6 @@ public class RulDAOImplTest {
     public void getLatestRUL() {
         //Continue
         Double estimate = rulDAO.getLatestRUL(5);
-        //assertNull(estimate);
+        assertEquals(-100000.0, estimate, 0.01);
     }
 }

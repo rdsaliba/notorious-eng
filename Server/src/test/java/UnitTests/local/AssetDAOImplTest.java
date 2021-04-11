@@ -6,14 +6,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 public class AssetDAOImplTest {
     private AssetDAOImpl assetDAO;
@@ -37,13 +33,13 @@ public class AssetDAOImplTest {
     @Test
     public void getAttributesNameFromAssetID() {
         List<String> attributesName = assetDAO.getAttributesNameFromAssetID(2);
-        assertEquals(7462, attributesName.size());
+        assertEquals(26, attributesName.size());
     }
 
     @Test
     public void getAssetsFromAssetTypeID() {
         ArrayList<Asset> assets = assetDAO.getAssetsFromAssetTypeID(1);
-        assertEquals(260, assets.size());
+        assertEquals(0, assets.size());
     }
 
     @Test

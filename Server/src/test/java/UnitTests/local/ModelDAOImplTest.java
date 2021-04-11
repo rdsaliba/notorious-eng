@@ -1,7 +1,6 @@
 package UnitTests.local;
 
 import app.item.TrainedModel;
-import local.AssetDAOImpl;
 import local.ModelDAOImpl;
 import org.junit.After;
 import org.junit.Before;
@@ -9,7 +8,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class ModelDAOImplTest {
     private ModelDAOImpl modelDAO;
@@ -40,7 +39,7 @@ public class ModelDAOImplTest {
     @Test
     public void getModelsToTrain() {
         ArrayList<TrainedModel> trainedModels = modelDAO.getModelsToTrain();
-        assertEquals(36,trainedModels.size());
+        assertEquals(3, trainedModels.size());
     }
 
     @Test
