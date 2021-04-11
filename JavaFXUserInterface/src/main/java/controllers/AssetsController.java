@@ -427,7 +427,7 @@ public class AssetsController extends Controller implements Initializable {
                 imagePlaceholder.getStyleClass().add(IMAGE_STYLE_CLASS);
 
                 BorderPane borderPane = new BorderPane();
-                borderPane.getStyleClass().add(IMAGE_STYLE_CLASS);
+                borderPane.getStyleClass().add(BORDER_PANE_STYLE_CLASS);
 
                 setImage(asset, borderPane);
 

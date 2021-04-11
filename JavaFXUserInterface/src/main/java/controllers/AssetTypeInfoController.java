@@ -510,67 +510,76 @@ public class AssetTypeInfoController extends Controller implements Initializable
      */
     public void generateParameters(TrainedModel model, boolean defaultParams) {
         modelParameters.getChildren().clear();
-        Map<String, Parameter> params = (defaultParams) ? model.getModelStrategy().getDefaultParameters() : model.getModelStrategy().getParameters();
-        model.getModelStrategy().setParameters(params);
-        Iterator<String> iterator = params.keySet().iterator();
-        double layoutX = 50.0;
-        double layoutY = 20.0;
-        double tfLayoutX = 300.0;
+        try {
+            Map<String, Parameter> params = (defaultParams) ? model.getModelStrategy().getDefaultParameters() : model.getModelStrategy().getParameters();
+            model.getModelStrategy().setParameters(params);
+            Iterator<String> iterator = params.keySet().iterator();
+            double layoutX = 50.0;
+            double layoutY = 20.0;
+            double tfLayoutX = 300.0;
 
-        while (iterator.hasNext()) {
-            String paramName = iterator.next();
-            Parameter parameter = params.get(paramName);
+            while (iterator.hasNext()) {
+                String paramName = iterator.next();
+                Parameter parameter = params.get(paramName);
 
-            //make the pane
-            Pane pane = new Pane();
-            pane.getStyleClass().add(PARAM_PANE_STYLE_CLASS);
-            pane.setLayoutX(layoutX);
-            pane.setLayoutY(layoutY);
+                //make the pane
+                Pane pane = new Pane();
+                pane.getStyleClass().add(PARAM_PANE_STYLE_CLASS);
+                pane.setLayoutX(layoutX);
+                pane.setLayoutY(layoutY);
 
-            // Make the label itself
-            Label paramNameLabel = new Label();
-            paramNameLabel.getStyleClass().add(FORM_LABEL_STYLE_CLASS);
-            paramNameLabel.setText(paramName);
-            pane.getChildren().add(paramNameLabel);
+                // Make the label itself
+                Label paramNameLabel = new Label();
+                paramNameLabel.getStyleClass().add(FORM_LABEL_STYLE_CLASS);
+                paramNameLabel.setText(paramName);
+                pane.getChildren().add(paramNameLabel);
 
-            // Depending on the parameter type, generate corresponding input field
-            if (parameter instanceof BoolParameter) {
-                CheckBox checkBox = new CheckBox();
-                checkBox.setSelected(((BoolParameter) parameter).getBoolValue());
-                checkBox.setLayoutX(tfLayoutX);
-                checkBox.setLayoutY(0.0);
-                checkBox.selectedProperty().addListener((ov, oldVal, newVal) -> ((BoolParameter) params.get(paramName)).setBoolValue(newVal));
-                pane.getChildren().addAll(checkBox);
-            } else if (parameter instanceof IntParameter) {
-                TextField tf = new TextField();
-                tf.setText(String.valueOf(((IntParameter) parameter).getIntValue()));
-                tf.getStyleClass().add(PARAM_TEXT_FIELD_STYLE_CLASS);
-                tf.setLayoutX(tfLayoutX);
-                tf.setLayoutY(0.0);
-                tf.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(INT_REGEX, c)));
-                tf.textProperty().addListener((ov, oldVal, newVal) -> ((IntParameter) params.get(paramName)).setIntValue(Integer.parseInt(newVal)));
-                pane.getChildren().add(tf);
-            } else if (parameter instanceof ListParameter) {
-                ChoiceBox<String> listBox = new ChoiceBox<>();
-                listBox.setItems(FXCollections.observableArrayList(((ListParameter) parameter).getListValues()));
-                listBox.setValue(((ListParameter) parameter).getSelectedValue());
-                listBox.getStyleClass().add(PARAM_TEXT_FIELD_STYLE_CLASS);
-                listBox.setLayoutX(tfLayoutX);
-                listBox.setLayoutY(0.0);
-                listBox.getSelectionModel().selectedItemProperty().addListener((ov, oldVal, newVal) -> ((ListParameter) params.get(paramName)).setSelectedValue(newVal));
-                pane.getChildren().add(listBox);
-            } else if (parameter instanceof FloatParameter) {
-                TextField tf = new TextField();
-                tf.setText(String.valueOf(((FloatParameter) parameter).getFloatValue()));
-                tf.getStyleClass().add(PARAM_TEXT_FIELD_STYLE_CLASS);
-                tf.setLayoutX(tfLayoutX);
-                tf.setLayoutY(0.0);
-                tf.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(FLOAT_REGEX, c)));
-                tf.textProperty().addListener((ov, oldVal, newVal) -> ((FloatParameter) params.get(paramName)).setFloatValue(Float.parseFloat(newVal)));
-                pane.getChildren().add(tf);
+                // Depending on the parameter type, generate corresponding input field
+                if (parameter instanceof BoolParameter) {
+                    CheckBox checkBox = new CheckBox();
+                    checkBox.setSelected(((BoolParameter) parameter).getBoolValue());
+                    checkBox.setLayoutX(tfLayoutX);
+                    checkBox.setLayoutY(0.0);
+                    checkBox.selectedProperty().addListener((ov, oldVal, newVal) -> ((BoolParameter) params.get(paramName)).setBoolValue(newVal));
+                    pane.getChildren().addAll(checkBox);
+                } else if (parameter instanceof IntParameter) {
+                    TextField tf = new TextField();
+                    tf.setText(String.valueOf(((IntParameter) parameter).getIntValue()));
+                    tf.getStyleClass().add(PARAM_TEXT_FIELD_STYLE_CLASS);
+                    tf.setLayoutX(tfLayoutX);
+                    tf.setLayoutY(0.0);
+                    tf.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(INT_REGEX, c)));
+                    tf.textProperty().addListener((ov, oldVal, newVal) -> ((IntParameter) params.get(paramName)).setIntValue(Integer.parseInt(newVal)));
+                    pane.getChildren().add(tf);
+                } else if (parameter instanceof ListParameter) {
+                    ChoiceBox<String> listBox = new ChoiceBox<>();
+                    listBox.setItems(FXCollections.observableArrayList(((ListParameter) parameter).getListValues()));
+                    listBox.setValue(((ListParameter) parameter).getSelectedValue());
+                    listBox.getStyleClass().add(PARAM_TEXT_FIELD_STYLE_CLASS);
+                    listBox.setLayoutX(tfLayoutX);
+                    listBox.setLayoutY(0.0);
+                    listBox.getSelectionModel().selectedItemProperty().addListener((ov, oldVal, newVal) -> ((ListParameter) params.get(paramName)).setSelectedValue(newVal));
+                    pane.getChildren().add(listBox);
+                } else if (parameter instanceof FloatParameter) {
+                    TextField tf = new TextField();
+                    tf.setText(String.valueOf(((FloatParameter) parameter).getFloatValue()));
+                    tf.getStyleClass().add(PARAM_TEXT_FIELD_STYLE_CLASS);
+                    tf.setLayoutX(tfLayoutX);
+                    tf.setLayoutY(0.0);
+                    tf.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(FLOAT_REGEX, c)));
+                    tf.textProperty().addListener((ov, oldVal, newVal) -> ((FloatParameter) params.get(paramName)).setFloatValue(Float.parseFloat(newVal)));
+                    pane.getChildren().add(tf);
+                }
+                modelParameters.getChildren().add(pane);
+                layoutY += 40.0;
             }
-            modelParameters.getChildren().add(pane);
-            layoutY += 40.0;
+        } catch (NullPointerException e) {
+            Text error = new Text("No trained classifier. The server needs to train the classifier first.");
+            error.setLayoutY(80);
+            error.setLayoutX(50);
+            error.getStyleClass().add("error");
+            modelParameters.getChildren().add(error);
+            logger.error("NullPointerException in GenerateParameters(): ", e);
         }
     }
 

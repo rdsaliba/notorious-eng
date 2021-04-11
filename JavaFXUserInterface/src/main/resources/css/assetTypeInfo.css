@@ -69,3 +69,6 @@
     -fx-padding: 10 0 0 26;
 }
 
+.error {
+    -fx-font-size: 18px;
+}

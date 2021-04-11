@@ -8,6 +8,7 @@
  */
 package external;
 
+import app.item.AssetType;
 import app.item.Model;
 import app.item.TrainedModel;
 import rul.models.ModelStrategy;
@@ -27,7 +28,9 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     private static final String UPDATE_MODEL_FOR_ASSET_TYPE = "UPDATE trained_model tm, model m SET tm.model_id = ?, tm.serialized_model =?  WHERE tm.asset_type_id = ? AND tm.status_id = ? AND tm.model_id=m.model_id AND m.archived = 0";
     private static final String UPDATE_RETRAIN = "UPDATE trained_model tm, model m SET retrain = true WHERE tm.asset_type_id = ? AND tm.status_id = ? AND tm.model_id=m.model_id AND m.archived = 0";
     private static final String GET_MODEL_FROM_ASSET_TYPE = "SELECT * FROM trained_model, model WHERE trained_model.model_id = model.model_id AND trained_model.asset_type_id = ? AND trained_model.status_id = ? AND model.archived = 0";
+    private static final String GET_LIVE_MODEL_COUNT = "SELECT COUNT(*) FROM model WHERE archived = 0";
     private static final String GET_RETRAIN_STATUS = "SELECT retrain FROM trained_model tm, model m WHERE tm.model_id=? AND tm.asset_type_id=? AND tm.status_id=? AND tm.model_id = m.model_id AND m.archived=0";
+    private static final String INSERT_MODEL_FOR_ASSET_TYPE = "INSERT INTO trained_model (model_id, asset_type_id, status_id, retrain, serialized_model, rmse) values(?, ?, ?, 1, null, -1000000)";
 
     private static final String SERIALIZED_MODEL = "serialized_model";
 
@@ -279,4 +282,38 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
         return tm;
     }
 
+    /**
+     * Given an asset type, this function will insert models for live and evaluation for that asset type
+     * in the trained model table. It sets all those models to be retrained as soon as the server is run.
+     *
+     * @param assetType represents the asset type added to the application
+     * @author Jeremie
+     */
+    public void insertModelsForAddedAssetType(AssetType assetType) {
+        AssetTypeDAOImpl assetTypeDAO = new AssetTypeDAOImpl();
+        int assetTypeID = assetTypeDAO.getIDFromName(assetType.getName());
+        int liveModelCount = 0;
+        try {
+            ResultSet rs = nonParamQuery(GET_LIVE_MODEL_COUNT);
+            if (rs.next()) {
+                liveModelCount = rs.getInt(1);
+            }
+            for (int i = 1; i <= liveModelCount; i++) {
+                try (PreparedStatement ps = getConnection().prepareStatement(INSERT_MODEL_FOR_ASSET_TYPE)) {
+                    ps.setInt(1, i);
+                    ps.setInt(2, assetTypeID);
+                    ps.setInt(3, Constants.STATUS_EVALUATION);
+                    ps.executeQuery();
+                }
+            }
+            try (PreparedStatement ps = getConnection().prepareStatement(INSERT_MODEL_FOR_ASSET_TYPE)) {
+                ps.setInt(1, 1);
+                ps.setInt(2, assetTypeID);
+                ps.setInt(3, Constants.STATUS_LIVE);
+                ps.executeQuery();
+            }
+        } catch (SQLException e) {
+            logger.error("Exception in insertModelsForAddedAssetType: ", e);
+        }
+    }
 }
