@@ -269,13 +269,17 @@ public class AssetTypeInfoController extends Controller implements Initializable
     private void setTestAndTrainSliders() {
         int nbOfAssets = assetDAO.getArchivedAssetsFromAssetTypeID(Integer.parseInt(assetType.getId()));
         try {
-            if (nbOfAssets == 0) {
+            if (nbOfAssets != 0) {
                 trainSlider.setMax(nbOfAssets);
                 trainValue.setText(String.valueOf(trainSlider.getValue()));
                 testSlider.setMax(nbOfAssets);
                 testValue.setText(String.valueOf(testSlider.getValue()));
             }
         } catch (Exception e) {
+            trainSlider.setMax(0);
+            trainValue.setText("0");
+            testSlider.setMax(0);
+            testValue.setText("0");
             logger.error("There is no asset associated with that asset type", e);
         }
 
