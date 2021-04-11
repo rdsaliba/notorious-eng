@@ -110,5 +110,14 @@ public class MultilayerPerceptronTest {
         assertEquals("Asserting the LearningRate parameter was changed", ((MultilayerPerceptronModelImpl) modelsController.getModelStrategy()).getMultilayerPerceptronObject().getLearningRate(), learningRatePara.getFloatValue(), 0.1F);
         assertEquals("Asserting the Resume parameter was changed", ((MultilayerPerceptronModelImpl) modelsController.getModelStrategy()).getMultilayerPerceptronObject().getResume(), resumePara.getBoolValue());
         assertEquals("Asserting the ShowGUI parameter was changed", ((MultilayerPerceptronModelImpl) modelsController.getModelStrategy()).getMultilayerPerceptronObject().getGUI(), showGUIPara.getBoolValue());
+        assertEquals("Asserting the AutoBuild parameter was changed", ((MultilayerPerceptronModelImpl) modelsController.getModelStrategy()).getMultilayerPerceptronObject().getAutoBuild(), autoBuildPara.getBoolValue());
+        assertEquals("Asserting the Decay parameter was changed", ((MultilayerPerceptronModelImpl) modelsController.getModelStrategy()).getMultilayerPerceptronObject().getDecay(), decayPara.getBoolValue());
+        assertEquals("Asserting the NominalToBinaryFilter parameter was changed", ((MultilayerPerceptronModelImpl) modelsController.getModelStrategy()).getMultilayerPerceptronObject().getNominalToBinaryFilter(), nominalToBinaryFilterPara.getBoolValue());
+        assertEquals("Asserting the NormalizeAttribute parameter was changed", ((MultilayerPerceptronModelImpl) modelsController.getModelStrategy()).getMultilayerPerceptronObject().getNormalizeAttributes(), normalizeAttributesPara.getBoolValue());
+        assertEquals("Asserting the NormalizeNumericClass parameter was changed", ((MultilayerPerceptronModelImpl) modelsController.getModelStrategy()).getMultilayerPerceptronObject().getNormalizeNumericClass(), normalizeNumericClassPara.getBoolValue());
+        assertEquals("Asserting the Reset parameter was changed", ((MultilayerPerceptronModelImpl) modelsController.getModelStrategy()).getMultilayerPerceptronObject().getReset(), resetPara.getBoolValue());
+        assertEquals("Asserting the Momentum parameter was changed", ((MultilayerPerceptronModelImpl) modelsController.getModelStrategy()).getMultilayerPerceptronObject().getMomentum(), momentumPara.getFloatValue(), 0.1F);
+        assertEquals("Asserting the Trainingtime parameter was changed", ((MultilayerPerceptronModelImpl) modelsController.getModelStrategy()).getMultilayerPerceptronObject().getTrainingTime(), trainingTimePara.getIntValue());
+        assertEquals("Asserting the ValidationSize parameter was changed", ((MultilayerPerceptronModelImpl) modelsController.getModelStrategy()).getMultilayerPerceptronObject().getValidationSetSize(), validationSizePara.getIntValue());
     }
 }
