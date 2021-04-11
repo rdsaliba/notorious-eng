@@ -129,17 +129,17 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
 
     @Override
     public int getIDFromName(String name) {
-        int ID = 0;
+        int id = 0;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_TYPE_ID_FROM_NAME)) {
             ps.setString(1, name);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next())
-                    ID = rs.getInt("asset_type_id");
+                    id = rs.getInt("asset_type_id");
             }
         } catch (SQLException e) {
             logger.error("Exception in getIDFromName(): ", e);
         }
-        return ID;
+        return id;
     }
 
     @Override
