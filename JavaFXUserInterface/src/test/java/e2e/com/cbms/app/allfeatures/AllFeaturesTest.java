@@ -1,5 +1,6 @@
 package e2e.com.cbms.app.allfeatures;
 
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.VerticalDirection;
 import javafx.scene.Node;
@@ -8,7 +9,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.*;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.junit.After;
@@ -17,6 +21,7 @@ import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
+import utilities.AssetTypeList;
 import utilities.TextConstants;
 
 import java.util.Random;
@@ -24,16 +29,14 @@ import java.util.Random;
 import static org.junit.Assert.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class AllFeaturesTest extends ApplicationTest
-{
+public class AllFeaturesTest extends ApplicationTest {
     private Scene scene;
 
     @Override
-    public void start(Stage stage) throws Exception
-    {
+    public void start(Stage stage) throws Exception {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource(TextConstants.ASSETS_SCENE + TextConstants.FXML));
-        Parent root  = loader.load();
+        Parent root = loader.load();
         scene = new Scene(root);
         scene.setUserData(loader);
         stage.setTitle("Minerva");
@@ -42,8 +45,7 @@ public class AllFeaturesTest extends ApplicationTest
     }
 
     @After
-    public void tearDown () throws Exception
-    {
+    public void tearDown() throws Exception {
         FxToolkit.hideStage();
         release(new KeyCode[]{});
         release(new MouseButton[]{});
@@ -53,8 +55,7 @@ public class AllFeaturesTest extends ApplicationTest
     F4 - The system shall determine the remaining useful life using different models.
      */
     @Test
-    public void f4RULModelsTest()
-    {
+    public void f4RULModelsTest() {
         //Parts of this test uses f12 (Associate asset type)
 
         //Go to first asset
@@ -101,8 +102,7 @@ public class AllFeaturesTest extends ApplicationTest
     F8 - The system shall display the selected RUL model parameters.
      */
     @Test
-    public void f8DisplayParametersTest()
-    {
+    public void f8DisplayParametersTest() {
         clickOn("#assetTypeMenuBtn").sleep(1000);
 
         //select first asset type
@@ -117,28 +117,24 @@ public class AllFeaturesTest extends ApplicationTest
 
         int i;
         //Iterate through all the models and their parameters
-        for(int j = 0; j < models.getChildren().size(); j++)
-        {
+        for (int j = 0; j < models.getChildren().size(); j++) {
             i = 0;
             clickOn(models.getChildren().get(j));
 
-            if(j == 4)
-            {
+            if (j == 4) {
                 scroll(90, VerticalDirection.UP);
             }
 
-            while(i < parameters.getChildren().size())
-            {
+            while (i < parameters.getChildren().size()) {
                 clickOn(parameters.getChildren().get(i++)).sleep(500);
 
-                if(i == 10)
-                {
+                if (i == 10) {
                     scroll(60, VerticalDirection.UP);
                 }
             }
         }
 
-        assertTrue("There should be 8 models", models.getChildren().size() == 8);
+        assertEquals("There should be 8 models", 8, models.getChildren().size());
         assertNotNull("Parameters exist", parameters);
     }
 
@@ -146,8 +142,7 @@ public class AllFeaturesTest extends ApplicationTest
     F9 - The system shall provide the ability to edit a selected RUL model parameters.
      */
     @Test
-    public void f9EditParametersTest()
-    {
+    public void f9EditParametersTest() {
         clickOn("#assetTypeMenuBtn").sleep(1000);
 
         //select 1st asset type
@@ -170,12 +165,12 @@ public class AllFeaturesTest extends ApplicationTest
         CheckBox qrVal = (CheckBox) qrPara.getChildren().get(1);
         clickOn(qrVal).sleep(1500);
 
-        Pane coliniearPara = (Pane) paraBox.getChildren().get(2);
-        CheckBox colinearVal = (CheckBox) coliniearPara.getChildren().get(1);
+        Pane collinearPara = (Pane) paraBox.getChildren().get(2);
+        CheckBox colinearVal = (CheckBox) collinearPara.getChildren().get(1);
         clickOn(colinearVal).sleep(1500);
 
         //Parameter after changing it from the default value should be 160
-        assertTrue("Batch Size value is a now 160", batchSizeVal.getText().equals("160"));
+        assertEquals("Batch Size value is a now 160", "160", batchSizeVal.getText());
 
         //reset to default
         clickOn(scene.getRoot().lookup("#modelDefaultBtn")).sleep(1000);
@@ -240,8 +235,7 @@ public class AllFeaturesTest extends ApplicationTest
     F10 - The system shall display a selected RUL model performance (RMSE).
      */
     @Test
-    public void f10ModelPerformanceTest()
-    {
+    public void f10ModelPerformanceTest() {
         clickOn("#assetTypeMenuBtn").sleep(1000);
 
         //select first asset type
@@ -251,7 +245,7 @@ public class AllFeaturesTest extends ApplicationTest
         //go to model tab
         clickOn(scene.getRoot().lookup("#modelTab")).sleep(1000);
 
-        //Modfiy sliders
+        //Modify sliders
         Slider trainSlider = (Slider) scene.getRoot().lookup("#trainSlider");
         clickOn(trainSlider);
         type(KeyCode.TAB).type(KeyCode.RIGHT);
@@ -269,35 +263,31 @@ public class AllFeaturesTest extends ApplicationTest
 
         clickOn(evalButton);
         //incrementally check for 30 seconds to see if rmse has been updated
-        do
-        {
-            if(rmse.getText().equals(oldRmseVal))
-            {
+        do {
+            if (rmse.getText().equals(oldRmseVal)) {
                 sleep(2000);
-            }
-            else
-            {
+            } else {
                 break;
             }
-        }while(++i < 15);
+        } while (++i < 15);
 
         clickOn(rmse).sleep(3000);
 
         assertNotNull("Evaluate button exists", evalButton);
         assertNotNull("RMSE exists", rmse);
-        assertTrue("Assert current RMSE is different than old RMSE", !rmse.getText().equals(oldRmseVal));
+        assertFalse("Assert current RMSE is different than old RMSE", rmse.getText().equals(oldRmseVal));
     }
 
     /*
     F11 - The system shall provide the ability to add and remove a asset type
      */
     @Test
-    public void f11AddRemoveAssetTypeTest()
-    {
+    @SuppressWarnings("unchecked")
+    public void f11AddRemoveAssetTypeTest() {
         clickOn("#assetTypeMenuBtn").sleep(1000).moveBy(100, 0);
         clickOn("#assetName").moveBy(40, 200);
 
-        TableView assetTypes = (TableView) scene.getRoot().lookup("#tableView");
+        TableView<AssetTypeList> assetTypes = (TableView<AssetTypeList>) scene.getRoot().lookup("#tableView");
         int assetTypesDefaultSize = assetTypes.getItems().size();       //default size should be 4
 
         assetTypes.scrollTo(assetTypesDefaultSize);
@@ -314,10 +304,10 @@ public class AllFeaturesTest extends ApplicationTest
 
         clickOn("#saveBtn").sleep(1000);
 
-        assetTypes = (TableView) scene.getRoot().lookup("#tableView");
+        assetTypes = (TableView<AssetTypeList>) scene.getRoot().lookup("#tableView");
         clickOn("#assetName").sleep(1000);
 
-        assertTrue("Asset list contains an additional asset", assetTypes.getItems().size() == (assetTypesDefaultSize + 1));      //should now have default size + 1 item
+        assertEquals("Asset list contains an additional asset", assetTypes.getItems().size(), (assetTypesDefaultSize + 1));      //should now have default size + 1 item
 
         //Select last row
         Node node = lookup("#columnName").nth(assetTypes.getItems().size()).query();
@@ -327,21 +317,20 @@ public class AllFeaturesTest extends ApplicationTest
         clickOn("#deleteBtn").sleep(500);
         type(KeyCode.SPACE).sleep(500);
 
-        assetTypes = (TableView) scene.getRoot().lookup("#tableView");
+        assetTypes = (TableView<AssetTypeList>) scene.getRoot().lookup("#tableView");
         moveBy(0, 200);
         assetTypes.scrollTo(assetTypesDefaultSize);         //back to original table
         sleep(3000);
 
         //Table should return to original size (of rows) after deleting the newly added asset.
-        assertTrue("Asset list contains the same number of assets as before adding and deleting.", assetTypes.getItems().size() == assetTypesDefaultSize);
+        assertEquals("Asset list contains the same number of assets as before adding and deleting.", assetTypes.getItems().size(), assetTypesDefaultSize);
     }
 
     /*
     F12 - The system shall provide the ability to associate a asset type with RUL model
      */
     @Test
-    public void f12AssociateAssetTypeWithModelTest()
-    {
+    public void f12AssociateAssetTypeWithModelTest() {
         clickOn("#assetTypeMenuBtn").sleep(2000);
 
         //select second asset type
@@ -368,15 +357,14 @@ public class AllFeaturesTest extends ApplicationTest
 
         clickOn("#associatedModelLabel").sleep(3000);
         //model after changing should not be the same
-        assertFalse("Model after changing is the same as it was before.",modelBefore.equals(modelAfter));
+        assertFalse("Model after changing is the same as it was before.", modelBefore.equals(modelAfter));
     }
 
     /*
     F13 - The system shall display a monitored asset in RUL order (lowest RUL first)
      */
     @Test
-    public void f13OrderRULTest()
-    {
+    public void f13OrderRULTest() {
         clickOn("#thumbnailTab").moveBy(90, 200);
         scroll(50, VerticalDirection.UP).sleep(1000);
 
@@ -389,10 +377,8 @@ public class AllFeaturesTest extends ApplicationTest
         double[] ruls = getRuls();
 
         //Check if the ascending ruls are ordered
-        for (int i = 0; i < ruls.length - 1; i++)
-        {
-            if(ruls[i] > ruls[i + 1])
-            {
+        for (int i = 0; i < ruls.length - 1; i++) {
+            if (ruls[i] > ruls[i + 1]) {
                 isOrdered = false;
                 break;
             }
@@ -403,20 +389,18 @@ public class AllFeaturesTest extends ApplicationTest
     }
 
     //get double[] RUL values after it's been sorted in ascending order.
-    public double[] getRuls()
-    {
+    public double[] getRuls() {
         FlowPane root = (FlowPane) scene.getRoot().lookup("#assetsThumbPane");
         double[] ruls = new double[root.getChildren().size()];
         int i = 0;
 
-        do
-        {
+        do {
             Pane pane = (Pane) root.getChildren().get(i);       //each pane
             HBox hBox = (HBox) pane.getChildren().get(3);
 
             Text text = (Text) hBox.getChildren().get(0);       //rul
             ruls[i] = Double.parseDouble(text.getText());       //add to array
-        } while(++i < ruls.length);
+        } while (++i < ruls.length);
 
         return ruls;
     }
@@ -425,15 +409,13 @@ public class AllFeaturesTest extends ApplicationTest
      F14 - The system shall provide the ability to select a asset
      */
     @Test
-    public void f14SelectAssetTest()
-    {
+    public void f14SelectAssetTest() {
         FlowPane assets;
         int i = 0;
         Random random = new Random();
 
         //select 4 random assets out of the first 12 visible assets in the window
-        do
-        {
+        do {
             clickOn("#thumbnailTab").moveBy(300, 500);
             scroll(10, VerticalDirection.UP).sleep(2000);
 
@@ -442,7 +424,7 @@ public class AllFeaturesTest extends ApplicationTest
             sleep(1000).clickOn("#serialNumberOutput").sleep(1000);
             clickOn("#backBtn");
 
-        } while(++i < 4);
+        } while (++i < 4);
 
         assertTrue("There are selectable assets on the main page.", assets.getChildren().size() > 0);
     }
@@ -451,8 +433,8 @@ public class AllFeaturesTest extends ApplicationTest
     F15 - The system shall display a selected asset raw data
      */
     @Test
-    public void f15DisplayRawDataTest()
-    {
+    @SuppressWarnings("unchecked")
+    public void f15DisplayRawDataTest() {
         clickOn("#thumbnailTab").sleep(1000);
         FlowPane root = (FlowPane) scene.getRoot().lookup("#assetsThumbPane");
 
@@ -461,7 +443,7 @@ public class AllFeaturesTest extends ApplicationTest
         clickOn("#rawDataTab").sleep(1000);
 
         moveBy(90, 200).sleep(1000);
-        TableView table = (TableView) scene.getRoot().lookup("#RawDataTable");
+        TableView<ObservableList<String>> table = (TableView<ObservableList<String>>) scene.getRoot().lookup("#RawDataTable");
 
         table.scrollToColumnIndex(15);          //scroll to show the end columns
         sleep(3000).clickOn("#backBtn").sleep(1000);
@@ -473,8 +455,7 @@ public class AllFeaturesTest extends ApplicationTest
     F16 - The system shall display a selected asset information
      */
     @Test
-    public void f16DisplayAssetInfoTest()
-    {
+    public void f16DisplayAssetInfoTest() {
         clickOn("#thumbnailTab").sleep(1000);
         FlowPane root;
         FlowPane totalAttributes;
@@ -483,8 +464,7 @@ public class AllFeaturesTest extends ApplicationTest
         int i = 0;
 
         //test the first 3 assets:
-        while(i < 3)
-        {
+        while (i < 3) {
             root = (FlowPane) scene.getRoot().lookup("#assetsThumbPane");
             clickOn(root.getChildren().get(i));
             sleep(2000).clickOn("#informationTab");
@@ -493,8 +473,7 @@ public class AllFeaturesTest extends ApplicationTest
             totalAttributes = (FlowPane) scene.getRoot().lookup("#attributeFlowPane");
 
             //should have 26 total attributes
-            if(totalAttributes.getChildren().size() != 26)
-            {
+            if (totalAttributes.getChildren().size() != 26) {
                 isValidAttributesAmount = false;
                 break;
             }
@@ -510,9 +489,8 @@ public class AllFeaturesTest extends ApplicationTest
     F17 - The system shall provide the ability to add or remove a asset.
      */
     @Test
-    public void f17AddRemoveAssetTest()
-    {
-        Button button   = (Button) scene.getRoot().lookup("#addAssetBtn");
+    public void f17AddRemoveAssetTest() {
+        Button button = (Button) scene.getRoot().lookup("#addAssetBtn");
 
         assertNotNull("Button to add asset exists", button);
         assertEquals("Add Asset", button.getText());

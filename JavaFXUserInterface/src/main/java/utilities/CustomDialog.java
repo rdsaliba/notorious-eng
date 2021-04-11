@@ -72,7 +72,7 @@ public class CustomDialog extends Stage {
         setScene(new Scene(rootPane, null));
     }
 
-    public static void DeleteAssetTypeConfirmationDialogShowAndWait(String assetTypeID, Scene scene,AnchorPane root, AnchorPane bigRoot) {
+    public static void deleteAssetTypeConfirmationDialogShowAndWait(String assetTypeID, Scene scene, AnchorPane root, AnchorPane bigRoot) {
         CustomDialog dialog = new CustomDialog(DELETE_ASSET_TYPE_DIALOG_HEADER, DELETE_ASSET_TYPE_DIALOG_CONTENT);
         DeleteAssetTypeService deleteAssetTypeService = new DeleteAssetTypeService(scene, Integer.parseInt(assetTypeID));
         ProgressIndicator progressIndicator = (ProgressIndicator) root.getChildren().get(0);

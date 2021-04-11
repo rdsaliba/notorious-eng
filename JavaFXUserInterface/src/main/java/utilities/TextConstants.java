@@ -12,9 +12,11 @@ public class TextConstants {
 
     // Scene Text Constants
     public static final String ASSETS_SCENE = "/Assets";
+    public static final String ASSET_INFO_SCENE = "/AssetInfo";
     public static final String ADD_ASSETS_SCENE = "/AddAsset";
     public static final String ASSET_TYPE_LIST_SCENE = "/AssetTypeList";
     public static final String ASSET_TYPE_INFO_SCENE = "/AssetTypeInfo";
+    public static final String ADD_ASSET_TYPE_SCENE = "/AddAssetType";
     public static final String FXML = ".fxml";
 
     // Asset Type Thresholds Text Constants
@@ -44,14 +46,15 @@ public class TextConstants {
     public static final String NO_MODEL_ALERT_DIALOG_HEADER = "Error No Model Available";
     public static final String NO_MODEL_ALERT_DIALOG_CONTENT = "You should run server before you evaluate";
 
+    // String and Decimal matching and formatting
     public static final DecimalFormat RULValueFormat = new DecimalFormat("#.##");
     public static final DecimalFormat RMSEValueFormat = new DecimalFormat("#.##");
     public static final DecimalFormat ThresholdValueFormat = new DecimalFormat("#.00");
 
-    public static final String floatRegex = "[-]?([0-9]*[.])?[0-9]*";
-    public static final String intRegex = "[-]?\\d+";
+    public static final String FLOAT_REGEX = "[-]?([0-9]*[.])?[0-9]*";
+    public static final String INT_REGEX = "[-]?\\d+";
 
-    //Input Validation Constants
+    // Input Validation Constants
     public static final String EMPTY_FIELD_ERROR = "Please enter a value";
     public static final String MAX_20_CHARACTERS_ERROR = "Number of characters has to not exceed 20";
     public static final String MAX_50_CHARACTERS_ERROR = "Number of characters has to not exceed 50";
@@ -64,6 +67,26 @@ public class TextConstants {
     public static final String ADVISORY_FAILED = "The Advisory Threshold needs to be larger \nthan the Failed Threshold";
     public static final String CAUTION_FAILED = "The Caution Threshold needs to be larger \nthan the Failed Threshold";
     public static final String WARNING_FAILED = "The Warning Threshold needs to be larger \nthan the Failed Threshold";
+
+    // Style classes
+    public static final String VALUE_LABEL_STYLE_CLASS = "valueLabel";
+    public static final String VALUE_PANE_STYLE_CLASS = "valuePane";
+    public static final String VALUE_TEXT_STYLE_CLASS = "valueText";
+    public static final String SKINNY_STYLE_CLASS = "skinny";
+    public static final String THUMBNAIL_HEADER_STYLE_CLASS = "thumbnailHeader";
+    public static final String THUMBNAIL_SUB_HEADER_STYLE_CLASS = "thumbnailSubHeader";
+    public static final String THUMBNAIL_PANE_STYLE_CLASS = "thumbnailPane";
+    public static final String PARAM_TEXT_FIELD_STYLE_CLASS = "paramTextField";
+    public static final String PARAM_PANE_STYLE_CLASS = "paramPane";
+    public static final String FORM_LABEL_STYLE_CLASS = "formLabel";
+    public static final String NO_RESULT_STYLE_CLASS = "noResult";
+    public static final String NO_RESULT_PANE_STYLE_CLASS = "noResultPane";
+    public static final String IMAGE_STYLE_CLASS = "imagePlaceholder";
+    public static final String BORDER_PANE_STYLE_CLASS = "borderPane";
+    public static final String ATTRIBUTE_NAME_STYLE_CLASS = "attributeName";
+    public static final String ATTRIBUTE_PANE_STYLE_CLASS = "attributePane";
+
+
 
     private TextConstants() {
         throw new IllegalStateException("Utility class");

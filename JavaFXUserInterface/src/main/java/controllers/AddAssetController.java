@@ -38,6 +38,8 @@ import static utilities.TextConstants.ASSETS_SCENE;
 
 public class AddAssetController extends Controller implements Initializable {
 
+    FileInputStream fileInputStream = null;
+    Logger logger = LoggerFactory.getLogger(AddAssetController.class);
     @FXML
     private Button uploadBtn;
     @FXML
@@ -68,17 +70,13 @@ public class AddAssetController extends Controller implements Initializable {
     private AnchorPane addAssetInformationAnchorPane;
     @FXML
     private AnchorPane root;
-
     private AssetDAOImpl assetDAOImpl;
     private AssetTypeDAOImpl assetTypeDAOImpl;
     private UIUtilities uiUtilities;
     private AssetType selectedAssetType;
     private String imageName = "";
     private boolean overrideImage = false;
-    FileInputStream fileInputStream = null;
     private int imageId = 0;
-
-    Logger logger = LoggerFactory.getLogger(AddAssetController.class);
 
     /**
      * Initialize runs before the scene is displayed.
@@ -120,7 +118,7 @@ public class AddAssetController extends Controller implements Initializable {
             }
         });
 
-        uploadBtn.setOnAction(e-> openImageFile());
+        uploadBtn.setOnAction(e -> openImageFile());
 
         // Change scenes to Assets.fxml
         backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(ASSETS_SCENE, backBtn.getScene()));
@@ -178,7 +176,7 @@ public class AddAssetController extends Controller implements Initializable {
         }
 
         //Case 2: User selected an image that already exists
-        if(imageId != 0) {
+        if (imageId != 0) {
             newAsset.setImageId(imageId);
         }
     }
@@ -202,6 +200,11 @@ public class AddAssetController extends Controller implements Initializable {
         return asset.getName().equals("") || asset.getAssetTypeID().equals("") || asset.getSerialNo().equals("");
     }
 
+    /**
+     * Saves the image associated with the added asset if there is one that was uploaded.
+     *
+     * @author Roy
+     */
     private void imageValidation() {
         imageId = assetDAOImpl.findImageIdByName(imageName);
 
@@ -210,29 +213,44 @@ public class AddAssetController extends Controller implements Initializable {
         }
     }
 
+    /**
+     * Opens the local file explorer to load a local image.
+     *
+     * @author Roy
+     */
     private void openImageFile() {
         FileChooser fileChooser = new FileChooser();
         configureFileChooser(fileChooser);
         File file = fileChooser.showOpenDialog(uploadBtn.getScene().getWindow());
 
-        if (file!=null) {
+        if (file != null) {
             try {
                 fileInputStream = new FileInputStream(file);
                 imageName = file.getName();
                 Image image = new Image(fileInputStream);
                 imageView.setImage(image);
             } catch (IOException e) {
-                logger.error("openImageFile() : " , e);
+                logger.error("openImageFile() : ", e);
             }
         }
     }
 
+    /**
+     * Uploads the image to the database/project.
+     *
+     * @author Roy
+     */
     private void uploadImage(FileInputStream fileInputStream) {
         assetDAOImpl.storeImage(fileInputStream, imageName);
         overrideImage = true;
     }
 
-    private void configureFileChooser(FileChooser fileChooser){
+    /**
+     * Configures the local explorer that is opened for searching .
+     *
+     * @author Roy
+     */
+    private void configureFileChooser(FileChooser fileChooser) {
         fileChooser.setTitle("View Images");
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("All Images", "*.*"),

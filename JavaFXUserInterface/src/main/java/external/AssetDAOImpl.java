@@ -76,6 +76,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
             logger.error("Exception in insertAsset(): ", e);
         }
     }
+
     /**
      * Update an existing asset
      *
@@ -102,7 +103,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
      * in the database as a mediumBlob
      *
      * @param fileInputStream represents the inputStream
-     * @param name represents the image name
+     * @param name            represents the image name
      * @author Roy
      */
     @Override
@@ -114,7 +115,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
             ps.setString(2, name);
             ps.executeQuery();
         } catch (SQLException | IOException e) {
-            logger.error("Exception in storeImage: ",  e);
+            logger.error("Exception in storeImage: ", e);
         }
 
         return ps;
@@ -131,11 +132,12 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         Image image = null;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_IMAGE_BY_ID)) {
             ps.setInt(1, imageId);
-            ResultSet resultSet = ps.executeQuery();
-            if(resultSet.first()) {
-                Blob blob = resultSet.getBlob(1);
-                InputStream inputStream = blob.getBinaryStream();
-                image = new Image(inputStream);
+            try (ResultSet resultSet = ps.executeQuery()) {
+                if (resultSet.first()) {
+                    Blob blob = resultSet.getBlob(1);
+                    InputStream inputStream = blob.getBinaryStream();
+                    image = new Image(inputStream);
+                }
             }
         } catch (SQLException e) {
             logger.error("Exception in findImageById(): ", e);
@@ -155,9 +157,10 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         int imageId = 0;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_IMAGE_BY_NAME)) {
             ps.setString(1, name);
-            ResultSet resultSet = ps.executeQuery();
-            if(resultSet.first()) {
-                imageId = resultSet.getInt("imageId");
+            try (ResultSet resultSet = ps.executeQuery()) {
+                if (resultSet.first()) {
+                    imageId = resultSet.getInt("imageId");
+                }
             }
         } catch (SQLException e) {
             logger.error("Exception in findImageIdByName(): ", e);
@@ -312,7 +315,7 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
      */
     @Override
     public int getArchivedAssetsFromAssetTypeID(int assetTypeID) {
-        int assets =0;
+        int assets = 0;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_ARCHIVED_ASSETS_FROM_ASSET_TYPE_ID)) {
             ps.setInt(1, assetTypeID);
             try (ResultSet rs = ps.executeQuery()) {

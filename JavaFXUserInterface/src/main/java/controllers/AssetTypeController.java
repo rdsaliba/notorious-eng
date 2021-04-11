@@ -11,7 +11,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
@@ -27,10 +26,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import static utilities.TextConstants.*;
+
 public class AssetTypeController extends Controller implements Initializable {
 
-    private final int THUMBNAIL_WIDTH = 247;
-    private final int PADDING = 54;
+    private static final int THUMBNAIL_WIDTH = 247;
+    private static final int PADDING = 54;
     //Configure the table and columns
     @FXML
     private TableView<AssetTypeList> tableView;
@@ -84,7 +85,7 @@ public class AssetTypeController extends Controller implements Initializable {
         // When TableRow is clicked, send data to AssetTypeInfo scene.
         tableView.setRowFactory(tv -> {
             TableRow<AssetTypeList> row = new TableRow<>();
-            row.setOnMouseClicked(event -> uiUtilities.changeScene(row, "/AssetTypeInfo", row.getItem(), row.getScene()));
+            row.setOnMouseClicked(event -> uiUtilities.changeScene(row, ASSET_TYPE_INFO_SCENE, row.getItem(), row.getScene()));
             return row;
         });
         UIUtilities.autoResizeColumns(tableView);
@@ -125,41 +126,41 @@ public class AssetTypeController extends Controller implements Initializable {
     /**
      * Generates a thumbnail for each asset type
      *
-     * @param assetTypeList
+     * @param assetTypeList is the asset type list of asset types
      * @author Jeff
      */
     public void generateThumbnails(ObservableList<AssetTypeList> assetTypeList) {
         if (assetTypes != null) {
             for (AssetTypeList assetType : assetTypeList) {
                 Pane pane = new Pane();
-                pane.setOnMouseClicked(event -> uiUtilities.changeScene("/AssetTypeInfo", assetType, pane.getScene()));
-                pane.getStyleClass().add("thumbnailPane");
+                pane.setOnMouseClicked(event -> uiUtilities.changeScene(ASSET_TYPE_INFO_SCENE, assetType, pane.getScene()));
+                pane.getStyleClass().add(THUMBNAIL_PANE_STYLE_CLASS);
 
                 Text assetTypeName = new Text(assetType.getName());
-                assetTypeName.getStyleClass().add("thumbnailHeader");
+                assetTypeName.getStyleClass().add(THUMBNAIL_HEADER_STYLE_CLASS);
                 Label okLabel = new Label(TextConstants.OK_THRESHOLD);
-                okLabel.getStyleClass().add("valueLabel");
+                okLabel.getStyleClass().add(VALUE_LABEL_STYLE_CLASS);
                 Label advisoryLabel = new Label(TextConstants.ADVISORY_THRESHOLD);
-                advisoryLabel.getStyleClass().add("valueLabel");
+                advisoryLabel.getStyleClass().add(VALUE_LABEL_STYLE_CLASS);
                 Label cautionLabel = new Label(TextConstants.CAUTION_THRESHOLD);
-                cautionLabel.getStyleClass().add("valueLabel");
+                cautionLabel.getStyleClass().add(VALUE_LABEL_STYLE_CLASS);
                 Label warningLabel = new Label(TextConstants.WARNING_THRESHOLD);
-                warningLabel.getStyleClass().add("valueLabel");
+                warningLabel.getStyleClass().add(VALUE_LABEL_STYLE_CLASS);
                 Label failedLabel = new Label(TextConstants.FAILED_THRESHOLD);
-                failedLabel.getStyleClass().add("valueLabel");
+                failedLabel.getStyleClass().add(VALUE_LABEL_STYLE_CLASS);
                 Label nbOfAssets = new Label(TextConstants.NB_OF_ASSETS);
-                nbOfAssets.getStyleClass().add("valueLabel");
+                nbOfAssets.getStyleClass().add(VALUE_LABEL_STYLE_CLASS);
 
                 HBox okBox = new HBox();
-                okBox.getStyleClass().addAll("valuePane", "skinny", "ok");
+                okBox.getStyleClass().addAll(VALUE_PANE_STYLE_CLASS, SKINNY_STYLE_CLASS, "ok");
                 HBox advisoryBox = new HBox();
-                advisoryBox.getStyleClass().addAll("valuePane", "skinny", "advisory");
+                advisoryBox.getStyleClass().addAll(VALUE_PANE_STYLE_CLASS, SKINNY_STYLE_CLASS, "advisory");
                 HBox cautionBox = new HBox();
-                cautionBox.getStyleClass().addAll("valuePane", "skinny", "caution");
+                cautionBox.getStyleClass().addAll(VALUE_PANE_STYLE_CLASS, SKINNY_STYLE_CLASS, "caution");
                 HBox warningBox = new HBox();
-                warningBox.getStyleClass().addAll("valuePane", "skinny", "warning");
+                warningBox.getStyleClass().addAll(VALUE_PANE_STYLE_CLASS, SKINNY_STYLE_CLASS, "warning");
                 HBox failedBox = new HBox();
-                failedBox.getStyleClass().addAll("valuePane", "skinny", "failed");
+                failedBox.getStyleClass().addAll(VALUE_PANE_STYLE_CLASS, SKINNY_STYLE_CLASS, "failed");
                 Text okAssets = new Text(String.valueOf(assetType.getCountOk()));
                 Text advisoryAssets = new Text(String.valueOf(assetType.getCountAdvisory()));
                 Text cautionAssets = new Text(String.valueOf(assetType.getCountCaution()));
@@ -220,7 +221,7 @@ public class AssetTypeController extends Controller implements Initializable {
         attachColumnEvents();
 
         //Attach link to addTypeBtn to go to AddAssetType.fxml
-        addTypeBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene("/AddAssetType", addTypeBtn.getScene()));
+        addTypeBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(ADD_ASSET_TYPE_SCENE, addTypeBtn.getScene()));
     }
 
     /**
@@ -243,14 +244,14 @@ public class AssetTypeController extends Controller implements Initializable {
      * Making thumbnails responsive.
      * As the window expands or shrinks, asset type panes will adjust to the window size accordingly.
      *
-     * @param width
+     * @param width is the width of the flow pane
      * @author Jeff
      */
     public void thumbnailResponsiveness(Number width) {
         double assetTypeFlowWidth = (double) width - PADDING;
         if (assetsTypeThumbPane.getChildren().size() < 6) {
             int nbOfPanes = assetsTypeThumbPane.getChildren().size();
-            if((nbOfPanes * THUMBNAIL_WIDTH) < (double)width)
+            if ((nbOfPanes * THUMBNAIL_WIDTH) < (double) width)
                 assetTypeFlowWidth = assetTypeFlowWidth - (THUMBNAIL_WIDTH * nbOfPanes);
             else {
                 nbOfPanes = (int) (assetTypeFlowWidth / THUMBNAIL_WIDTH);

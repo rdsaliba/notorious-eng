@@ -51,12 +51,14 @@ import java.util.Comparator;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static utilities.TextConstants.ASSETS_SCENE;
+import static utilities.TextConstants.*;
 
 public class AssetInfoController extends Controller implements Initializable {
     private static final String CYCLE = "Cycle";
 
     private static final int ATTRIBUTE_GRAPH_SIZE = 5;
+    private static final int THUMBNAIL_WIDTH = 247;
+    private static final int PADDING = 54;
     static Logger logger = LoggerFactory.getLogger(AssetInfoController.class);
     Image image;
     @FXML
@@ -127,7 +129,6 @@ public class AssetInfoController extends Controller implements Initializable {
         uiUtilities = new UIUtilities();
         root.setOpacity(0);
         uiUtilities.fadeInTransition(root);
-        setupArchiveBtn();
         attachEvents();
     }
 
@@ -212,7 +213,7 @@ public class AssetInfoController extends Controller implements Initializable {
         }
         for (AssetAttribute attribute : asset.getAssetInfo().getAssetAttributes()) {
             Pane pane = new Pane();
-            pane.getStyleClass().add("attributePane");
+            pane.getStyleClass().add(ATTRIBUTE_PANE_STYLE_CLASS);
             final CategoryAxis xAxis = new CategoryAxis();
             final CategoryAxis yAxis = new CategoryAxis();
             xAxis.setLabel(CYCLE);
@@ -250,7 +251,7 @@ public class AssetInfoController extends Controller implements Initializable {
             attributeChart.setLayoutY(50.0);
             pane.getChildren().add(attributeChart);
             Text attributeName = new Text(attribute.getName());
-            attributeName.getStyleClass().add("attributeName");
+            attributeName.getStyleClass().add(ATTRIBUTE_NAME_STYLE_CLASS);
             attributeName.setLayoutX(16.0);
             attributeName.setLayoutY(30.0);
             pane.getChildren().add(attributeName);
@@ -284,15 +285,15 @@ public class AssetInfoController extends Controller implements Initializable {
 
         // As the window expands or shrinks, attribute panes will adjust to the window size accordingly
         attributeFlowPane.widthProperty().addListener((obs, oldVal, newVal) -> {
-            double attributeFlowWidth = (double) newVal - 2;
-            if(attributeFlowPane.getChildren().size() < 6) {
+            double attributeFlowWidth = (double) newVal - PADDING;
+            if (attributeFlowPane.getChildren().size() < 6) {
                 int nbOfPanes = attributeFlowPane.getChildren().size();
-                attributeFlowWidth = attributeFlowWidth - (247 * nbOfPanes);
+                attributeFlowWidth = attributeFlowWidth - (THUMBNAIL_WIDTH * nbOfPanes);
                 attributeFlowWidth = attributeFlowWidth / (nbOfPanes - 1);
                 attributeFlowPane.setHgap(attributeFlowWidth);
             } else {
-                int nbOfPanes = (int) (attributeFlowWidth / 247);
-                attributeFlowWidth = (attributeFlowWidth % 247);
+                int nbOfPanes = (int) (attributeFlowWidth / THUMBNAIL_WIDTH);
+                attributeFlowWidth = (attributeFlowWidth % THUMBNAIL_WIDTH);
                 attributeFlowWidth = attributeFlowWidth / (nbOfPanes - 1);
                 attributeFlowPane.setHgap(attributeFlowWidth);
             }
@@ -301,12 +302,6 @@ public class AssetInfoController extends Controller implements Initializable {
 
     private void updateAsset(Asset asset) {
         assetDAOImpl.updateAsset(asset);
-    }
-
-    private void setupArchiveBtn() {
-        archiveBtn.setLayoutX(600);
-        archiveBtn.setLayoutY(18);
-        archiveBtn.setPrefSize(247, 45);
     }
 
     /**
