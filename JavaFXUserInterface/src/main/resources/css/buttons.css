@@ -1,3 +1,7 @@
+@font-face {
+    src: url('../fonts/Segoe_UI_Semibold.ttf');
+}
+
 .btn {
     -fx-font-family: 'Segoe UI Semibold';
     -fx-font-size: 20px;
