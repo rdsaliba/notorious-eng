@@ -1,0 +1,63 @@
+.btn {
+    -fx-font-family: 'Segoe UI Semibold';
+    -fx-font-size: 20px;
+    -fx-cursor: hand;
+    -fx-pref-width: 247px;
+    -fx-pref-height: 43px;
+    -fx-border-radius: 2px;
+    -fx-border-color: #3A3A3A;
+    -fx-border-width: 1px;
+    -fx-background-color: #FFFFFF;
+}
+
+.btn:hover {
+    -fx-background-color: #D6D6D6;
+}
+
+.btn.small {
+    -fx-pref-width: 142px;
+    -fx-pref-height: 40px;
+}
+
+.btn.smallFont {
+    -fx-font-size: 14px;
+}
+
+.btn.green {
+    -fx-background-color: #57A773;
+    -fx-border-color: #57A773;
+    -fx-text-fill: #FFFFFF;
+}
+
+.btn.green:hover {
+    -fx-background-color: #68A77E;
+    -fx-border-color: #68A77E;
+}
+
+.btn.blue {
+    -fx-background-color: #013E69;
+    -fx-border-color: #013E69;
+    -fx-text-fill: #FFFFFF;
+}
+
+.btn.blue:hover {
+    -fx-background-color: #0C4269;
+    -fx-border-color: #0C4269;
+}
+
+.btn.red {
+    -fx-background-color: #EE6352;
+    -fx-border-color: #EE6352;
+    -fx-text-fill: #FFFFFF;
+}
+
+.btn.red:hover {
+    -fx-background-color: #EE786A;
+    -fx-border-color: #EE786A;
+}
+
+.backBtn {
+    -fx-background-color: transparent;
+    -fx-text-fill: transparent;
+    -fx-cursor: hand;
+}
