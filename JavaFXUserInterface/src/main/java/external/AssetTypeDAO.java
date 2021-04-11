@@ -16,6 +16,8 @@ public interface AssetTypeDAO {
 
     String getNameFromID(String id);
 
+    int getIDFromName(String name);
+
     void updateAssetType(AssetType assetType);
 
     void deleteAssetTypeByID(String assetTypeID);

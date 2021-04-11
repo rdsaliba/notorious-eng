@@ -8,6 +8,7 @@ package controllers;
 import app.item.AssetType;
 import app.item.AssetTypeParameter;
 import external.AssetTypeDAOImpl;
+import external.ModelDAOImpl;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -50,7 +51,8 @@ public class AddAssetTypeController extends Controller implements Initializable 
     private AnchorPane root;
 
     private UIUtilities uiUtilities;
-    private AssetTypeDAOImpl db;
+    private AssetTypeDAOImpl assetTypeDAO;
+    private ModelDAOImpl modelDAO;
     private ArrayList<AssetTypeParameter> assetTypeParameters;
 
     /**
@@ -64,7 +66,8 @@ public class AddAssetTypeController extends Controller implements Initializable 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         uiUtilities = new UIUtilities();
-        db = new AssetTypeDAOImpl();
+        modelDAO = new ModelDAOImpl();
+        assetTypeDAO = new AssetTypeDAOImpl();
         assetTypeParameters = new ArrayList<>();
         root.setOpacity(0);
         uiUtilities.fadeInTransition(root);
@@ -132,7 +135,8 @@ public class AddAssetTypeController extends Controller implements Initializable 
      */
     public boolean saveAssetType(AssetType assetType) {
         if (assetType != null) {
-            db.insertAssetType(assetType);
+            assetTypeDAO.insertAssetType(assetType);
+            modelDAO.insertModelsForAddedAssetType(assetType);
             return true;
         }
         return false;
