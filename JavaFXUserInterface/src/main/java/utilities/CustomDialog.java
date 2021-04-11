@@ -46,21 +46,25 @@ public class CustomDialog extends Stage {
 
         Text headerText = new Text(header);
         headerText.setFont(Font.font(20));
+        headerText.setStyle("-fx-font-family: \"Segoe UI Semibold\";");
 
         Text contentText = new Text(content);
         contentText.setFont(Font.font(16));
+        contentText.setStyle("-fx-font-family: \"Segoe UI\";");
 
         VBox box = new VBox(10, headerText, contentText);
         box.setPadding(new Insets(15));
 
         okBtn = new Button("Ok");
-        okBtn.setTranslateX(bg.getWidth() - 120);
+        okBtn.setTranslateX(bg.getWidth() - 320);
         okBtn.setTranslateY(bg.getHeight() - 50);
+        okBtn.setStyle("-fx-font-family: \"Segoe UI\"; -fx-font-size: 20px;-fx-pref-width: 142px;-fx-pref-height: 40px;-fx-border-radius: 2px;-fx-background-color: #57A773;-fx-fill: #FFFFFF;");
 
         cancelBtn = new Button("Cancel");
-        cancelBtn.setTranslateX(bg.getWidth() - 70);
+        cancelBtn.setTranslateX(bg.getWidth() - 150);
         cancelBtn.setTranslateY(bg.getHeight() - 50);
         cancelBtn.setOnAction(e -> closeDialog());
+        cancelBtn.setStyle("-fx-font-family: \"Segoe UI\"; -fx-font-size: 20px;-fx-pref-width: 142px;-fx-pref-height: 40px;-fx-border-radius: 2px;-fx-background-color: #d5d7dd;-fx-fill: #3A3A3A;");
 
         rootPane.getChildren().addAll(bg, box, okBtn, cancelBtn);
         setScene(new Scene(rootPane, null));
