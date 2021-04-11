@@ -281,6 +281,22 @@ public class AssetInfoController extends Controller implements Initializable {
                 uiUtilities.changeScene(ASSETS_SCENE, assetSaveBtn.getScene());
             }
         });
+
+        // As the window expands or shrinks, attribute panes will adjust to the window size accordingly
+        attributeFlowPane.widthProperty().addListener((obs, oldVal, newVal) -> {
+            double attributeFlowWidth = (double) newVal - 2;
+            if(attributeFlowPane.getChildren().size() < 6) {
+                int nbOfPanes = attributeFlowPane.getChildren().size();
+                attributeFlowWidth = attributeFlowWidth - (247 * nbOfPanes);
+                attributeFlowWidth = attributeFlowWidth / (nbOfPanes - 1);
+                attributeFlowPane.setHgap(attributeFlowWidth);
+            } else {
+                int nbOfPanes = (int) (attributeFlowWidth / 247);
+                attributeFlowWidth = (attributeFlowWidth % 247);
+                attributeFlowWidth = attributeFlowWidth / (nbOfPanes - 1);
+                attributeFlowPane.setHgap(attributeFlowWidth);
+            }
+        });
     }
 
     private void updateAsset(Asset asset) {

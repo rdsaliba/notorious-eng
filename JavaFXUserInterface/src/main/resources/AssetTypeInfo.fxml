@@ -20,7 +20,7 @@
                     AnchorPane.leftAnchor="59.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
                 <ProgressIndicator fx:id="progressIndicator" layoutX="33.0" layoutY="33.0" scaleX="10" scaleY="10"
-                                   style="-fx-view-order: -1;" visible="false"/>
+                                   style="-fx-view-order: -1;-fx-opacity: 1" visible="false"/>
                 <AnchorPane prefHeight="80.0" prefWidth="952.0" styleClass="titleBar" AnchorPane.leftAnchor="0.0"
                             AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <children>

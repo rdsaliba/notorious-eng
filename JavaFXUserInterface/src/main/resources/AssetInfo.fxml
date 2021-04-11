@@ -32,6 +32,7 @@
                         </Button>
                         <Text fx:id="assetName" fill="#0c072e" layoutX="62.0" layoutY="51.0" strokeType="OUTSIDE"
                               strokeWidth="0.0" styleClass="header" text="Asset Name">
+
                             <font>
                                 <Font name="Segoe UI Bold" size="18.0"/>
                             </font>
@@ -68,6 +69,7 @@
                                                             prefWidth="1127.0" AnchorPane.leftAnchor="26.0"
                                                             AnchorPane.rightAnchor="26.0" AnchorPane.topAnchor="26.0">
                                                     <children>
+
                                                         <Text fx:id="assetTypeLabel" fill="#828282" layoutX="15.0"
                                                               layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0"
                                                               text="Asset Type:" textAlignment="RIGHT"
@@ -139,6 +141,7 @@
                                                         <ImageView fx:id="imageView" fitHeight="150.0" fitWidth="200.0"
                                                                    layoutX="867.0" layoutY="13.0" pickOnBounds="true"
                                                                    preserveRatio="true"/>
+
 
                                                         <Button id="assetSaveBtn" fx:id="assetSaveBtn" layoutX="925.0"
                                                                 layoutY="192.0" mnemonicParsing="false"

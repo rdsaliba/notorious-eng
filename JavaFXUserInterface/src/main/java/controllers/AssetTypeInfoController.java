@@ -172,7 +172,7 @@ public class AssetTypeInfoController extends Controller implements Initializable
         ProgressIndicator progressIndicator = (ProgressIndicator) root.getChildren().get(0);
         progressIndicator.setLayoutY(bigRoot.getPrefHeight() / 2);
         progressIndicator.setLayoutX(bigRoot.getPrefWidth() / 2);
-        infoDeleteBtn.setOnMouseClicked(mouseEvent -> CustomDialog.DeleteAssetTypeConfirmationDialogShowAndWait(root, assetType.getId(), infoSaveBtn.getScene()));
+        infoDeleteBtn.setOnMouseClicked(mouseEvent -> CustomDialog.DeleteAssetTypeConfirmationDialogShowAndWait(assetType.getId(), infoSaveBtn.getScene(),root,bigRoot));
 
         infoSaveBtn.setDisable(true);
         infoSaveBtn.setOnMouseClicked(mouseEvent -> {

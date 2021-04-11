@@ -181,4 +181,28 @@ public class UIUtilities {
         ft.setToValue(1);
         ft.play();
     }
+
+    /**
+     * Changes scenes once an element is clicked, and
+     * sends an asset type to the new scene's controller.
+     *
+     * @param fxmlFileName the name of the fxml file that will be loaded for the scene
+     * @param assetType    the asset type we want to sent to the other page
+     * @author Jeff
+     */
+    public void changeScene(String fxmlFileName, AssetTypeList assetType, Scene scene) {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource(fxmlFileName + FXML));
+            Parent parent = loader.load();
+            scene.setRoot(parent);
+            scene.setUserData(loader);
+            AssetTypeInfoController controller = loader.getController();
+            controller.initData(assetType);
+
+        } catch (IOException e) {
+            logger.error("Exception in changeScene 4: ", e);
+        }
+    }
 }
+

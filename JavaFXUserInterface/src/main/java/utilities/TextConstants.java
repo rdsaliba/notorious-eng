@@ -24,6 +24,9 @@ public class TextConstants {
     public static final String WARNING_THRESHOLD = "Warning";
     public static final String FAILED_THRESHOLD = "Failed";
 
+    // Asset Type Thumbnail Text Constants
+    public static final String NB_OF_ASSETS = "nb of Assets";
+
     // Custom Dialog Text Constants
     public static final String DELETE_ASSET_DIALOG_HEADER = "Confirmation of asset deletion";
     public static final String DELETE_ASSET_DIALOG_CONTENT = "Are you sure you want to delete this asset?";
