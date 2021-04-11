@@ -22,7 +22,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
@@ -158,6 +157,8 @@ public class AssetTypeInfoController extends Controller implements Initializable
         for (TextField thresholdTextField : thresholdTextFieldList) {
             thresholdTextField.setPromptText("No current value for " + thresholdTextField.getId() + ". Please enter a value.");
         }
+        new Thread(() -> initializeModelTab()).start();
+
     }
 
     /**
@@ -172,7 +173,7 @@ public class AssetTypeInfoController extends Controller implements Initializable
         ProgressIndicator progressIndicator = (ProgressIndicator) root.getChildren().get(0);
         progressIndicator.setLayoutY(bigRoot.getPrefHeight() / 2);
         progressIndicator.setLayoutX(bigRoot.getPrefWidth() / 2);
-        infoDeleteBtn.setOnMouseClicked(mouseEvent -> CustomDialog.DeleteAssetTypeConfirmationDialogShowAndWait(assetType.getId(), infoSaveBtn.getScene(),root,bigRoot));
+        infoDeleteBtn.setOnMouseClicked(mouseEvent -> CustomDialog.DeleteAssetTypeConfirmationDialogShowAndWait(assetType.getId(), infoSaveBtn.getScene(), root, bigRoot));
 
         infoSaveBtn.setDisable(true);
         infoSaveBtn.setOnMouseClicked(mouseEvent -> {
@@ -184,7 +185,13 @@ public class AssetTypeInfoController extends Controller implements Initializable
         });
 
         attachAssetTypeTextFieldsEvents();
-        modelTab.setOnSelectionChanged(event -> initializeModelTab());
+        modelTab.setOnSelectionChanged(event -> {
+            modelsThumbPane.getChildren().clear();
+            generateThumbnails();
+            attachEventsModelTab();
+
+            updateRMSE();
+        });
     }
 
     /**
@@ -234,6 +241,7 @@ public class AssetTypeInfoController extends Controller implements Initializable
      * @author Talal, Jeremie
      */
     private void initializeModelTab() {
+        modelTab.setDisable(true);
         evaluateAllModelsBtn.setDisable(true);
         evaluateButtons = new ArrayList<>();
         evaluateButtons.add(evaluateAllModelsBtn);
@@ -246,11 +254,7 @@ public class AssetTypeInfoController extends Controller implements Initializable
         } catch (Exception e) {
             logger.error("Exception in getting all the models list", e);
         }
-        modelsThumbPane.getChildren().clear();
-        generateThumbnails();
-        attachEventsModelTab();
-
-        updateRMSE();
+        modelTab.setDisable(false);
     }
 
     /**
@@ -262,8 +266,7 @@ public class AssetTypeInfoController extends Controller implements Initializable
      * @author Talal
      */
     private void setTestAndTrainSliders() {
-        List<Asset> assets = assetDAO.getArchivedAssetsFromAssetTypeID(Integer.parseInt(assetType.getId()));
-        int nbOfAssets = assets.size();
+        int nbOfAssets = assetDAO.getArchivedAssetsFromAssetTypeID(Integer.parseInt(assetType.getId()));
         trainSlider.setMax(nbOfAssets);
         trainValue.setText(String.valueOf(trainSlider.getValue()));
         testSlider.setMax(nbOfAssets);
@@ -418,8 +421,9 @@ public class AssetTypeInfoController extends Controller implements Initializable
         for (TrainedModel model : modelObservableList) {
             // Creating a Thumbnail element
             Pane modelPane = new Pane();
+
             modelPane.setId(model.getModelName());
-            modelPane.getStyleClass().add("modelPane");
+            modelPane.getStyleClass().add("thumbnailPane");
             modelPane.setOnMouseClicked(mouseEvent -> {
                 modelPanes.handleModelSelection(model, modelPane);
                 generateParameters(model, false);
@@ -438,8 +442,7 @@ public class AssetTypeInfoController extends Controller implements Initializable
             Text rmseValue = new Text();
 
             HBox rmsePane = new HBox();
-            rmsePane.getStyleClass().add("rmsePane");
-            rmsePane.setAlignment(Pos.CENTER);
+            rmsePane.getStyleClass().add("valuePane");
 
             Button evaluateModelBtn = new Button();
             evaluateModelBtn.setText("Evaluate");
@@ -452,13 +455,13 @@ public class AssetTypeInfoController extends Controller implements Initializable
             });
 
             //Setting IDs for the elements
-            modelNameLabel.getStyleClass().add("modelName");
+            modelNameLabel.getStyleClass().add("thumbnailHeader");
             modelDescriptionText.setId("modelDescriptionText");
-            rmseLabel.getStyleClass().add("rmseLabel");
-            rmseValue.getStyleClass().add("rmseValue");
+            rmseLabel.getStyleClass().add("valueLabel");
+            rmseValue.getStyleClass().add("valueText");
             SimpleStringProperty s = model.getRMSE();
             rmseValue.textProperty().bind(s);
-            evaluateModelBtn.getStyleClass().add("selectBtn");
+            evaluateModelBtn.getStyleClass().addAll("btn", "smallFont", "evaluate");
 
             //Setting the Layout of the elements
             modelNameLabel.setLayoutX(15.0);
@@ -518,7 +521,7 @@ public class AssetTypeInfoController extends Controller implements Initializable
 
             // Make the label itself
             Label paramNameLabel = new Label();
-            paramNameLabel.getStyleClass().add("paramLabel");
+            paramNameLabel.getStyleClass().add("formLabel");
             paramNameLabel.setText(paramName);
             pane.getChildren().add(paramNameLabel);
 

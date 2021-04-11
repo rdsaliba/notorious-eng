@@ -71,7 +71,7 @@ public class AssetsController extends Controller implements Initializable {
     @FXML
     private Button addAssetBtn;
     @FXML
-    private FlowPane assetsThumbPane;
+    private FlowPane assetsFlowPane;
     @FXML
     private AnchorPane assetsListPane;
     @FXML
@@ -163,17 +163,17 @@ public class AssetsController extends Controller implements Initializable {
      */
     public void attachEvents() {
         // As the window expands or shrinks, asset panes will adjust to the window size accordingly
-        assetsThumbPane.widthProperty().addListener((obs, oldVal, newVal) -> {
+        assetsFlowPane.widthProperty().addListener((obs, oldVal, newVal) -> {
             double assetFlowWidth = (double) newVal - 54;
             int nbOfPanes = (int) (assetFlowWidth / 247);
             assetFlowWidth = (assetFlowWidth % 247);
             assetFlowWidth = assetFlowWidth / (nbOfPanes - 1);
-            assetsThumbPane.setHgap(assetFlowWidth);
+            assetsFlowPane.setHgap(assetFlowWidth);
         });
 
         thumbnailTab.setOnSelectionChanged(event -> {
             if (thumbnailTab.isSelected()) {
-                assetsThumbPane.getChildren().clear();
+                assetsFlowPane.getChildren().clear();
                 generateThumbnails();
             }
         });
@@ -294,7 +294,7 @@ public class AssetsController extends Controller implements Initializable {
      */
     private void generateContent() {
         if (assetsTabPane.getSelectionModel().getSelectedItem().getId().equals("thumbnailTab")) {
-            assetsThumbPane.getChildren().clear();
+            assetsFlowPane.getChildren().clear();
             generateThumbnails();
         } else if (assetsTabPane.getSelectionModel().getSelectedItem().getId().equals("listTab")) {
             assetsListPane.getChildren().clear();
@@ -350,7 +350,7 @@ public class AssetsController extends Controller implements Initializable {
                     default:
                         break;
                 }
-                assetsThumbPane.getChildren().clear();
+                assetsFlowPane.getChildren().clear();
                 generateThumbnails();
             }
         });
@@ -406,7 +406,7 @@ public class AssetsController extends Controller implements Initializable {
             assetsToDisplay = FXCollections.observableArrayList(searchedAssets);
         } else {
             if (searchMatch.equals("No Match")) {
-                assetsThumbPane.getChildren().clear();
+                assetsFlowPane.getChildren().clear();
                 assetsToDisplay = null;
             } else {
                 assetsToDisplay = FXCollections.observableArrayList(assets);
@@ -430,7 +430,7 @@ public class AssetsController extends Controller implements Initializable {
                 Pane pane = new Pane();
                 pane.setCache(true);
                 pane.setOnMouseClicked(event -> uiUtilities.changeScene("/AssetInfo", asset, pane.getScene()));
-                pane.getStyleClass().add("assetPane");
+                pane.getStyleClass().add("thumbnailPane");
 
                 Pane imagePlaceholder = new Pane();
                 imagePlaceholder.getStyleClass().add("imagePlaceholder");
@@ -441,10 +441,7 @@ public class AssetsController extends Controller implements Initializable {
                 setImage(asset, borderPane);
 
                 HBox rulPane = new HBox();
-                rulPane.getStyleClass().add("rulPane");
-
                 HBox statusPane = new HBox();
-                statusPane.getStyleClass().add("statusPane");
 
                 Text assetName = new Text(asset.getSerialNo());
                 Text assetType = new Text(assetTypeDAO.getNameFromID(asset.getAssetTypeID()));
@@ -457,17 +454,15 @@ public class AssetsController extends Controller implements Initializable {
                 SimpleStringProperty s = asset.getRul();
                 rulValue.textProperty().bind(s);
 
-                assetName.getStyleClass().add("assetName");
-                assetType.getStyleClass().add("assetType");
-                rulLabel.getStyleClass().add("rulLabel");
-                rulValue.getStyleClass().add("rulValue");
-                recommendationLabel.getStyleClass().add("statusLabel");
-                recommendation.getStyleClass().add("statusValue");
-                statusPane.getStyleClass().add("statusPane");
+                assetName.getStyleClass().add("thumbnailHeader");
+                assetType.getStyleClass().add("thumbnailSubHeader");
+                rulLabel.getStyleClass().add("valueLabel");
+                rulValue.getStyleClass().add("valueText");
+                recommendationLabel.getStyleClass().add("valueLabel");
+                recommendation.getStyleClass().add("valueText");
+                rulPane.getStyleClass().addAll("valuePane", "none");
+                statusPane.getStyleClass().add("valuePane");
                 statusPane.getStyleClass().add(asset.getRecommendation().toLowerCase());
-
-                statusPane.setAlignment(Pos.CENTER);
-                rulPane.setAlignment(Pos.CENTER);
 
                 assetName.setLayoutX(15.0);
                 assetName.setLayoutY(35.0);
@@ -498,7 +493,7 @@ public class AssetsController extends Controller implements Initializable {
 
                 boxes.add(pane);
             }
-            assetsThumbPane.getChildren().addAll(boxes);
+            assetsFlowPane.getChildren().addAll(boxes);
         } else {
             Text noResult = new Text("No results found");
             noResult.getStyleClass().add("noResult");
@@ -508,7 +503,7 @@ public class AssetsController extends Controller implements Initializable {
             noResultPane.setAlignment(Pos.CENTER);
             noResultPane.getChildren().add(noResult);
 
-            assetsThumbPane.getChildren().add(noResultPane);
+            assetsFlowPane.getChildren().add(noResultPane);
         }
     }
 
