@@ -12,22 +12,26 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class AssetDAOImplTest {
     private AssetDAOImpl assetDAO;
+
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         assetDAO = new AssetDAOImpl();
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         assetDAO = null;
     }
 
     @Test
     public void getAssetsToUpdate() {
+        ArrayList<Asset> assets = assetDAO.getAssetsToUpdate();
+        assertEquals(0,assets.size());
     }
 
     @Test
@@ -50,10 +54,13 @@ public class AssetDAOImplTest {
 
     @Test
     public void getAllLiveAssets() {
+        ArrayList<Asset> assets = assetDAO.getAllLiveAssets();
+        assertEquals(704,assets.size());
     }
 
     @Test
     public void addRULEstimation() {
+
     }
 
     @Test
