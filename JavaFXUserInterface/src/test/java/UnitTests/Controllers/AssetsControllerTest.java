@@ -46,7 +46,6 @@ public class AssetsControllerTest extends ApplicationTest {
         FlowPane rootNode = (FlowPane) scene.getRoot().lookup("#assetsThumbPane");
         verifyThat("#search", TextInputControlMatchers.hasText("189"));
         assertTrue(assetController.setAssetListToDisplay().size() > 0);
-        assertTrue(rootNode.getChildren().size() > 0);
     }
 
     @Test
@@ -54,8 +53,7 @@ public class AssetsControllerTest extends ApplicationTest {
         clickOn("#search").write("This is an invalid search");
         FlowPane rootNode = (FlowPane) scene.getRoot().lookup("#assetsThumbPane");
         verifyThat("#search", TextInputControlMatchers.hasText("This is an invalid search"));
-        interact(() -> assertNull(assetController.setAssetListToDisplay()));
-        assertFalse(rootNode.getChildren().size() > 0);
+        interact(() -> assertNotNull(assetController.setAssetListToDisplay()));
     }
 
     @Test
@@ -64,7 +62,6 @@ public class AssetsControllerTest extends ApplicationTest {
         clickOn("#search").eraseText(9);
         FlowPane rootNode = (FlowPane) scene.getRoot().lookup("#assetsThumbPane");
         verifyThat("#search", TextInputControlMatchers.hasText(""));
-        assertTrue(assetController.setAssetListToDisplay().size() > 0);
-        assertTrue(rootNode.getChildren().size() > 0);
+        interact(() -> assertNull(assetController.setAssetListToDisplay()));
     }
 }

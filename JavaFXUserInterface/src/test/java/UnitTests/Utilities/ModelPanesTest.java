@@ -63,20 +63,20 @@ public class ModelPanesTest {
         int modelPanesSize = modelPanesObservableList.size();
         assertEquals(2, modelPanesSize);
         assertNotNull(flowPane.getOnMouseClicked());
-        assertEquals(640, flowPane.getPrefWidth(), 0.5);
+        assertEquals(38, flowPane.getPrefWidth(), 0.5);
     }
 
     @Test
     public void highlightAssociatedModelTest() {
         modelPanes.highlightAssociatedModel(modelPanesObservableList, 2);
-        assertEquals("-fx-background-color: #e0e0eb", modelPanesObservableList.get(0).getStyle());
-        assertEquals("-fx-border-color: red", modelPanesObservableList.get(1).getStyle());
+        assertEquals("", modelPanesObservableList.get(0).getStyle());
+        assertEquals("-fx-border-color: #226B9E", modelPanesObservableList.get(1).getStyle());
     }
 
     @Test
     public void handleModelSelectionTest() {
         modelPanes.handleModelSelection(model1, pane1);
-        assertEquals("-fx-border-color: red", pane1.getStyle());
+        assertEquals("-fx-border-color: #226B9E", pane1.getStyle());
         assertEquals("", pane2.getStyle());
         assertEquals(model1, modelPanes.getSelectedModel());
         assertNotSame(model2, modelPanes.getSelectedModel());
@@ -85,7 +85,7 @@ public class ModelPanesTest {
     @Test
     public void handleModelSelectionChangeTest() {
         modelPanes.handleModelSelectionChange(modelPanesObservableList, 2);
-        assertEquals("-fx-border-color: transparent; -fx-background-color: #e0e0eb", modelPanesObservableList.get(0).getStyle());
+        assertEquals("-fx-border-color: transparent;", modelPanesObservableList.get(0).getStyle());
         assertEquals("", modelPanesObservableList.get(1).getStyle());
     }
 }

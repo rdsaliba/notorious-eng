@@ -91,17 +91,16 @@ public class AssetDAOTest extends DAO {
     @Test
     public void getArchivedAssetsFromAssetTypeIDTest() {
         assetDAO.getArchivedAssetsFromAssetTypeID(1);
-        List<Asset> assets = assetDAO.getArchivedAssetsFromAssetTypeID(1);
-        assertEquals(100, assets.size());
-        assertEquals(1, assets.get(0).getId());
+        int numberAssets = assetDAO.getArchivedAssetsFromAssetTypeID(1);
+        assertEquals(100, numberAssets);
     }
 
     @Test
     public void getLiveAssetsFromAssetTypeIDTest() {
         assetDAO.getLiveAssetsFromAssetTypeID(1);
-        List<Asset> assets = assetDAO.getArchivedAssetsFromAssetTypeID(1);
-        assertEquals(100, assets.size());
-        assertEquals(1, assets.get(0).getId());
+        List<Asset> assets = assetDAO.getLiveAssetsFromAssetTypeID(1);
+        assertEquals(97, assets.size());
+        assertEquals(101, assets.get(0).getId());
         assertEquals("1", assets.get(0).getAssetTypeID());
     }
 }
