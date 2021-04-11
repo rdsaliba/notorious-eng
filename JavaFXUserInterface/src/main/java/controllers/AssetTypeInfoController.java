@@ -135,13 +135,14 @@ public class AssetTypeInfoController extends Controller implements Initializable
         this.assetType = assetType;
         this.originalAssetType = new AssetTypeList(assetType);
         assetTypeName.setText(assetType.getAssetType().getName());
-        assetTypeDescription.setText(assetType.getAssetType().getDescription());
         associatedModelLabel.setText(modelDAO.getModelNameAssociatedWithAssetType(assetType.getId()));
 
         // Initializing Data for the threshold text fields
         ObservableList<TextField> thresholdTextFieldList = FXCollections.observableArrayList();
         thresholdTextFieldList.addAll(thresholdAdvisory, thresholdCaution, thresholdWarning, thresholdFailed);
         try {
+            if (assetType.getAssetType().getDescription() != null)
+                assetTypeDescription.setText(assetType.getAssetType().getDescription());
             if (assetType.getValueAdvisory() != null && !assetType.getValueAdvisory().equalsIgnoreCase("null"))
                 thresholdAdvisory.setText(ThresholdValueFormat.format(Double.parseDouble(assetType.getValueAdvisory())));
             if (assetType.getValueCaution() != null && !assetType.getValueCaution().equalsIgnoreCase("null"))
@@ -157,7 +158,7 @@ public class AssetTypeInfoController extends Controller implements Initializable
         for (TextField thresholdTextField : thresholdTextFieldList) {
             thresholdTextField.setPromptText("No current value for " + thresholdTextField.getId() + ". Please enter a value.");
         }
-        new Thread(() -> initializeModelTab()).start();
+        new Thread(this::initializeModelTab).start();
 
     }
 
@@ -267,10 +268,17 @@ public class AssetTypeInfoController extends Controller implements Initializable
      */
     private void setTestAndTrainSliders() {
         int nbOfAssets = assetDAO.getArchivedAssetsFromAssetTypeID(Integer.parseInt(assetType.getId()));
-        trainSlider.setMax(nbOfAssets);
-        trainValue.setText(String.valueOf(trainSlider.getValue()));
-        testSlider.setMax(nbOfAssets);
-        testValue.setText(String.valueOf(testSlider.getValue()));
+        try {
+            if (nbOfAssets == 0) {
+                trainSlider.setMax(nbOfAssets);
+                trainValue.setText(String.valueOf(trainSlider.getValue()));
+                testSlider.setMax(nbOfAssets);
+                testValue.setText(String.valueOf(testSlider.getValue()));
+            }
+        } catch (Exception e) {
+            logger.error("There is no asset associated with that asset type", e);
+        }
+
 
         trainSlider.valueProperty().addListener((observableValue, number, t1) -> {
             trainSlider.setValue(t1.intValue());

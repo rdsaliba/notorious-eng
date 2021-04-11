@@ -21,7 +21,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import utilities.services.DeleteAssetTypeSercice;
+import utilities.services.DeleteAssetTypeService;
 
 import java.util.Comparator;
 
@@ -74,15 +74,15 @@ public class CustomDialog extends Stage {
 
     public static void DeleteAssetTypeConfirmationDialogShowAndWait(String assetTypeID, Scene scene,AnchorPane root, AnchorPane bigRoot) {
         CustomDialog dialog = new CustomDialog(DELETE_ASSET_TYPE_DIALOG_HEADER, DELETE_ASSET_TYPE_DIALOG_CONTENT);
-        DeleteAssetTypeSercice deleteAssetTypeSercice = new DeleteAssetTypeSercice(scene, Integer.parseInt(assetTypeID));
+        DeleteAssetTypeService deleteAssetTypeService = new DeleteAssetTypeService(scene, Integer.parseInt(assetTypeID));
         ProgressIndicator progressIndicator = (ProgressIndicator) root.getChildren().get(0);
-        progressIndicator.visibleProperty().bind(deleteAssetTypeSercice.runningProperty());
-        bigRoot.disableProperty().bind(deleteAssetTypeSercice.runningProperty());
+        progressIndicator.visibleProperty().bind(deleteAssetTypeService.runningProperty());
+        bigRoot.disableProperty().bind(deleteAssetTypeService.runningProperty());
         progressIndicator.setPrefHeight(root.getHeight());
         progressIndicator.setPrefWidth(root.getWidth());
         dialog.getOkButton().setOnAction(e -> {
             dialog.closeDialog();
-            deleteAssetTypeSercice.start();
+            deleteAssetTypeService.start();
         });
 
         dialog.openDialog();

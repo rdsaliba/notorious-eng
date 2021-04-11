@@ -10,7 +10,7 @@ import utilities.UIUtilities;
 
 import static utilities.TextConstants.ASSET_TYPE_LIST_SCENE;
 
-public class DeleteAssetTypeSercice extends Service<String> {
+public class DeleteAssetTypeService extends Service<String> {
 
     private final IntegerProperty assetID = new SimpleIntegerProperty();
     private Scene scene;
@@ -19,7 +19,7 @@ public class DeleteAssetTypeSercice extends Service<String> {
     public final void setScene(Scene scene) { this.scene = scene; }
     public final Scene getScene() { return scene; }
 
-    public DeleteAssetTypeSercice(Scene scene, int assetID) {
+    public DeleteAssetTypeService(Scene scene, int assetID) {
         setAssetId(assetID);
         setScene(scene);
     }
