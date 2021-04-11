@@ -91,11 +91,13 @@ public class AssetTypeInfoController extends Controller implements Initializable
     private Label associatedModelLabel;
     @FXML
     private VBox modelParameters;
+    @FXML
+    private AnchorPane root;
+    @FXML
+    private AnchorPane bigRoot;
 
     private ObservableList<TrainedModel> modelObservableList;
     private ObservableList<Pane> modelPaneObservableList;
-    @javafx.fxml.FXML
-    private AnchorPane root;
     private int associatedModelID;
 
     private UIUtilities uiUtilities;
@@ -167,8 +169,10 @@ public class AssetTypeInfoController extends Controller implements Initializable
     public void attachEvents() {
         // Change scenes to Assets.fxml
         backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(ASSET_TYPE_LIST_SCENE, backBtn.getScene()));
-
-        infoDeleteBtn.setOnMouseClicked(mouseEvent -> CustomDialog.DeleteAssetTypeConfirmationDialogShowAndWait(assetType.getId(), infoSaveBtn.getScene()));
+        ProgressIndicator progressIndicator = (ProgressIndicator) root.getChildren().get(0);
+        progressIndicator.setLayoutY(bigRoot.getPrefHeight() / 2);
+        progressIndicator.setLayoutX(bigRoot.getPrefWidth() / 2);
+        infoDeleteBtn.setOnMouseClicked(mouseEvent -> CustomDialog.DeleteAssetTypeConfirmationDialogShowAndWait(root, assetType.getId(), infoSaveBtn.getScene()));
 
         infoSaveBtn.setDisable(true);
         infoSaveBtn.setOnMouseClicked(mouseEvent -> {

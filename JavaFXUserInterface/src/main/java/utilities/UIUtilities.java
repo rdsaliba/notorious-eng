@@ -66,6 +66,7 @@ public class UIUtilities {
     public void changeScene(String fxmlFileName, Scene scene) {
         AnchorPane rootPane = (AnchorPane) scene.getRoot().lookup("root");
         FadeTransition ft = fadeOut(rootPane);
+        ft.play();
         try {
             ((Controller) ((FXMLLoader) scene.getUserData()).getController()).getTimelines().forEach(Timeline::stop);
             FXMLLoader loader = new FXMLLoader();
@@ -76,7 +77,6 @@ public class UIUtilities {
         } catch (IOException e) {
             logger.error("Exception in changeScene(): ", e);
         }
-        ft.play();
     }
 
     /**
@@ -105,6 +105,7 @@ public class UIUtilities {
     public void changeScene(TableRow<AssetTypeList> row, String fxmlFileName, AssetTypeList assetType, Scene scene) {
         AnchorPane rootPane = (AnchorPane) scene.getRoot().lookup("root");
         FadeTransition ft = fadeOut(rootPane);
+        ft.play();
         row.getScene().getWindow();
         try {
             if (!row.isEmpty()) {
@@ -120,7 +121,6 @@ public class UIUtilities {
         } catch (IOException e) {
             logger.error("Exception in changeScene 2: ", e);
         }
-        ft.play();
     }
 
     /**
@@ -134,6 +134,7 @@ public class UIUtilities {
     public void changeScene(String fxmlFileName, Asset asset, Scene scene) {
         AnchorPane rootPane = (AnchorPane) scene.getRoot().lookup("root");
         FadeTransition ft = fadeOut(rootPane);
+        ft.play();
         try {
             ((Controller) ((FXMLLoader) scene.getUserData()).getController()).getTimelines().forEach(Timeline::stop);
             FXMLLoader loader = new FXMLLoader();
@@ -147,7 +148,6 @@ public class UIUtilities {
         } catch (IOException e) {
             logger.error("Exception in changeScene 3: ", e);
         }
-        ft.play();
     }
 
     /**

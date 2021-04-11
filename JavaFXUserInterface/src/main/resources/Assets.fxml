@@ -6,17 +6,14 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 <?import java.net.URL?>
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-            prefHeight="834.0" prefWidth="1194.0" stylesheets="@css/revamp/style.css"
-            xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="controllers.AssetsController">
-
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="834.0"
+            prefWidth="1194.0" stylesheets="@css/revamp/style.css" xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AssetsController">
     <children>
         <fx:include source="Navigation.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0"/>
         <AnchorPane fx:id="root" layoutX="315.0" layoutY="180.0" prefHeight="200.0" prefWidth="808.0"
-                    styleClass="container"
-                    AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="59.0" AnchorPane.rightAnchor="0.0"
-                    AnchorPane.topAnchor="0.0">
+                    styleClass="container" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="59.0"
+                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
                 <Button id="addAssetBtn" fx:id="addAssetBtn" layoutX="860.0" layoutY="25.0" mnemonicParsing="false"
                         prefHeight="45.0" prefWidth="247.0" text="+ Add Asset" AnchorPane.rightAnchor="28.0">
@@ -49,10 +46,7 @@
                                                     AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <content>
                                                 <FlowPane fx:id="assetsThumbPane" hgap="30.0" prefHeight="625.0"
-                                                          prefWidth="1134.0" styleClass="flowPane" vgap="24.0">
-                                                    <children>
-                                                    </children>
-                                                </FlowPane>
+                                                          prefWidth="1134.0" styleClass="flowPane" vgap="24.0"/>
                                             </content>
                                         </ScrollPane>
                                     </children>
@@ -84,8 +78,8 @@
                         <Font name="Segoe UI Semibold" size="20.0"/>
                     </font>
                 </Button>
-                <GridPane fx:id="navList" layoutX="996.0" layoutY="200.0" styleClass="filter"
-                          AnchorPane.rightAnchor="28.0" prefWidth="300.0" translateX="300">
+                <GridPane fx:id="navList" layoutX="996.0" layoutY="200.0" prefWidth="300.0" styleClass="filter"
+                          translateX="300" AnchorPane.rightAnchor="28.0">
                     <children>
                     </children>
                 </GridPane>

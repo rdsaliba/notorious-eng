@@ -96,6 +96,7 @@ public class AssetsController extends Controller implements Initializable {
     private ObservableList<Asset> assets;
     private ObservableList<Asset> searchedAssets;
     private PauseTransition delaySearch;
+    private HashMap<Integer, Image> imagesList;
 
     public AssetsController() {
         assetTypeDAO = new AssetTypeDAOImpl();
@@ -104,8 +105,11 @@ public class AssetsController extends Controller implements Initializable {
         table = new TableView<>();
         assetTypeFilterCondition = new HashMap<>();
         thresholdFilterCondition = new HashMap<>();
+        imagesList = new HashMap<>();
+        //adding the default image
+        imagesList.put(0, new Image("file:JavaFXUserInterface/src/main/resources/imgs/default.png"));
         try {
-            assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets().subList(0, 40));
+            assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
         } catch (Exception e) {
             logger.error("Exception: ", e);
         }
@@ -158,7 +162,6 @@ public class AssetsController extends Controller implements Initializable {
      * @author Jeff
      */
     public void attachEvents() {
-
         // As the window expands or shrinks, asset panes will adjust to the window size accordingly
         assetsThumbPane.widthProperty().addListener((obs, oldVal, newVal) -> {
             double assetFlowWidth = (double) newVal - 54;
@@ -425,6 +428,7 @@ public class AssetsController extends Controller implements Initializable {
             for (Asset asset : assetsDisplayed) {
 
                 Pane pane = new Pane();
+                pane.setCache(true);
                 pane.setOnMouseClicked(event -> uiUtilities.changeScene("/AssetInfo", asset, pane.getScene()));
                 pane.getStyleClass().add("assetPane");
 
@@ -509,18 +513,10 @@ public class AssetsController extends Controller implements Initializable {
     }
 
     private void setImage(Asset asset, BorderPane borderPane) {
-        ImageView imageView;
-        Image image;
+        if (imagesList.get(asset.getImageId()) == null)
+            imagesList.put(asset.getImageId(), assetDAOImpl.findImageById(asset.getImageId()));
 
-        if (asset.getImageId() != 0) {
-            image = assetDAOImpl.findImageById(asset.getImageId());
-
-        } else {
-            //Set default image
-            image = new Image("file:JavaFXUserInterface/src/main/resources/imgs/default.png");
-        }
-
-        imageView = new ImageView(image);
+        ImageView imageView = new ImageView(imagesList.get(asset.getImageId()));
         imageView.setFitWidth(133);
         imageView.setFitHeight(133);
         imageView.setCache(true);

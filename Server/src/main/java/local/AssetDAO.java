@@ -33,6 +33,8 @@ public interface AssetDAO {
 
     Asset createAssetFromQueryResult(ResultSet assetsQuery) throws SQLException;
 
+    Asset createFullAssetFromQueryResult(ResultSet assetsQuery) throws SQLException;
+
     AssetInfo createAssetInfo(int assetID);
 
     void updateRecommendation(int assetID, String recommendation);
