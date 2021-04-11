@@ -64,16 +64,9 @@ public class UIUtilities {
      * @author Jeff
      */
     public void changeScene(String fxmlFileName, Scene scene) {
-        AnchorPane rootPane = (AnchorPane) scene.getRoot().lookup("root");
-        FadeTransition ft = fadeOut(rootPane);
-        ft.play();
+        playFadeTransition(scene);
         try {
-            ((Controller) ((FXMLLoader) scene.getUserData()).getController()).getTimelines().forEach(Timeline::stop);
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource(fxmlFileName + FXML));
-            Parent parent = loader.load();
-            scene.setRoot(parent);
-            scene.setUserData(loader);
+            setSceneAndGetFxmlLoader(fxmlFileName, scene);
         } catch (IOException e) {
             logger.error("Exception in changeScene(): ", e);
         }
@@ -103,18 +96,11 @@ public class UIUtilities {
      * @author Najim, Jeff
      */
     public void changeScene(TableRow<AssetTypeList> row, String fxmlFileName, AssetTypeList assetType, Scene scene) {
-        AnchorPane rootPane = (AnchorPane) scene.getRoot().lookup("root");
-        FadeTransition ft = fadeOut(rootPane);
-        ft.play();
+        playFadeTransition(scene);
         row.getScene().getWindow();
         try {
             if (!row.isEmpty()) {
-                ((Controller) ((FXMLLoader) scene.getUserData()).getController()).getTimelines().forEach(Timeline::stop);
-                FXMLLoader loader = new FXMLLoader();
-                loader.setLocation(getClass().getResource(fxmlFileName + FXML));
-                Parent parent = loader.load();
-                scene.setRoot(parent);
-                scene.setUserData(loader);
+                FXMLLoader loader = setSceneAndGetFxmlLoader(fxmlFileName, scene);
                 AssetTypeInfoController controller = loader.getController();
                 controller.initData(assetType);
             }
@@ -132,16 +118,9 @@ public class UIUtilities {
      * @author Paul, Jeff
      */
     public void changeScene(String fxmlFileName, Asset asset, Scene scene) {
-        AnchorPane rootPane = (AnchorPane) scene.getRoot().lookup("root");
-        FadeTransition ft = fadeOut(rootPane);
-        ft.play();
+        playFadeTransition(scene);
         try {
-            ((Controller) ((FXMLLoader) scene.getUserData()).getController()).getTimelines().forEach(Timeline::stop);
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource(fxmlFileName + FXML));
-            Parent parent = loader.load();
-            scene.setRoot(parent);
-            scene.setUserData(loader);
+            FXMLLoader loader = setSceneAndGetFxmlLoader(fxmlFileName, scene);
             AssetInfoController controller = loader.getController();
             controller.initData(asset);
 
@@ -203,6 +182,36 @@ public class UIUtilities {
         } catch (IOException e) {
             logger.error("Exception in changeScene 4: ", e);
         }
+    }
+
+    /**
+     * Plays a fade transition from a scene to another
+     *
+     * @param scene is the screen that will app will be changed to
+     * @author Paul, Najim
+     */
+    private void playFadeTransition(Scene scene) {
+        AnchorPane rootPane = (AnchorPane) scene.getRoot().lookup("root");
+        FadeTransition ft = fadeOut(rootPane);
+        ft.play();
+    }
+
+    /**
+     * Gets the FXML loader and sets its location. It also sets the root of the scene to be the
+     * fxml loader and set the user data of that scene from the fxml loader
+     *
+     * @param fxmlFileName the name of the fxml file that will be loaded for the scene
+     * @param scene        is the screen that will app will be changed to
+     * @author Paul, Jeff
+     */
+    private FXMLLoader setSceneAndGetFxmlLoader(String fxmlFileName, Scene scene) throws IOException {
+        ((Controller) ((FXMLLoader) scene.getUserData()).getController()).getTimelines().forEach(Timeline::stop);
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource(fxmlFileName + FXML));
+        Parent parent = loader.load();
+        scene.setRoot(parent);
+        scene.setUserData(loader);
+        return loader;
     }
 }
 

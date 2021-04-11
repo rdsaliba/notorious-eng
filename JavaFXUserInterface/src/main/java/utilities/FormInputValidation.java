@@ -16,12 +16,16 @@ import static local.DAO.logger;
 import static utilities.TextConstants.*;
 
 public class FormInputValidation {
-    private final static int INPUT_VALIDATION_H_GAP = 10;
-    private final static int MAX_NB_TEXT_INPUT_CONTROL = 7;
-    private final static Text[] INPUT_VALIDATION_MESSAGES = new Text[MAX_NB_TEXT_INPUT_CONTROL];
+    private static final int INPUT_VALIDATION_H_GAP = 10;
+    private static final int MAX_NB_TEXT_INPUT_CONTROL = 7;
+    private static final Text[] INPUT_VALIDATION_MESSAGES = new Text[MAX_NB_TEXT_INPUT_CONTROL];
     private static final String ERROR_MESSAGE = "error-message";
     private static final String INPUT_ERROR = "input-error";
     private static boolean assetValidForm = true;
+
+    private FormInputValidation() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * This function validates an input of a change on a text field to only allow the change if it fits the DecimalFormat

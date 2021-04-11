@@ -174,7 +174,7 @@ public class AssetTypeInfoController extends Controller implements Initializable
         ProgressIndicator progressIndicator = (ProgressIndicator) root.getChildren().get(0);
         progressIndicator.setLayoutY(bigRoot.getPrefHeight() / 2);
         progressIndicator.setLayoutX(bigRoot.getPrefWidth() / 2);
-        infoDeleteBtn.setOnMouseClicked(mouseEvent -> CustomDialog.DeleteAssetTypeConfirmationDialogShowAndWait(assetType.getId(), infoSaveBtn.getScene(), root, bigRoot));
+        infoDeleteBtn.setOnMouseClicked(mouseEvent -> CustomDialog.deleteAssetTypeConfirmationDialogShowAndWait(assetType.getId(), infoSaveBtn.getScene(), root, bigRoot));
 
         infoSaveBtn.setDisable(true);
         infoSaveBtn.setOnMouseClicked(mouseEvent -> {
@@ -431,7 +431,7 @@ public class AssetTypeInfoController extends Controller implements Initializable
             Pane modelPane = new Pane();
 
             modelPane.setId(model.getModelName());
-            modelPane.getStyleClass().add("thumbnailPane");
+            modelPane.getStyleClass().add(THUMBNAIL_PANE_STYLE_CLASS);
             modelPane.setOnMouseClicked(mouseEvent -> {
                 modelPanes.handleModelSelection(model, modelPane);
                 generateParameters(model, false);
@@ -450,7 +450,7 @@ public class AssetTypeInfoController extends Controller implements Initializable
             Text rmseValue = new Text();
 
             HBox rmsePane = new HBox();
-            rmsePane.getStyleClass().add("valuePane");
+            rmsePane.getStyleClass().add(VALUE_PANE_STYLE_CLASS);
 
             Button evaluateModelBtn = new Button();
             evaluateModelBtn.setText("Evaluate");
@@ -463,10 +463,10 @@ public class AssetTypeInfoController extends Controller implements Initializable
             });
 
             //Setting IDs for the elements
-            modelNameLabel.getStyleClass().add("thumbnailHeader");
+            modelNameLabel.getStyleClass().add(THUMBNAIL_HEADER_STYLE_CLASS);
             modelDescriptionText.setId("modelDescriptionText");
-            rmseLabel.getStyleClass().add("valueLabel");
-            rmseValue.getStyleClass().add("valueText");
+            rmseLabel.getStyleClass().add(VALUE_LABEL_STYLE_CLASS);
+            rmseValue.getStyleClass().add(VALUE_TEXT_STYLE_CLASS);
             SimpleStringProperty s = model.getRMSE();
             rmseValue.textProperty().bind(s);
             evaluateModelBtn.getStyleClass().addAll("btn", "smallFont", "evaluate");
@@ -523,13 +523,13 @@ public class AssetTypeInfoController extends Controller implements Initializable
 
             //make the pane
             Pane pane = new Pane();
-            pane.getStyleClass().add("paramPane");
+            pane.getStyleClass().add(PARAM_PANE_STYLE_CLASS);
             pane.setLayoutX(layoutX);
             pane.setLayoutY(layoutY);
 
             // Make the label itself
             Label paramNameLabel = new Label();
-            paramNameLabel.getStyleClass().add("formLabel");
+            paramNameLabel.getStyleClass().add(FORM_LABEL_STYLE_CLASS);
             paramNameLabel.setText(paramName);
             pane.getChildren().add(paramNameLabel);
 
@@ -539,34 +539,34 @@ public class AssetTypeInfoController extends Controller implements Initializable
                 checkBox.setSelected(((BoolParameter) parameter).getBoolValue());
                 checkBox.setLayoutX(tfLayoutX);
                 checkBox.setLayoutY(0.0);
-                checkBox.selectedProperty().addListener((ov, old_val, new_val) -> ((BoolParameter) params.get(paramName)).setBoolValue(new_val));
+                checkBox.selectedProperty().addListener((ov, oldVal, newVal) -> ((BoolParameter) params.get(paramName)).setBoolValue(newVal));
                 pane.getChildren().addAll(checkBox);
             } else if (parameter instanceof IntParameter) {
                 TextField tf = new TextField();
                 tf.setText(String.valueOf(((IntParameter) parameter).getIntValue()));
-                tf.getStyleClass().add("paramTextField");
+                tf.getStyleClass().add(PARAM_TEXT_FIELD_STYLE_CLASS);
                 tf.setLayoutX(tfLayoutX);
                 tf.setLayoutY(0.0);
-                tf.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(intRegex, c)));
-                tf.textProperty().addListener((ov, old_val, new_val) -> ((IntParameter) params.get(paramName)).setIntValue(Integer.parseInt(new_val)));
+                tf.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(INT_REGEX, c)));
+                tf.textProperty().addListener((ov, oldVal, newVal) -> ((IntParameter) params.get(paramName)).setIntValue(Integer.parseInt(newVal)));
                 pane.getChildren().add(tf);
             } else if (parameter instanceof ListParameter) {
                 ChoiceBox<String> listBox = new ChoiceBox<>();
                 listBox.setItems(FXCollections.observableArrayList(((ListParameter) parameter).getListValues()));
                 listBox.setValue(((ListParameter) parameter).getSelectedValue());
-                listBox.getStyleClass().add("paramTextField");
+                listBox.getStyleClass().add(PARAM_TEXT_FIELD_STYLE_CLASS);
                 listBox.setLayoutX(tfLayoutX);
                 listBox.setLayoutY(0.0);
-                listBox.getSelectionModel().selectedItemProperty().addListener((ov, old_val, new_val) -> ((ListParameter) params.get(paramName)).setSelectedValue(new_val));
+                listBox.getSelectionModel().selectedItemProperty().addListener((ov, oldVal, newVal) -> ((ListParameter) params.get(paramName)).setSelectedValue(newVal));
                 pane.getChildren().add(listBox);
             } else if (parameter instanceof FloatParameter) {
                 TextField tf = new TextField();
                 tf.setText(String.valueOf(((FloatParameter) parameter).getFloatValue()));
-                tf.getStyleClass().add("paramTextField");
+                tf.getStyleClass().add(PARAM_TEXT_FIELD_STYLE_CLASS);
                 tf.setLayoutX(tfLayoutX);
                 tf.setLayoutY(0.0);
-                tf.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(floatRegex, c)));
-                tf.textProperty().addListener((ov, old_val, new_val) -> ((FloatParameter) params.get(paramName)).setFloatValue(Float.parseFloat(new_val)));
+                tf.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(FLOAT_REGEX, c)));
+                tf.textProperty().addListener((ov, oldVal, newVal) -> ((FloatParameter) params.get(paramName)).setFloatValue(Float.parseFloat(newVal)));
                 pane.getChildren().add(tf);
             }
             modelParameters.getChildren().add(pane);

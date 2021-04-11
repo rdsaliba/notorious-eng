@@ -44,6 +44,8 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static utilities.TextConstants.*;
+
 public class AssetsController extends Controller implements Initializable {
 
     private static final String SORT_DEFAULT = "Order";
@@ -67,6 +69,7 @@ public class AssetsController extends Controller implements Initializable {
     private final TableView<Asset> table;
     private final HashMap<String, Boolean> assetTypeFilterCondition;
     private final HashMap<String, Boolean> thresholdFilterCondition;
+    private final HashMap<Integer, Image> imagesList;
     Logger logger = LoggerFactory.getLogger(AssetsController.class);
     @FXML
     private Button addAssetBtn;
@@ -91,12 +94,10 @@ public class AssetsController extends Controller implements Initializable {
     private String searchMatch = "No Search"; // search states to help display the right asset list: No Search / Match / No Match
     @FXML
     private AnchorPane root;
-
     private UIUtilities uiUtilities;
     private ObservableList<Asset> assets;
     private ObservableList<Asset> searchedAssets;
-    private PauseTransition delaySearch;
-    private HashMap<Integer, Image> imagesList;
+    private ObservableList<Asset> sortedAssets;
 
     public AssetsController() {
         assetTypeDAO = new AssetTypeDAOImpl();
@@ -315,37 +316,27 @@ public class AssetsController extends Controller implements Initializable {
         //Listener on the sort ChoiceBox. Depending on the sort selected, all systems panes are cleared and generated again
         //with the appropriate sort applied.
         sortAsset.getSelectionModel().selectedItemProperty().addListener((observableValue, oldValue, newValue) -> {
-            if (!oldValue.equals(newValue)) {
+            if (!search.getText().trim().isEmpty()) {
+                sortedAssets = searchedAssets;
+            } else {
+                sortedAssets = assets;
+            }
+            if (!oldValue.equals(newValue) && !sortedAssets.isEmpty()) {
                 switch (newValue) {
                     case SORT_DEFAULT:
-                        FXCollections.sort(assets, Comparator.comparingInt(Item::getId));
-                        if (!search.getText().trim().isEmpty() && !searchedAssets.isEmpty()) {
-                            FXCollections.sort(searchedAssets, Comparator.comparingInt(Item::getId));
-                        }
+                        FXCollections.sort(sortedAssets, Comparator.comparingInt(Item::getId));
                         break;
                     case SORT_RUL_ASC:
-                        FXCollections.sort(assets, Comparator.comparing(asset -> Double.valueOf(asset.getRul().getValue())));
-                        if (!search.getText().trim().isEmpty() && !searchedAssets.isEmpty()) {
-                            FXCollections.sort(searchedAssets, Comparator.comparing(asset -> Double.valueOf(asset.getRul().getValue())));
-                        }
+                        FXCollections.sort(sortedAssets, Comparator.comparing(asset -> Double.valueOf(asset.getRul().getValue())));
                         break;
                     case SORT_RUL_DESC:
-                        FXCollections.sort(assets, (asset, t1) -> Double.valueOf(t1.getRul().getValue()).compareTo(Double.valueOf(asset.getRul().getValue())));
-                        if (!search.getText().trim().isEmpty() && !searchedAssets.isEmpty()) {
-                            FXCollections.sort(searchedAssets, (asset, t1) -> Double.valueOf(t1.getRul().getValue()).compareTo(Double.valueOf(asset.getRul().getValue())));
-                        }
+                        FXCollections.sort(sortedAssets, (asset, t1) -> Double.valueOf(t1.getRul().getValue()).compareTo(Double.valueOf(asset.getRul().getValue())));
                         break;
                     case SORT_CRITICAL_ASC:
-                        FXCollections.sort(assets, Comparator.comparingInt(Asset::mapCriticality));
-                        if (!search.getText().trim().isEmpty() && !searchedAssets.isEmpty()) {
-                            FXCollections.sort(searchedAssets, Comparator.comparingInt(Asset::mapCriticality));
-                        }
+                        FXCollections.sort(sortedAssets, Comparator.comparingInt(Asset::mapCriticality));
                         break;
                     case SORT_CRITICAL_DESC:
-                        FXCollections.sort(assets, (asset, t1) -> Integer.compare(t1.mapCriticality(), asset.mapCriticality()));
-                        if (!search.getText().trim().isEmpty() && !searchedAssets.isEmpty()) {
-                            FXCollections.sort(searchedAssets, (asset, t1) -> Integer.compare(t1.mapCriticality(), asset.mapCriticality()));
-                        }
+                        FXCollections.sort(sortedAssets, (asset, t1) -> Integer.compare(t1.mapCriticality(), asset.mapCriticality()));
                         break;
                     default:
                         break;
@@ -365,7 +356,7 @@ public class AssetsController extends Controller implements Initializable {
      */
     private void searchAssets() {
         searchedAssets = FXCollections.observableArrayList();
-        delaySearch = new PauseTransition(Duration.seconds(0.25));
+        PauseTransition delaySearch = new PauseTransition(Duration.seconds(0.25));
         search.textProperty().addListener((observable, oldValue, newValue) -> {
             delaySearch.setOnFinished(event -> {
                 searchedAssets.clear();
@@ -429,14 +420,14 @@ public class AssetsController extends Controller implements Initializable {
 
                 Pane pane = new Pane();
                 pane.setCache(true);
-                pane.setOnMouseClicked(event -> uiUtilities.changeScene("/AssetInfo", asset, pane.getScene()));
-                pane.getStyleClass().add("thumbnailPane");
+                pane.setOnMouseClicked(event -> uiUtilities.changeScene(ASSET_INFO_SCENE, asset, pane.getScene()));
+                pane.getStyleClass().add(THUMBNAIL_PANE_STYLE_CLASS);
 
                 Pane imagePlaceholder = new Pane();
-                imagePlaceholder.getStyleClass().add("imagePlaceholder");
+                imagePlaceholder.getStyleClass().add(IMAGE_STYLE_CLASS);
 
                 BorderPane borderPane = new BorderPane();
-                borderPane.getStyleClass().add("borderPane");
+                borderPane.getStyleClass().add(IMAGE_STYLE_CLASS);
 
                 setImage(asset, borderPane);
 
@@ -454,14 +445,14 @@ public class AssetsController extends Controller implements Initializable {
                 SimpleStringProperty s = asset.getRul();
                 rulValue.textProperty().bind(s);
 
-                assetName.getStyleClass().add("thumbnailHeader");
-                assetType.getStyleClass().add("thumbnailSubHeader");
-                rulLabel.getStyleClass().add("valueLabel");
-                rulValue.getStyleClass().add("valueText");
-                recommendationLabel.getStyleClass().add("valueLabel");
-                recommendation.getStyleClass().add("valueText");
-                rulPane.getStyleClass().addAll("valuePane", "none");
-                statusPane.getStyleClass().add("valuePane");
+                assetName.getStyleClass().add(THUMBNAIL_HEADER_STYLE_CLASS);
+                assetType.getStyleClass().add(THUMBNAIL_SUB_HEADER_STYLE_CLASS);
+                rulLabel.getStyleClass().add(VALUE_LABEL_STYLE_CLASS);
+                rulValue.getStyleClass().add(VALUE_TEXT_STYLE_CLASS);
+                recommendationLabel.getStyleClass().add(VALUE_LABEL_STYLE_CLASS);
+                recommendation.getStyleClass().add(VALUE_TEXT_STYLE_CLASS);
+                rulPane.getStyleClass().addAll(VALUE_PANE_STYLE_CLASS, "none");
+                statusPane.getStyleClass().add(VALUE_PANE_STYLE_CLASS);
                 statusPane.getStyleClass().add(asset.getRecommendation().toLowerCase());
 
                 assetName.setLayoutX(15.0);
@@ -496,10 +487,10 @@ public class AssetsController extends Controller implements Initializable {
             assetsFlowPane.getChildren().addAll(boxes);
         } else {
             Text noResult = new Text("No results found");
-            noResult.getStyleClass().add("noResult");
+            noResult.getStyleClass().add(NO_RESULT_STYLE_CLASS);
 
             HBox noResultPane = new HBox();
-            noResultPane.getStyleClass().add("noResultPane");
+            noResultPane.getStyleClass().add(NO_RESULT_PANE_STYLE_CLASS);
             noResultPane.setAlignment(Pos.CENTER);
             noResultPane.getChildren().add(noResult);
 
@@ -529,7 +520,7 @@ public class AssetsController extends Controller implements Initializable {
         // When TableRow is clicked, send data to AssetInfo scene.
         table.setRowFactory(tv -> {
             TableRow<Asset> row = new TableRow<>();
-            row.setOnMouseClicked(event -> uiUtilities.changeScene(row, "/AssetInfo", row.getItem(), row.getScene()));
+            row.setOnMouseClicked(event -> uiUtilities.changeScene(row, ASSET_INFO_SCENE, row.getItem(), row.getScene()));
             return row;
         });
 
@@ -553,6 +544,7 @@ public class AssetsController extends Controller implements Initializable {
         recommendationCol.setCellValueFactory(
                 new PropertyValueFactory<>("recommendation"));
         recommendationCol.setCellFactory(column -> new TableCell<>() {
+            @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
 

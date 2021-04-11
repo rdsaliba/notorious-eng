@@ -3,6 +3,7 @@ package controllers;
 import javafx.animation.Timeline;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Controller {
     private final ArrayList<Timeline> timelines;
@@ -11,7 +12,7 @@ public class Controller {
         timelines = new ArrayList<>();
     }
 
-    public ArrayList<Timeline> getTimelines() {
+    public List<Timeline> getTimelines() {
         return timelines;
     }
 
