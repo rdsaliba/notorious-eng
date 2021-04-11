@@ -130,43 +130,33 @@ public class AssetTypeController extends Controller implements Initializable {
             for (AssetTypeList assetType : assetTypeList) {
                 Pane pane = new Pane();
                 pane.setOnMouseClicked(event -> uiUtilities.changeScene("/AssetTypeInfo", assetType, pane.getScene()));
-                pane.getStyleClass().add("assetTypePane");
+                pane.getStyleClass().add("thumbnailPane");
 
                 Text assetTypeName = new Text(assetType.getName());
-                assetTypeName.getStyleClass().add("assetTypeName");
+                assetTypeName.getStyleClass().add("thumbnailHeader");
                 Label okLabel = new Label(TextConstants.OK_THRESHOLD);
-                okLabel.getStyleClass().add("thumbLabel");
+                okLabel.getStyleClass().add("valueLabel");
                 Label advisoryLabel = new Label(TextConstants.ADVISORY_THRESHOLD);
-                advisoryLabel.getStyleClass().add("thumbLabel");
+                advisoryLabel.getStyleClass().add("valueLabel");
                 Label cautionLabel = new Label(TextConstants.CAUTION_THRESHOLD);
-                cautionLabel.getStyleClass().add("thumbLabel");
+                cautionLabel.getStyleClass().add("valueLabel");
                 Label warningLabel = new Label(TextConstants.WARNING_THRESHOLD);
-                warningLabel.getStyleClass().add("thumbLabel");
+                warningLabel.getStyleClass().add("valueLabel");
                 Label failedLabel = new Label(TextConstants.FAILED_THRESHOLD);
-                failedLabel.getStyleClass().add("thumbLabel");
+                failedLabel.getStyleClass().add("valueLabel");
                 Label nbOfAssets = new Label(TextConstants.NB_OF_ASSETS);
-                nbOfAssets.getStyleClass().add("thumbLabel");
+                nbOfAssets.getStyleClass().add("valueLabel");
 
                 HBox okBox = new HBox();
-                okBox.getStyleClass().add("okBox");
-                okBox.getStyleClass().add("ok");
-                okBox.setAlignment(Pos.CENTER);
+                okBox.getStyleClass().addAll("valuePane", "skinny", "ok");
                 HBox advisoryBox = new HBox();
-                advisoryBox.getStyleClass().add("advisoryBox");
-                advisoryBox.getStyleClass().add("advisory");
-                advisoryBox.setAlignment(Pos.CENTER);
+                advisoryBox.getStyleClass().addAll("valuePane", "skinny", "advisory");
                 HBox cautionBox = new HBox();
-                cautionBox.getStyleClass().add("cautionBox");
-                cautionBox.getStyleClass().add("caution");
-                cautionBox.setAlignment(Pos.CENTER);
+                cautionBox.getStyleClass().addAll("valuePane", "skinny", "caution");
                 HBox warningBox = new HBox();
-                warningBox.getStyleClass().add("warningBox");
-                warningBox.getStyleClass().add("warning");
-                warningBox.setAlignment(Pos.CENTER);
+                warningBox.getStyleClass().addAll("valuePane", "skinny", "warning");
                 HBox failedBox = new HBox();
-                failedBox.getStyleClass().add("failedBox");
-                failedBox.getStyleClass().add("failed");
-                failedBox.setAlignment(Pos.CENTER);
+                failedBox.getStyleClass().addAll("valuePane", "skinny", "failed");
                 Text okAssets = new Text(String.valueOf(assetType.getCountOk()));
                 Text advisoryAssets = new Text(String.valueOf(assetType.getCountAdvisory()));
                 Text cautionAssets = new Text(String.valueOf(assetType.getCountCaution()));
@@ -255,9 +245,14 @@ public class AssetTypeController extends Controller implements Initializable {
      */
     public void thumbnailResponsiveness(Number width) {
         double assetTypeFlowWidth = (double) width - PADDING;
-        if(assetsTypeThumbPane.getChildren().size() < 6) {
+        if (assetsTypeThumbPane.getChildren().size() < 6) {
             int nbOfPanes = assetsTypeThumbPane.getChildren().size();
-            assetTypeFlowWidth = assetTypeFlowWidth - (THUMBNAIL_WIDTH * nbOfPanes);
+            if((nbOfPanes * THUMBNAIL_WIDTH) < (double)width)
+                assetTypeFlowWidth = assetTypeFlowWidth - (THUMBNAIL_WIDTH * nbOfPanes);
+            else {
+                nbOfPanes = (int) (assetTypeFlowWidth / THUMBNAIL_WIDTH);
+                assetTypeFlowWidth = (assetTypeFlowWidth % THUMBNAIL_WIDTH);
+            }
             assetTypeFlowWidth = assetTypeFlowWidth / (nbOfPanes - 1);
             assetsTypeThumbPane.setHgap(assetTypeFlowWidth);
         } else {

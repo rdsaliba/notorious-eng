@@ -1,0 +1,36 @@
+.titleBar {
+    -fx-border-color: transparent !important;
+}
+
+.infoLabel {
+    -fx-fill: #828282;
+}
+
+#assetInfoTab {
+    -fx-background-color: #F1F1F1;
+    -fx-border-width: 1px;
+    -fx-border-color: #D3D3D3 transparent transparent transparent;
+}
+
+#assetInfoPane {
+    -fx-background-color: #FFFFFF;
+    -fx-border-radius: 2px;
+}
+
+.attributePane {
+    -fx-background-color: #FFFFFF;
+    -fx-border-radius: 2px;
+    -fx-background-radius: 2px;
+    -fx-pref-width: 247px;
+    -fx-pref-height: 196px;
+}
+
+.attributeName {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-fill: #3A3A3A;
+}
+
+.default-color0.chart-series-line {
+    -fx-stroke: #EE6352;
+}

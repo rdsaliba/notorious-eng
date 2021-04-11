@@ -409,7 +409,7 @@ public class AssetTypeInfoController extends Controller implements Initializable
         for (TrainedModel model : modelObservableList) {
             // Creating a Thumbnail element
             Pane modelPane = new Pane();
-            modelPane.getStyleClass().add("modelPane");
+            modelPane.getStyleClass().add("thumbnailPane");
             modelPane.setOnMouseClicked(mouseEvent -> {
                 modelPanes.handleModelSelection(model, modelPane);
                 generateParameters(model, false);
@@ -422,8 +422,7 @@ public class AssetTypeInfoController extends Controller implements Initializable
             Text rmseValue = new Text();
 
             HBox rmsePane = new HBox();
-            rmsePane.getStyleClass().add("rmsePane");
-            rmsePane.setAlignment(Pos.CENTER);
+            rmsePane.getStyleClass().add("valuePane");
 
             Button evaluateModelBtn = new Button();
             evaluateModelBtn.setText("Evaluate");
@@ -432,13 +431,13 @@ public class AssetTypeInfoController extends Controller implements Initializable
             evaluateModelBtn.setOnMouseClicked(mouseEvent -> saveModelToEvaluate(model));
 
             //Setting IDs for the elements
-            modelNameLabel.getStyleClass().add("modelName");
+            modelNameLabel.getStyleClass().add("thumbnailHeader");
             modelDescriptionText.setId("modelDescriptionText");
-            rmseLabel.getStyleClass().add("rmseLabel");
-            rmseValue.getStyleClass().add("rmseValue");
+            rmseLabel.getStyleClass().add("valueLabel");
+            rmseValue.getStyleClass().add("valueText");
             SimpleStringProperty s = model.getRMSE();
             rmseValue.textProperty().bind(s);
-            evaluateModelBtn.getStyleClass().add("selectBtn");
+            evaluateModelBtn.getStyleClass().addAll("btn", "smallFont", "evaluate");
 
             //Setting the Layout of the elements
             modelNameLabel.setLayoutX(15.0);
@@ -495,7 +494,7 @@ public class AssetTypeInfoController extends Controller implements Initializable
 
             // Make the label itself
             Label paramNameLabel = new Label();
-            paramNameLabel.getStyleClass().add("paramLabel");
+            paramNameLabel.getStyleClass().add("formLabel");
             paramNameLabel.setText(paramName);
             pane.getChildren().add(paramNameLabel);
 

@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 <?import java.net.URL?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+<AnchorPane styleClass="root" xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity"
+            maxWidth="-Infinity" minHeight="-Infinity"
             minWidth="-Infinity"
             prefHeight="834.0" prefWidth="1194.0" xmlns="http://javafx.com/javafx/11.0.1"
             fx:controller="controllers.AssetTypeInfoController">
@@ -20,8 +19,8 @@
                 <AnchorPane prefHeight="80.0" prefWidth="952.0" styleClass="titleBar" AnchorPane.leftAnchor="0.0"
                             AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <children>
-                        <Button fx:id="backBtn" layoutX="15.0" layoutY="17.0" mnemonicParsing="false"
-                                style="-fx-background-color: transparent;" textFill="TRANSPARENT">
+                        <Button fx:id="backBtn" styleClass="backBtn" layoutX="15.0" layoutY="17.0"
+                                mnemonicParsing="false">
                             <graphic>
                                 <ImageView fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
                                     <image>
@@ -30,22 +29,11 @@
                                 </ImageView>
                             </graphic>
                         </Button>
-                        <Text fx:id="title" fill="#0c072e" layoutX="62.0" layoutY="51.0" strokeType="OUTSIDE"
-                              strokeWidth="0.0" styleClass="header" text="Edit Asset Type">
-                            <font>
-                                <Font name="Segoe UI Bold" size="18.0"/>
-                            </font>
-                        </Text>
-                        <Button id="deleteBtn" fx:id="infoDeleteBtn" layoutX="860.0" layoutY="18.0"
-                                mnemonicParsing="false" prefHeight="45.0" prefWidth="247.0" text="Delete"
-                                textFill="WHITE" AnchorPane.rightAnchor="28.0">
-                            <font>
-                                <Font name="Segoe UI Semibold" size="20.0"/>
-                            </font>
-                            <padding>
-                                <Insets bottom="5.0" left="15.0" right="15.0" top="5.0"/>
-                            </padding>
-                        </Button>
+                        <Text fx:id="title" layoutX="62.0" layoutY="51.0" strokeType="OUTSIDE"
+                              strokeWidth="0.0" styleClass="header" text="Edit Asset Type"/>
+                        <Button styleClass="btn, red" fx:id="infoDeleteBtn" layoutX="860.0" layoutY="18.0"
+                                mnemonicParsing="false" text="Delete"
+                                AnchorPane.rightAnchor="28.0"/>
                     </children>
                 </AnchorPane>
                 <AnchorPane layoutX="14.0" layoutY="104.0" prefHeight="42.0" prefWidth="952.0"
@@ -56,9 +44,9 @@
                                  AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
                                  AnchorPane.topAnchor="0.0">
                             <tabs>
-                                <Tab fx:id="infoTab" text="Information">
+                                <Tab id="infoTab" text="Information">
                                     <content>
-                                        <AnchorPane id="assetTypeInfoTab" minHeight="0.0" minWidth="0.0"
+                                        <AnchorPane styleClass="thumbnailContainer" minHeight="0.0" minWidth="0.0"
                                                     prefHeight="382.0" prefWidth="945.0">
                                             <children>
                                                 <AnchorPane fx:id="assetTypeInformationAnchorPane" layoutX="26.0"
@@ -70,84 +58,48 @@
                                                                 styleClass="panelTitleBar" AnchorPane.leftAnchor="0.0"
                                                                 AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                         <children>
-                                                            <Text fill="#0c072e" layoutX="26.0" layoutY="32.0"
+                                                            <Text layoutX="26.0" layoutY="32.0"
                                                                   strokeType="OUTSIDE" strokeWidth="0.0"
-                                                                  styleClass="panelTitle" text="Asset Type Information">
-                                                                <font>
-                                                                    <Font name="Segoe UI Bold" size="16.0"/>
-                                                                </font>
-                                                            </Text>
+                                                                  styleClass="panelTitle"
+                                                                  text="Asset Type Information"/>
                                                         </children>
                                                     </AnchorPane>
                                                     <Text layoutX="43.0" layoutY="93.0" strokeType="OUTSIDE"
                                                           strokeWidth="0.0" styleClass="formLabel"
-                                                          text="Asset Type Name">
-                                                        <font>
-                                                            <Font name="Segoe UI" size="14.0"/>
-                                                        </font>
-                                                    </Text>
+                                                          text="Asset Type Name"/>
                                                     <TextField fx:id="assetTypeName" layoutX="233.0" layoutY="67.0"
                                                                prefHeight="40.0" prefWidth="350.0"/>
                                                     <Text layoutX="43.0" layoutY="145.0" strokeType="OUTSIDE"
                                                           strokeWidth="0.0" styleClass="formLabel"
-                                                          text="Asset Type Description">
-                                                        <font>
-                                                            <Font name="Segoe UI Bold" size="14.0"/>
-                                                        </font>
-                                                    </Text>
+                                                          text="Asset Type Description"/>
                                                     <TextArea fx:id="assetTypeDescription" layoutX="233.0"
                                                               layoutY="119.0"
                                                               prefHeight="105.0" prefWidth="350.0"/>
                                                     <Text layoutX="43.0" layoutY="262.0" strokeType="OUTSIDE"
                                                           strokeWidth="0.0" styleClass="formLabel"
-                                                          text="Associated RUL Model">
-                                                        <font>
-                                                            <Font name="Segoe UI Bold" size="14.0"/>
-                                                        </font>
-                                                    </Text>
+                                                          text="Associated RUL Model"/>
                                                     <Label fx:id="associatedModelLabel" layoutX="233.0" layoutY="247.0"
                                                            prefHeight="18.0" prefWidth="349.0" styleClass="formLabel"
-                                                           text="Associated Model Name" textFill="#3a3a3a">
-                                                        <font>
-                                                            <Font name="Segoe UI" size="14.0"/>
-                                                        </font>
-                                                    </Label>
+                                                           text="Associated Model Name"/>
                                                     <Text layoutX="43.0" layoutY="314.0" strokeType="OUTSIDE"
                                                           strokeWidth="0.0" styleClass="formLabel"
-                                                          text="Threshold: Advisory">
-                                                        <font>
-                                                            <Font name="Segoe UI Bold" size="14.0"/>
-                                                        </font>
-                                                    </Text>
+                                                          text="Threshold: Advisory"/>
                                                     <TextField fx:id="thresholdAdvisory" layoutX="233.0" layoutY="288.0"
                                                                prefHeight="40.0" prefWidth="350.0"/>
                                                     <Text layoutX="43.0" layoutY="366.0" strokeType="OUTSIDE"
                                                           strokeWidth="0.0" styleClass="formLabel"
-                                                          text="Threshold: Caution">
-
-                                                        <font>
-                                                            <Font name="Segoe UI Bold" size="14.0"/>
-                                                        </font>
-                                                    </Text>
+                                                          text="Threshold: Caution"/>
                                                     <TextField fx:id="thresholdCaution" layoutX="233.0" layoutY="340.0"
                                                                prefHeight="40.0" prefWidth="350.0"
                                                                AnchorPane.leftAnchor="233.0"/>
                                                     <Text layoutX="43.0" layoutY="418.0" strokeType="OUTSIDE"
                                                           strokeWidth="0.0" styleClass="formLabel"
-                                                          text="Threshold: Warning">
-                                                        <font>
-                                                            <Font name="Segoe UI Bold" size="14.0"/>
-                                                        </font>
-                                                    </Text>
+                                                          text="Threshold: Warning"/>
                                                     <TextField fx:id="thresholdWarning" layoutX="233.0" layoutY="392.0"
                                                                prefHeight="40.0" prefWidth="350.0"/>
                                                     <Text layoutX="43.0" layoutY="470.0" strokeType="OUTSIDE"
                                                           strokeWidth="0.0" styleClass="formLabel"
-                                                          text="Threshold: Failed">
-                                                        <font>
-                                                            <Font name="Segoe UI Bold" size="14.0"/>
-                                                        </font>
-                                                    </Text>
+                                                          text="Threshold: Failed"/>
                                                     <TextField fx:id="thresholdFailed" layoutX="233.0" layoutY="444.0"
                                                                prefHeight="40.0" prefWidth="350.0"/>
                                                 </AnchorPane>
@@ -156,13 +108,10 @@
                                                             AnchorPane.rightAnchor="0.0">
                                                     <children>
                                                         <Button fx:id="infoSaveBtn" layoutX="963.0" layoutY="15.0"
-                                                                mnemonicParsing="false" styleClass="saveBtn" text="Save"
-                                                                textFill="WHITE" AnchorPane.bottomAnchor="15.0"
-                                                                AnchorPane.rightAnchor="26.0">
-                                                            <font>
-                                                                <Font name="Segoe UI Semibold" size="20.0"/>
-                                                            </font>
-                                                        </Button>
+                                                                mnemonicParsing="false" styleClass="btn, small, green"
+                                                                text="Save"
+                                                                AnchorPane.bottomAnchor="15.0"
+                                                                AnchorPane.rightAnchor="26.0"/>
                                                     </children>
                                                 </AnchorPane>
                                             </children>
@@ -171,9 +120,9 @@
                                 </Tab>
                                 <Tab fx:id="modelTab" text="Models">
                                     <content>
-                                        <AnchorPane fx:id="assetTypeModel" layoutX="0.0" layoutY="89.0"
+                                        <AnchorPane id="assetTypeModel" styleClass="thumbnailContainer, background"
+                                                    layoutX="0.0" layoutY="89.0"
                                                     prefHeight="416.0" prefWidth="867.0"
-                                                    style="-fx-background-color: #FFFFFF; -fx-border-color: #F0F0F0;"
                                                     AnchorPane.leftAnchor="42.0" AnchorPane.rightAnchor="42.0">
                                             <Slider fx:id="trainSlider" layoutX="26.0" layoutY="60.0" prefHeight="16.0"
                                                     prefWidth="217.0" showTickLabels="true"/>
@@ -184,7 +133,7 @@
                                             <Label fx:id="trainValue" layoutX="279.0" layoutY="60.0" text="Label"/>
                                             <Label fx:id="testValue" layoutX="658.0" layoutY="57.0" text="Label"/>
                                             <AnchorPane layoutX="4.0" layoutY="114.0" prefHeight="54.0"
-                                                        prefWidth="1135.0" styleClass="selectModelHeaderPane"
+                                                        prefWidth="1135.0" styleClass="titleBar, topBotBorder"
                                                         AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                                 <children>
                                                     <Label layoutX="28.0" layoutY="16.0" styleClass="panelTitle"
@@ -193,7 +142,7 @@
                                                            text="Parameters" AnchorPane.rightAnchor="433.0"/>
                                                 </children>
                                             </AnchorPane>
-                                            <ScrollPane fx:id="modelScrollPane" fitToHeight="true" fitToWidth="true"
+                                            <ScrollPane id="modelScrollPane" fitToHeight="true" fitToWidth="true"
                                                         hbarPolicy="NEVER" layoutX="2.0" layoutY="169.0"
                                                         prefHeight="545.0" prefWidth="565.0" styleClass="scrollPane"
                                                         AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
@@ -204,12 +153,12 @@
                                                               vgap="10.0"/>
                                                 </content>
                                             </ScrollPane>
-                                            <AnchorPane fx:id="parameterContainer" layoutX="565.0" layoutY="170.0"
+                                            <AnchorPane id="parameterContainer" layoutX="565.0" layoutY="170.0"
                                                         prefHeight="464.0" prefWidth="568.0"
                                                         styleClass="parametersContainer" AnchorPane.bottomAnchor="81.0"
                                                         AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="167.0">
                                                 <children>
-                                                    <ScrollPane fx:id="parameterScrollPane" fitToHeight="true"
+                                                    <ScrollPane id="parameterScrollPane" fitToHeight="true"
                                                                 fitToWidth="true" hbarPolicy="NEVER" prefHeight="466.0"
                                                                 prefWidth="571.0" styleClass="parametersScrollPane"
                                                                 AnchorPane.bottomAnchor="0.0"
@@ -222,42 +171,26 @@
                                                     </ScrollPane>
                                                 </children>
                                             </AnchorPane>
-                                            <Button fx:id="evaluateAllModelsBtn" layoutX="861.0" layoutY="37.0"
-                                                    mnemonicParsing="false" prefHeight="45.0" prefWidth="247.0"
-                                                    text="Evaluate All" textFill="WHITE" AnchorPane.rightAnchor="26.0"
-                                                    AnchorPane.topAnchor="37.0">
-                                                <font>
-                                                    <Font name="Segoe UI Semibold" size="20.0"/>
-                                                </font>
-                                                <padding>
-                                                    <Insets bottom="5.0" left="15.0" right="15.0" top="5.0"/>
-                                                </padding>
-                                            </Button>
+                                            <Button fx:id="evaluateAllModelsBtn" styleClass="btn, blue" layoutX="861.0"
+                                                    layoutY="37.0"
+                                                    mnemonicParsing="false"
+                                                    text="Evaluate All" AnchorPane.rightAnchor="26.0"
+                                                    AnchorPane.topAnchor="37.0"/>
                                             <AnchorPane layoutX="565.0" prefHeight="80.0" prefWidth="570.0"
                                                         styleClass="footerBar" AnchorPane.bottomAnchor="0.0"
                                                         AnchorPane.rightAnchor="0.0">
                                                 <children>
                                                     <Button fx:id="modelSaveBtn" layoutX="799.0" layoutY="15.0"
-                                                            mnemonicParsing="false" styleClass="saveBtn" text="Save"
-                                                            textFill="WHITE" AnchorPane.bottomAnchor="15.0"
-                                                            AnchorPane.rightAnchor="26.0">
-                                                        <font>
-                                                            <Font name="Segoe UI Semibold" size="20.0"/>
-                                                        </font>
-                                                    </Button>
+                                                            mnemonicParsing="false" styleClass="btn, small, green"
+                                                            text="Save"
+                                                            AnchorPane.bottomAnchor="15.0"
+                                                            AnchorPane.rightAnchor="26.0"/>
                                                     <Button fx:id="resetBtn" layoutX="247.0" layoutY="21.0"
-                                                            mnemonicParsing="false" styleClass="resetBtn" text="Reset">
-                                                        <font>
-                                                            <Font name="Segoe UI Semibold" size="20.0"/>
-                                                        </font>
-                                                    </Button>
+                                                            mnemonicParsing="false" styleClass="btn, small"
+                                                            text="Reset"/>
                                                     <Button fx:id="modelDefaultBtn" layoutX="92.0" layoutY="21.0"
-                                                            mnemonicParsing="false" styleClass="defaultBtn"
-                                                            text="Default">
-                                                        <font>
-                                                            <Font name="Segoe UI Semibold" size="20.0"/>
-                                                        </font>
-                                                    </Button>
+                                                            mnemonicParsing="false" styleClass="btn, small"
+                                                            text="Default"/>
                                                 </children>
                                             </AnchorPane>
                                         </AnchorPane>
@@ -271,7 +204,9 @@
         </AnchorPane>
     </children>
     <stylesheets>
-        <URL value="@css/revamp/assetTypeInfo.css"/>
-        <URL value="@css/revamp/style.css"/>
+        <URL value="@css/style.css"/>
+        <URL value="@css/assetTypeInfo.css"/>
+        <URL value="@css/tabs.css"/>
+        <URL value="@css/buttons.css"/>
     </stylesheets>
 </AnchorPane>
