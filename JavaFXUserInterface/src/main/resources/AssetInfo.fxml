@@ -46,7 +46,7 @@
                                  AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
                                  AnchorPane.topAnchor="0.0">
                             <tabs>
-                                <Tab fx:id="informationTab" text="Information">
+                                <Tab text="Information">
                                     <content>
                                         <AnchorPane id="assetInfoTab" minHeight="0.0" minWidth="0.0" prefHeight="382.0"
                                                     prefWidth="945.0">
@@ -55,26 +55,26 @@
                                                             prefWidth="1127.0" AnchorPane.leftAnchor="26.0"
                                                             AnchorPane.rightAnchor="26.0" AnchorPane.topAnchor="26.0">
                                                     <children>
-                                                        <Text fx:id="assetTypeLabel" fill="#828282" layoutX="15.0"
+                                                        <Text styleClass="infoLabel" layoutX="15.0"
                                                               layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0"
                                                               text="Asset Type:" textAlignment="RIGHT"
                                                               wrappingWidth="90.0"/>
-                                                        <Text fx:id="serialNumber" fill="#828282" layoutX="15.0"
+                                                        <Text styleClass="infoLabel" layoutX="15.0"
                                                               layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0"
                                                               text="Serial Number:" textAlignment="RIGHT"
                                                               wrappingWidth="90.0"/>
-                                                        <Text fx:id="manufacturer" fill="#828282" layoutX="312.0"
+                                                        <Text styleClass="infoLabel" layoutX="312.0"
                                                               layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0"
                                                               text="Manufacturer:" textAlignment="RIGHT"
                                                               wrappingWidth="90.0"/>
-                                                        <Text fx:id="assetLocation" fill="#828282" layoutX="15.0"
+                                                        <Text styleClass="infoLabel" layoutX="15.0"
                                                               layoutY="174.0" strokeType="OUTSIDE" strokeWidth="0.0"
                                                               text="Location:" textAlignment="RIGHT"
                                                               wrappingWidth="90.0"/>
-                                                        <Text fill="#828282" layoutX="15.0" layoutY="203.0"
+                                                        <Text styleClass="infoLabel" layoutX="15.0" layoutY="203.0"
                                                               strokeType="OUTSIDE" strokeWidth="0.0" text="Site:"
                                                               textAlignment="RIGHT" wrappingWidth="90.0"/>
-                                                        <Text fx:id="description" fill="#828282" layoutX="312.0"
+                                                        <Text styleClass="infoLabel" layoutX="312.0"
                                                               layoutY="116.0" strokeType="OUTSIDE" strokeWidth="0.0"
                                                               text="Description:" textAlignment="RIGHT"
                                                               wrappingWidth="90.0"/>
@@ -92,28 +92,28 @@
                                                         <TextArea fx:id="descriptionOutput" layoutX="415.0"
                                                                   layoutY="105.0" prefHeight="52.0" prefWidth="250.0"
                                                                   text="T"/>
-                                                        <Text fill="#828282" layoutX="15.0" layoutY="87.0"
+                                                        <Text styleClass="infoLabel" layoutX="15.0" layoutY="87.0"
                                                               strokeType="OUTSIDE" strokeWidth="0.0" text="Model:"
                                                               textAlignment="RIGHT" wrappingWidth="90.0"/>
-                                                        <Text fill="#828282" layoutX="15.0" layoutY="116.0"
+                                                        <Text styleClass="infoLabel" layoutX="15.0" layoutY="116.0"
                                                               strokeType="OUTSIDE" strokeWidth="0.0" text="RUL:"
                                                               textAlignment="RIGHT" wrappingWidth="90.0"/>
                                                         <Text fx:id="modelOutput" layoutX="129.0" layoutY="87.0"
                                                               strokeType="OUTSIDE" strokeWidth="0.0" text="T"/>
                                                         <Text fx:id="rulOutput" layoutX="129.0" layoutY="116.0"
                                                               strokeType="OUTSIDE" strokeWidth="0.0" text="T"/>
-                                                        <Text fill="#828282" layoutX="312.0" layoutY="87.0"
+                                                        <Text styleClass="infoLabel" layoutX="312.0" layoutY="87.0"
                                                               strokeType="OUTSIDE" strokeWidth="0.0" text="Category:"
                                                               textAlignment="RIGHT" wrappingWidth="90.0"/>
                                                         <TextField fx:id="categoryOutput" layoutX="415.0" layoutY="70.0"
                                                                    prefHeight="25.0" prefWidth="200.0" text="T"/>
-                                                        <Text fx:id="assetNameLabel" fill="#828282" layoutX="312.0"
+                                                        <Text styleClass="infoLabel" layoutX="312.0"
                                                               layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0"
                                                               text="Asset Name:" textAlignment="RIGHT"
                                                               wrappingWidth="90.0"/>
                                                         <TextField fx:id="assetNameOutput" layoutX="415.0"
                                                                    layoutY="12.0" prefWidth="200.0" text="T"/>
-                                                        <Text fill="#828282" layoutX="15.0" layoutY="145.0"
+                                                        <Text styleClass="infoLabel" layoutX="15.0" layoutY="145.0"
                                                               strokeType="OUTSIDE" strokeWidth="0.0" text="Status:"
                                                               textAlignment="RIGHT" wrappingWidth="90.0"/>
                                                         <Text fx:id="recommendationOutput" layoutX="129.0"
