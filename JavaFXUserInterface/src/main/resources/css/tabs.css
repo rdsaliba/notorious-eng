@@ -1,0 +1,32 @@
+.tab
+{
+    -fx-background-color: transparent;
+    -fx-font-size: 16px;
+    -fx-padding: 0 20px 7px 20px;
+    -fx-border-width: 3px;
+    -fx-border-color: transparent transparent transparent transparent;
+    -fx-fill: #3A3A3A;
+    -fx-cursor: hand;
+}
+
+.tab:selected
+{
+   -fx-border-color: transparent transparent #EE6352 transparent;
+   -fx-focus-color: transparent;
+}
+
+.tab-header-background {
+    -fx-background-color: transparent;
+}
+
+.tab-label {
+    /*-fx-text-fill: -fx-secondary;*/
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-fill: #3A3A3A;
+}
+
+.tab-main {
+    -fx-pref-height : 60;
+    -fx-max-height : 60;
+}

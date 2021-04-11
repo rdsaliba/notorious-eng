@@ -311,13 +311,13 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
      * @author Paul
      */
     @Override
-    public List<Asset> getArchivedAssetsFromAssetTypeID(int assetTypeID) {
-        ArrayList<Asset> assets = new ArrayList<>();
+    public int getArchivedAssetsFromAssetTypeID(int assetTypeID) {
+        int assets =0;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_ARCHIVED_ASSETS_FROM_ASSET_TYPE_ID)) {
             ps.setInt(1, assetTypeID);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    assets.add(createFullAssetFromQueryResult(rs));
+                    assets++;
                 }
             }
         } catch (SQLException e) {

@@ -63,7 +63,7 @@ public class AssetsController extends Controller implements Initializable {
     private static final String DESCRIPTION_COL = "Description";
     private final AssetTypeDAOImpl assetTypeDAO;
     private final ModelDAOImpl modelDAO;
-    private AssetDAOImpl assetDAOImpl;
+    private final AssetDAOImpl assetDAOImpl;
     private final TableView<Asset> table;
     private final HashMap<String, Boolean> assetTypeFilterCondition;
     private final HashMap<String, Boolean> thresholdFilterCondition;
@@ -71,7 +71,7 @@ public class AssetsController extends Controller implements Initializable {
     @FXML
     private Button addAssetBtn;
     @FXML
-    private FlowPane assetsThumbPane;
+    private FlowPane assetsFlowPane;
     @FXML
     private AnchorPane assetsListPane;
     @FXML
@@ -89,10 +89,14 @@ public class AssetsController extends Controller implements Initializable {
     @FXML
     private TabPane assetsTabPane;
     private String searchMatch = "No Search"; // search states to help display the right asset list: No Search / Match / No Match
+    @FXML
+    private AnchorPane root;
+
     private UIUtilities uiUtilities;
     private ObservableList<Asset> assets;
     private ObservableList<Asset> searchedAssets;
     private PauseTransition delaySearch;
+    private HashMap<Integer, Image> imagesList;
 
     public AssetsController() {
         assetTypeDAO = new AssetTypeDAOImpl();
@@ -101,6 +105,9 @@ public class AssetsController extends Controller implements Initializable {
         table = new TableView<>();
         assetTypeFilterCondition = new HashMap<>();
         thresholdFilterCondition = new HashMap<>();
+        imagesList = new HashMap<>();
+        //adding the default image
+        imagesList.put(0, new Image("file:JavaFXUserInterface/src/main/resources/imgs/default.png"));
         try {
             assets = FXCollections.observableArrayList(ModelController.getInstance().getAllLiveAssets());
         } catch (Exception e) {
@@ -119,7 +126,8 @@ public class AssetsController extends Controller implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         uiUtilities = new UIUtilities();
-
+        root.setOpacity(0);
+        uiUtilities.fadeInTransition(root);
         attachEvents();
         updateRULs();
         generateThumbnails();
@@ -154,19 +162,18 @@ public class AssetsController extends Controller implements Initializable {
      * @author Jeff
      */
     public void attachEvents() {
-
         // As the window expands or shrinks, asset panes will adjust to the window size accordingly
-        assetsThumbPane.widthProperty().addListener((obs, oldVal, newVal) -> {
+        assetsFlowPane.widthProperty().addListener((obs, oldVal, newVal) -> {
             double assetFlowWidth = (double) newVal - 54;
             int nbOfPanes = (int) (assetFlowWidth / 247);
             assetFlowWidth = (assetFlowWidth % 247);
             assetFlowWidth = assetFlowWidth / (nbOfPanes - 1);
-            assetsThumbPane.setHgap(assetFlowWidth);
+            assetsFlowPane.setHgap(assetFlowWidth);
         });
 
         thumbnailTab.setOnSelectionChanged(event -> {
             if (thumbnailTab.isSelected()) {
-                assetsThumbPane.getChildren().clear();
+                assetsFlowPane.getChildren().clear();
                 generateThumbnails();
             }
         });
@@ -216,7 +223,7 @@ public class AssetsController extends Controller implements Initializable {
         int i = 1;
         CheckBox option;
         Label assetTypeTitle = new Label("Asset Type");
-        navList.add(assetTypeTitle,0,0);
+        navList.add(assetTypeTitle, 0, 0);
         for (AssetType assetType : assetTypeDAO.getAssetTypeList()) {
             assetTypeFilterCondition.put(assetType.getName(), false);
             option = new CheckBox(assetType.getName());
@@ -228,7 +235,7 @@ public class AssetsController extends Controller implements Initializable {
             i++;
         }
         Label thresholdTitle = new Label("Threshold");
-        navList.add(thresholdTitle,1,0);
+        navList.add(thresholdTitle, 1, 0);
         for (ThresholdEnum thresholdEnum : ThresholdEnum.values()) {
             thresholdFilterCondition.put(thresholdEnum.getValue(), false);
             option = new CheckBox(thresholdEnum.getValue());
@@ -236,7 +243,7 @@ public class AssetsController extends Controller implements Initializable {
                 thresholdFilterCondition.replace(thresholdEnum.getValue(), newValue);
                 generateContent();
             });
-            navList.add(option, 1, ThresholdEnum.valueOf(thresholdEnum.name()).ordinal()+1);
+            navList.add(option, 1, ThresholdEnum.valueOf(thresholdEnum.name()).ordinal() + 1);
             i++;
         }
 
@@ -280,13 +287,14 @@ public class AssetsController extends Controller implements Initializable {
         return assetsToDisplay;
     }
 
-    /** regenerate the thumbnail or list view as selected
+    /**
+     * regenerate the thumbnail or list view as selected
      *
      * @author Paul
      */
     private void generateContent() {
         if (assetsTabPane.getSelectionModel().getSelectedItem().getId().equals("thumbnailTab")) {
-            assetsThumbPane.getChildren().clear();
+            assetsFlowPane.getChildren().clear();
             generateThumbnails();
         } else if (assetsTabPane.getSelectionModel().getSelectedItem().getId().equals("listTab")) {
             assetsListPane.getChildren().clear();
@@ -342,7 +350,7 @@ public class AssetsController extends Controller implements Initializable {
                     default:
                         break;
                 }
-                assetsThumbPane.getChildren().clear();
+                assetsFlowPane.getChildren().clear();
                 generateThumbnails();
             }
         });
@@ -398,7 +406,7 @@ public class AssetsController extends Controller implements Initializable {
             assetsToDisplay = FXCollections.observableArrayList(searchedAssets);
         } else {
             if (searchMatch.equals("No Match")) {
-                assetsThumbPane.getChildren().clear();
+                assetsFlowPane.getChildren().clear();
                 assetsToDisplay = null;
             } else {
                 assetsToDisplay = FXCollections.observableArrayList(assets);
@@ -420,8 +428,9 @@ public class AssetsController extends Controller implements Initializable {
             for (Asset asset : assetsDisplayed) {
 
                 Pane pane = new Pane();
+                pane.setCache(true);
                 pane.setOnMouseClicked(event -> uiUtilities.changeScene("/AssetInfo", asset, pane.getScene()));
-                pane.getStyleClass().add("assetPane");
+                pane.getStyleClass().add("thumbnailPane");
 
                 Pane imagePlaceholder = new Pane();
                 imagePlaceholder.getStyleClass().add("imagePlaceholder");
@@ -432,10 +441,7 @@ public class AssetsController extends Controller implements Initializable {
                 setImage(asset, borderPane);
 
                 HBox rulPane = new HBox();
-                rulPane.getStyleClass().add("rulPane");
-
                 HBox statusPane = new HBox();
-                statusPane.getStyleClass().add("statusPane");
 
                 Text assetName = new Text(asset.getSerialNo());
                 Text assetType = new Text(assetTypeDAO.getNameFromID(asset.getAssetTypeID()));
@@ -448,17 +454,15 @@ public class AssetsController extends Controller implements Initializable {
                 SimpleStringProperty s = asset.getRul();
                 rulValue.textProperty().bind(s);
 
-                assetName.getStyleClass().add("assetName");
-                assetType.getStyleClass().add("assetType");
-                rulLabel.getStyleClass().add("rulLabel");
-                rulValue.getStyleClass().add("rulValue");
-                recommendationLabel.getStyleClass().add("statusLabel");
-                recommendation.getStyleClass().add("statusValue");
-                statusPane.getStyleClass().add("statusPane");
+                assetName.getStyleClass().add("thumbnailHeader");
+                assetType.getStyleClass().add("thumbnailSubHeader");
+                rulLabel.getStyleClass().add("valueLabel");
+                rulValue.getStyleClass().add("valueText");
+                recommendationLabel.getStyleClass().add("valueLabel");
+                recommendation.getStyleClass().add("valueText");
+                rulPane.getStyleClass().addAll("valuePane", "none");
+                statusPane.getStyleClass().add("valuePane");
                 statusPane.getStyleClass().add(asset.getRecommendation().toLowerCase());
-
-                statusPane.setAlignment(Pos.CENTER);
-                rulPane.setAlignment(Pos.CENTER);
 
                 assetName.setLayoutX(15.0);
                 assetName.setLayoutY(35.0);
@@ -489,7 +493,7 @@ public class AssetsController extends Controller implements Initializable {
 
                 boxes.add(pane);
             }
-            assetsThumbPane.getChildren().addAll(boxes);
+            assetsFlowPane.getChildren().addAll(boxes);
         } else {
             Text noResult = new Text("No results found");
             noResult.getStyleClass().add("noResult");
@@ -499,23 +503,15 @@ public class AssetsController extends Controller implements Initializable {
             noResultPane.setAlignment(Pos.CENTER);
             noResultPane.getChildren().add(noResult);
 
-            assetsThumbPane.getChildren().add(noResultPane);
+            assetsFlowPane.getChildren().add(noResultPane);
         }
     }
 
     private void setImage(Asset asset, BorderPane borderPane) {
-        ImageView imageView = null;
-        Image image;
+        if (imagesList.get(asset.getImageId()) == null)
+            imagesList.put(asset.getImageId(), assetDAOImpl.findImageById(asset.getImageId()));
 
-        if (asset.getImageId() != 0){
-            image = assetDAOImpl.findImageById(asset.getImageId());
-
-        } else {
-            //Set default image
-            image = new Image("file:JavaFXUserInterface/src/main/resources/imgs/default.png");
-        }
-
-        imageView = new ImageView(image);
+        ImageView imageView = new ImageView(imagesList.get(asset.getImageId()));
         imageView.setFitWidth(133);
         imageView.setFitHeight(133);
         imageView.setCache(true);

@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS `picture`;
 CREATE TABLE `cbms`.`picture` (
   `imageId` INT NOT NULL AUTO_INCREMENT,
   `image` MEDIUMBLOB NULL DEFAULT NULL,
