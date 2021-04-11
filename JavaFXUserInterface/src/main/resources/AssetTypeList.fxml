@@ -9,12 +9,11 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.FlowPane?>
-<?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TableColumn?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="834.0"
+<AnchorPane styleClass="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="834.0"
             prefWidth="1194.0" xmlns="http://javafx.com/javafx/11.0.1"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AssetTypeController">
     <children>
@@ -23,13 +22,9 @@
                     AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="59.0" AnchorPane.rightAnchor="0.0"
                     AnchorPane.topAnchor="0.0">
             <children>
-                <Button id="addAssetTypeBtn" fx:id="addTypeBtn" layoutX="860.0" layoutY="25.0" mnemonicParsing="false"
-                        prefHeight="45.0" prefWidth="247.0" text="+ Add Asset Type" AnchorPane.rightAnchor="28.0">
-                    <font>
-                        <Font name="Segoe UI Semibold" size="20.0"/>
-                    </font>
-                </Button>
-                <TextField id="search" fx:id="search" layoutX="26.0" layoutY="25.0" promptText="Search Here"
+                <Button fx:id="addTypeBtn" styleClass="btn, green" layoutX="860.0" layoutY="25.0" mnemonicParsing="false"
+                        text="+ Add Asset Type" AnchorPane.rightAnchor="28.0"/>
+                <TextField fx:id="search" styleClass="search" layoutX="26.0" layoutY="25.0" promptText="Search Here"
                            AnchorPane.leftAnchor="26.0" AnchorPane.rightAnchor="304.0">
                     <padding>
                         <Insets left="35.0"/>
@@ -43,7 +38,7 @@
                     <tabs>
                         <Tab id="thumbnailTab" fx:id="thumbnailTab" text="Thumbnails">
                             <content>
-                                <AnchorPane id="thumbnailPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0"
+                                <AnchorPane styleClass="thumbnailContainer" minHeight="0.0" minWidth="0.0" prefHeight="180.0"
                                             prefWidth="200.0">
                                     <children>
                                         <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER"
@@ -98,7 +93,10 @@
         </AnchorPane>
     </children>
     <stylesheets>
-        <URL value="@css/revamp/style.css"/>
-        <URL value="@css/revamp/assetType.css"/>
+        <URL value="@css/style.css"/>
+        <URL value="@css/assetType.css"/>
+        <URL value="@css/tabs.css"/>
+        <URL value="@css/table.css"/>
+        <URL value="@css/buttons.css"/>
     </stylesheets>
 </AnchorPane>

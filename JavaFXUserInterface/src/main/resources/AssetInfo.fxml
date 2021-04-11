@@ -1,92 +1,143 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.net.*?>
-<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="834.0" prefWidth="1194.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AssetInfoController">
+<AnchorPane styleClass="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            prefHeight="834.0"
+            prefWidth="1194.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.AssetInfoController">
     <children>
-        <fx:include source="Navigation.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0" />
-        <AnchorPane prefHeight="200.0" prefWidth="200.0" styleClass="container" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="59.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <fx:include source="Navigation.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+        <AnchorPane prefHeight="200.0" prefWidth="200.0" styleClass="container" AnchorPane.bottomAnchor="0.0"
+                    AnchorPane.leftAnchor="59.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
-                <AnchorPane prefHeight="80.0" prefWidth="952.0" styleClass="titleBar" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <AnchorPane prefHeight="80.0" prefWidth="952.0" styleClass="titleBar" AnchorPane.leftAnchor="0.0"
+                            AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <children>
-                        <Button fx:id="backBtn" layoutX="15.0" layoutY="17.0" mnemonicParsing="false" style="-fx-background-color: transparent;" textFill="TRANSPARENT">
+                        <Button fx:id="backBtn" styleClass="backBtn" layoutX="15.0" layoutY="17.0"
+                                mnemonicParsing="false">
                             <graphic>
                                 <ImageView fitHeight="36.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
                                     <image>
-                                        <Image url="@imgs/outline_arrow_back_black_36dp.png" />
+                                        <Image url="@imgs/outline_arrow_back_black_36dp.png"/>
                                     </image>
                                 </ImageView>
                             </graphic>
                         </Button>
-                        <Text fx:id="assetName" layoutX="62.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="header" text="Asset Name">
-                            <font>
-                                <Font name="Segoe UI Bold" size="18.0" />
-                            </font>
-                        </Text>
-                        <Button id="deleteBtn" fx:id="deleteBtn" layoutX="860.0" layoutY="18.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="247.0" text="Delete" textFill="WHITE" AnchorPane.rightAnchor="28.0">
-                            <font>
-                                <Font name="Segoe UI Semibold" size="20.0" />
-                            </font>
-                            <padding>
-                                <Insets bottom="5.0" left="15.0" right="15.0" top="5.0" />
-                            </padding>
-                        </Button>
-                        <Button fx:id="archiveBtn" layoutX="733.0" layoutY="19.0" mnemonicParsing="false" text="Archive" AnchorPane.rightAnchor="304.0" />
-
+                        <Text fx:id="assetName" layoutX="62.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0"
+                              styleClass="header" text="Asset Name"/>
+                        <Button fx:id="archiveBtn" styleClass="btn, blue" layoutX="733.0" layoutY="19.0"
+                                mnemonicParsing="false" text="Archive"
+                                AnchorPane.rightAnchor="304.0"/>
+                        <Button fx:id="deleteBtn" styleClass="btn, red" layoutX="860.0" layoutY="18.0"
+                                mnemonicParsing="false"
+                                text="Delete" AnchorPane.rightAnchor="28.0"/>
                     </children>
                 </AnchorPane>
-                <AnchorPane layoutX="14.0" layoutY="104.0" prefHeight="42.0" prefWidth="952.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="80.0">
+                <AnchorPane layoutX="14.0" layoutY="104.0" prefHeight="42.0" prefWidth="952.0"
+                            AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                            AnchorPane.topAnchor="80.0">
                     <children>
-                        <TabPane prefHeight="674.0" prefWidth="952.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <TabPane prefHeight="674.0" prefWidth="952.0" tabClosingPolicy="UNAVAILABLE"
+                                 AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                                 AnchorPane.topAnchor="0.0">
                             <tabs>
                                 <Tab fx:id="informationTab" text="Information">
                                     <content>
-                                        <AnchorPane id="assetInfoTab" minHeight="0.0" minWidth="0.0" prefHeight="382.0" prefWidth="945.0">
+                                        <AnchorPane id="assetInfoTab" minHeight="0.0" minWidth="0.0" prefHeight="382.0"
+                                                    prefWidth="945.0">
                                             <children>
-                                                <AnchorPane id="assetInfoPane" fx:id="assetInfoPane" prefHeight="247.0" prefWidth="1127.0" AnchorPane.leftAnchor="26.0" AnchorPane.rightAnchor="26.0" AnchorPane.topAnchor="26.0">
+                                                <AnchorPane fx:id="assetInfoPane" prefHeight="247.0"
+                                                            prefWidth="1127.0" AnchorPane.leftAnchor="26.0"
+                                                            AnchorPane.rightAnchor="26.0" AnchorPane.topAnchor="26.0">
                                                     <children>
-                                                        <Text fx:id="assetTypeLabel" fill="#828282" layoutX="15.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Asset Type:" textAlignment="RIGHT" wrappingWidth="90.0" />
-                                                        <Text fx:id="serialNumber" fill="#828282" layoutX="15.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Serial Number:" textAlignment="RIGHT" wrappingWidth="90.0" />
-                                                        <Text fx:id="manufacturer" fill="#828282" layoutX="312.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Manufacturer:" textAlignment="RIGHT" wrappingWidth="90.0" />
-                                                        <Text fx:id="assetLocation" fill="#828282" layoutX="15.0" layoutY="174.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Location:" textAlignment="RIGHT" wrappingWidth="90.0" />
-                                                        <Text fill="#828282" layoutX="15.0" layoutY="203.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Site:" textAlignment="RIGHT" wrappingWidth="90.0" />
-                                                        <Text fx:id="description" fill="#828282" layoutX="312.0" layoutY="116.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Description:" textAlignment="RIGHT" wrappingWidth="90.0" />
-                                                        <Text fx:id="assetTypeOutput" layoutX="129.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
-                                                        <Text fx:id="serialNumberOutput" layoutX="129.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
-                                                        <TextField fx:id="manufacturerOutput" layoutX="415.0" layoutY="41.0" prefWidth="200.0" text="T" />
-                                                        <TextField fx:id="locationOutput" layoutX="120.0" layoutY="157.0" prefHeight="25.0" prefWidth="200.0" text="T" />
-                                                        <TextField fx:id="siteOutput" layoutX="120.0" layoutY="186.0" prefWidth="200.0" text="T" />
-                                                        <TextArea fx:id="descriptionOutput" layoutX="415.0" layoutY="105.0" prefHeight="52.0" prefWidth="250.0" text="T" />
-                                                        <Text fill="#828282" layoutX="15.0" layoutY="87.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Model:" textAlignment="RIGHT" wrappingWidth="90.0" />
-                                                        <Text fill="#828282" layoutX="15.0" layoutY="116.0" strokeType="OUTSIDE" strokeWidth="0.0" text="RUL:" textAlignment="RIGHT" wrappingWidth="90.0" />
-                                                        <Text fx:id="modelOutput" layoutX="129.0" layoutY="87.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
-                                                        <Text fx:id="rulOutput" layoutX="129.0" layoutY="116.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
-                                                        <Text fill="#828282" layoutX="312.0" layoutY="87.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Category:" textAlignment="RIGHT" wrappingWidth="90.0" />
-                                                        <TextField fx:id="categoryOutput" layoutX="415.0" layoutY="70.0" prefHeight="25.0" prefWidth="200.0" text="T" />
-                                                        <Text fx:id="assetNameLabel" fill="#828282" layoutX="312.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Asset Name:" textAlignment="RIGHT" wrappingWidth="90.0" />
-                                                        <TextField fx:id="assetNameOutput" layoutX="415.0" layoutY="12.0" prefWidth="200.0" text="T" />
-                                                        <Text fill="#828282" layoutX="15.0" layoutY="145.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Status:" textAlignment="RIGHT" wrappingWidth="90.0" />
-                                                        <Text fx:id="recommendationOutput" layoutX="129.0" layoutY="145.0" strokeType="OUTSIDE" strokeWidth="0.0" text="T" />
-                                                        <ImageView fx:id="imageView" fitHeight="150.0" fitWidth="200.0" layoutX="867.0" layoutY="13.0" pickOnBounds="true" preserveRatio="true" />
+                                                        <Text fx:id="assetTypeLabel" fill="#828282" layoutX="15.0"
+                                                              layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0"
+                                                              text="Asset Type:" textAlignment="RIGHT"
+                                                              wrappingWidth="90.0"/>
+                                                        <Text fx:id="serialNumber" fill="#828282" layoutX="15.0"
+                                                              layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0"
+                                                              text="Serial Number:" textAlignment="RIGHT"
+                                                              wrappingWidth="90.0"/>
+                                                        <Text fx:id="manufacturer" fill="#828282" layoutX="312.0"
+                                                              layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0"
+                                                              text="Manufacturer:" textAlignment="RIGHT"
+                                                              wrappingWidth="90.0"/>
+                                                        <Text fx:id="assetLocation" fill="#828282" layoutX="15.0"
+                                                              layoutY="174.0" strokeType="OUTSIDE" strokeWidth="0.0"
+                                                              text="Location:" textAlignment="RIGHT"
+                                                              wrappingWidth="90.0"/>
+                                                        <Text fill="#828282" layoutX="15.0" layoutY="203.0"
+                                                              strokeType="OUTSIDE" strokeWidth="0.0" text="Site:"
+                                                              textAlignment="RIGHT" wrappingWidth="90.0"/>
+                                                        <Text fx:id="description" fill="#828282" layoutX="312.0"
+                                                              layoutY="116.0" strokeType="OUTSIDE" strokeWidth="0.0"
+                                                              text="Description:" textAlignment="RIGHT"
+                                                              wrappingWidth="90.0"/>
+                                                        <Text fx:id="assetTypeOutput" layoutX="129.0" layoutY="58.0"
+                                                              strokeType="OUTSIDE" strokeWidth="0.0" text="T"/>
+                                                        <Text fx:id="serialNumberOutput" layoutX="129.0" layoutY="29.0"
+                                                              strokeType="OUTSIDE" strokeWidth="0.0" text="T"/>
+                                                        <TextField fx:id="manufacturerOutput" layoutX="415.0"
+                                                                   layoutY="41.0" prefWidth="200.0" text="T"/>
+                                                        <TextField fx:id="locationOutput" layoutX="120.0"
+                                                                   layoutY="157.0" prefHeight="25.0" prefWidth="200.0"
+                                                                   text="T"/>
+                                                        <TextField fx:id="siteOutput" layoutX="120.0" layoutY="186.0"
+                                                                   prefWidth="200.0" text="T"/>
+                                                        <TextArea fx:id="descriptionOutput" layoutX="415.0"
+                                                                  layoutY="105.0" prefHeight="52.0" prefWidth="250.0"
+                                                                  text="T"/>
+                                                        <Text fill="#828282" layoutX="15.0" layoutY="87.0"
+                                                              strokeType="OUTSIDE" strokeWidth="0.0" text="Model:"
+                                                              textAlignment="RIGHT" wrappingWidth="90.0"/>
+                                                        <Text fill="#828282" layoutX="15.0" layoutY="116.0"
+                                                              strokeType="OUTSIDE" strokeWidth="0.0" text="RUL:"
+                                                              textAlignment="RIGHT" wrappingWidth="90.0"/>
+                                                        <Text fx:id="modelOutput" layoutX="129.0" layoutY="87.0"
+                                                              strokeType="OUTSIDE" strokeWidth="0.0" text="T"/>
+                                                        <Text fx:id="rulOutput" layoutX="129.0" layoutY="116.0"
+                                                              strokeType="OUTSIDE" strokeWidth="0.0" text="T"/>
+                                                        <Text fill="#828282" layoutX="312.0" layoutY="87.0"
+                                                              strokeType="OUTSIDE" strokeWidth="0.0" text="Category:"
+                                                              textAlignment="RIGHT" wrappingWidth="90.0"/>
+                                                        <TextField fx:id="categoryOutput" layoutX="415.0" layoutY="70.0"
+                                                                   prefHeight="25.0" prefWidth="200.0" text="T"/>
+                                                        <Text fx:id="assetNameLabel" fill="#828282" layoutX="312.0"
+                                                              layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0"
+                                                              text="Asset Name:" textAlignment="RIGHT"
+                                                              wrappingWidth="90.0"/>
+                                                        <TextField fx:id="assetNameOutput" layoutX="415.0"
+                                                                   layoutY="12.0" prefWidth="200.0" text="T"/>
+                                                        <Text fill="#828282" layoutX="15.0" layoutY="145.0"
+                                                              strokeType="OUTSIDE" strokeWidth="0.0" text="Status:"
+                                                              textAlignment="RIGHT" wrappingWidth="90.0"/>
+                                                        <Text fx:id="recommendationOutput" layoutX="129.0"
+                                                              layoutY="145.0" strokeType="OUTSIDE" strokeWidth="0.0"
+                                                              text="T"/>
+                                                        <ImageView fx:id="imageView" fitHeight="150.0" fitWidth="200.0"
+                                                                   layoutX="867.0" layoutY="13.0" pickOnBounds="true"
+                                                                   preserveRatio="true"/>
 
-                                          <Button id="assetSaveBtn" fx:id="assetSaveBtn" layoutX="925.0" layoutY="192.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="247.0" text="Save" AnchorPane.rightAnchor="33.0">
-                                             <font>
-                                                <Font name="Segoe UI Semibold" size="20.0" />
-                                             </font>
-                                             <padding>
-                                                <Insets bottom="5.0" left="15.0" right="15.0" top="5.0" />
-                                             </padding>
-                                          </Button>
+                                                        <Button fx:id="assetSaveBtn" styleClass="btn, green"
+                                                                layoutX="925.0"
+                                                                layoutY="192.0" mnemonicParsing="false" text="Save"
+                                                                AnchorPane.rightAnchor="33.0"/>
                                                     </children>
                                                 </AnchorPane>
-                                                <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" layoutX="28.0" layoutY="298.0" prefHeight="416.0" prefWidth="1081.0" styleClass="scrollPane" vbarPolicy="NEVER" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="27.0" AnchorPane.rightAnchor="27.0" AnchorPane.topAnchor="297.0">
+                                                <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER"
+                                                            layoutX="28.0" layoutY="298.0" prefHeight="416.0"
+                                                            prefWidth="1081.0" styleClass="scrollPane"
+                                                            vbarPolicy="NEVER" AnchorPane.bottomAnchor="1.0"
+                                                            AnchorPane.leftAnchor="27.0" AnchorPane.rightAnchor="27.0"
+                                                            AnchorPane.topAnchor="297.0">
                                                     <content>
-                                                        <FlowPane fx:id="attributeFlowPane" hgap="29.0" prefHeight="440.0" prefWidth="1079.0" vgap="15.0" />
+                                                        <FlowPane fx:id="attributeFlowPane" hgap="29.0"
+                                                                  prefHeight="440.0" prefWidth="1079.0" vgap="15.0"/>
                                                     </content>
                                                 </ScrollPane>
                                             </children>
@@ -95,7 +146,8 @@
                                 </Tab>
                                 <Tab fx:id="rawDataTab" text="Raw Data">
                                     <content>
-                                        <AnchorPane fx:id="rawDataListPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                        <AnchorPane fx:id="rawDataListPane" minHeight="0.0" minWidth="0.0"
+                                                    prefHeight="180.0" prefWidth="200.0"/>
                                     </content>
                                 </Tab>
                             </tabs>
@@ -106,7 +158,10 @@
         </AnchorPane>
     </children>
     <stylesheets>
-        <URL value="@css/revamp/assetInfo.css" />
-        <URL value="@css/revamp/style.css" />
+        <URL value="@css/assetInfo.css"/>
+        <URL value="@css/style.css"/>
+        <URL value="@css/buttons.css"/>
+        <URL value="@css/table.css"/>
+        <URL value="@css/tabs.css"/>
     </stylesheets>
 </AnchorPane>
