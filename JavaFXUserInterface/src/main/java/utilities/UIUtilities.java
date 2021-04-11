@@ -7,17 +7,19 @@
 package utilities;
 
 import app.item.Asset;
-import app.item.AssetType;
 import controllers.AssetInfoController;
 import controllers.AssetTypeInfoController;
 import controllers.Controller;
+import javafx.animation.FadeTransition;
 import javafx.animation.Timeline;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,6 +64,9 @@ public class UIUtilities {
      * @author Jeff
      */
     public void changeScene(String fxmlFileName, Scene scene) {
+        AnchorPane rootPane = (AnchorPane) scene.getRoot().lookup("root");
+        FadeTransition ft = fadeOut(rootPane);
+        ft.play();
         try {
             ((Controller) ((FXMLLoader) scene.getUserData()).getController()).getTimelines().forEach(Timeline::stop);
             FXMLLoader loader = new FXMLLoader();
@@ -98,6 +103,10 @@ public class UIUtilities {
      * @author Najim, Jeff
      */
     public void changeScene(TableRow<AssetTypeList> row, String fxmlFileName, AssetTypeList assetType, Scene scene) {
+        AnchorPane rootPane = (AnchorPane) scene.getRoot().lookup("root");
+        FadeTransition ft = fadeOut(rootPane);
+        ft.play();
+        row.getScene().getWindow();
         try {
             if (!row.isEmpty()) {
                 ((Controller) ((FXMLLoader) scene.getUserData()).getController()).getTimelines().forEach(Timeline::stop);
@@ -123,6 +132,9 @@ public class UIUtilities {
      * @author Paul, Jeff
      */
     public void changeScene(String fxmlFileName, Asset asset, Scene scene) {
+        AnchorPane rootPane = (AnchorPane) scene.getRoot().lookup("root");
+        FadeTransition ft = fadeOut(rootPane);
+        ft.play();
         try {
             ((Controller) ((FXMLLoader) scene.getUserData()).getController()).getTimelines().forEach(Timeline::stop);
             FXMLLoader loader = new FXMLLoader();
@@ -139,11 +151,43 @@ public class UIUtilities {
     }
 
     /**
+     * Creates a fade out animation
+     *
+     * @param rootPane Root AnchorPane of the view/page
+     * @return FadeTransition object
+     * @author Najim
+     */
+    public FadeTransition fadeOut(AnchorPane rootPane) {
+        FadeTransition ft = new FadeTransition();
+        ft.setDuration(Duration.millis(700));
+        ft.setNode(rootPane);
+        ft.setFromValue(1);
+        ft.setToValue(0);
+
+        return ft;
+    }
+
+    /**
+     * Creates a fade in animation
+     *
+     * @param rootPane Root AnchorPane of the view/page
+     * @author Najim
+     */
+    public void fadeInTransition(AnchorPane rootPane) {
+        FadeTransition ft = new FadeTransition();
+        ft.setDuration(Duration.millis(700));
+        ft.setNode(rootPane);
+        ft.setFromValue(0);
+        ft.setToValue(1);
+        ft.play();
+    }
+
+    /**
      * Changes scenes once an element is clicked, and
      * sends an asset type to the new scene's controller.
      *
      * @param fxmlFileName the name of the fxml file that will be loaded for the scene
-     * @param assetType        the asset type we want to sent to the other page
+     * @param assetType    the asset type we want to sent to the other page
      * @author Jeff
      */
     public void changeScene(String fxmlFileName, AssetTypeList assetType, Scene scene) {

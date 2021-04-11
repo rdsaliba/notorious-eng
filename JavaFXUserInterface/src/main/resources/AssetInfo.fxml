@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<?import java.net.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-
+<?import java.net.*?>
 <AnchorPane styleClass="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
             prefHeight="834.0"
             prefWidth="1194.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="controllers.AssetInfoController">
     <children>
         <fx:include source="Navigation.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0"/>
-        <AnchorPane prefHeight="200.0" prefWidth="200.0" styleClass="container" AnchorPane.bottomAnchor="0.0"
+        <AnchorPane fx:id="root" prefHeight="200.0" prefWidth="200.0" styleClass="container"
+                    AnchorPane.bottomAnchor="0.0"
                     AnchorPane.leftAnchor="59.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
                 <AnchorPane prefHeight="80.0" prefWidth="952.0" styleClass="titleBar" AnchorPane.leftAnchor="0.0"

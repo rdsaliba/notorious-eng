@@ -26,8 +26,8 @@ public class AssetDAOTest {
     @Test
     public void getAssetsFromAssetTypeIDTest() {
         List<Asset> liveAssetList = assetDAO.getLiveAssetsFromAssetTypeID(1);
-        List<Asset> archivedAssetList = assetDAO.getArchivedAssetsFromAssetTypeID(1);
-        assertEquals(100, archivedAssetList.size());
+        int archivedAssetList = assetDAO.getArchivedAssetsFromAssetTypeID(1);
+        assertEquals(100, archivedAssetList);
         assertEquals(97, liveAssetList.size());
     }
 }

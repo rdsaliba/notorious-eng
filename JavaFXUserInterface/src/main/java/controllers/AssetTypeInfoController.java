@@ -9,7 +9,6 @@
 package controllers;
 
 import app.item.Asset;
-import app.item.Model;
 import app.item.TrainedModel;
 import app.item.parameter.*;
 import external.AssetDAOImpl;
@@ -23,7 +22,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
@@ -92,8 +90,13 @@ public class AssetTypeInfoController extends Controller implements Initializable
     private Label associatedModelLabel;
     @FXML
     private VBox modelParameters;
+    @FXML
+    private AnchorPane root;
+    @FXML
+    private AnchorPane bigRoot;
 
     private ObservableList<TrainedModel> modelObservableList;
+    private ObservableList<Pane> modelPaneObservableList;
     private int associatedModelID;
 
     private UIUtilities uiUtilities;
@@ -111,6 +114,8 @@ public class AssetTypeInfoController extends Controller implements Initializable
         modelDAO = new ModelDAOImpl();
         assetDAO = new AssetDAOImpl();
         assetsList = new ArrayList<>();
+        root.setOpacity(0);
+        uiUtilities.fadeInTransition(root);
         try {
             attachEvents();
         } catch (Exception exception) {
@@ -130,13 +135,14 @@ public class AssetTypeInfoController extends Controller implements Initializable
         this.assetType = assetType;
         this.originalAssetType = new AssetTypeList(assetType);
         assetTypeName.setText(assetType.getAssetType().getName());
-        assetTypeDescription.setText(assetType.getAssetType().getDescription());
         associatedModelLabel.setText(modelDAO.getModelNameAssociatedWithAssetType(assetType.getId()));
 
         // Initializing Data for the threshold text fields
         ObservableList<TextField> thresholdTextFieldList = FXCollections.observableArrayList();
         thresholdTextFieldList.addAll(thresholdAdvisory, thresholdCaution, thresholdWarning, thresholdFailed);
         try {
+            if (assetType.getAssetType().getDescription() != null)
+                assetTypeDescription.setText(assetType.getAssetType().getDescription());
             if (assetType.getValueAdvisory() != null && !assetType.getValueAdvisory().equalsIgnoreCase("null"))
                 thresholdAdvisory.setText(ThresholdValueFormat.format(Double.parseDouble(assetType.getValueAdvisory())));
             if (assetType.getValueCaution() != null && !assetType.getValueCaution().equalsIgnoreCase("null"))
@@ -152,6 +158,8 @@ public class AssetTypeInfoController extends Controller implements Initializable
         for (TextField thresholdTextField : thresholdTextFieldList) {
             thresholdTextField.setPromptText("No current value for " + thresholdTextField.getId() + ". Please enter a value.");
         }
+        new Thread(this::initializeModelTab).start();
+
     }
 
     /**
@@ -163,8 +171,10 @@ public class AssetTypeInfoController extends Controller implements Initializable
     public void attachEvents() {
         // Change scenes to Assets.fxml
         backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(ASSET_TYPE_LIST_SCENE, backBtn.getScene()));
-
-        infoDeleteBtn.setOnMouseClicked(mouseEvent -> CustomDialog.DeleteAssetTypeConfirmationDialogShowAndWait(assetType.getId(), infoSaveBtn.getScene()));
+        ProgressIndicator progressIndicator = (ProgressIndicator) root.getChildren().get(0);
+        progressIndicator.setLayoutY(bigRoot.getPrefHeight() / 2);
+        progressIndicator.setLayoutX(bigRoot.getPrefWidth() / 2);
+        infoDeleteBtn.setOnMouseClicked(mouseEvent -> CustomDialog.DeleteAssetTypeConfirmationDialogShowAndWait(assetType.getId(), infoSaveBtn.getScene(), root, bigRoot));
 
         infoSaveBtn.setDisable(true);
         infoSaveBtn.setOnMouseClicked(mouseEvent -> {
@@ -176,7 +186,13 @@ public class AssetTypeInfoController extends Controller implements Initializable
         });
 
         attachAssetTypeTextFieldsEvents();
-        modelTab.setOnSelectionChanged(event -> initializeModelTab());
+        modelTab.setOnSelectionChanged(event -> {
+            modelsThumbPane.getChildren().clear();
+            generateThumbnails();
+            attachEventsModelTab();
+
+            updateRMSE();
+        });
     }
 
     /**
@@ -226,6 +242,7 @@ public class AssetTypeInfoController extends Controller implements Initializable
      * @author Talal, Jeremie
      */
     private void initializeModelTab() {
+        modelTab.setDisable(true);
         evaluateAllModelsBtn.setDisable(true);
         evaluateButtons = new ArrayList<>();
         evaluateButtons.add(evaluateAllModelsBtn);
@@ -238,11 +255,7 @@ public class AssetTypeInfoController extends Controller implements Initializable
         } catch (Exception e) {
             logger.error("Exception in getting all the models list", e);
         }
-        modelsThumbPane.getChildren().clear();
-        generateThumbnails();
-        attachEventsModelTab();
-
-        updateRMSE();
+        modelTab.setDisable(false);
     }
 
     /**
@@ -254,12 +267,18 @@ public class AssetTypeInfoController extends Controller implements Initializable
      * @author Talal
      */
     private void setTestAndTrainSliders() {
-        List<Asset> assets = assetDAO.getArchivedAssetsFromAssetTypeID(Integer.parseInt(assetType.getId()));
-        int nbOfAssets = assets.size();
-        trainSlider.setMax(nbOfAssets);
-        trainValue.setText(String.valueOf(trainSlider.getValue()));
-        testSlider.setMax(nbOfAssets);
-        testValue.setText(String.valueOf(testSlider.getValue()));
+        int nbOfAssets = assetDAO.getArchivedAssetsFromAssetTypeID(Integer.parseInt(assetType.getId()));
+        try {
+            if (nbOfAssets == 0) {
+                trainSlider.setMax(nbOfAssets);
+                trainValue.setText(String.valueOf(trainSlider.getValue()));
+                testSlider.setMax(nbOfAssets);
+                testValue.setText(String.valueOf(testSlider.getValue()));
+            }
+        } catch (Exception e) {
+            logger.error("There is no asset associated with that asset type", e);
+        }
+
 
         trainSlider.valueProperty().addListener((observableValue, number, t1) -> {
             trainSlider.setValue(t1.intValue());
@@ -305,7 +324,8 @@ public class AssetTypeInfoController extends Controller implements Initializable
         try {
             evaluateAllModelsBtn.setOnMouseClicked(mouseEvent -> {
                 for (TrainedModel model : modelObservableList) {
-                    saveModelToEvaluate(model);
+                    if (!modelDAO.isEvaluating(model))
+                        saveModelToEvaluate(model);
                 }
             });
         } catch (Exception e) {
@@ -405,15 +425,23 @@ public class AssetTypeInfoController extends Controller implements Initializable
      * @author Jeremie
      */
     public void generateThumbnails() {
-        ObservableList<Pane> modelPaneObservableList = FXCollections.observableArrayList();
+        modelPaneObservableList = FXCollections.observableArrayList();
         for (TrainedModel model : modelObservableList) {
             // Creating a Thumbnail element
             Pane modelPane = new Pane();
+
+            modelPane.setId(model.getModelName());
             modelPane.getStyleClass().add("thumbnailPane");
             modelPane.setOnMouseClicked(mouseEvent -> {
                 modelPanes.handleModelSelection(model, modelPane);
                 generateParameters(model, false);
             });
+
+            ProgressIndicator progressIndicator = new ProgressIndicator();
+            progressIndicator.setVisible(false);
+            progressIndicator.setLayoutX(90);
+            progressIndicator.setLayoutY(90);
+            modelPane.getChildren().add(progressIndicator);
 
             // Generating items to display for the Thumbnail
             Text modelNameLabel = new Text(model.getModelName());
@@ -428,7 +456,11 @@ public class AssetTypeInfoController extends Controller implements Initializable
             evaluateModelBtn.setText("Evaluate");
             evaluateModelBtn.setDisable(true);
             evaluateButtons.add(evaluateModelBtn);
-            evaluateModelBtn.setOnMouseClicked(mouseEvent -> saveModelToEvaluate(model));
+            evaluateModelBtn.setOnMouseClicked(mouseEvent -> {
+                modelPaneObservableList.filtered(pane -> pane.getId().equals(model.getModelName())).get(0).getChildren().get(0).setVisible(false);
+                modelPaneObservableList.filtered(pane -> pane.getId().equals(model.getModelName())).get(0).setDisable(false);
+                saveModelToEvaluate(model);
+            });
 
             //Setting IDs for the elements
             modelNameLabel.getStyleClass().add("thumbnailHeader");
@@ -461,6 +493,9 @@ public class AssetTypeInfoController extends Controller implements Initializable
             modelPane.getChildren().add(evaluateModelBtn);
 
             modelPaneObservableList.add(modelPane);
+
+            if (modelDAO.isEvaluating(model))
+                progressIndicator.setVisible(true);
         }
         modelPanes.setModelThumbnailsContainerPane(modelPaneObservableList, modelsThumbPane);
         modelPanes.highlightAssociatedModel(modelPaneObservableList, associatedModelID);
@@ -572,18 +607,31 @@ public class AssetTypeInfoController extends Controller implements Initializable
      * @author Talal
      */
     public void updateRMSE() {
-        for (Model model : modelObservableList) {
+        for (TrainedModel model : modelObservableList) {
             model.setRMSE(String.valueOf(RMSEValueFormat.format(modelDAO.getLatestRMSE(model.getModelID(), Integer.parseInt(assetType.getId())))));
+            handleProgressCircle(model);
+
         }
         Timeline rmseTimeline = new Timeline(new KeyFrame(Duration.millis(3000), e ->
         {
-            for (Model model : modelObservableList) {
+            for (TrainedModel model : modelObservableList) {
                 model.setRMSE(String.valueOf(RMSEValueFormat.format(modelDAO.getLatestRMSE(model.getModelID(), Integer.parseInt(assetType.getId())))));
+                handleProgressCircle(model);
             }
         }));
 
         rmseTimeline.setCycleCount(Animation.INDEFINITE); // loop forever
         rmseTimeline.play();
         addTimeline(rmseTimeline);
+    }
+
+    private void handleProgressCircle(TrainedModel model) {
+        if (modelDAO.isEvaluating(model)) {
+            modelPaneObservableList.filtered(pane -> pane.getId().equals(model.getModelName())).get(0).getChildren().get(0).setVisible(true);
+            modelPaneObservableList.filtered(pane -> pane.getId().equals(model.getModelName())).get(0).setDisable(true);
+        } else {
+            modelPaneObservableList.filtered(pane -> pane.getId().equals(model.getModelName())).get(0).getChildren().get(0).setVisible(false);
+            modelPaneObservableList.filtered(pane -> pane.getId().equals(model.getModelName())).get(0).setDisable(false);
+        }
     }
 }

@@ -14,6 +14,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -21,12 +22,15 @@ import javafx.scene.text.Text;
 import utilities.AssetTypeList;
 import utilities.TextConstants;
 import utilities.UIUtilities;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class AssetTypeController extends Controller implements Initializable {
 
+    private final int THUMBNAIL_WIDTH = 247;
+    private final int PADDING = 54;
     //Configure the table and columns
     @FXML
     private TableView<AssetTypeList> tableView;
@@ -46,23 +50,22 @@ public class AssetTypeController extends Controller implements Initializable {
     private TableColumn<AssetTypeList, Double> columnWarning;
     @FXML
     private TableColumn<AssetTypeList, Double> columnFailed;
-
     @FXML
     private FlowPane assetsTypeThumbPane;
-
     //Configure buttons
     @FXML
     private Button addTypeBtn;
-
+    @FXML
+    private AnchorPane root;
     private UIUtilities uiUtilities;
     private ArrayList<AssetType> assetTypes;
     private AssetTypeDAOImpl assetTypeDOA;
-    private final int THUMBNAIL_WIDTH = 247;
-    private final int PADDING = 54;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         uiUtilities = new UIUtilities();
+        root.setOpacity(0);
+        uiUtilities.fadeInTransition(root);
         assetTypeDOA = new AssetTypeDAOImpl();
         assetTypes = assetTypeDOA.getAssetTypeList();
         attachEvents();

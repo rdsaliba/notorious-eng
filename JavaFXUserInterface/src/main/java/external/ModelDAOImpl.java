@@ -27,6 +27,7 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
     private static final String UPDATE_MODEL_FOR_ASSET_TYPE = "UPDATE trained_model tm, model m SET tm.model_id = ?, tm.serialized_model =?  WHERE tm.asset_type_id = ? AND tm.status_id = ? AND tm.model_id=m.model_id AND m.archived = 0";
     private static final String UPDATE_RETRAIN = "UPDATE trained_model tm, model m SET retrain = true WHERE tm.asset_type_id = ? AND tm.status_id = ? AND tm.model_id=m.model_id AND m.archived = 0";
     private static final String GET_MODEL_FROM_ASSET_TYPE = "SELECT * FROM trained_model, model WHERE trained_model.model_id = model.model_id AND trained_model.asset_type_id = ? AND trained_model.status_id = ? AND model.archived = 0";
+    private static final String GET_RETRAIN_STATUS = "SELECT retrain FROM trained_model tm, model m WHERE tm.model_id=? AND tm.asset_type_id=? AND tm.status_id=? AND tm.model_id = m.model_id AND m.archived=0";
 
     public static String convertToByteString(Object object) throws IOException {
         try (ByteArrayOutputStream bos = new ByteArrayOutputStream(); ObjectOutput out = new ObjectOutputStream(bos)) {
@@ -231,6 +232,23 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
             logger.error("SQL Exception in getLatestRMSE()", e);
         }
         return estimate;
+    }
+
+    @Override
+    public boolean isEvaluating(TrainedModel model) {
+        boolean evaluating = false;
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_RETRAIN_STATUS)) {
+            ps.setInt(1, model.getModelID());
+            ps.setInt(2, model.getAssetTypeID());
+            ps.setInt(3, Constants.STATUS_EVALUATION);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next())
+                    evaluating = rs.getBoolean("retrain");
+            }
+        } catch (SQLException e) {
+            logger.error("SQL Exception in getLatestRMSE()", e);
+        }
+        return evaluating;
     }
 
     /**

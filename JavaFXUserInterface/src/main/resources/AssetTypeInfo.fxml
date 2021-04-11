@@ -6,16 +6,20 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 <?import java.net.URL?>
-<AnchorPane styleClass="root" xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity"
+<AnchorPane fx:id="bigRoot" styleClass="root" xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity"
             maxWidth="-Infinity" minHeight="-Infinity"
             minWidth="-Infinity"
             prefHeight="834.0" prefWidth="1194.0" xmlns="http://javafx.com/javafx/11.0.1"
             fx:controller="controllers.AssetTypeInfoController">
+
     <children>
         <fx:include source="Navigation.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0"/>
-        <AnchorPane prefHeight="200.0" prefWidth="200.0" styleClass="container" AnchorPane.bottomAnchor="0.0"
+        <AnchorPane fx:id="root" prefHeight="200.0" prefWidth="200.0" styleClass="container"
+                    AnchorPane.bottomAnchor="0.0"
                     AnchorPane.leftAnchor="59.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
+                <ProgressIndicator layoutX="33.0" layoutY="33.0" scaleX="10" scaleY="10"
+                                   visible="false"/>
                 <AnchorPane prefHeight="80.0" prefWidth="952.0" styleClass="titleBar" AnchorPane.leftAnchor="0.0"
                             AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <children>

@@ -12,7 +12,7 @@
             prefHeight="834.0" prefWidth="1194.0" xmlns="http://javafx.com/javafx/11.0.1"
             fx:controller="controllers.AddAssetTypeController">
     <fx:include source="Navigation.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0"/>
-    <AnchorPane layoutX="75.0" prefHeight="712.0" prefWidth="951.0"
+    <AnchorPane fx:id="root" layoutX="75.0" prefHeight="712.0" prefWidth="951.0"
                 styleClass="background" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="59.0"
                 AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <AnchorPane prefHeight="80.0" prefWidth="1135.0" styleClass="titleBar" AnchorPane.leftAnchor="0.0"

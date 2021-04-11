@@ -31,7 +31,7 @@ public interface AssetDAO {
 
     Asset createFullAssetFromQueryResult(ResultSet assetsQuery) throws SQLException;
 
-    List<Asset> getArchivedAssetsFromAssetTypeID(int assetTypeID);
+    int getArchivedAssetsFromAssetTypeID(int assetTypeID);
 
     void setAssetToBeUpdated(int assetID);
 

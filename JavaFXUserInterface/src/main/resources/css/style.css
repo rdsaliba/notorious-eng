@@ -143,3 +143,8 @@
     -fx-border-color: #D3D3D3;
 }
 /* Panel Styles (END) */
+
+ProgressIndicator {
+    -fx-view-order: -1;
+    -fx-opacity: 1;
+}

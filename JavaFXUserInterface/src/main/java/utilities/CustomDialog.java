@@ -3,7 +3,6 @@ package utilities;
 
 import app.item.Asset;
 import external.AssetDAOImpl;
-import external.AssetTypeDAOImpl;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -11,6 +10,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressIndicator;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -20,6 +21,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import utilities.services.DeleteAssetTypeService;
 
 import java.util.Comparator;
 
@@ -70,14 +72,17 @@ public class CustomDialog extends Stage {
         setScene(new Scene(rootPane, null));
     }
 
-    public static void DeleteAssetTypeConfirmationDialogShowAndWait(String assetTypeID, Scene scene) {
+    public static void DeleteAssetTypeConfirmationDialogShowAndWait(String assetTypeID, Scene scene,AnchorPane root, AnchorPane bigRoot) {
         CustomDialog dialog = new CustomDialog(DELETE_ASSET_TYPE_DIALOG_HEADER, DELETE_ASSET_TYPE_DIALOG_CONTENT);
-        AssetTypeDAOImpl assetTypeDAO = new AssetTypeDAOImpl();
-
+        DeleteAssetTypeService deleteAssetTypeService = new DeleteAssetTypeService(scene, Integer.parseInt(assetTypeID));
+        ProgressIndicator progressIndicator = (ProgressIndicator) root.getChildren().get(0);
+        progressIndicator.visibleProperty().bind(deleteAssetTypeService.runningProperty());
+        bigRoot.disableProperty().bind(deleteAssetTypeService.runningProperty());
+        progressIndicator.setPrefHeight(root.getHeight());
+        progressIndicator.setPrefWidth(root.getWidth());
         dialog.getOkButton().setOnAction(e -> {
-            assetTypeDAO.deleteAssetTypeByID(assetTypeID);
-            uiUtilities.changeScene(ASSET_TYPE_LIST_SCENE, scene);
             dialog.closeDialog();
+            deleteAssetTypeService.start();
         });
 
         dialog.openDialog();
@@ -88,8 +93,8 @@ public class CustomDialog extends Stage {
 
         dialog.getRootPane().getChildren().remove(dialog.getCancelBtn());
         dialog.getOkButton().setOnAction(e -> {
-            uiUtilities.changeScene(ASSET_TYPE_INFO_SCENE, dialog.getScene());
             dialog.closeDialog();
+            uiUtilities.changeScene(ASSET_TYPE_INFO_SCENE, dialog.getScene());
         });
 
         dialog.openDialog();
@@ -98,11 +103,10 @@ public class CustomDialog extends Stage {
     public static void deleteAssetConfirmationDialogShowAndWait(int assetID, Scene scene) {
         CustomDialog dialog = new CustomDialog(DELETE_ASSET_DIALOG_HEADER, DELETE_ASSET_DIALOG_CONTENT);
         AssetDAOImpl assetDAOImpl = new AssetDAOImpl();
-
         dialog.getOkButton().setOnAction(e -> {
-            assetDAOImpl.deleteAssetByID(assetID);
-            uiUtilities.changeScene(ASSETS_SCENE, scene);
             dialog.closeDialog();
+            uiUtilities.changeScene(ASSETS_SCENE, scene);
+            assetDAOImpl.deleteAssetByID(assetID);
         });
 
         dialog.openDialog();
@@ -113,8 +117,8 @@ public class CustomDialog extends Stage {
 
         dialog.getRootPane().getChildren().remove(dialog.getCancelBtn());
         dialog.getOkButton().setOnAction(e -> {
-            uiUtilities.changeScene(ASSETS_SCENE, dialog.getScene());
             dialog.closeDialog();
+            uiUtilities.changeScene(ASSETS_SCENE, dialog.getScene());
         });
 
         dialog.openDialog();
@@ -139,10 +143,14 @@ public class CustomDialog extends Stage {
 
         dialog.getOkButton().setText(SAVE_LABEL);
         dialog.getOkButton().setOnAction(e -> {
-            assetDAO.deleteAssetMeasurementsAfterTimeCycle(asset.getId(), selectedCycle[0]);
-            assetDAO.setAssetToBeArchived(asset.getId());
-            uiUtilities.changeScene(ASSETS_SCENE, scene);
             dialog.closeDialog();
+            uiUtilities.changeScene(ASSETS_SCENE, scene);
+
+            new Thread(() -> {
+                assetDAO.deleteAssetMeasurementsAfterTimeCycle(asset.getId(), selectedCycle[0]);
+                assetDAO.setAssetToBeArchived(asset.getId());
+            }).start();
+
         });
 
         dialog.openDialog();
