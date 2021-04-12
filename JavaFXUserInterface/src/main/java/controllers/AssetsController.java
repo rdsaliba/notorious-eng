@@ -465,12 +465,10 @@ public class AssetsController extends Controller implements Initializable {
                 rulLabel.setLayoutY(239.0);
                 rulPane.setLayoutX(15.0);
                 rulPane.setLayoutY(243.0);
-                rulValue.setLayoutY(21.0);
                 recommendationLabel.setLayoutX(164.0);
                 recommendationLabel.setLayoutY(238.0);
                 statusPane.setLayoutX(133.0);
                 statusPane.setLayoutY(243.0);
-                recommendation.setLayoutY(21.0);
 
                 pane.getChildren().add(assetName);
                 pane.getChildren().add(assetType);
