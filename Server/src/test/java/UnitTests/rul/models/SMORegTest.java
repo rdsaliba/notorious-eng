@@ -16,7 +16,7 @@ import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class SMORegTest {
     private ModelsController modelsController;
@@ -61,5 +61,11 @@ public class SMORegTest {
 
         assertEquals("Asserting the CComplexity parameter was changed", ((SMORegModelImpl) modelsController.getModelStrategy()).getSmOregObject().getC(), cComplexityPara.getFloatValue(), 0.1f);
         assertEquals("Asserting the BatchSize parameter was changed", ((SMORegModelImpl) modelsController.getModelStrategy()).getSmOregObject().getBatchSize(), String.valueOf(batchSizePara.getIntValue()));
+    }
+
+    @Test
+    public void getDefaultParameters()  {
+        assertNotNull("DefaultParameters exist", modelsController.getModelStrategy().getDefaultParameters());
+        assertTrue("Should contain 2 default parameters", (modelsController.getModelStrategy()).getDefaultParameters().size() == 2);
     }
 }

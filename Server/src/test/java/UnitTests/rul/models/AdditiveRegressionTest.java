@@ -17,7 +17,7 @@ import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class AdditiveRegressionTest
 {
@@ -79,5 +79,11 @@ public class AdditiveRegressionTest
         assertEquals("Asserting the NumIterations parameter was changed", ((AdditiveRegressionModelImpl) modelsController.getModelStrategy()).getAdditiveRegressionObject().getNumIterations(), numIterationsPara.getIntValue());
         assertEquals("Asserting the Resume parameter was changed", ((AdditiveRegressionModelImpl) modelsController.getModelStrategy()).getAdditiveRegressionObject().getResume(), resumePara.getBoolValue());
         assertEquals("Asserting the Shrinkage parameter was changed", ((AdditiveRegressionModelImpl) modelsController.getModelStrategy()).getAdditiveRegressionObject().getShrinkage(), shrinkagePara.getFloatValue(), 0.001f);
+    }
+
+    @Test
+    public void getDefaultParameters()  {
+        assertNotNull("DefaultParameters exist", modelsController.getModelStrategy().getDefaultParameters());
+        assertTrue("Should contain 5 default parameters", (modelsController.getModelStrategy()).getDefaultParameters().size() == 5);
     }
 }

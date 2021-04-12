@@ -16,7 +16,7 @@ import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class RandomSubSpaceTest {
     private ModelsController modelsController;
@@ -70,5 +70,11 @@ public class RandomSubSpaceTest {
         assertEquals("Asserting the NumExecutionSlots parameter was changed", ((RandomSubSpaceModelImpl) modelsController.getModelStrategy()).getRandomSubSpaceObject().getNumExecutionSlots(), numExecutionSlotsPara.getIntValue());
         assertEquals("Asserting the NumIterations parameter was changed", ((RandomSubSpaceModelImpl) modelsController.getModelStrategy()).getRandomSubSpaceObject().getNumIterations(), numIterationsPara.getIntValue());
         assertEquals("Asserting the SubSpaceSize parameter was changed", ((RandomSubSpaceModelImpl) modelsController.getModelStrategy()).getRandomSubSpaceObject().getSubSpaceSize(), subSpaceSizePara.getFloatValue(), 0.1);
+    }
+
+    @Test
+    public void getDefaultParameters()  {
+        assertNotNull("DefaultParameters exist", modelsController.getModelStrategy().getDefaultParameters());
+        assertTrue("Should contain 4 default parameters", (modelsController.getModelStrategy()).getDefaultParameters().size() == 4);
     }
 }

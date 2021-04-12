@@ -17,7 +17,7 @@ import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class MultilayerPerceptronTest {
     private ModelsController modelsController;
@@ -119,5 +119,12 @@ public class MultilayerPerceptronTest {
         assertEquals("Asserting the Momentum parameter was changed", ((MultilayerPerceptronModelImpl) modelsController.getModelStrategy()).getMultilayerPerceptronObject().getMomentum(), momentumPara.getFloatValue(), 0.1F);
         assertEquals("Asserting the Trainingtime parameter was changed", ((MultilayerPerceptronModelImpl) modelsController.getModelStrategy()).getMultilayerPerceptronObject().getTrainingTime(), trainingTimePara.getIntValue());
         assertEquals("Asserting the ValidationSize parameter was changed", ((MultilayerPerceptronModelImpl) modelsController.getModelStrategy()).getMultilayerPerceptronObject().getValidationSetSize(), validationSizePara.getIntValue());
+    }
+
+    @Test
+    public void getDefaultParameters()  {
+        assertNotNull("DefaultParameters exist", modelsController.getModelStrategy().getDefaultParameters());
+        assertTrue("Should contain 14 default parameters", (modelsController.getModelStrategy()).getDefaultParameters().size() == 14);
+
     }
 }
