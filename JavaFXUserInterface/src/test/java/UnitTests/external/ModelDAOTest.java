@@ -46,6 +46,6 @@ public class ModelDAOTest {
     @Test
     public void getModelEvaluationTest() {
         double RMSE = modelDAO.getLatestRMSE(8, 4);
-        assertEquals(-1000000,RMSE,0.5);
+        assertEquals(97.59, RMSE, 0.5);
     }
 }

@@ -17,8 +17,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class LinearRegressionTest {
     private ModelsController modelsController;
@@ -81,5 +80,12 @@ public class LinearRegressionTest {
         assertEquals("Asserting the UseQRDecomposition parameter was changed", ((LinearRegressionModelImpl) modelsController.getModelStrategy()).getLinearRegressionObject().getUseQRDecomposition(), useQRDecompositionPara.getBoolValue());
         assertEquals("Asserting the EliminateColinearAttributes parameter was changed", ((LinearRegressionModelImpl) modelsController.getModelStrategy()).getLinearRegressionObject().getEliminateColinearAttributes(), eliminateColinearAttributesPara.getBoolValue());
         assertEquals("Asserting the BatchSize parameter was changed", ((LinearRegressionModelImpl) modelsController.getModelStrategy()).getLinearRegressionObject().getBatchSize(), String.valueOf(batchSizePara.getIntValue()));
+        assertEquals("Asserting the Ridge parameter was changed", ((LinearRegressionModelImpl) modelsController.getModelStrategy()).getLinearRegressionObject().getRidge(), ridgePara.getFloatValue(), 0.001f);
+    }
+
+    @Test
+    public void getDefaultParameters()  {
+        assertNotNull("DefaultParameters exist", modelsController.getModelStrategy().getDefaultParameters());
+        assertTrue("Should contain 4 default parameters", (modelsController.getModelStrategy()).getDefaultParameters().size() == 4);
     }
 }

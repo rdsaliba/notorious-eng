@@ -15,7 +15,7 @@ import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class RandomCommitteeTest {
     private ModelsController modelsController;
@@ -64,6 +64,13 @@ public class RandomCommitteeTest {
         assertEquals("Asserting the BatchSize parameter was changed", ((RandomCommitteeModelImpl) modelsController.getModelStrategy()).getRandomCommitteeObject().getBatchSize(), String.valueOf(batchSizePara.getIntValue()));
         assertEquals("Asserting the NumExecutionSlots parameter was changed", ((RandomCommitteeModelImpl) modelsController.getModelStrategy()).getRandomCommitteeObject().getNumExecutionSlots(), numExecutionSlotsPara.getIntValue());
         assertEquals("Asserting the NumIterations parameter was changed", ((RandomCommitteeModelImpl) modelsController.getModelStrategy()).getRandomCommitteeObject().getNumIterations(), numIterationsPara.getIntValue());
+    }
+
+    @Test
+    public void getDefaultParameters()  {
+        assertNotNull("DefaultParameters exist", modelsController.getModelStrategy().getDefaultParameters());
+        assertTrue("Should contain 3 default parameters", (modelsController.getModelStrategy()).getDefaultParameters().size() == 3);
+
     }
 
 }

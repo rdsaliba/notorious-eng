@@ -16,7 +16,7 @@ import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class RandomForestTest {
     private ModelsController modelsController;
@@ -96,5 +96,16 @@ public class RandomForestTest {
         assertEquals("Asserting the MaxDepth parameter was changed", ((RandomForestModelImpl) modelsController.getModelStrategy()).getRandomForestObject().getMaxDepth(), maxDepthPara.getIntValue());
         assertEquals("Asserting the BreakTiesRandomly parameter was changed", ((RandomForestModelImpl) modelsController.getModelStrategy()).getRandomForestObject().getBreakTiesRandomly(), breakTiesRandomlyPara.getBoolValue());
         assertEquals("Asserting the NumberOfFeatures parameter was changed", ((RandomForestModelImpl) modelsController.getModelStrategy()).getRandomForestObject().getNumFeatures(), numFeaturesPara.getIntValue());
+        assertEquals("Asserting the StoreOutOfBagPredictions parameter was changed", ((RandomForestModelImpl) modelsController.getModelStrategy()).getRandomForestObject().getStoreOutOfBagPredictions(), storeOutOfBagPredictionsPara.getBoolValue());
+        assertEquals("Asserting the CalcOutOfBag parameter was changed", ((RandomForestModelImpl) modelsController.getModelStrategy()).getRandomForestObject().getCalcOutOfBag(), calcOutBagPara.getBoolValue());
+        assertEquals("Asserting the ComputeAttributeImportance parameter was changed", ((RandomForestModelImpl) modelsController.getModelStrategy()).getRandomForestObject().getComputeAttributeImportance(), computeAttributeImportancePara.getBoolValue());
+        assertEquals("Asserting the BagSizePercent parameter was changed", ((RandomForestModelImpl) modelsController.getModelStrategy()).getRandomForestObject().getBagSizePercent(), bagSizePercentPara.getIntValue());
+        assertEquals("Asserting the NumExecutionSlots parameter was changed", ((RandomForestModelImpl) modelsController.getModelStrategy()).getRandomForestObject().getNumExecutionSlots(), numExecutionSlotsPara.getIntValue());
+    }
+
+    @Test
+    public void getDefaultParameters()  {
+        assertNotNull("DefaultParameters exist", modelsController.getModelStrategy().getDefaultParameters());
+        assertTrue("Should contain 10 default parameters", (modelsController.getModelStrategy()).getDefaultParameters().size() == 10);
     }
 }

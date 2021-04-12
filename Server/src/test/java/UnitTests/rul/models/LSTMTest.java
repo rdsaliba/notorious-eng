@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class LSTMTest {
     private ModelsController modelsController;
@@ -109,5 +109,19 @@ public class LSTMTest {
         assertEquals("Asserting the WeightInit parameter was changed", ((LSTMModelImpl) modelsController.getModelStrategy()).getLSTMNeuralObject().getWeightInit().toString(), weightInitPara.getSelectedValue());
         assertEquals("Asserting the OptimizationAlgo parameter was changed", ((LSTMModelImpl) modelsController.getModelStrategy()).getLSTMNeuralObject().getOptimizationAlgo().toString(), optimizationAlgoPara.getSelectedValue());
         assertEquals("Asserting the QueueSize parameter was changed", ((LSTMModelImpl) modelsController.getModelStrategy()).getLSTMObject().getQueueSize(), queueSizePara.getIntValue());
+        assertEquals("Asserting the Resume parameter was changed", ((LSTMModelImpl) modelsController.getModelStrategy()).getLSTMObject().getResume(), resumePara.getBoolValue());
+        assertEquals("Asserting the FilterMode parameter was changed", ((LSTMModelImpl) modelsController.getModelStrategy()).getLSTMObject().isFilterMode(), filterModePara.getBoolValue());
+        assertEquals("Asserting the DoNotClearFileSystemCache parameter was changed", ((LSTMModelImpl) modelsController.getModelStrategy()).getLSTMObject().getDoNotClearFilesystemCache(), doNotClearFileSystemCachePara.getBoolValue());
+        assertEquals("Asserting the MinimizeObjective parameter was changed", ((LSTMModelImpl) modelsController.getModelStrategy()).getLSTMNeuralObject().isMinimize(), minimizeObjectivePara.getBoolValue());
+        assertEquals("Asserting the NumberOfEpoch parameter was changed", ((LSTMModelImpl) modelsController.getModelStrategy()).getLSTMObject().getNumEpochs(), numberOfEpochPara.getIntValue());
+        assertEquals("Asserting the NumberOfGPU parameter was changed", ((LSTMModelImpl) modelsController.getModelStrategy()).getLSTMObject().getNumGPUs(), numberOfGPUPara.getIntValue());
+        assertEquals("Asserting the AverageFrequency parameter was changed", ((LSTMModelImpl) modelsController.getModelStrategy()).getLSTMObject().getParameterAveragingFrequency(), avgFrequencyPara.getIntValue());
+    }
+
+    @Test
+    public void getDefaultParameters()  {
+        assertNotNull("DefaultParameters exist", modelsController.getModelStrategy().getDefaultParameters());
+        assertTrue("Should contain 13 default parameters", (modelsController.getModelStrategy()).getDefaultParameters().size() == 13);
+
     }
 }
