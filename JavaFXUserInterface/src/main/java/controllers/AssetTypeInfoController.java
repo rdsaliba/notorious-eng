@@ -25,6 +25,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.util.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -450,11 +451,13 @@ public class AssetTypeInfoController extends Controller implements Initializable
             // Generating items to display for the Thumbnail
             Text modelNameLabel = new Text(model.getModelName());
             Text modelDescriptionText = new Text(model.getDescription());
+            TextFlow textFlowDescription = new TextFlow(modelDescriptionText);
+            textFlowDescription.setMaxWidth(217);
             Text rmseLabel = new Text(RMSE);
             Text rmseValue = new Text();
 
             HBox rmsePane = new HBox();
-            rmsePane.getStyleClass().add(VALUE_PANE_STYLE_CLASS);
+            rmsePane.getStyleClass().addAll(VALUE_PANE_STYLE_CLASS, "none");
 
             Button evaluateModelBtn = new Button();
             evaluateModelBtn.setText("Evaluate");
@@ -478,22 +481,20 @@ public class AssetTypeInfoController extends Controller implements Initializable
             //Setting the Layout of the elements
             modelNameLabel.setLayoutX(15.0);
             modelNameLabel.setLayoutY(35.0);
-            modelDescriptionText.setLayoutX(15.0);
-            modelDescriptionText.setLayoutY(80.0);
+            textFlowDescription.setLayoutX(15.0);
+            textFlowDescription.setLayoutY(45.0);
             rmseLabel.setLayoutX(47.0);
             rmseLabel.setLayoutY(151.0);
             rmsePane.setLayoutX(15.0);
             rmsePane.setLayoutY(155.0);
-            rmseValue.setLayoutX(30.0);
-            rmseValue.setLayoutY(177.0);
             evaluateModelBtn.setLayoutX(133.0);
             evaluateModelBtn.setLayoutY(155.0);
 
             modelPane.getChildren().add(modelNameLabel);
-            modelPane.getChildren().add(modelDescriptionText);
+            modelPane.getChildren().add(textFlowDescription);
             modelPane.getChildren().add(rmseLabel);
+            rmsePane.getChildren().add(rmseValue);
             modelPane.getChildren().add(rmsePane);
-            modelPane.getChildren().add(rmseValue);
             modelPane.getChildren().add(evaluateModelBtn);
 
             modelPaneObservableList.add(modelPane);

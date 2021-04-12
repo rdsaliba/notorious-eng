@@ -72,3 +72,8 @@
 .error {
     -fx-font-size: 18px;
 }
+
+.none {
+    -fx-background-color: transparent;
+    -fx-border-color: #D3D3D3;
+}
