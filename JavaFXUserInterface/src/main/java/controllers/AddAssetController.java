@@ -17,26 +17,31 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.util.StringConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utilities.CustomDialog;
-import utilities.TextConstants;
+import utilities.FormInputValidation;
 import utilities.UIUtilities;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class AddAssetController implements Initializable {
+import static utilities.TextConstants.ASSETS_SCENE;
 
-    private static final String AND_OR = " and/or \n";
-    private final Text[] errorMessages = new Text[7];
-    private final boolean[] validInput = new boolean[7];
+public class AddAssetController extends Controller implements Initializable {
+
+    FileInputStream fileInputStream = null;
     Logger logger = LoggerFactory.getLogger(AddAssetController.class);
-    boolean validForm = true;
-
+    @FXML
+    private Button uploadBtn;
     @FXML
     private Button cancelBtn;
     @FXML
@@ -48,7 +53,7 @@ public class AddAssetController implements Initializable {
     @FXML
     private TextField assetNameInput;
     @FXML
-    private TextArea assetDescriptionTextArea;
+    private TextArea assetDescriptionInput;
     @FXML
     private TextField serialNumberInput;
     @FXML
@@ -60,11 +65,18 @@ public class AddAssetController implements Initializable {
     @FXML
     private TextField locationInput;
     @FXML
-    private AnchorPane inputError;
+    private ImageView imageView;
+    @FXML
+    private AnchorPane addAssetInformationAnchorPane;
+    @FXML
+    private AnchorPane root;
     private AssetDAOImpl assetDAOImpl;
     private AssetTypeDAOImpl assetTypeDAOImpl;
     private UIUtilities uiUtilities;
     private AssetType selectedAssetType;
+    private String imageName = "";
+    private boolean overrideImage = false;
+    private int imageId = 0;
 
     /**
      * Initialize runs before the scene is displayed.
@@ -79,9 +91,11 @@ public class AddAssetController implements Initializable {
         assetDAOImpl = new AssetDAOImpl();
         assetTypeDAOImpl = new AssetTypeDAOImpl();
         uiUtilities = new UIUtilities();
+        root.setOpacity(0);
+        uiUtilities.fadeInTransition(root);
         attachEvents();
         initializeFieldValues();
-        assetDescriptionTextArea.setWrapText(true);
+        assetDescriptionInput.setWrapText(true);
     }
 
     /**
@@ -96,17 +110,20 @@ public class AddAssetController implements Initializable {
         });
 
         saveBtn.setOnMouseClicked(mouseEvent -> {
+            imageValidation();
             Asset newAsset = assembleAsset();
-            if (formInputValidation() && !isAssetEmpty(newAsset)) {
+            if (FormInputValidation.assetFormInputValidation(addAssetInformationAnchorPane, assetNameInput, assetDescriptionInput, serialNumberInput, manufacturerInput, categoryInput, siteInput, locationInput) && !isAssetEmpty(newAsset)) {
                 saveAsset(newAsset);
-                CustomDialog.addSystemControllerSaveDialog(mouseEvent);
+                CustomDialog.saveNewAssetInformationDialogShowAndWait();
             }
         });
-        // Change scenes to Assets.fxml
-        backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE, backBtn.getScene()));
-        cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE, cancelBtn.getScene()));
-    }
 
+        uploadBtn.setOnAction(e -> openImageFile());
+
+        // Change scenes to Assets.fxml
+        backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(ASSETS_SCENE, backBtn.getScene()));
+        cancelBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(ASSETS_SCENE, cancelBtn.getScene()));
+    }
 
     /**
      * Initializes the default and possible values for all fields that can accept user input. For example,
@@ -141,13 +158,27 @@ public class AddAssetController implements Initializable {
         Asset newAsset = new Asset();
         newAsset.setName(assetNameInput.getText());
         newAsset.setAssetTypeID(selectedAssetType.getId());
-        newAsset.setDescription(assetDescriptionTextArea.getText());
+        newAsset.setDescription(assetDescriptionInput.getText());
         newAsset.setSerialNo(serialNumberInput.getText());
         newAsset.setManufacturer(manufacturerInput.getText());
         newAsset.setCategory(categoryInput.getText());
         newAsset.setSite(siteInput.getText());
         newAsset.setLocation(locationInput.getText());
+        setImage(newAsset);
+
         return newAsset;
+    }
+
+    private void setImage(Asset newAsset) {
+        //Case 1: User want to override the default image
+        if (overrideImage) {
+            newAsset.setImageId(assetDAOImpl.findImageIdByName(imageName));
+        }
+
+        //Case 2: User selected an image that already exists
+        if (imageId != 0) {
+            newAsset.setImageId(imageId);
+        }
     }
 
     /**
@@ -158,7 +189,6 @@ public class AddAssetController implements Initializable {
     public void saveAsset(Asset newAsset) {
         assetDAOImpl.insertAsset(newAsset);
     }
-
 
     /**
      * Checks to see if mandatory values of the asset are filled.
@@ -171,110 +201,61 @@ public class AddAssetController implements Initializable {
     }
 
     /**
-     * Displays an error for a field when the validation criteria are not respected.
+     * Saves the image associated with the added asset if there is one that was uploaded.
      *
-     * @author Najim
+     * @author Roy
      */
-    public boolean formInputValidation() {
-        String regexWordAndHyphen = "(?=\\S*[-])([a-zA-Z0-9-]*)|([a-zA-Z0-9]*)"; //Any word containing letters, numbers and hyphens
-        String regexLettersAndHyphen = "(?=\\S*[-])([a-zA-Z-]*)|([a-zA-Z]*)"; //Any word containing letters and hyphens
-        double horizontalPosition = 0;
+    private void imageValidation() {
+        imageId = assetDAOImpl.findImageIdByName(imageName);
 
-        logger.info("Start - formInputValidation() -> The form is : {}", validForm);
-
-        assetNameValidation(assetNameInput.getText(), horizontalPosition);
-        assetDescriptionValidation(assetDescriptionTextArea.getText(), horizontalPosition);
-        serialNumberValidation(serialNumberInput.getText(), regexWordAndHyphen, horizontalPosition);
-        manufacturerValidation(manufacturerInput.getText(), regexWordAndHyphen, horizontalPosition);
-        categoryValidation(categoryInput.getText(), regexLettersAndHyphen, horizontalPosition);
-        siteValidation(siteInput.getText(), regexWordAndHyphen, horizontalPosition);
-        locationValidation(locationInput.getText(), regexWordAndHyphen, horizontalPosition);
-
-        logger.info("End - formInputValidation() -> The form is : {}", validForm);
-
-        return validForm;
-    }
-
-    private void locationValidation(String locationValue, String regexWordAndHyphen, double horizontalPosition) {
-        if (locationValue.length() > 20 || !locationValue.trim().matches(regexWordAndHyphen)) {
-            validForm = false;
-            validInput[6] = false;
-            UIUtilities.createInputError(inputError, errorMessages, locationInput, TextConstants.MAX_20_CHARACTERS_ERROR + AND_OR + TextConstants.WORD_HYPHEN_ERROR, 533.0, horizontalPosition, 6);
-        } else {
-            validInput[6] = true;
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, locationInput, 6);
+        if (imageId == 0 && !imageName.isEmpty()) {
+            uploadImage(fileInputStream);
         }
     }
 
-    private void siteValidation(String siteValue, String regexWordAndHyphen, double horizontalPosition) {
-        if (siteValue.length() > 20 || !siteValue.trim().matches(regexWordAndHyphen)) {
-            validForm = false;
-            validInput[5] = false;
-            UIUtilities.createInputError(inputError, errorMessages, siteInput, TextConstants.MAX_20_CHARACTERS_ERROR + AND_OR + TextConstants.WORD_HYPHEN_ERROR, 482.0, horizontalPosition, 5);
-        } else {
-            validInput[5] = true;
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, siteInput, 5);
+    /**
+     * Opens the local file explorer to load a local image.
+     *
+     * @author Roy
+     */
+    private void openImageFile() {
+        FileChooser fileChooser = new FileChooser();
+        configureFileChooser(fileChooser);
+        File file = fileChooser.showOpenDialog(uploadBtn.getScene().getWindow());
+
+        if (file != null) {
+            try {
+                fileInputStream = new FileInputStream(file);
+                imageName = file.getName();
+                Image image = new Image(fileInputStream);
+                imageView.setImage(image);
+            } catch (IOException e) {
+                logger.error("openImageFile() : ", e);
+            }
         }
     }
 
-    private void categoryValidation(String categoryValue, String regexLettersAndHyphen, double horizontalPosition) {
-        if (categoryValue.length() > 20 || !categoryValue.trim().matches(regexLettersAndHyphen)) {
-            validForm = false;
-            validInput[4] = false;
-            UIUtilities.createInputError(inputError, errorMessages, categoryInput, TextConstants.MAX_20_CHARACTERS_ERROR + AND_OR + TextConstants.LETTER_NUMBER_ERROR, 384.0, horizontalPosition, 4);
-        } else {
-            validInput[4] = true;
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, categoryInput, 4);
-        }
+    /**
+     * Uploads the image to the database/project.
+     *
+     * @author Roy
+     */
+    private void uploadImage(FileInputStream fileInputStream) {
+        assetDAOImpl.storeImage(fileInputStream, imageName);
+        overrideImage = true;
     }
 
-    private void manufacturerValidation(String manufacturerValue, String regexWordAndHyphen, double horizontalPosition) {
-        if (manufacturerValue.length() > 20 || !manufacturerValue.trim().matches(regexWordAndHyphen)) {
-            validForm = false;
-            validInput[3] = false;
-            UIUtilities.createInputError(inputError, errorMessages, manufacturerInput, TextConstants.MAX_20_CHARACTERS_ERROR + AND_OR + TextConstants.WORD_HYPHEN_ERROR, 331.0, horizontalPosition, 3);
-        } else {
-            validInput[3] = true;
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, manufacturerInput, 3);
-        }
+    /**
+     * Configures the local explorer that is opened for searching .
+     *
+     * @author Roy
+     */
+    private void configureFileChooser(FileChooser fileChooser) {
+        fileChooser.setTitle("View Images");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("All Images", "*.*"),
+                new FileChooser.ExtensionFilter("JPG", "*.jpg"),
+                new FileChooser.ExtensionFilter("PNG", "*.png")
+        );
     }
-
-    private void serialNumberValidation(String serialNumberValue, String regexWordAndHyphen, double horizontalPosition) {
-        if (serialNumberValue.trim().isEmpty() || serialNumberValue.length() > 20 || !serialNumberValue.trim().matches(regexWordAndHyphen)) {
-            validForm = false;
-            validInput[2] = false;
-            UIUtilities.createInputError(inputError, errorMessages, serialNumberInput, TextConstants.EMPTY_FIELD_ERROR + AND_OR + TextConstants.MAX_20_CHARACTERS_ERROR + AND_OR + TextConstants.WORD_HYPHEN_ERROR, 276.5, horizontalPosition, 2);
-        } else {
-            validInput[2] = true;
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, serialNumberInput, 2);
-        }
-    }
-
-    private void assetDescriptionValidation(String assetDescriptionValue, double horizontalPosition) {
-        if (assetDescriptionValue.length() > 300) {
-            validForm = false;
-            validInput[1] = false;
-            UIUtilities.createInputError(inputError, errorMessages, assetDescriptionTextArea, TextConstants.MAX_300_CHARACTERS_ERROR, 210.0, horizontalPosition, 1);
-        } else {
-            validInput[1] = true;
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, assetDescriptionTextArea, 1);
-        }
-    }
-
-    private void assetNameValidation(String assetNameValue, double horizontalPosition) {
-        if (assetNameValue.trim().isEmpty()) {
-            validForm = false;
-            validInput[0] = false;
-            UIUtilities.createInputError(inputError, errorMessages, assetNameInput, TextConstants.EMPTY_FIELD_ERROR, 66.0, horizontalPosition, 0);
-        } else if (assetNameValue.length() > 50) {
-            validForm = false;
-            validInput[0] = false;
-            UIUtilities.createInputError(inputError, errorMessages, assetNameInput, TextConstants.MAX_50_CHARACTERS_ERROR, 66.0, horizontalPosition, 0);
-        } else {
-            validForm = true;
-            validInput[0] = true;
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, assetNameInput, 0);
-        }
-    }
-
 }

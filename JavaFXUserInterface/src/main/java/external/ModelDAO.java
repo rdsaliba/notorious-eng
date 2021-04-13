@@ -8,26 +8,29 @@
 package external;
 
 import app.item.Model;
+import app.item.TrainedModel;
 import rul.models.ModelStrategy;
 
 import java.sql.SQLException;
-import java.util.List;
+import java.util.ArrayList;
 
 public interface ModelDAO {
 
-    String getModelNameFromAssetTypeID(String assetTypeId);
+    String getModelNameAssociatedWithAssetType(String assetTypeId);
 
-    List<Model> getAllModelsForEvaluation(int assetTypeID);
+    int getModelIDAssociatedWithAssetType(String assetTypeID);
 
-    void updateModelAssociatedWithAssetType(int modelID, String assetTypeID);
+    ArrayList<TrainedModel> getModelsByAssetTypeID(String assetTypeID, int statusID);
+
+    void updateModelAssociatedWithAssetType(Model model, String assetTypeID);
 
     void setModelToTrain(String assetTypeID);
-
-    String getGetModelEvaluation(int modelID, String assetTypeID);
-
-    int getModelIDFromAssetTypeID(String assetTypeID);
 
     ModelStrategy getModelStrategy(int modelID, int assetTypeID) throws SQLException;
 
     void updateModelStrategy(ModelStrategy modelStrategy, int modelID, int assetTypeID);
+
+    double getLatestRMSE(int modelID, int assetTypeID);
+
+    boolean isEvaluating(TrainedModel model);
 }

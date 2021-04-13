@@ -39,13 +39,9 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
     @Override
     public ArrayList<Asset> getAssetsToUpdate() {
         ArrayList<Asset> assets = new ArrayList<>();
-        try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSETS_TO_UPDATE)) {
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    assets.add(createFullAssetFromQueryResult(rs));
-                }
-            } catch (SQLException e) {
-                logger.error("Exception in getAssetsToUpdate: ", e);
+        try (ResultSet rs = nonParamQuery(GET_ASSETS_TO_UPDATE)) {
+            while (rs.next()) {
+                assets.add(createFullAssetFromQueryResult(rs));
             }
         } catch (SQLException e) {
             logger.error("Exception in getAssetsToUpdate: ", e);
@@ -231,7 +227,8 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         newAsset.setSite(assetsQuery.getString("site"));
         newAsset.setSerialNo(assetsQuery.getString("sn"));
         newAsset.setRecommendation(assetsQuery.getString("recommendation"));
-        newAsset.setAssetTypeName(assetsQuery.getString("asset_type.name"));
+        newAsset.setAssetTypeName(getAssetTypeNameFromID(newAsset.getAssetTypeID()));
+        newAsset.setImageId(assetsQuery.getInt("imageId"));
 
         return newAsset;
     }
@@ -257,6 +254,8 @@ public class AssetDAOImpl extends DAO implements AssetDAO {
         newAsset.setSerialNo(assetsQuery.getString("sn"));
         newAsset.setRecommendation(assetsQuery.getString("recommendation"));
         newAsset.setAssetInfo(createAssetInfo(newAsset.getId()));
+        newAsset.setAssetTypeName(getAssetTypeNameFromID(newAsset.getAssetTypeID()));
+        newAsset.setImageId(assetsQuery.getInt("imageId"));
         return newAsset;
     }
 

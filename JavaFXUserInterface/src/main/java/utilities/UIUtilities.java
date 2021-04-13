@@ -9,31 +9,32 @@ package utilities;
 import app.item.Asset;
 import controllers.AssetInfoController;
 import controllers.AssetTypeInfoController;
+import controllers.Controller;
+import javafx.animation.FadeTransition;
 import javafx.animation.Timeline;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.control.TableRow;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.text.DecimalFormat;
-import java.text.ParsePosition;
+
+import static utilities.TextConstants.FXML;
 
 public class UIUtilities {
 
-    private static final String FXML = ".fxml";
-    private static final String ERROR_MESSAGE = "error-message";
-    private static final String INPUT_ERROR = "input-error";
     Logger logger = LoggerFactory.getLogger(UIUtilities.class);
 
     /**
      * Given a tableView this function will set the width to fit the largest content
      *
+     * @param table is the table view object that will be resized
      * @author Paul
      */
     public static void autoResizeColumns(TableView<?> table) {
@@ -56,106 +57,16 @@ public class UIUtilities {
     }
 
     /**
-     * This function validates an input of a change on a text field to only allow the change if it fits the DecimalFormat
-     *
-     * @author Paul
-     */
-    public static TextFormatter.Change checkFormat(DecimalFormat format, TextFormatter.Change c) {
-        if (c.getControlNewText().isEmpty())
-            return c;
-        ParsePosition parsePosition = new ParsePosition(0);
-        if (format.parse(c.getControlNewText(), parsePosition) == null || parsePosition.getIndex() < c.getControlNewText().length())
-            return null;
-        return c;
-    }
-
-    /**
-     * Creates an error message to be displayed next to the TextField or TextArea
-     * and makes the border of the TextField red
-     *
-     * @param inputError         The AnchorPane where error messages will be displayed in
-     * @param errorMessages      An array keeping track of error messages
-     * @param field              The field being validated
-     * @param msg                The error message
-     * @param verticalPosition   The vertical position of the error message
-     * @param horizontalPosition The horizontal position of the message
-     * @param i                  The field number/position (starting from 0)
-     * @author Najim
-     */
-    public static void createInputError(AnchorPane inputError, Text[] errorMessages, TextInputControl field, String msg, double verticalPosition, double horizontalPosition, int i) {
-        if (errorMessages[i] == null) {
-            errorMessages[i] = new Text(msg);
-            errorMessages[i].setLayoutY(verticalPosition);
-            errorMessages[i].setLayoutX(horizontalPosition);
-            errorMessages[i].getStyleClass().add(ERROR_MESSAGE);
-
-            inputError.getChildren().add(errorMessages[i]);
-            field.getStyleClass().add(INPUT_ERROR);
-        } else if (errorMessages[i].getText().equals("")) {
-            errorMessages[i].getStyleClass().remove(ERROR_MESSAGE);
-            field.getStyleClass().remove(INPUT_ERROR);
-
-            errorMessages[i] = new Text(msg);
-            errorMessages[i].setLayoutY(verticalPosition);
-            errorMessages[i].setLayoutX(horizontalPosition);
-            errorMessages[i].getStyleClass().add(ERROR_MESSAGE);
-
-            inputError.getChildren().add(errorMessages[i]);
-            field.getStyleClass().add(INPUT_ERROR);
-        }
-    }
-
-    /**
-     * Removes the error message from the AnchorPane and the styling added on the field being validated.
-     *
-     * @param inputError    The AnchorPane where error messages will be displayed in
-     * @param errorMessages An array keeping track of error messages
-     * @param validInput    An array keeping track of fields which are valid or invalid
-     * @param field         The field being validated
-     * @param i             The field number/position (starting from 0)
-     * @author Najim
-     */
-    public static void removeInputError(AnchorPane inputError, Text[] errorMessages, boolean[] validInput, TextInputControl field, int i) {
-        if (errorMessages[i] != null && validInput[i]) {
-            field.getStyleClass().remove(INPUT_ERROR);
-            inputError.getChildren().remove(errorMessages[i]);
-            errorMessages[i] = null;
-        }
-    }
-
-    /**
-     * Compares two thresholds and determines if the previous threshold is larger than the next.
-     *
-     * @param previousThreshold The Threshold preceding
-     * @param nextThreshold     The Threshold succeeding
-     * @author Najim
-     */
-    public static boolean compareThresholds(TextField previousThreshold, TextField nextThreshold) {
-        boolean valid = true;
-        if (!previousThreshold.getText().isEmpty() && !nextThreshold.getText().isEmpty()) {
-            double previousThresholdValue = Double.parseDouble(previousThreshold.getText());
-            double nextThresholdValue = Double.parseDouble(nextThreshold.getText());
-            if (previousThresholdValue <= nextThresholdValue) {
-                valid = false;
-            }
-        }
-        return valid;
-    }
-
-    /**
      * Changes scenes once an element is clicked.
      *
-     * @param mouseEvent
-     * @param fxmlFileName
-     * @param scene
+     * @param fxmlFileName is the name of the resource file for the scene
+     * @param scene        is the screen that will app will be changed to
      * @author Jeff
      */
-    public void changeScene(MouseEvent mouseEvent, String fxmlFileName, Scene scene) {
+    public void changeScene(String fxmlFileName, Scene scene) {
+        playFadeTransition(scene);
         try {
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource(fxmlFileName + FXML));
-            Parent parent = loader.load();
-            scene.setRoot(parent);
+            setSceneAndGetFxmlLoader(fxmlFileName, scene);
         } catch (IOException e) {
             logger.error("Exception in changeScene(): ", e);
         }
@@ -165,14 +76,13 @@ public class UIUtilities {
      * Changes scenes once an element is clicked, and
      * sends an asset to the new scene's controller.
      *
-     * @param mouseEvent
-     * @param fxmlFileName
+     * @param fxmlFileName the name of the fxml file that will be loaded for the scene
      * @author Jeff
      */
-    public void changeScene(MouseEvent mouseEvent, TableRow<Asset> row, String fxmlFileName, Asset asset, Scene scene) {
+    public void changeScene(TableRow<Asset> row, String fxmlFileName, Asset asset, Scene scene) {
         row.getScene().getWindow();
         if (!row.isEmpty()) {
-            changeScene(mouseEvent, fxmlFileName, asset, scene);
+            changeScene(fxmlFileName, asset, scene);
         }
     }
 
@@ -180,20 +90,17 @@ public class UIUtilities {
      * Changes scenes once an element is clicked, and
      * sends an asset type to the new scene's controller.
      *
-     * @param mouseEvent
-     * @param fxmlFileName
-     * @param row
-     * @param assetType
+     * @param fxmlFileName the name of the fxml file that will be loaded for the scene
+     * @param row          is the table row of an asset type
+     * @param assetType    is the asset type being observed
      * @author Najim, Jeff
      */
-    public void changeScene(MouseEvent mouseEvent, TableRow<AssetTypeList> row, String fxmlFileName, AssetTypeList assetType, Scene scene) {
+    public void changeScene(TableRow<AssetTypeList> row, String fxmlFileName, AssetTypeList assetType, Scene scene) {
+        playFadeTransition(scene);
         row.getScene().getWindow();
         try {
             if (!row.isEmpty()) {
-                FXMLLoader loader = new FXMLLoader();
-                loader.setLocation(getClass().getResource(fxmlFileName + FXML));
-                Parent parent = loader.load();
-                scene.setRoot(parent);
+                FXMLLoader loader = setSceneAndGetFxmlLoader(fxmlFileName, scene);
                 AssetTypeInfoController controller = loader.getController();
                 controller.initData(assetType);
             }
@@ -206,18 +113,14 @@ public class UIUtilities {
      * Changes scenes once an element is clicked, and
      * sends an asset to the new scene's controller.
      *
-     * @param mouseEvent   the mouse click event
-     * @param fxmlFileName the name of the fxml file we want to navigate to
+     * @param fxmlFileName the name of the fxml file that will be loaded for the scene
      * @param asset        the asset we want to sent to the other page
      * @author Paul, Jeff
      */
-    public void changeScene(MouseEvent mouseEvent, String fxmlFileName, Asset asset, Scene scene) {
-
+    public void changeScene(String fxmlFileName, Asset asset, Scene scene) {
+        playFadeTransition(scene);
         try {
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource(fxmlFileName + FXML));
-            Parent parent = loader.load();
-            scene.setRoot(parent);
+            FXMLLoader loader = setSceneAndGetFxmlLoader(fxmlFileName, scene);
             AssetInfoController controller = loader.getController();
             controller.initData(asset);
 
@@ -227,16 +130,88 @@ public class UIUtilities {
     }
 
     /**
-     * Stop the Timeline, and changes the scene.
+     * Creates a fade out animation
      *
-     * @param timeline
-     * @param mouseEvent
-     * @param s
-     * @param scene
+     * @param rootPane Root AnchorPane of the view/page
+     * @return FadeTransition object
+     * @author Najim
+     */
+    public FadeTransition fadeOut(AnchorPane rootPane) {
+        FadeTransition ft = new FadeTransition();
+        ft.setDuration(Duration.millis(700));
+        ft.setNode(rootPane);
+        ft.setFromValue(1);
+        ft.setToValue(0);
+
+        return ft;
+    }
+
+    /**
+     * Creates a fade in animation
+     *
+     * @param rootPane Root AnchorPane of the view/page
+     * @author Najim
+     */
+    public void fadeInTransition(AnchorPane rootPane) {
+        FadeTransition ft = new FadeTransition();
+        ft.setDuration(Duration.millis(700));
+        ft.setNode(rootPane);
+        ft.setFromValue(0);
+        ft.setToValue(1);
+        ft.play();
+    }
+
+    /**
+     * Changes scenes once an element is clicked, and
+     * sends an asset type to the new scene's controller.
+     *
+     * @param fxmlFileName the name of the fxml file that will be loaded for the scene
+     * @param assetType    the asset type we want to sent to the other page
      * @author Jeff
      */
-    public void changeScene(Timeline timeline, MouseEvent mouseEvent, String s, Scene scene) {
-        timeline.stop();
-        changeScene(mouseEvent, s, scene);
+    public void changeScene(String fxmlFileName, AssetTypeList assetType, Scene scene) {
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource(fxmlFileName + FXML));
+            Parent parent = loader.load();
+            scene.setRoot(parent);
+            scene.setUserData(loader);
+            AssetTypeInfoController controller = loader.getController();
+            controller.initData(assetType);
+
+        } catch (IOException e) {
+            logger.error("Exception in changeScene 4: ", e);
+        }
+    }
+
+    /**
+     * Plays a fade transition from a scene to another
+     *
+     * @param scene is the screen that will app will be changed to
+     * @author Paul, Najim
+     */
+    private void playFadeTransition(Scene scene) {
+        AnchorPane rootPane = (AnchorPane) scene.getRoot().lookup("root");
+        FadeTransition ft = fadeOut(rootPane);
+        ft.play();
+    }
+
+    /**
+     * Gets the FXML loader and sets its location. It also sets the root of the scene to be the
+     * fxml loader and set the user data of that scene from the fxml loader
+     *
+     * @param fxmlFileName the name of the fxml file that will be loaded for the scene
+     * @param scene        is the screen that will app will be changed to
+     * @author Paul, Jeff
+     */
+    private FXMLLoader setSceneAndGetFxmlLoader(String fxmlFileName, Scene scene) throws IOException {
+        ((Controller) ((FXMLLoader) scene.getUserData()).getController()).getTimelines().forEach(Timeline::stop);
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource(fxmlFileName + FXML));
+        Parent parent = loader.load();
+        scene.setRoot(parent);
+        scene.setUserData(loader);
+        return loader;
     }
 }
+

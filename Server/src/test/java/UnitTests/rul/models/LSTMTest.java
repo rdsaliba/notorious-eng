@@ -16,10 +16,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
-public class LSTMTest
-{
+public class LSTMTest {
     private ModelsController modelsController;
     //BoolParameters
     private BoolParameter resumePara;
@@ -35,7 +34,7 @@ public class LSTMTest
     private ListParameter cacheModePara; //options: NONE, MEMORY, FILESYSTEM
     private ListParameter optimizationAlgoPara; //options: STOCHASTIC_GRADIENT_DESCENT, LINE_GRADIENT_DESCENT,
     private ListParameter weightInitPara;     //options: XAVIER, RELU, IDENTITY, NORMAL, UNIFORM, ZERO, DISTRIBUTION
-    private StringParameter batchSizePara;
+    private IntParameter batchSizePara;
     //FloatParameter
     private FloatParameter learningRatePara;
 
@@ -45,7 +44,7 @@ public class LSTMTest
     private NeuralNetConfiguration neuralNetConfiguration;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         modelsController = new ModelsController(new LSTMModelImpl());
         resumePara = new BoolParameter("Resume", true);
         filterModePara = new BoolParameter("Filter Mode", true);
@@ -60,7 +59,7 @@ public class LSTMTest
         optimizationAlgoPara = new ListParameter("Optimization Algorithm", new ArrayList<>(Arrays.asList("STOCHASTIC_GRADIENT_DESCENT", "LINE_GRADIENT_DESCENT")), "LINE_GRADIENT_DESCENT");
         weightInitPara = new ListParameter("Weight Initializer", new ArrayList<>(Arrays.asList("XAVIER", "RELU", "IDENTITY", "NORMAL", "UNIFORM", "ZERO", "DISTRIBUTION")), "NORMAL");
         cacheModePara = new ListParameter("Cache Mode", new ArrayList<>(Arrays.asList("NONE", "MEMORY", "FILESYSTEM")), "NONE");
-        batchSizePara = new StringParameter("Batch Size", "5");
+        batchSizePara = new IntParameter("Batch Size", 5);
 
         learningRatePara = new FloatParameter("Learning Rate", 0.002F);
 
@@ -88,28 +87,41 @@ public class LSTMTest
 
     @Test
     public void trainModel() throws Exception {
-        FileReader file= new FileReader("src/test/resources/FD01_Train_RUL.arff");
+        FileReader file = new FileReader("src/test/resources/FD01_Train_RUL.arff");
         Instances set = new Instances(file);
-        set.setClassIndex(set.numAttributes()-1);
+        set.setClassIndex(set.numAttributes() - 1);
         Dl4jMlpClassifier LSTM = new Dl4jMlpClassifier();
         assertEquals("Should Return Linear Regression Model", LSTM.getClass(), modelsController.trainModel(set).getClass());
 
     }
 
     @Test
-    public void updateParam() throws Exception
-    {
+    public void updateParam() throws Exception {
         FileReader trainFile = new FileReader("src/test/resources/FD01_Train_RUL.arff");
-        Instances  trainData = new Instances(trainFile);
+        Instances trainData = new Instances(trainFile);
         trainData.setClassIndex(trainData.numAttributes() - 1);
 
         modelsController.setParameters(parameters);
         modelsController.trainModel(trainData);
 
-        assertEquals("Asserting the BatchSize parameter was changed", ((LSTMModelImpl) modelsController.getModelStrategy()).getLSTMObject().getBatchSize(), batchSizePara.getStringValue());
-        assertEquals("Asserting the CacheMode parameter was changed",((LSTMModelImpl) modelsController.getModelStrategy()).getLSTMObject().getCacheMode().toString(), cacheModePara.getSelectedValue());
-        assertEquals("Asserting the WeightInit parameter was changed",((LSTMModelImpl) modelsController.getModelStrategy()).getLSTMNeuralObject().getWeightInit().toString(), weightInitPara.getSelectedValue());
-        assertEquals("Asserting the OptimizationAlgo parameter was changed",((LSTMModelImpl) modelsController.getModelStrategy()).getLSTMNeuralObject().getOptimizationAlgo().toString(), optimizationAlgoPara.getSelectedValue());
-        assertEquals("Asserting the QueueSize parameter was changed",((LSTMModelImpl) modelsController.getModelStrategy()).getLSTMObject().getQueueSize(), queueSizePara.getIntValue());
+        assertEquals("Asserting the BatchSize parameter was changed", ((LSTMModelImpl) modelsController.getModelStrategy()).getLSTMObject().getBatchSize(), String.valueOf(batchSizePara.getIntValue()));
+        assertEquals("Asserting the CacheMode parameter was changed", ((LSTMModelImpl) modelsController.getModelStrategy()).getLSTMObject().getCacheMode().toString(), cacheModePara.getSelectedValue());
+        assertEquals("Asserting the WeightInit parameter was changed", ((LSTMModelImpl) modelsController.getModelStrategy()).getLSTMNeuralObject().getWeightInit().toString(), weightInitPara.getSelectedValue());
+        assertEquals("Asserting the OptimizationAlgo parameter was changed", ((LSTMModelImpl) modelsController.getModelStrategy()).getLSTMNeuralObject().getOptimizationAlgo().toString(), optimizationAlgoPara.getSelectedValue());
+        assertEquals("Asserting the QueueSize parameter was changed", ((LSTMModelImpl) modelsController.getModelStrategy()).getLSTMObject().getQueueSize(), queueSizePara.getIntValue());
+        assertEquals("Asserting the Resume parameter was changed", ((LSTMModelImpl) modelsController.getModelStrategy()).getLSTMObject().getResume(), resumePara.getBoolValue());
+        assertEquals("Asserting the FilterMode parameter was changed", ((LSTMModelImpl) modelsController.getModelStrategy()).getLSTMObject().isFilterMode(), filterModePara.getBoolValue());
+        assertEquals("Asserting the DoNotClearFileSystemCache parameter was changed", ((LSTMModelImpl) modelsController.getModelStrategy()).getLSTMObject().getDoNotClearFilesystemCache(), doNotClearFileSystemCachePara.getBoolValue());
+        assertEquals("Asserting the MinimizeObjective parameter was changed", ((LSTMModelImpl) modelsController.getModelStrategy()).getLSTMNeuralObject().isMinimize(), minimizeObjectivePara.getBoolValue());
+        assertEquals("Asserting the NumberOfEpoch parameter was changed", ((LSTMModelImpl) modelsController.getModelStrategy()).getLSTMObject().getNumEpochs(), numberOfEpochPara.getIntValue());
+        assertEquals("Asserting the NumberOfGPU parameter was changed", ((LSTMModelImpl) modelsController.getModelStrategy()).getLSTMObject().getNumGPUs(), numberOfGPUPara.getIntValue());
+        assertEquals("Asserting the AverageFrequency parameter was changed", ((LSTMModelImpl) modelsController.getModelStrategy()).getLSTMObject().getParameterAveragingFrequency(), avgFrequencyPara.getIntValue());
+    }
+
+    @Test
+    public void getDefaultParameters()  {
+        assertNotNull("DefaultParameters exist", modelsController.getModelStrategy().getDefaultParameters());
+        assertTrue("Should contain 13 default parameters", (modelsController.getModelStrategy()).getDefaultParameters().size() == 13);
+
     }
 }

@@ -10,7 +10,6 @@ package rul.models;
 import app.item.parameter.FloatParameter;
 import app.item.parameter.IntParameter;
 import app.item.parameter.Parameter;
-import app.item.parameter.StringParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import weka.classifiers.Classifier;
@@ -20,36 +19,33 @@ import weka.core.Instances;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RandomSubSpaceModelImpl extends ModelStrategy
-{
+public class RandomSubSpaceModelImpl extends ModelStrategy {
+    private static final long serialVersionUID = 4434991255752524309L;
+
     //Default Parameters
-    private final float SUBSPACE_SIZE_PARAM_DEFAULT = 0.5F;
-    private final int NUM_EXECUTION_SLOTS_PARAM_DEFAULT = 1;
-    private final int NUM_ITERATIONS_PARAM_DEFAULT = 10;
-    private final String BATCH_SIZE_PARAM_DEFAULT = "100";
-
+    private static final float SUBSPACE_SIZE_PARAM_DEFAULT = 0.5F;
+    private static final int NUM_EXECUTION_SLOTS_PARAM_DEFAULT = 1;
+    private static final int NUM_ITERATIONS_PARAM_DEFAULT = 10;
+    private static final int BATCH_SIZE_PARAM_DEFAULT = 100;
+    static Logger logger = LoggerFactory.getLogger(RandomSubSpaceModelImpl.class);
     //Parameters
-    private FloatParameter subSpaceSizePara;
-    private IntParameter numExecutionSlotsPara;
-    private IntParameter numIterationsPara;
-    private StringParameter batchSizePara;
-
+    private final FloatParameter subSpaceSizePara;
+    private final IntParameter numExecutionSlotsPara;
+    private final IntParameter numIterationsPara;
+    private final IntParameter batchSizePara;
     private RandomSubSpace randomSubSpace;
 
-    public RandomSubSpaceModelImpl()
-    {
+    public RandomSubSpaceModelImpl() {
         subSpaceSizePara = new FloatParameter("SubSpace Size", SUBSPACE_SIZE_PARAM_DEFAULT);
         numExecutionSlotsPara = new IntParameter("Number of Execution Slots", NUM_EXECUTION_SLOTS_PARAM_DEFAULT);
         numIterationsPara = new IntParameter("Number of Iterations", NUM_ITERATIONS_PARAM_DEFAULT);
-        batchSizePara = new StringParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
+        batchSizePara = new IntParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
 
         addParameter(subSpaceSizePara);
         addParameter(numExecutionSlotsPara);
         addParameter(numIterationsPara);
         addParameter(batchSizePara);
     }
-
-    static Logger logger = LoggerFactory.getLogger(RandomSubSpaceModelImpl.class);
 
     /**
      * This function takes the assets as the training dataset, and returns the trained
@@ -58,22 +54,18 @@ public class RandomSubSpaceModelImpl extends ModelStrategy
      * @author Khaled
      */
     @Override
-    public Classifier trainModel(Instances dataToTrain)
-    {
+    public Classifier trainModel(Instances dataToTrain) {
         randomSubSpace = new RandomSubSpace();
         dataToTrain.setClassIndex(dataToTrain.numAttributes() - 1);
 
         randomSubSpace.setSubSpaceSize(((FloatParameter) getParameters().get(subSpaceSizePara.getParamName())).getFloatValue());
         randomSubSpace.setNumExecutionSlots(((IntParameter) getParameters().get(numExecutionSlotsPara.getParamName())).getIntValue());
         randomSubSpace.setNumIterations(((IntParameter) getParameters().get(numIterationsPara.getParamName())).getIntValue());
-        randomSubSpace.setBatchSize(((StringParameter) getParameters().get(batchSizePara.getParamName())).getStringValue());
+        randomSubSpace.setBatchSize(String.valueOf(((IntParameter) getParameters().get(batchSizePara.getParamName())).getIntValue()));
 
-        try
-        {
+        try {
             randomSubSpace.buildClassifier(dataToTrain);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             logger.error("Exception: ", e);
         }
 
@@ -82,12 +74,11 @@ public class RandomSubSpaceModelImpl extends ModelStrategy
     }
 
     @Override
-    public Map<String, Parameter> getDefaultParameters()
-    {
-        FloatParameter  subSpaceSizeParaDefault      = new FloatParameter("SubSpace Size", SUBSPACE_SIZE_PARAM_DEFAULT);
-        IntParameter    numExecutionSlotsParaDefault = new IntParameter("Number of Execution Slots", NUM_EXECUTION_SLOTS_PARAM_DEFAULT);
-        IntParameter    numIterationsParaDefault     = new IntParameter("Number of Iterations", NUM_ITERATIONS_PARAM_DEFAULT);
-        StringParameter batchSizeParaDefault         = new StringParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
+    public Map<String, Parameter> getDefaultParameters() {
+        FloatParameter subSpaceSizeParaDefault = new FloatParameter("SubSpace Size", SUBSPACE_SIZE_PARAM_DEFAULT);
+        IntParameter numExecutionSlotsParaDefault = new IntParameter("Number of Execution Slots", NUM_EXECUTION_SLOTS_PARAM_DEFAULT);
+        IntParameter numIterationsParaDefault = new IntParameter("Number of Iterations", NUM_ITERATIONS_PARAM_DEFAULT);
+        IntParameter batchSizeParaDefault = new IntParameter("Batch Size", BATCH_SIZE_PARAM_DEFAULT);
 
         Map<String, Parameter> parameters = new HashMap<>();
         parameters.put(subSpaceSizeParaDefault.getParamName(), subSpaceSizeParaDefault);
@@ -98,8 +89,7 @@ public class RandomSubSpaceModelImpl extends ModelStrategy
         return parameters;
     }
 
-    public RandomSubSpace getRandomSubSpaceObject()
-    {
+    public RandomSubSpace getRandomSubSpaceObject() {
         return this.randomSubSpace;
     }
 

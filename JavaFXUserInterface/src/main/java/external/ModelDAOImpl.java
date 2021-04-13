@@ -8,97 +8,114 @@
  */
 package external;
 
+import app.item.AssetType;
 import app.item.Model;
 import app.item.TrainedModel;
 import rul.models.ModelStrategy;
 import utilities.Constants;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Base64;
 
 public class ModelDAOImpl extends DAO implements ModelDAO {
-    private static final String GET_MODEL_FROM_ASSET_TYPE_ID = "SELECT * from trained_model, model WHERE trained_model.model_id = model.model_id AND trained_model.asset_type_id = ? AND model.archived = 0";
-    private static final String GET_ALL_MODELS_FOR_EVALUATION = "SELECT trained_model.*, model.name, model.description from trained_model, model where trained_model.model_id=model.model_id AND asset_type_id=? AND status_id=? AND model.archived = 0";
     private static final String GET_LATEST_RMSE = "SELECT rmse FROM trained_model tm, model m WHERE tm.model_id=? AND tm.asset_type_id=? AND tm.status_id=? AND tm.model_id = m.model_id AND m.archived=0";
     private static final String GET_MODEL_STRATEGY = "SELECT serialized_model FROM trained_model tm, model m WHERE tm.model_id=? AND tm.asset_type_id=? AND tm.status_id=? AND tm.model_id=m.model_id AND m.archived = 0";
     private static final String UPDATE_MODEL_STRATEGY = "UPDATE trained_model tm, model m SET tm.serialized_model=?, tm.retrain=true WHERE tm.model_id = ? AND tm.asset_type_id = ? AND tm.status_id = ? AND tm.model_id=m.model_id AND m.archived = 0";
-    private static final String UPDATE_MODEL_FOR_ASSET_TYPE = "UPDATE trained_model tm, model m SET tm.model_id = ? WHERE tm.asset_type_id = ? AND status_id = ? AND tm.model_id=m.model_id AND m.archived = 0";
+    private static final String UPDATE_MODEL_FOR_ASSET_TYPE = "UPDATE trained_model tm, model m SET tm.model_id = ?, tm.serialized_model =?  WHERE tm.asset_type_id = ? AND tm.status_id = ? AND tm.model_id=m.model_id AND m.archived = 0";
     private static final String UPDATE_RETRAIN = "UPDATE trained_model tm, model m SET retrain = true WHERE tm.asset_type_id = ? AND tm.status_id = ? AND tm.model_id=m.model_id AND m.archived = 0";
+    private static final String GET_MODEL_FROM_ASSET_TYPE = "SELECT * FROM trained_model, model WHERE trained_model.model_id = model.model_id AND trained_model.asset_type_id = ? AND trained_model.status_id = ? AND model.archived = 0";
+    private static final String GET_LIVE_MODEL_COUNT = "SELECT COUNT(*) FROM model WHERE archived = 0";
+    private static final String GET_RETRAIN_STATUS = "SELECT retrain FROM trained_model tm, model m WHERE tm.model_id=? AND tm.asset_type_id=? AND tm.status_id=? AND tm.model_id = m.model_id AND m.archived=0";
+    private static final String INSERT_MODEL_FOR_ASSET_TYPE = "INSERT INTO trained_model (model_id, asset_type_id, status_id, retrain, serialized_model, rmse) values(?, ?, ?, 1, null, -1000000)";
+
+    private static final String SERIALIZED_MODEL = "serialized_model";
+
+    public static String convertToByteString(Object object) throws IOException {
+        try (ByteArrayOutputStream bos = new ByteArrayOutputStream(); ObjectOutput out = new ObjectOutputStream(bos)) {
+            out.writeObject(object);
+            final byte[] byteArray = bos.toByteArray();
+            return Base64.getEncoder().encodeToString(byteArray);
+        }
+    }
+
+    public static Object convertFromByteString(String byteString) throws IOException, ClassNotFoundException {
+        final byte[] bytes = Base64.getDecoder().decode(byteString);
+        try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes); ObjectInput in = new ObjectInputStream(bis)) {
+            return in.readObject();
+        }
+    }
 
     /**
-     * Given a asset type id, this function will return the string corresponding
+     * Given an asset type id, this function will return the string corresponding
      * to the name of the model in the database associated with the asset type
      *
-     * @param assetTypeID represents a asset type id
+     * @param assetTypeID represents an asset type id
      * @author Paul
      */
     @Override
-    public String getModelNameFromAssetTypeID(String assetTypeID) {
+    public String getModelNameAssociatedWithAssetType(String assetTypeID) {
         String name = null;
-        try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_FROM_ASSET_TYPE_ID)) {
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_FROM_ASSET_TYPE)) {
             ps.setString(1, assetTypeID);
+            ps.setInt(2, Constants.STATUS_LIVE);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next())
                     name = rs.getString("name");
             }
         } catch (SQLException e) {
-            logger.error("Exception getModelNameFromAssetTypeID(): ", e);
+            logger.error("SQL Exception in getModelNameAssociatedWithAssetType(): ", e);
         }
         return name;
     }
 
     /**
-     * Given a asset type id, this function will return the int corresponding
+     * Given an asset type id, this function will return the int corresponding
      * to the ID of the model in the database associated with the asset type
      *
      * @param assetTypeID is the Asset type Id of the asset
      * @author Talal, Jeremie
      **/
     @Override
-    public int getModelIDFromAssetTypeID(String assetTypeID) {
+    public int getModelIDAssociatedWithAssetType(String assetTypeID) {
         int modelID = 0;
-        try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_FROM_ASSET_TYPE_ID)) {
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_FROM_ASSET_TYPE)) {
             ps.setString(1, assetTypeID);
+            ps.setInt(2, Constants.STATUS_LIVE);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next())
                     modelID = rs.getInt("model_id");
             }
         } catch (SQLException e) {
-            logger.error("Exception getModelsByAssetTypeID(): ", e);
+            logger.error("SQL Exception in getModelIDAssociatedWithAssetType(): ", e);
         }
         return modelID;
     }
 
     /**
-     * This function will return a list of all the models that exist in the database and create
-     * model objects for each of the model existing in the database
+     * Given the id of an asset type, this function will return the trained model
+     * corresponding the that asset type. Since only one model can be associated to
+     * an asset type at a time only one TrainedModel object is returned
      *
-     * @author Jeremie
+     * @param assetTypeID represents a the id of an asset type
+     * @author Paul
      */
     @Override
-    public List<Model> getAllModelsForEvaluation(int assetTypeID) {
-        ArrayList<Model> modelList = new ArrayList<>();
-        try (PreparedStatement ps = getConnection().prepareStatement(GET_ALL_MODELS_FOR_EVALUATION)) {
-            ps.setInt(1, assetTypeID);
-            ps.setInt(2, Constants.STATUS_EVALUATION);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    Model newModel = new Model();
-                    newModel.setModelID(rs.getInt("model_id"));
-                    newModel.setModelName(rs.getString("name"));
-                    newModel.setDescription(rs.getString("description"));
-                    newModel.setRMSE(rs.getString("rmse"));
-                    modelList.add(newModel);
+    public ArrayList<TrainedModel> getModelsByAssetTypeID(String assetTypeID, int statusID) {
+        ArrayList<TrainedModel> modelList = new ArrayList<>();
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_MODEL_FROM_ASSET_TYPE)) {
+            ps.setString(1, assetTypeID);
+            ps.setInt(2, statusID);
+            try (ResultSet queryResult = ps.executeQuery()) {
+                while (queryResult.next()) {
+                    modelList.add(createTrainedModelFromResultSet(queryResult));
                 }
             }
         } catch (SQLException e) {
-            logger.error("Exception getAllModels(): ", e);
+            logger.error("Exception getModelsByAssetTypeID(): ", e);
         }
         return modelList;
     }
@@ -107,19 +124,20 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
      * This function updates which model is associated with the specified asset type
      * to match the selection chosen by the user.
      *
-     * @param modelID     is the model ID of the selected model
+     * @param model       is the corresponding model object
      * @param assetTypeID is the asset type ID of the specified asset type
      * @author Jeremie
      */
     @Override
-    public void updateModelAssociatedWithAssetType(int modelID, String assetTypeID) {
+    public void updateModelAssociatedWithAssetType(Model model, String assetTypeID) {
         try (PreparedStatement ps = getConnection().prepareStatement(UPDATE_MODEL_FOR_ASSET_TYPE)) {
-            ps.setInt(1, modelID);
-            ps.setString(2, assetTypeID);
-            ps.setInt(3, Constants.STATUS_LIVE);
+            ps.setInt(1, model.getModelID());
+            ps.setString(2, convertToByteString(((TrainedModel) model).getModelStrategy()));
+            ps.setString(3, assetTypeID);
+            ps.setInt(4, Constants.STATUS_LIVE);
             ps.executeQuery();
-        } catch (SQLException e) {
-            logger.error("Exception updateRMSE(): ", e);
+        } catch (SQLException | IOException e) {
+            logger.error("SQL Exception in updateModelAssociatedWithAssetType(): ", e);
         }
     }
 
@@ -137,34 +155,8 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
             ps.setInt(2, Constants.STATUS_LIVE);
             ps.executeUpdate();
         } catch (SQLException e) {
-            logger.error("Exception in setModelToTrain()");
+            logger.error("SQL Exception in setModelToTrain()");
         }
-    }
-
-    /**
-     * This function sets the model associated with the specified asset type to be retrained. It changes
-     * the retrain attribute to true.
-     *
-     * @param assetTypeID is the asset type ID of the specified asset type
-     * @return The value of the RMSE under a String format
-     * @author Jeremie
-     */
-    @Override
-    public String getGetModelEvaluation(int modelID, String assetTypeID) {
-        String rmseValue = null;
-        try (PreparedStatement ps = getConnection().prepareStatement(GET_LATEST_RMSE)) {
-            ps.setInt(1, modelID);
-            ps.setString(2, assetTypeID);
-            ps.setInt(3, Constants.STATUS_EVALUATION);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next())
-                    rmseValue = rs.getString("rmse");
-            }
-        } catch (SQLException e) {
-            logger.error("Exception in getGetModelEvaluation()");
-        }
-        if (rmseValue == null) return "n/a";
-        else return rmseValue;
     }
 
     /**
@@ -184,17 +176,13 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
             ps.setInt(3, Constants.STATUS_EVALUATION);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    try {
-                        byte[] buf = rs.getBytes("serialized_model");
-                        if (buf != null)
-                            modelStrategy = (ModelStrategy) new ObjectInputStream(new ByteArrayInputStream(buf)).readObject();
-
-                    } catch (IOException | ClassNotFoundException e) {
-                        logger.error("IOException or ClassNotFoundException in getModelStrategy", e);
-                        return null;
-                    }
+                    if (rs.getString(SERIALIZED_MODEL) != null)
+                        modelStrategy = (ModelStrategy) convertFromByteString(rs.getString(SERIALIZED_MODEL));
                 }
             }
+        } catch (IOException | ClassNotFoundException e) {
+            logger.error("IOException or ClassNotFoundException in getModelStrategy", e);
+            return null;
         } catch (SQLException e) {
             logger.error("SQL Exception in getModelStrategy", e);
         }
@@ -216,12 +204,12 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
             tm.setModelStrategy(modelStrategy);
             tm.setAssetTypeID(assetTypeID);
             tm.setModelID(modelID);
-            ps.setObject(1, tm.getModelStrategy());
+            ps.setString(1, convertToByteString(tm.getModelStrategy()));
             ps.setInt(2, tm.getModelID());
             ps.setInt(3, tm.getAssetTypeID());
             ps.setInt(4, Constants.STATUS_EVALUATION);
             ps.executeQuery();
-        } catch (SQLException e) {
+        } catch (SQLException | IOException e) {
             logger.error("SQL Exception in updateModelStrategy()", e);
         }
     }
@@ -234,8 +222,9 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
      * @param assetTypeID is the asset type's ID
      * @author talal
      */
+    @Override
     public double getLatestRMSE(int modelID, int assetTypeID) {
-        double estimate = -100000;
+        double estimate = -1000000;
         try (PreparedStatement ps = getConnection().prepareStatement(GET_LATEST_RMSE)) {
             ps.setInt(1, modelID);
             ps.setInt(2, assetTypeID);
@@ -248,5 +237,83 @@ public class ModelDAOImpl extends DAO implements ModelDAO {
             logger.error("SQL Exception in getLatestRMSE()", e);
         }
         return estimate;
+    }
+
+    @Override
+    public boolean isEvaluating(TrainedModel model) {
+        boolean evaluating = false;
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_RETRAIN_STATUS)) {
+            ps.setInt(1, model.getModelID());
+            ps.setInt(2, model.getAssetTypeID());
+            ps.setInt(3, Constants.STATUS_EVALUATION);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next())
+                    evaluating = rs.getBoolean("retrain");
+            }
+        } catch (SQLException e) {
+            logger.error("SQL Exception in getLatestRMSE()", e);
+        }
+        return evaluating;
+    }
+
+    /**
+     * Given a result set object, this function will create the corresponding trained model object
+     *
+     * @param rs represents the result from a trained model query
+     * @author Paul
+     */
+    public TrainedModel createTrainedModelFromResultSet(ResultSet rs) throws SQLException {
+        TrainedModel tm = new TrainedModel();
+        tm.setModelID(rs.getInt("model_id"));
+        tm.setModelName(rs.getString("name"));
+        tm.setDescription(rs.getString("description"));
+        tm.setRMSE(rs.getString("rmse"));
+        tm.setAssetTypeID(rs.getInt("asset_type_id"));
+        tm.setRetrain(rs.getBoolean("retrain"));
+        tm.setStatusID(rs.getInt("status_id"));
+        try {
+            if (rs.getString(SERIALIZED_MODEL) != null)
+                tm.setModelStrategy((ModelStrategy) convertFromByteString(rs.getString(SERIALIZED_MODEL)));
+
+        } catch (IOException | ClassNotFoundException e) {
+            logger.error("Exception createTrainedModelFromResultSet(): ", e);
+            return null;
+        }
+        return tm;
+    }
+
+    /**
+     * Given an asset type, this function will insert models for live and evaluation for that asset type
+     * in the trained model table. It sets all those models to be retrained as soon as the server is run.
+     *
+     * @param assetType represents the asset type added to the application
+     * @author Jeremie
+     */
+    public void insertModelsForAddedAssetType(AssetType assetType) {
+        AssetTypeDAOImpl assetTypeDAO = new AssetTypeDAOImpl();
+        int assetTypeID = assetTypeDAO.getIDFromName(assetType.getName());
+        int liveModelCount = 0;
+        try {
+            ResultSet rs = nonParamQuery(GET_LIVE_MODEL_COUNT);
+            if (rs.next()) {
+                liveModelCount = rs.getInt(1);
+            }
+            for (int i = 1; i <= liveModelCount; i++) {
+                try (PreparedStatement ps = getConnection().prepareStatement(INSERT_MODEL_FOR_ASSET_TYPE)) {
+                    ps.setInt(1, i);
+                    ps.setInt(2, assetTypeID);
+                    ps.setInt(3, Constants.STATUS_EVALUATION);
+                    ps.executeQuery();
+                }
+            }
+            try (PreparedStatement ps = getConnection().prepareStatement(INSERT_MODEL_FOR_ASSET_TYPE)) {
+                ps.setInt(1, 1);
+                ps.setInt(2, assetTypeID);
+                ps.setInt(3, Constants.STATUS_LIVE);
+                ps.executeQuery();
+            }
+        } catch (SQLException e) {
+            logger.error("Exception in insertModelsForAddedAssetType: ", e);
+        }
     }
 }

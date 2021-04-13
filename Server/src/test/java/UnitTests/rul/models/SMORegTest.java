@@ -1,8 +1,8 @@
 package UnitTests.rul.models;
 
 import app.item.parameter.FloatParameter;
+import app.item.parameter.IntParameter;
 import app.item.parameter.Parameter;
-import app.item.parameter.StringParameter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,20 +16,19 @@ import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
-public class SMORegTest
-{
+public class SMORegTest {
     private ModelsController modelsController;
     private FloatParameter cComplexityPara;
-    private StringParameter batchSizePara;
+    private IntParameter batchSizePara;
     private Map<String, Parameter> parameters;
 
     @Before
     public void setUp() {
         modelsController = new ModelsController(new SMORegModelImpl());
         cComplexityPara = new FloatParameter("C Complexity", 1.1F);
-        batchSizePara = new StringParameter("Batch Size", "50");
+        batchSizePara = new IntParameter("Batch Size", 50);
 
         parameters = new HashMap();
         parameters.put(cComplexityPara.getParamName(), cComplexityPara);
@@ -44,7 +43,7 @@ public class SMORegTest
     @Test
     public void trainModel() throws Exception {
         FileReader trainFile = new FileReader("src/test/resources/FD01_Train_RUL.arff");
-        Instances trainData  = new Instances(trainFile);
+        Instances trainData = new Instances(trainFile);
         trainData.setClassIndex(trainData.numAttributes() - 1);
 
         Classifier smoReg = new SMOreg();
@@ -52,16 +51,21 @@ public class SMORegTest
     }
 
     @Test
-    public void updateParam() throws Exception
-    {
+    public void updateParam() throws Exception {
         FileReader trainFile = new FileReader("src/test/resources/FD01_Train_RUL.arff");
-        Instances  trainData = new Instances(trainFile);
+        Instances trainData = new Instances(trainFile);
         trainData.setClassIndex(trainData.numAttributes() - 1);
 
         modelsController.setParameters(parameters);
         modelsController.trainModel(trainData);
 
-        assertEquals("Asserting the CComplexity parameter was changed",((SMORegModelImpl) modelsController.getModelStrategy()).getSmOregObject().getC(), cComplexityPara.getFloatValue(), 0.1f);
-        assertEquals("Asserting the BatchSize parameter was changed", ((SMORegModelImpl) modelsController.getModelStrategy()).getSmOregObject().getBatchSize(), batchSizePara.getStringValue());
+        assertEquals("Asserting the CComplexity parameter was changed", ((SMORegModelImpl) modelsController.getModelStrategy()).getSmOregObject().getC(), cComplexityPara.getFloatValue(), 0.1f);
+        assertEquals("Asserting the BatchSize parameter was changed", ((SMORegModelImpl) modelsController.getModelStrategy()).getSmOregObject().getBatchSize(), String.valueOf(batchSizePara.getIntValue()));
+    }
+
+    @Test
+    public void getDefaultParameters()  {
+        assertNotNull("DefaultParameters exist", modelsController.getModelStrategy().getDefaultParameters());
+        assertTrue("Should contain 2 default parameters", (modelsController.getModelStrategy()).getDefaultParameters().size() == 2);
     }
 }

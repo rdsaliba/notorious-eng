@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class ModelStrategy implements Serializable {
+    private static final long serialVersionUID = -9112357969653381004L;
+
     private Classifier classifier;
     private Map<String, Parameter> parameters;
     private Instances dataToTrain;

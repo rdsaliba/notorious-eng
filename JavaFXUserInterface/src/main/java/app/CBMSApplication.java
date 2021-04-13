@@ -14,6 +14,9 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static utilities.TextConstants.ASSETS_SCENE;
+import static utilities.TextConstants.FXML;
+
 public class CBMSApplication extends Application {
 
     static Logger logger = LoggerFactory.getLogger(CBMSApplication.class);
@@ -31,8 +34,11 @@ public class CBMSApplication extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/Assets.fxml"));
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource(ASSETS_SCENE + FXML));
+        Parent root = loader.load();
         Scene scene = new Scene(root);
+        scene.setUserData(loader);
         primaryStage.setTitle("Minerva");
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -40,30 +46,28 @@ public class CBMSApplication extends Application {
             try {
                 closeProgram();
             } catch (Exception ex) {
-                logger.error("Exception: ", ex);
+                logger.error("Exception in starting the application: ", ex);
             }
         });
     }
 
     /**
      * Loads all live assets before starting the application
-     *
-     * @throws Exception
      */
     @Override
-    public void init() throws Exception {
+    public void init() {
         long loadStartTime = System.currentTimeMillis();
         try {
             ModelController.getInstance().getAllLiveAssets();
         } catch (Exception e) {
-            logger.error("Exception: ", e);
+            logger.error("Exception in initializing the application: ", e);
         }
         long loadEndTime = System.currentTimeMillis();
         if ((loadEndTime - loadStartTime) < 1000) {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
-                logger.error("Exception: ", e);
+                logger.error("Exception in putting to sleep the threads: ", e);
                 Thread.currentThread().interrupt();
             }
         }

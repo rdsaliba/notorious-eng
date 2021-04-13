@@ -12,6 +12,7 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
     private static final String INSERT_ASSET_TYPE_PARAMETERS = "INSERT INTO asset_type_parameters (asset_type_id, parameter_name, boundary) values(?, ?, ?)";
     private static final String GET_ASSET_TYPES = "SELECT * FROM asset_type";
     private static final String GET_ASSET_TYPE_NAME_FROM_ID = "SELECT name FROM asset_type where asset_type_id = ?";
+    private static final String GET_ASSET_TYPE_ID_FROM_NAME = "SELECT asset_type_id FROM asset_type where name = ?";
     private static final String GET_ASSET_TYPE_THRESHOLD = "SELECT *  FROM asset_type_parameters WHERE parameter_name = ? AND asset_type_id = ?";
     private static final String GET_ASSET_TYPE_ID_COUNT = "SELECT asset_type_id, COUNT(*) as 'count' FROM asset WHERE archived = ? AND asset_type_id = ?";
     private static final String DELETE_ASSET_TYPE = "DELETE FROM asset_type where asset_type_id = ?";
@@ -56,8 +57,6 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
         } catch (SQLException e) {
             logger.error("Exception getAssetTypeThreshold(): ", e);
         }
-        if (threshold == null || threshold.equals("null"))
-            threshold = "-";
         return threshold;
     }
 
@@ -126,6 +125,21 @@ public class AssetTypeDAOImpl extends DAO implements AssetTypeDAO {
             logger.error("Exception getNameFromID(): ", e);
         }
         return name;
+    }
+
+    @Override
+    public int getIDFromName(String name) {
+        int id = 0;
+        try (PreparedStatement ps = getConnection().prepareStatement(GET_ASSET_TYPE_ID_FROM_NAME)) {
+            ps.setString(1, name);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next())
+                    id = rs.getInt("asset_type_id");
+            }
+        } catch (SQLException e) {
+            logger.error("Exception in getIDFromName(): ", e);
+        }
+        return id;
     }
 
     @Override

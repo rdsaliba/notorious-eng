@@ -50,6 +50,11 @@
             <version>3.11.1</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.atlassian.clover</groupId>
+            <artifactId>clover</artifactId>
+            <version>4.1.2</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -65,10 +70,11 @@
                 </plugin>
 
                 <plugin>
-                    <groupId>org.openclover</groupId>
+                    <groupId>com.atlassian.maven.plugins</groupId>
                     <artifactId>clover-maven-plugin</artifactId>
-                    <version>4.2.0</version>
+                    <version>4.1.2</version>
                 </plugin>
+
 
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>

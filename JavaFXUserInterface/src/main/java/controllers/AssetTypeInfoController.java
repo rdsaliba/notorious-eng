@@ -9,7 +9,8 @@
 package controllers;
 
 import app.item.Asset;
-import app.item.Model;
+import app.item.TrainedModel;
+import app.item.parameter.*;
 import external.AssetDAOImpl;
 import external.AssetTypeDAOImpl;
 import external.ModelDAOImpl;
@@ -21,14 +22,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.util.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,20 +33,18 @@ import rul.models.ModelStrategy;
 import utilities.*;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 
-public class AssetTypeInfoController implements Initializable {
+import static utilities.TextConstants.*;
+
+public class AssetTypeInfoController extends Controller implements Initializable {
     private static final String RMSE = "RMSE";
     static Logger logger = LoggerFactory.getLogger(AssetTypeInfoController.class);
-    private final Text[] errorMessages = new Text[7];
-    private final boolean[] validInput = new boolean[7];
     private final ModelPanes modelPanes = new ModelPanes();
-    boolean validForm = true;
     int trainSize = 0;
     int testSize = 0;
+    @FXML
+    private Text title;
     @FXML
     private Tab modelTab;
     @FXML
@@ -63,9 +58,7 @@ public class AssetTypeInfoController implements Initializable {
     @FXML
     private TextField assetTypeName;
     @FXML
-    private TextArea assetTypeDesc;
-    @FXML
-    private TextField thresholdOK;
+    private TextArea assetTypeDescription;
     @FXML
     private TextField thresholdAdvisory;
     @FXML
@@ -75,7 +68,7 @@ public class AssetTypeInfoController implements Initializable {
     @FXML
     private TextField thresholdFailed;
     @FXML
-    private AnchorPane inputError;
+    private AnchorPane assetTypeInformationAnchorPane;
     @FXML
     private Slider trainSlider;
     @FXML
@@ -89,11 +82,24 @@ public class AssetTypeInfoController implements Initializable {
     @FXML
     private Button modelSaveBtn;
     @FXML
+    private Button resetBtn;
+    @FXML
+    private Button modelDefaultBtn;
+    @FXML
     private ArrayList<Button> evaluateButtons;
     @FXML
     private Label associatedModelLabel;
-    private ObservableList<Model> modelObservableList;
+    @FXML
+    private VBox modelParameters;
+    @FXML
+    private AnchorPane root;
+    @FXML
+    private AnchorPane bigRoot;
+
+    private ObservableList<TrainedModel> modelObservableList;
+    private ObservableList<Pane> modelPaneObservableList;
     private int associatedModelID;
+
     private UIUtilities uiUtilities;
     private AssetTypeList assetType;
     private AssetTypeList originalAssetType;
@@ -102,7 +108,6 @@ public class AssetTypeInfoController implements Initializable {
     private ModelDAOImpl modelDAO;
     private AssetDAOImpl assetDAO;
 
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         uiUtilities = new UIUtilities();
@@ -110,6 +115,8 @@ public class AssetTypeInfoController implements Initializable {
         modelDAO = new ModelDAOImpl();
         assetDAO = new AssetDAOImpl();
         assetsList = new ArrayList<>();
+        root.setOpacity(0);
+        uiUtilities.fadeInTransition(root);
         try {
             attachEvents();
         } catch (Exception exception) {
@@ -125,143 +132,222 @@ public class AssetTypeInfoController implements Initializable {
      * @author Najim, Paul
      */
     public void initData(AssetTypeList assetType) {
+        title.setText("Edit " + assetType.getName());
         this.assetType = assetType;
         this.originalAssetType = new AssetTypeList(assetType);
         assetTypeName.setText(assetType.getAssetType().getName());
-        assetTypeDesc.setText(assetType.getAssetType().getDescription());
-        associatedModelID = modelDAO.getModelIDFromAssetTypeID(assetType.getId());
-        associatedModelLabel.setText(modelDAO.getModelNameFromAssetTypeID(assetType.getId()));
+        associatedModelLabel.setText(modelDAO.getModelNameAssociatedWithAssetType(assetType.getId()));
+
+        // Initializing Data for the threshold text fields
+        ObservableList<TextField> thresholdTextFieldList = FXCollections.observableArrayList();
+        thresholdTextFieldList.addAll(thresholdAdvisory, thresholdCaution, thresholdWarning, thresholdFailed);
         try {
-            thresholdOK.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueOk())));
-            thresholdAdvisory.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueAdvisory())));
-            thresholdCaution.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueCaution())));
-            thresholdWarning.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueWarning())));
-            thresholdFailed.setText(TextConstants.ThresholdValueFormat.format(Double.parseDouble(assetType.getValueFailed())));
+            if (assetType.getAssetType().getDescription() != null)
+                assetTypeDescription.setText(assetType.getAssetType().getDescription());
+            if (assetType.getValueAdvisory() != null && !assetType.getValueAdvisory().equalsIgnoreCase("null"))
+                thresholdAdvisory.setText(ThresholdValueFormat.format(Double.parseDouble(assetType.getValueAdvisory())));
+            if (assetType.getValueCaution() != null && !assetType.getValueCaution().equalsIgnoreCase("null"))
+                thresholdCaution.setText(ThresholdValueFormat.format(Double.parseDouble(assetType.getValueCaution())));
+            if (assetType.getValueWarning() != null && !assetType.getValueWarning().equalsIgnoreCase("null"))
+                thresholdWarning.setText(ThresholdValueFormat.format(Double.parseDouble(assetType.getValueWarning())));
+            if (assetType.getValueFailed() != null && !assetType.getValueFailed().equalsIgnoreCase("null"))
+                thresholdFailed.setText(ThresholdValueFormat.format(Double.parseDouble(assetType.getValueFailed())));
         } catch (NumberFormatException e) {
             logger.error("NumberFormatException error inside initData");
             logger.error("Exception initData(): ", e);
         }
-        updateRMSE();
+        for (TextField thresholdTextField : thresholdTextFieldList) {
+            thresholdTextField.setPromptText("No current value for " + thresholdTextField.getId() + ". Please enter a value.");
+        }
+        new Thread(this::initializeModelTab).start();
+
     }
 
     /**
-     * Attaches events to elements in the scene.
+     * Attaches events to elements in the scene and specifically on the information tab
      *
      * @author Najim, Paul
      * Edit: added all the text proprety listeners and text formaters for all the fields
      */
     public void attachEvents() {
-
         // Change scenes to Assets.fxml
-        backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE, backBtn.getScene()));
-
-        modelTab.setOnSelectionChanged(event -> attachEventsModelTab());
-
-        infoDeleteBtn.setOnMouseClicked(mouseEvent -> CustomDialog.systemTypeInfoControllerDialog(mouseEvent, assetType.getId()));
+        backBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(ASSET_TYPE_LIST_SCENE, backBtn.getScene()));
+        ProgressIndicator progressIndicator = (ProgressIndicator) root.getChildren().get(0);
+        progressIndicator.setLayoutY(bigRoot.getPrefHeight() / 2);
+        progressIndicator.setLayoutX(bigRoot.getPrefWidth() / 2);
+        infoDeleteBtn.setOnMouseClicked(mouseEvent -> CustomDialog.deleteAssetTypeConfirmationDialogShowAndWait(assetType.getId(), infoSaveBtn.getScene(), root, bigRoot));
 
         infoSaveBtn.setDisable(true);
         infoSaveBtn.setOnMouseClicked(mouseEvent -> {
-            if (formInputValidation()) {
+            if (FormInputValidation.assetTypeFormInputValidation(assetTypeInformationAnchorPane, assetTypeName, assetTypeDescription, thresholdAdvisory, thresholdCaution, thresholdWarning, thresholdFailed)) {
                 assetTypeDAO.updateAssetType(assetType.toAssetType());
-                uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE, infoSaveBtn.getScene());
+                uiUtilities.changeScene(TextConstants.ASSET_TYPE_LIST_SCENE, backBtn.getScene());
+                backBtn.fire();
             }
         });
 
+        attachAssetTypeTextFieldsEvents();
+        modelTab.setOnSelectionChanged(event -> {
+            modelsThumbPane.getChildren().clear();
+            generateThumbnails();
+            attachEventsModelTab();
+
+            updateRMSE();
+        });
+    }
+
+    /**
+     * This attaches an event listener for every asset type information input field. It will handle
+     * the text or value change on all those fields.
+     *
+     * @author Paul
+     */
+    private void attachAssetTypeTextFieldsEvents() {
         assetTypeName.textProperty().addListener((obs, oldText, newText) -> {
             if (handleTextChange(newText, originalAssetType.getName()))
                 assetType.getAssetType().setName(newText);
         });
-        assetTypeDesc.textProperty().addListener((obs, oldText, newText) -> {
+        assetTypeDescription.textProperty().addListener((obs, oldText, newText) -> {
             if (handleTextChange(newText, originalAssetType.getDescription()))
                 assetType.getAssetType().setDescription(newText);
         });
-
-        thresholdOK.textProperty().addListener((obs, oldText, newText) -> {
-            if (handleTextChange(newText, originalAssetType.getValueOk()))
-                assetType.setValueOk(newText);
-        });
-        thresholdOK.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
 
         thresholdAdvisory.textProperty().addListener((obs, oldText, newText) -> {
             if (handleTextChange(newText, originalAssetType.getValueAdvisory()))
                 assetType.setValueAdvisory(newText);
         });
-        thresholdAdvisory.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
+        thresholdAdvisory.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(ThresholdValueFormat, c)));
 
         thresholdCaution.textProperty().addListener((obs, oldText, newText) -> {
             if (handleTextChange(newText, originalAssetType.getValueCaution()))
                 assetType.setValueCaution(newText);
         });
-        thresholdCaution.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
+        thresholdCaution.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(ThresholdValueFormat, c)));
 
         thresholdWarning.textProperty().addListener((obs, oldText, newText) -> {
             if (handleTextChange(newText, originalAssetType.getValueWarning()))
                 assetType.setValueWarning(newText);
         });
-        thresholdWarning.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
+        thresholdWarning.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(ThresholdValueFormat, c)));
 
         thresholdFailed.textProperty().addListener((obs, oldText, newText) -> {
             if (handleTextChange(newText, originalAssetType.getValueFailed()))
                 assetType.setValueFailed(newText);
         });
-        thresholdFailed.setTextFormatter(new TextFormatter<>(c -> UIUtilities.checkFormat(TextConstants.ThresholdValueFormat, c)));
-
+        thresholdFailed.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(ThresholdValueFormat, c)));
     }
 
-    private void attachEventsModelTab() {
-        try {
-            modelObservableList = FXCollections.observableArrayList(modelDAO.getAllModelsForEvaluation(Integer.parseInt(assetType.getId())));
-        } catch (Exception e) {
-            logger.error("Exception in getting all the models list", e);
-        }
-        modelSaveBtn.setDisable(true);
-        modelSaveBtn.setOnMouseClicked(mouseEvent -> {
-            saveSelectedModelAssociation();
-            uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE, modelSaveBtn.getScene());
-        });
+    /**
+     * This initializes all the data and UI components for the model Tab
+     *
+     * @author Talal, Jeremie
+     */
+    private void initializeModelTab() {
+        modelTab.setDisable(true);
         evaluateAllModelsBtn.setDisable(true);
         evaluateButtons = new ArrayList<>();
         evaluateButtons.add(evaluateAllModelsBtn);
 
-        if (modelTab.getId().equals("modelTab")) {
-            List<Asset> assets = assetDAO.getArchivedAssetsFromAssetTypeID(Integer.parseInt(assetType.getId()));
-            int nbOfAssets = assets.size();
-            trainSlider.setMax(nbOfAssets);
-            trainValue.setText(String.valueOf(trainSlider.getValue()));
-            testSlider.setMax(nbOfAssets);
-            testValue.setText(String.valueOf(testSlider.getValue()));
-
-            trainSlider.valueProperty().addListener((observableValue, number, t1) -> {
-                trainValue.setText(Integer.toString((int) trainSlider.getValue()));
-                testSlider.setMax(nbOfAssets - trainSlider.getValue());
-                trainSize = (int) trainSlider.getValue();
-            });
-            testSlider.valueProperty().addListener((observableValue, number, t1) -> {
-                testValue.setText(Integer.toString((int) testSlider.getValue()));
-                trainSlider.setMax(nbOfAssets - testSlider.getValue());
-                testSize = (int) testSlider.getValue();
-            });
-
-            try {
-                evaluateAllModelsBtn.setOnMouseClicked(mouseEvent -> {
-                    for (Model model : modelObservableList) {
-                        saveModelToEvaluate(model, mouseEvent);
-                    }
-                });
-            } catch (Exception e) {
-                logger.error("Exception for evaluateAllModelsBtn.setOnMouseClicked(), e");
-            }
-        }
+        setTestAndTrainSliders();
 
         try {
-            modelObservableList = FXCollections.observableArrayList(modelDAO.getAllModelsForEvaluation(Integer.parseInt(assetType.getId())));
+            modelObservableList = FXCollections.observableArrayList(modelDAO.getModelsByAssetTypeID(assetType.getId(), Constants.STATUS_EVALUATION));
+            associatedModelID = modelDAO.getModelIDAssociatedWithAssetType(assetType.getId());
         } catch (Exception e) {
-            logger.error("Exception for modelObservableList, e");
+            logger.error("Exception in getting all the models list", e);
         }
-        modelsThumbPane.getChildren().clear();
-        generateThumbnails();
+        modelTab.setDisable(false);
+    }
+
+    /**
+     * This sets configures the test and train sliders to hold values based on the specific asset
+     * type. It also adds an event listener to keep track of the current selection (input) of one
+     * of the sliders to adjust the maximum value of the other so the number of assets used in total
+     * is always the correct one.
+     *
+     * @author Talal
+     */
+    private void setTestAndTrainSliders() {
+        int nbOfAssets = assetDAO.getArchivedAssetsFromAssetTypeID(Integer.parseInt(assetType.getId()));
+        try {
+            if (nbOfAssets != 0) {
+                trainSlider.setMax(nbOfAssets);
+                trainValue.setText(String.valueOf(trainSlider.getValue()));
+                testSlider.setMax(nbOfAssets);
+                testValue.setText(String.valueOf(testSlider.getValue()));
+            }
+        } catch (Exception e) {
+            trainSlider.setMax(0);
+            trainValue.setText("0");
+            testSlider.setMax(0);
+            testValue.setText("0");
+            logger.error("There is no asset associated with that asset type", e);
+        }
+
+
+        trainSlider.valueProperty().addListener((observableValue, number, t1) -> {
+            trainSlider.setValue(t1.intValue());
+            trainValue.setText(Integer.toString((int) trainSlider.getValue()));
+            testSlider.setMax(nbOfAssets - trainSlider.getValue());
+            trainSize = (int) trainSlider.getValue();
+        });
+        testSlider.valueProperty().addListener((observableValue, number, t1) -> {
+            testSlider.setValue(t1.intValue());
+            testValue.setText(Integer.toString((int) testSlider.getValue()));
+            trainSlider.setMax(nbOfAssets - testSlider.getValue());
+            testSize = (int) testSlider.getValue();
+        });
+    }
+
+    /**
+     * This attaches all the events to the UI components for the model tab
+     *
+     * @author Talal, Jeremie
+     */
+    private void attachEventsModelTab() {
+        modelSaveBtn.setOnMouseClicked(mouseEvent -> {
+            modelObservableList.stream()
+                    .filter(trainedModel -> trainedModel.getModelID() == modelPanes.getSelectedModel().getModelID())
+                    .findFirst().ifPresent(selected -> {
+                selected.getModelStrategy().setParameters(selected.getModelStrategy().getParameters());
+                modelDAO.updateModelStrategy(selected.getModelStrategy(), selected.getModelID(), selected.getAssetTypeID());
+            });
+            saveSelectedModelAssociation();
+            uiUtilities.changeScene(ASSET_TYPE_LIST_SCENE, modelSaveBtn.getScene());
+        });
+        resetBtn.setOnMouseClicked(mouseEvent -> modelObservableList.stream()
+                .filter(trainedModel -> trainedModel.getModelID() == modelPanes.getSelectedModel().getModelID())
+                .findFirst().ifPresent(selected -> {
+                    selected.setModelStrategy((modelDAO.getModelStrategy(selected.getModelID(), selected.getAssetTypeID())));
+                    generateParameters(selected, false);
+                }));
+        modelDefaultBtn.setOnMouseClicked(mouseEvent -> modelObservableList.stream()
+                .filter(trainedModel -> trainedModel.getModelID() == modelPanes.getSelectedModel().getModelID())
+                .findFirst()
+                .ifPresent(selected -> generateParameters(selected, true)));
+
+        try {
+            evaluateAllModelsBtn.setOnMouseClicked(mouseEvent -> {
+                for (TrainedModel model : modelObservableList) {
+                    if (!modelDAO.isEvaluating(model))
+                        saveModelToEvaluate(model);
+                }
+            });
+        } catch (Exception e) {
+            logger.error("Exception for evaluateAllModelsBtn.setOnMouseClicked(), e");
+        }
+
         trainSlider.setOnMouseClicked(mouseEvent -> enableEvaluation(evaluateButtons));
         testSlider.setOnMouseClicked(mouseEvent -> enableEvaluation(evaluateButtons));
+
+        // As the window expands or shrinks, asset panes will adjust to the window size accordingly
+        modelsThumbPane.widthProperty().addListener((obs, oldVal, newVal) -> {
+            double modelFlowWidth = (double) newVal - 22;
+            int nbOfPanes = (int) (modelFlowWidth / 247);
+            modelFlowWidth = (modelFlowWidth % 247);
+            modelFlowWidth = modelFlowWidth / (nbOfPanes - 1);
+            modelsThumbPane.setHgap(modelFlowWidth);
+        });
     }
 
     /**
@@ -270,20 +356,20 @@ public class AssetTypeInfoController implements Initializable {
      * the serialized object for evaluation only.
      *
      * @param model is the model to be evaluated
-     * @author Tala, Jeremie
+     * @author Talal, Jeremie
      */
-    public void saveModelToEvaluate(Model model, MouseEvent mouseEvent) {
+    public void saveModelToEvaluate(TrainedModel model) {
         int assetTypeID = Integer.parseInt(assetType.getId());
         int trainAssets = (int) trainSlider.getValue() + 1;
         int testAssets = (int) trainSlider.getValue() + 1 + (int) testSlider.getValue();
-        ModelStrategy modelStrategy = modelDAO.getModelStrategy(model.getModelID(), assetTypeID);
-        if(!Objects.isNull(modelStrategy)){
+        ModelStrategy modelStrategy = model.getModelStrategy();
+        if (!Objects.isNull(modelStrategy)) {
             modelStrategy.setTrainAssets(trainAssets);
             modelStrategy.setTestAssets(testAssets);
+            modelStrategy.setParameters(model.getModelStrategy().getParameters());
             modelDAO.updateModelStrategy(modelStrategy, model.getModelID(), assetTypeID);
-        }
-        else{
-            CustomDialog.nullModelAlert(mouseEvent);
+        } else {
+            CustomDialog.nullModelAlertDialogShowAndWait();
         }
     }
 
@@ -311,7 +397,15 @@ public class AssetTypeInfoController implements Initializable {
      * @author Paul
      */
     private boolean handleTextChange(String newText, String field) {
-        if ((field).equals(originalAssetType.getName()) || field.equals(originalAssetType.getDescription())) {
+        if (field == null) {
+            if (!newText.isEmpty()) {
+                infoSaveBtn.setDisable(false);
+                return true;
+            } else {
+                infoSaveBtn.setDisable(true);
+                return false;
+            }
+        } else if ((field).equals(originalAssetType.getName()) || field.equals(originalAssetType.getDescription())) {
             if (!newText.isEmpty() && !newText.equals(field)) {
                 infoSaveBtn.setDisable(false);
                 return true;
@@ -319,127 +413,12 @@ public class AssetTypeInfoController implements Initializable {
                 infoSaveBtn.setDisable(true);
                 return false;
             }
-        } else if (!newText.isEmpty() && !field.equals("-") && Double.parseDouble(newText) == Double.parseDouble(field)) {
+        } else if (!newText.isEmpty() && Double.parseDouble(newText) == Double.parseDouble(field)) {
             infoSaveBtn.setDisable(true);
             return false;
         } else {
             infoSaveBtn.setDisable(false);
             return true;
-        }
-    }
-
-    /**
-     * Displays an error for a field when the validation criteria are not respected.
-     *
-     * @author Najim
-     */
-    public boolean formInputValidation() {
-        String assetTypeNameValue = assetTypeName.getText();
-        String assetTypeDescValue = assetTypeDesc.getText();
-        double horizontalPosition = 0;
-
-        assetTypeNameValidation(assetTypeNameValue, horizontalPosition);
-
-        if (assetTypeDescValue.length() > 300) {
-            validForm = false;
-            validInput[1] = false;
-            UIUtilities.createInputError(inputError, errorMessages, assetTypeDesc, TextConstants.MAX_300_CHARACTERS_ERROR, 85.0, horizontalPosition, 1);
-        } else {
-            validInput[1] = true;
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, assetTypeDesc, 1);
-        }
-
-        if (UIUtilities.compareThresholds(thresholdAdvisory, thresholdCaution)) {
-            validInput[3] = true;
-            validInput[4] = true;
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdAdvisory, 3);
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdCaution, 4);
-        } else {
-            validForm = false;
-            validInput[3] = false;
-            validInput[4] = false;
-            UIUtilities.createInputError(inputError, errorMessages, thresholdAdvisory, TextConstants.ADVISORY_CAUTION, 178.0, horizontalPosition, 3);
-            UIUtilities.createInputError(inputError, errorMessages, thresholdCaution, "", 0, 0, 4);
-        }
-
-        if (UIUtilities.compareThresholds(thresholdAdvisory, thresholdWarning)) {
-            validInput[3] = true;
-            validInput[5] = true;
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdAdvisory, 3);
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdWarning, 5);
-        } else {
-            validForm = false;
-            validInput[3] = false;
-            validInput[5] = false;
-            UIUtilities.createInputError(inputError, errorMessages, thresholdAdvisory, TextConstants.ADVISORY_WARNING, 178.0, 0, 3);
-            UIUtilities.createInputError(inputError, errorMessages, thresholdWarning, "", 0, 0, 5);
-        }
-
-        if (UIUtilities.compareThresholds(thresholdCaution, thresholdWarning)) {
-            validInput[4] = true;
-            validInput[5] = true;
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdCaution, 4);
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdWarning, 5);
-        } else {
-            validForm = false;
-            validInput[4] = false;
-            validInput[5] = false;
-            UIUtilities.createInputError(inputError, errorMessages, thresholdCaution, TextConstants.CAUTION_WARNING, 218.0, horizontalPosition, 4);
-            UIUtilities.createInputError(inputError, errorMessages, thresholdWarning, "", 0, 0, 5);
-        }
-
-        if (UIUtilities.compareThresholds(thresholdAdvisory, thresholdFailed)) {
-            validInput[3] = true;
-            validInput[6] = true;
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdAdvisory, 3);
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdFailed, 6);
-        } else {
-            validForm = false;
-            validInput[3] = false;
-            validInput[6] = false;
-            UIUtilities.createInputError(inputError, errorMessages, thresholdAdvisory, TextConstants.ADVISORY_FAILED, 178.0, horizontalPosition, 3);
-            UIUtilities.createInputError(inputError, errorMessages, thresholdFailed, "", 0, 0, 6);
-        }
-        if (UIUtilities.compareThresholds(thresholdCaution, thresholdFailed)) {
-            validInput[4] = true;
-            validInput[6] = true;
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdCaution, 4);
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdFailed, 6);
-        } else {
-            validForm = false;
-            validInput[4] = false;
-            validInput[6] = false;
-            UIUtilities.createInputError(inputError, errorMessages, thresholdCaution, TextConstants.CAUTION_FAILED, 218.0, horizontalPosition, 4);
-            UIUtilities.createInputError(inputError, errorMessages, thresholdFailed, "", 0, 0, 6);
-        }
-        if (UIUtilities.compareThresholds(thresholdWarning, thresholdFailed)) {
-            validInput[5] = true;
-            validInput[6] = true;
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdWarning, 5);
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, thresholdFailed, 6);
-        } else {
-            validForm = false;
-            validInput[5] = false;
-            validInput[6] = false;
-            UIUtilities.createInputError(inputError, errorMessages, thresholdWarning, TextConstants.WARNING_FAILED, 258.0, horizontalPosition, 5);
-            UIUtilities.createInputError(inputError, errorMessages, thresholdFailed, "", 0, 0, 6);
-        }
-        return validForm;
-    }
-
-    private void assetTypeNameValidation(String assetTypeNameValue, double horizontalPosition) {
-        validForm = true;
-        if (assetTypeNameValue.trim().isEmpty()) {
-            validForm = false;
-            validInput[0] = false;
-            UIUtilities.createInputError(inputError, errorMessages, assetTypeName, TextConstants.EMPTY_FIELD_ERROR, 28.0, horizontalPosition, 0);
-        } else if (assetTypeNameValue.length() > 50) {
-            validForm = false;
-            validInput[0] = false;
-            UIUtilities.createInputError(inputError, errorMessages, assetTypeName, TextConstants.MAX_50_CHARACTERS_ERROR, 28.0, horizontalPosition, 0);
-        } else {
-            validInput[0] = true;
-            UIUtilities.removeInputError(inputError, errorMessages, validInput, assetTypeName, 0);
         }
     }
 
@@ -451,67 +430,162 @@ public class AssetTypeInfoController implements Initializable {
      * @author Jeremie
      */
     public void generateThumbnails() {
-        ObservableList<Pane> modelPaneObservableList = FXCollections.observableArrayList();
-
-        for (Model model : modelObservableList) {
+        modelPaneObservableList = FXCollections.observableArrayList();
+        for (TrainedModel model : modelObservableList) {
             // Creating a Thumbnail element
             Pane modelPane = new Pane();
-            modelPane.getStyleClass().add("modelPane");
+
+            modelPane.setId(model.getModelName());
+            modelPane.getStyleClass().add(THUMBNAIL_PANE_STYLE_CLASS);
             modelPane.setOnMouseClicked(mouseEvent -> {
                 modelPanes.handleModelSelection(model, modelPane);
-                modelSaveBtn.setDisable(false);
+                generateParameters(model, false);
             });
+
+            ProgressIndicator progressIndicator = new ProgressIndicator();
+            progressIndicator.setVisible(false);
+            progressIndicator.setLayoutX(90);
+            progressIndicator.setLayoutY(90);
+            modelPane.getChildren().add(progressIndicator);
 
             // Generating items to display for the Thumbnail
             Text modelNameLabel = new Text(model.getModelName());
             Text modelDescriptionText = new Text(model.getDescription());
+            TextFlow textFlowDescription = new TextFlow(modelDescriptionText);
+            textFlowDescription.setMaxWidth(217);
             Text rmseLabel = new Text(RMSE);
             Text rmseValue = new Text();
 
             HBox rmsePane = new HBox();
-            rmsePane.getStyleClass().add("rmsePane");
-            rmsePane.setAlignment(Pos.CENTER);
+            rmsePane.getStyleClass().addAll(VALUE_PANE_STYLE_CLASS, "none");
 
             Button evaluateModelBtn = new Button();
             evaluateModelBtn.setText("Evaluate");
             evaluateModelBtn.setDisable(true);
             evaluateButtons.add(evaluateModelBtn);
-            evaluateModelBtn.setOnMouseClicked(mouseEvent -> saveModelToEvaluate(model, mouseEvent));
+            evaluateModelBtn.setOnMouseClicked(mouseEvent -> {
+                modelPaneObservableList.filtered(pane -> pane.getId().equals(model.getModelName())).get(0).getChildren().get(0).setVisible(false);
+                modelPaneObservableList.filtered(pane -> pane.getId().equals(model.getModelName())).get(0).setDisable(false);
+                saveModelToEvaluate(model);
+            });
 
             //Setting IDs for the elements
-            modelNameLabel.getStyleClass().add("modelName");
+            modelNameLabel.getStyleClass().add(THUMBNAIL_HEADER_STYLE_CLASS);
             modelDescriptionText.setId("modelDescriptionText");
-            rmseLabel.getStyleClass().add("rmseLabel");
-            rmseValue.getStyleClass().add("rmseValue");
+            rmseLabel.getStyleClass().add(VALUE_LABEL_STYLE_CLASS);
+            rmseValue.getStyleClass().add(VALUE_TEXT_STYLE_CLASS);
             SimpleStringProperty s = model.getRMSE();
             rmseValue.textProperty().bind(s);
-            evaluateModelBtn.getStyleClass().add("selectBtn");
+            evaluateModelBtn.getStyleClass().addAll("btn", "smallFont", "evaluate");
 
             //Setting the Layout of the elements
             modelNameLabel.setLayoutX(15.0);
             modelNameLabel.setLayoutY(35.0);
-            modelDescriptionText.setLayoutX(15.0);
-            modelDescriptionText.setLayoutY(80.0);
+            textFlowDescription.setLayoutX(15.0);
+            textFlowDescription.setLayoutY(45.0);
             rmseLabel.setLayoutX(47.0);
-            rmseLabel.setLayoutY(239.0);
+            rmseLabel.setLayoutY(151.0);
             rmsePane.setLayoutX(15.0);
-            rmsePane.setLayoutY(243.0);
-            rmseValue.setLayoutX(30.0);
-            rmseValue.setLayoutY(265.0);
+            rmsePane.setLayoutY(155.0);
             evaluateModelBtn.setLayoutX(133.0);
-            evaluateModelBtn.setLayoutY(243.0);
+            evaluateModelBtn.setLayoutY(155.0);
 
             modelPane.getChildren().add(modelNameLabel);
-            modelPane.getChildren().add(modelDescriptionText);
+            modelPane.getChildren().add(textFlowDescription);
             modelPane.getChildren().add(rmseLabel);
+            rmsePane.getChildren().add(rmseValue);
             modelPane.getChildren().add(rmsePane);
-            modelPane.getChildren().add(rmseValue);
             modelPane.getChildren().add(evaluateModelBtn);
 
             modelPaneObservableList.add(modelPane);
+
+            if (modelDAO.isEvaluating(model))
+                progressIndicator.setVisible(true);
         }
         modelPanes.setModelThumbnailsContainerPane(modelPaneObservableList, modelsThumbPane);
         modelPanes.highlightAssociatedModel(modelPaneObservableList, associatedModelID);
+        modelPanes.setSelectedModel(modelObservableList.stream().filter(model -> model.getModelID() == associatedModelID).findFirst().orElse(null));
+        generateParameters(modelObservableList.stream().filter(model -> model.getModelID() == associatedModelID).findFirst().orElse(null), false);
+    }
+
+    /**
+     * @param model         the model currently selected
+     * @param defaultParams true if we want the default parameters, false otherwise
+     * @author Jeff, Paul
+     */
+    public void generateParameters(TrainedModel model, boolean defaultParams) {
+        modelParameters.getChildren().clear();
+        try {
+            Map<String, Parameter> params = (defaultParams) ? model.getModelStrategy().getDefaultParameters() : model.getModelStrategy().getParameters();
+            model.getModelStrategy().setParameters(params);
+            Iterator<String> iterator = params.keySet().iterator();
+            double layoutX = 50.0;
+            double layoutY = 20.0;
+            double tfLayoutX = 300.0;
+
+            while (iterator.hasNext()) {
+                String paramName = iterator.next();
+                Parameter parameter = params.get(paramName);
+
+                //make the pane
+                Pane pane = new Pane();
+                pane.getStyleClass().add(PARAM_PANE_STYLE_CLASS);
+                pane.setLayoutX(layoutX);
+                pane.setLayoutY(layoutY);
+
+                // Make the label itself
+                Label paramNameLabel = new Label();
+                paramNameLabel.getStyleClass().add(FORM_LABEL_STYLE_CLASS);
+                paramNameLabel.setText(paramName);
+                pane.getChildren().add(paramNameLabel);
+
+                // Depending on the parameter type, generate corresponding input field
+                if (parameter instanceof BoolParameter) {
+                    CheckBox checkBox = new CheckBox();
+                    checkBox.setSelected(((BoolParameter) parameter).getBoolValue());
+                    checkBox.setLayoutX(tfLayoutX);
+                    checkBox.setLayoutY(0.0);
+                    checkBox.selectedProperty().addListener((ov, oldVal, newVal) -> ((BoolParameter) params.get(paramName)).setBoolValue(newVal));
+                    pane.getChildren().addAll(checkBox);
+                } else if (parameter instanceof IntParameter) {
+                    TextField tf = new TextField();
+                    tf.setText(String.valueOf(((IntParameter) parameter).getIntValue()));
+                    tf.getStyleClass().add(PARAM_TEXT_FIELD_STYLE_CLASS);
+                    tf.setLayoutX(tfLayoutX);
+                    tf.setLayoutY(0.0);
+                    tf.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(INT_REGEX, c)));
+                    tf.textProperty().addListener((ov, oldVal, newVal) -> ((IntParameter) params.get(paramName)).setIntValue(Integer.parseInt(newVal)));
+                    pane.getChildren().add(tf);
+                } else if (parameter instanceof ListParameter) {
+                    ChoiceBox<String> listBox = new ChoiceBox<>();
+                    listBox.setItems(FXCollections.observableArrayList(((ListParameter) parameter).getListValues()));
+                    listBox.setValue(((ListParameter) parameter).getSelectedValue());
+                    listBox.getStyleClass().add(PARAM_TEXT_FIELD_STYLE_CLASS);
+                    listBox.setLayoutX(tfLayoutX);
+                    listBox.setLayoutY(0.0);
+                    listBox.getSelectionModel().selectedItemProperty().addListener((ov, oldVal, newVal) -> ((ListParameter) params.get(paramName)).setSelectedValue(newVal));
+                    pane.getChildren().add(listBox);
+                } else if (parameter instanceof FloatParameter) {
+                    TextField tf = new TextField();
+                    tf.setText(String.valueOf(((FloatParameter) parameter).getFloatValue()));
+                    tf.getStyleClass().add(PARAM_TEXT_FIELD_STYLE_CLASS);
+                    tf.setLayoutX(tfLayoutX);
+                    tf.setLayoutY(0.0);
+                    tf.setTextFormatter(new TextFormatter<>(c -> FormInputValidation.checkFormat(FLOAT_REGEX, c)));
+                    tf.textProperty().addListener((ov, oldVal, newVal) -> ((FloatParameter) params.get(paramName)).setFloatValue(Float.parseFloat(newVal)));
+                    pane.getChildren().add(tf);
+                }
+                modelParameters.getChildren().add(pane);
+                layoutY += 40.0;
+            }
+        } catch (NullPointerException e) {
+            Text error = new Text("No trained classifier. The server needs to train the classifier first.");
+            error.setLayoutY(80);
+            error.setLayoutX(50);
+            error.getStyleClass().add("error");
+            modelParameters.getChildren().add(error);
+            logger.error("NullPointerException in GenerateParameters(): ", e);
+        }
     }
 
     /**
@@ -522,7 +596,7 @@ public class AssetTypeInfoController implements Initializable {
      * @author Jeremie
      */
     private void saveSelectedModelAssociation() {
-        modelDAO.updateModelAssociatedWithAssetType(modelPanes.getSelectedModel().getModelID(), assetType.getId());
+        modelDAO.updateModelAssociatedWithAssetType(modelPanes.getSelectedModel(), assetType.getId());
         modelDAO.setModelToTrain(assetType.getId());
         updateAssetsForSelectedModelAssociation(Integer.parseInt(assetType.getId()));
     }
@@ -547,18 +621,31 @@ public class AssetTypeInfoController implements Initializable {
      * @author Talal
      */
     public void updateRMSE() {
-        modelObservableList = FXCollections.observableArrayList(modelDAO.getAllModelsForEvaluation(Integer.parseInt(assetType.getId())));
-        for (Model model : modelObservableList) {
-            model.setRMSE(String.valueOf(TextConstants.RMSEValueFormat.format(modelDAO.getLatestRMSE(model.getModelID(), Integer.parseInt(assetType.getId())))));
+        for (TrainedModel model : modelObservableList) {
+            model.setRMSE(String.valueOf(RMSEValueFormat.format(modelDAO.getLatestRMSE(model.getModelID(), Integer.parseInt(assetType.getId())))));
+            handleProgressCircle(model);
+
         }
         Timeline rmseTimeline = new Timeline(new KeyFrame(Duration.millis(3000), e ->
         {
-            for (Model model : modelObservableList) {
-                model.setRMSE(String.valueOf(TextConstants.RMSEValueFormat.format(modelDAO.getLatestRMSE(model.getModelID(), Integer.parseInt(assetType.getId())))));
+            for (TrainedModel model : modelObservableList) {
+                model.setRMSE(String.valueOf(RMSEValueFormat.format(modelDAO.getLatestRMSE(model.getModelID(), Integer.parseInt(assetType.getId())))));
+                handleProgressCircle(model);
             }
         }));
 
         rmseTimeline.setCycleCount(Animation.INDEFINITE); // loop forever
         rmseTimeline.play();
+        addTimeline(rmseTimeline);
+    }
+
+    private void handleProgressCircle(TrainedModel model) {
+        if (modelDAO.isEvaluating(model)) {
+            modelPaneObservableList.filtered(pane -> pane.getId().equals(model.getModelName())).get(0).getChildren().get(0).setVisible(true);
+            modelPaneObservableList.filtered(pane -> pane.getId().equals(model.getModelName())).get(0).setDisable(true);
+        } else {
+            modelPaneObservableList.filtered(pane -> pane.getId().equals(model.getModelName())).get(0).getChildren().get(0).setVisible(false);
+            modelPaneObservableList.filtered(pane -> pane.getId().equals(model.getModelName())).get(0).setDisable(false);
+        }
     }
 }

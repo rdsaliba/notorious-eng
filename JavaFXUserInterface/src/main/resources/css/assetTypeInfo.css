@@ -1,34 +1,79 @@
-.tab {
-    -fx-background-color: transparent;
-    -fx-font-family: 'Segoe UI';
-    -fx-font-size: 16px;
-    -fx-padding: 0 40px 0 40px;
-    -fx-border-width: 2px;
-    -fx-border-color: transparent transparent transparent transparent;
+.titleBar {
+    -fx-border-color: transparent !important;
 }
 
-.tab:selected {
-    -fx-border-color: transparent transparent #CBCBCB transparent;
-    -fx-focus-color: transparent;
+.topBotBorder {
+    -fx-border-width: 1px 0 1px 0 !important;
+    -fx-border-color: #D3D3D3 !important;
 }
 
-.tab-header-background {
-    -fx-background-color: transparent;
-}
-
-.tab-label {
-    /*-fx-text-fill: -fx-secondary;*/
-    -fx-font-size: 10pt;
-}
-
-.tab-main {
-    -fx-pref-height: 60;
-    -fx-max-height: 60;
-}
-
-.modelPane
-{
+.background {
     -fx-background-color: #FFFFFF;
-    -fx-pref-height: 200.0;
-    -fx-pref-width: 300.0;
+}
+
+.footerBar {
+    -fx-background-color: #FFFFFF;
+}
+
+.thumbnailPane {
+    -fx-pref-height: 200px !important;
+}
+
+.thumbnailPane:hover {
+    -fx-border-color: #226B9E;
+}
+
+.evaluate {
+    -fx-background-color: #DAEBF7 !important;
+    -fx-border-color: #226B9E !important;
+    -fx-text-fill: #226B9E !important;
+    -fx-pref-width: 99px !important;
+    -fx-pref-height: 33px !important;
+}
+
+.modelFlowPane {
+    -fx-padding: 10 10 0 10;
+}
+
+.paramPane {
+    -fx-background-color: transparent;
+    -fx-min-height: 45px;
+    -fx-pref-width: 450px;
+    -fx-padding: 10px;
+}
+
+.paramTextField {
+    -fx-pref-width: 150px;
+}
+
+.formLabel {
+    -fx-font-family: "Segoe UI Semibold";
+}
+
+.parametersScrollPane {
+    -fx-background-color: #FFFFFF;
+    -fx-border-width: 0px;
+    -fx-border-color: #FFFFFF;
+}
+
+.parametersContainer {
+    -fx-background-color: #FFFFFF;
+    -fx-border-width: 0px;
+    -fx-border-color: #FFFFFF;
+}
+
+.modelParameters {
+    -fx-background-color: #FFFFFF;
+    -fx-border-width: 0px;
+    -fx-border-color: #FFFFFF;
+    -fx-padding: 10 0 0 26;
+}
+
+.error {
+    -fx-font-size: 18px;
+}
+
+.none {
+    -fx-background-color: transparent;
+    -fx-border-color: #D3D3D3;
 }

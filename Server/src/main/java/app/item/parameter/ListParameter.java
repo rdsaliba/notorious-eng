@@ -1,20 +1,19 @@
 package app.item.parameter;
 
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ListParameter extends Parameter {
     private List<String> listValues;
     private String selectedValue;
 
-    public ListParameter(String paramName, ArrayList<String> listValues, String selectedValue) {
+    public ListParameter(String paramName, List<String> listValues, String selectedValue) {
         super(paramName);
         this.listValues = listValues;
         this.selectedValue = selectedValue;
     }
 
-    public void addToList(String value){
+    public void addToList(String value) {
         listValues.add(value);
     }
 

@@ -1,6 +1,7 @@
 package utilities;
 
 import app.item.Model;
+import app.item.TrainedModel;
 import javafx.collections.ObservableList;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
@@ -40,9 +41,7 @@ public class ModelPanes {
     public void highlightAssociatedModel(ObservableList<Pane> modelPanes, int modelID) {
         for (int i = 0; i < modelPanes.size(); i++) {
             if ((i + 1) == modelID) {
-                modelPanes.get(i).setStyle("-fx-border-color: red");
-            } else if ((i + 1) != modelID) {
-                //modelPanes.get(i).setStyle("-fx-background-color: #e0e0eb");
+                modelPanes.get(i).setStyle("-fx-border-color: #226B9E");
             }
         }
     }
@@ -54,8 +53,8 @@ public class ModelPanes {
      * @param pane  is the pane containing the selected model
      * @author Jeremie
      */
-    public void handleModelSelection(Model model, Pane pane) {
-        pane.setStyle("-fx-border-color: red");
+    public void handleModelSelection(TrainedModel model, Pane pane) {
+        pane.setStyle("-fx-border-color: #226B9E");
         setSelectedModel(model);
     }
 

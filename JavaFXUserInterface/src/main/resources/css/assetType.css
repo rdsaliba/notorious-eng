@@ -1,0 +1,28 @@
+.ok {
+    -fx-background-color: rgba(177, 255, 198, 0.4);
+    -fx-border-color: rgba(177, 255, 198, 0.6);
+}
+
+.caution {
+    -fx-background-color: rgba(245, 255, 177, 0.4);
+    -fx-border-color: rgba(245, 255, 177, 0.6);
+}
+
+.advisory {
+    -fx-background-color: rgba(245, 255, 177, 0.4);
+    -fx-border-color: rgba(245, 255, 177, 0.6);
+}
+
+.warning {
+    -fx-background-color: rgba(255, 224, 177, 0.4);
+    -fx-border-color: rgba(255, 224, 177, 0.6);
+}
+
+.failed {
+    -fx-background-color: rgba(255, 177, 177, 0.4);
+    -fx-border-color: rgba(255, 177, 177, 0.4);
+}
+
+.valueLabel {
+    -fx-text-fill: #636363 !important;
+}

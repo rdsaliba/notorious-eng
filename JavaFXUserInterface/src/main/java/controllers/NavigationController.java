@@ -1,11 +1,11 @@
 package controllers;
 
-import utilities.TextConstants;
-import utilities.UIUtilities;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import utilities.TextConstants;
+import utilities.UIUtilities;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -29,10 +29,10 @@ public class NavigationController implements Initializable {
 
     public void attachEvents() {
         //Attach link to assetMenuButton to go to Assets.fxml
-        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSETS_SCENE, assetMenuBtn.getScene()));
+        assetMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(TextConstants.ASSETS_SCENE, assetMenuBtn.getScene()));
 
         //Attach link to assetTypeMenuBtn to go to Utilities.AssetTypeList.fxml
-        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(mouseEvent, TextConstants.ASSET_TYPE_LIST_SCENE, assetTypeMenuBtn.getScene()));
+        assetTypeMenuBtn.setOnMouseClicked(mouseEvent -> uiUtilities.changeScene(TextConstants.ASSET_TYPE_LIST_SCENE, assetTypeMenuBtn.getScene()));
 
         //Attach ability to close program
         exitMenuBtn.setOnMouseClicked(mouseEvent -> Platform.exit());
